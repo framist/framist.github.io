@@ -33,9 +33,10 @@
 <meta property="og:image" content="http://example.com/2020/10/09/%E3%80%90moeCTF%E9%A2%98%E8%A7%A3-0x01%E3%80%91Reverse/image-20201009134249123.png">
 <meta property="og:image" content="http://example.com/2020/10/09/%E3%80%90moeCTF%E9%A2%98%E8%A7%A3-0x01%E3%80%91Reverse/image-20201009152004496.png">
 <meta property="og:image" content="http://example.com/2020/10/09/%E3%80%90moeCTF%E9%A2%98%E8%A7%A3-0x01%E3%80%91Reverse/image-20201009152254678.png">
+<meta property="og:image" content="http://example.com/2020/10/09/%E3%80%90moeCTF%E9%A2%98%E8%A7%A3-0x01%E3%80%91Reverse/153003.png">
 <meta property="og:image" content="http://example.com/2020/10/09/%E3%80%90moeCTF%E9%A2%98%E8%A7%A3-0x01%E3%80%91Reverse/image-20201009153132456.png">
 <meta property="article:published_time" content="2020-10-09T04:47:18.517Z">
-<meta property="article:modified_time" content="2020-10-09T08:00:28.589Z">
+<meta property="article:modified_time" content="2020-10-09T08:33:13.121Z">
 <meta property="article:author" content="Framist">
 <meta property="article:tag" content="CTF">
 <meta name="twitter:card" content="summary">
@@ -193,7 +194,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-10-09 12:47:18 / 修改时间：16:00:28" itemprop="dateCreated datePublished" datetime="2020-10-09T12:47:18+08:00">2020-10-09</time>
+              <time title="创建时间：2020-10-09 12:47:18 / 修改时间：16:33:13" itemprop="dateCreated datePublished" datetime="2020-10-09T12:47:18+08:00">2020-10-09</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -278,7 +279,7 @@
 
 <p>啊啊啊啊啊这是什么鬼呀，格式化一下也没有用，还是一行语句，也看不懂哪里有输入输出，但node竟然能运行</p>
 <p>尝试手动重构，失败*N</p>
-<p>观察程序的特征，发现<code>eval(function(p,a,c,k,e,d&#123;...&#125;)</code>，于是上百度，返现原来是一个js代码混淆工具产生的特征，将原程序前的<code>eval</code> 换成 <code>console.log</code>再运行可以轻松反混淆：</p>
+<p>观察程序的特征，发现<code>eval(function(p,a,c,k,e,d&#123;...&#125;)</code>，于是上百度，发现原来是一个js代码混淆工具产生的特征，将原程序前的<code>eval</code> 换成 <code>console.log</code>再运行可以轻松反混淆：</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">require</span>(<span class="string">&#x27;console-read-write&#x27;</span>); </span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">main</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    io.write(<span class="string">&#x27;MoeCTF 2020 ThankYouJavaScript --written by Reverier&#x27;</span>);</span><br><span class="line">    io.write(<span class="keyword">await</span> io.read());</span><br><span class="line">    io.write(<span class="string">`Hello <span class="subst">$&#123;<span class="keyword">await</span> io.ask(<span class="string">&#x27;Who are you?&#x27;</span>)&#125;</span>!`</span>);</span><br><span class="line">    <span class="keyword">let</span> saidHi = <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">while</span> (!saidHi) &#123;</span><br><span class="line">        io.write(<span class="string">&#x27;Please input the true flag:&#x27;</span>);</span><br><span class="line">        saidHi = <span class="keyword">await</span> io.read() === <span class="string">&#x27;moectf&#123;Fx&#x27;</span> + <span class="string">&#x27;c&#x27;</span> + <span class="string">&#x27;k_&#x27;</span> + <span class="string">&#x27;Y&#x27;</span> + <span class="string">&#x27;0&#x27;</span> + <span class="string">&#x27;u-&#x27;</span> + <span class="string">&#x27;Jav&#x27;</span> + <span class="string">&#x27;aS&#x27;</span> + <span class="string">&#x27;cr&#x27;</span> + <span class="string">&#x27;ipt&#x27;</span> + <span class="string">&#x27;!&#125;&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">    io.write(<span class="string">&#x27;Congratulations! You find the flag!&#x27;</span>)</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
 
 <p>得到flag：<code>moectf&#123;Fxck_Y0u-JavaScript!&#125;</code></p>
@@ -443,7 +444,7 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">.</span><br><span class="line">├── CSkin.dll</span><br><span class="line">├── datedata</span><br><span class="line">├── EntityFramework.dll</span><br><span class="line">├── EntityFramework.SqlServer.dll</span><br><span class="line">├── number</span><br><span class="line">├── RandomNames13.0.exe</span><br><span class="line">├── SQLite-net.dll</span><br><span class="line">├── SQLitePCLRaw.batteries_green.dll</span><br><span class="line">├── SQLitePCLRaw.batteries_v2.dll</span><br><span class="line">├── SQLitePCLRaw.core.dll</span><br><span class="line">├── SQLitePCLRaw.provider.e_sqlite3.dll</span><br><span class="line">├── System.Data.SQLite.dll</span><br><span class="line">├── System.Data.SQLite.EF6.dll</span><br><span class="line">├── System.Data.SQLite.Linq.dll</span><br><span class="line">├── UserData.sqlite               		<span class="comment"># &lt;-- 好耶，就是这个         </span></span><br><span class="line">├── x64</span><br><span class="line">│   ├── e_sqlite3.dll</span><br><span class="line">│   ├── sqlite3.dll</span><br><span class="line">│   └── SQLite.Interop.dll</span><br><span class="line">└── x86</span><br><span class="line">    ├── e_sqlite3.dll</span><br><span class="line">    ├── sqlite3.dll</span><br><span class="line">    └── SQLite.Interop.dll</span><br></pre></td></tr></table></figure>
 
 <p>是sqlite数据库，Windows下有一个可视化的工具<code>SQLiteSpy</code>可以方便编辑它</p>
-<p>![屏幕截图 2020-10-09 153003](【moeCTF题解-0x01】Reverse/屏幕截图 2020-10-09 153003.png)</p>
+<p><img src="/2020/10/09/%E3%80%90moeCTF%E9%A2%98%E8%A7%A3-0x01%E3%80%91Reverse/153003.png" alt="屏幕截图 2020-10-09 153003"></p>
 <p>随便修改一个用户的性别信息再打开，跳出flag</p>
 <p><img src="/2020/10/09/%E3%80%90moeCTF%E9%A2%98%E8%A7%A3-0x01%E3%80%91Reverse/image-20201009153132456.png" alt="image-20201009153132456"></p>
 <blockquote>
