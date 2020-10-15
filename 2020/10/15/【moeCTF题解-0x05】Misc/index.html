@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-big-counter.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="【moeCTF题解-0x05】Misc 如果把Web安全、二进制安全、密码学等等方向的研究看成是你约会时候和你的 男&#x2F;女朋友吃的主餐，Misc杂项就是餐后小甜点。虽然很好吃，越吃越上瘾，但是 最后往往很年轻的时候的了糖尿病。 ——XDSEC@EndCat  可是我只会Misc呀（o´・ェ・｀o）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【moeCTF题解-0x05】Misc">
+<meta property="og:url" content="http://example.com/2020/10/15/%E3%80%90moeCTF%E9%A2%98%E8%A7%A3-0x05%E3%80%91Misc/index.html">
+<meta property="og:site_name" content="Framist&#39;s Little House">
+<meta property="og:description" content="【moeCTF题解-0x05】Misc 如果把Web安全、二进制安全、密码学等等方向的研究看成是你约会时候和你的 男&#x2F;女朋友吃的主餐，Misc杂项就是餐后小甜点。虽然很好吃，越吃越上瘾，但是 最后往往很年轻的时候的了糖尿病。 ——XDSEC@EndCat  可是我只会Misc呀（o´・ェ・｀o）">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2020/10/15/%E3%80%90moeCTF%E9%A2%98%E8%A7%A3-0x05%E3%80%91Misc/profession.jpg">
+<meta property="og:image" content="http://example.com/2020/10/15/%E3%80%90moeCTF%E9%A2%98%E8%A7%A3-0x05%E3%80%91Misc/good_morning_my_neighbors.png">
+<meta property="article:published_time" content="2020-10-15T12:54:04.715Z">
+<meta property="article:modified_time" content="2020-10-15T14:51:48.761Z">
+<meta property="article:author" content="Framist">
+<meta property="article:tag" content="CTF">
+<meta property="article:tag" content="Misc">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2020/10/15/%E3%80%90moeCTF%E9%A2%98%E8%A7%A3-0x05%E3%80%91Misc/profession.jpg">
+
+<link rel="canonical" href="http://example.com/2020/10/15/%E3%80%90moeCTF%E9%A2%98%E8%A7%A3-0x05%E3%80%91Misc/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【moeCTF题解-0x05】Misc | Framist's Little House</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Framist's Little House</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/15/%E3%80%90moeCTF%E9%A2%98%E8%A7%A3-0x05%E3%80%91Misc/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Framist">
+      <meta itemprop="description" content="框架主义者的小窝">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Framist's Little House">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【moeCTF题解-0x05】Misc
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-10-15 20:54:04 / 修改时间：22:51:48" itemprop="dateCreated datePublished" datetime="2020-10-15T20:54:04+08:00">2020-10-15</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF/" itemprop="url" rel="index"><span itemprop="name">CTF</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CTF/moeCTF/" itemprop="url" rel="index"><span itemprop="name">moeCTF</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="【moeCTF题解-0x05】Misc"><a href="#【moeCTF题解-0x05】Misc" class="headerlink" title="【moeCTF题解-0x05】Misc"></a>【moeCTF题解-0x05】Misc</h1><blockquote>
+<p>如果把Web安全、二进制安全、密码学等等方向的研究看成是你约会时候和你的 男/女朋友吃的主餐，Misc杂项就是餐后小甜点。虽然很好吃，越吃越上瘾，但是 最后往往很年轻的时候的了糖尿病。</p>
+<p>——XDSEC@EndCat</p>
+</blockquote>
+<p>可是我只会Misc呀<code>（o´・ェ・｀o）</code></p>
+<br>
+
+
+
+<a id="more"></a>
+
+<br>
+
+<blockquote>
+<p><strong>【moeCTF题解】总目录如下：</strong></p>
+<ul>
+<li><p><a target="_blank" rel="noopener" href="https://framist.github.io/2020/10/09/%E3%80%90moeCTF%E9%A2%98%E8%A7%A3-0x00%E3%80%91%E5%BA%8F/">【moeCTF题解-0x00】序                （包括Sign in）</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://framist.github.io/2020/10/09/%E3%80%90moeCTF%E9%A2%98%E8%A7%A3-0x01%E3%80%91Reverse/">【moeCTF题解-0x01】Reverse      （包括Android、IoT）</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://framist.github.io/2020/10/09/%E3%80%90moeCTF%E9%A2%98%E8%A7%A3-0x02%E3%80%91Pwn/">【moeCTF题解-0x02】Pwn</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://framist.github.io/2020/10/12/%E3%80%90moeCTF%E9%A2%98%E8%A7%A3-0x03%E3%80%91Algorithm/">【moeCTF题解-0x03】Algorithm</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://framist.github.io/2020/10/12/%E3%80%90moeCTF%E9%A2%98%E8%A7%A3-0x04%E3%80%91Crypto/">【moeCTF题解-0x04】Crypto          （包括 Classic Crypto）</a></p>
+</li>
+<li><p>【moeCTF题解-0x05】Misc </p>
+</li>
+<li><p>【moeCTF题解-0x06】Web</p>
+</li>
+</ul>
+</blockquote>
+<br>
+
+<h1 id="Misc"><a href="#Misc" class="headerlink" title="Misc"></a>Misc</h1><p>13/17</p>
+<h2 id="Welcome"><a href="#Welcome" class="headerlink" title="Welcome"></a>Welcome</h2><blockquote>
+<p>50points</p>
+<p>本人表达能力太差，故放上Endcat学姐写的入门pdf。 本题考点为16进制编辑器的简单使用（真的超简单！</p>
+</blockquote>
+<p>这个PDF是EndCat写的一篇Misc入门指南，读罢指南，发现最后有一句话：</p>
+<blockquote>
+<p>对了，我在这个文件里面隐藏了一点信息，你能找出来嘛：)</p>
+</blockquote>
+<p>但是我用各种工具对这个PDF找来找去也没有发现什么，此时我发现题目还有另一个附件：</p>
+<p><img src="/2020/10/15/%E3%80%90moeCTF%E9%A2%98%E8%A7%A3-0x05%E3%80%91Misc/profession.jpg" alt="profession"></p>
+<p>打开文件的二进制一看：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">000075d0: 2E 2E 6D 6F 65 63 74 66 7B 4A 6F 31 6E 5F 30 75    ..moectf&#123;Jo1n_0u</span><br><span class="line">000075e0: 72 5F 70 72 6F 66 65 73 73 69 6F 6E 61 6C 5F 67    r_professional_g</span><br><span class="line">000075f0: 72 6F 75 70 7D 2E 2E 2E 00 C4 6B 5F EB 7F CA 7A    roup&#125;....Dk_k.Jz</span><br><span class="line">00007600: 14 1F FF D9                                        ...Y</span><br></pre></td></tr></table></figure>
+
+<p>这不就是flag啦：<code>moectf&#123;Jo1n_0ur_professional_group&#125;</code></p>
+<p>(っ °Д °;)っ</p>
+<br>
+
+<blockquote>
+<p>Misc是什么意思？Misc的英文全写是Miscellaneous，意为大杂烩、杂项。从语 义来说，你可能会认为Misc涉及的是安全研究方向的方方面面，但实际上还是有 点偏差的。Misc分支在CTF赛事中也有较为明确的范围规定。举几个例子：社会 工程学（就是你们口口相传的“社 工”）、数字取证（Forensics，实训基地也有专门的电子取证分部是专门研究这个东西的）、隐写分析（Steganography）、编码 转换（Encode/Decode）等等。实际上Misc在一些较大的CTF赛事中，是作为 “穿插考点”而存在的。Misc也会涉及比较简单的古典密码学，通信传输协议，有的 时候甚至会让你分析一下从各种各样实际的硬件中扒下来的流量记录，单片机程序。</p>
+<p>——XDSEC@EndCat</p>
+</blockquote>
+<br>
+
+<h2 id="MD5"><a href="#MD5" class="headerlink" title="MD5"></a>MD5</h2><blockquote>
+<p>50points</p>
+<p>c4d038b4bed09fdb1471ef51ec3a32cd</p>
+<p>请将得到的结果包上moectf{}进行提交</p>
+</blockquote>
+<p>MD5是什么？</p>
+<blockquote>
+<p><strong>MD5信息摘要算法</strong>（英语：MD5 Message-Digest Algorithm），一种被广泛使用的<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E5%AF%86%E7%A0%81%E6%95%A3%E5%88%97%E5%87%BD%E6%95%B0/14937715">密码散列函数</a>，可以产生出一个128位（16<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E5%AD%97%E8%8A%82/1096318">字节</a>）的散列值（hash value），用于确保信息传输完整一致。MD5由美国密码学家<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E7%BD%97%E7%BA%B3%E5%BE%B7%C2%B7%E6%9D%8E%E7%BB%B4%E6%96%AF%E7%89%B9/700199">罗纳德·李维斯特</a>（Ronald Linn Rivest）设计，于1992年公开，用以取代<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/MD4/8090275">MD4</a>算法。这套算法的程序在 RFC 1321 标准中被加以规范。1996年后该算法被证实存在弱点，可以被加以破解，对于需要高度安全性的数据，专家一般建议改用其他算法，如<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/SHA-2/22718180">SHA-2</a>。2004年，证实MD5算法无法防止碰撞（collision），因此不适用于安全性认证，如<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/SSL/320778">SSL</a>公开密钥认证或是<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/212550">数字签名</a>等用途。</p>
+<p>——百度百科</p>
+</blockquote>
+<ul>
+<li><input disabled type="checkbox"> 🤔</li>
+</ul>
+<p><em>既然MD5这么不安全了，为什么感觉现在还在大量地被使用。比如全国大学生数学建模竞赛，甚至之前我当其志愿者监考的届全国中学生网络安全竞赛都用MD5验证文件……</em></p>
+<br>
+
+<blockquote>
+<p>目前可以说md5已经基本被攻破了，一般的MD5的碰撞都可以在如下网上获取到</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="http://www.cmd5.com/">http://www.cmd5.com/</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.ttmd5.com/">http://www.ttmd5.com/</a></li>
+<li><a target="_blank" rel="noopener" href="http://pmd5.com/">http://pmd5.com/</a></li>
+</ul>
+<p>——<a target="_blank" rel="noopener" href="https://wiki.x10sec.org/crypto/hash/md5/">CTF Wiki</a></p>
+</blockquote>
+<ul>
+<li><input disabled type="checkbox"> <em>🤔</em></li>
+</ul>
+<p><em>感觉这些网站都是通过字典来反加密的</em></p>
+<br>
+
+<p>把题目中的c4d038b4bed09fdb1471ef51ec3a32cd解密得<code>114514</code></p>
+<p>所以flag：<code>moectf&#123;114514&#125;</code></p>
+<br>
+
+<h2 id="base64"><a href="#base64" class="headerlink" title="base64"></a>base64</h2><blockquote>
+<p>50points</p>
+<p>bW9lY3RmJTdCZXpfYjY0JTIxJTdE</p>
+<p>来点究极送分题</p>
+</blockquote>
+<p>送分：base64解密得：</p>
+<p><code>moectf%7Bez_b64%21%7D</code></p>
+<p>然后URL反转码得：</p>
+<p><code>moectf&#123;ez_b64!&#125;</code></p>
+<br>
+
+<h2 id="hey-fxck-you"><a href="#hey-fxck-you" class="headerlink" title="hey fxck you!"></a>hey fxck you!</h2><blockquote>
+<p>100points</p>
+<p>Good morning my neighbors!</p>
+</blockquote>
+<p>附件是一张图片：</p>
+<p><img src="/2020/10/15/%E3%80%90moeCTF%E9%A2%98%E8%A7%A3-0x05%E3%80%91Misc/good_morning_my_neighbors.png" alt="good_morning_my_neighbors"></p>
+<p><em>哼，又玩梗</em></p>
+<br>
+
+<p>查看二进制没发现什么特别的，上<code>binwalk</code>发现能解包，解之：</p>
+<p>解出文件<code>fk u.txt</code>内容如下：</p>
+<figure class="highlight brainfuck"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">++<span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="title">[</span>&gt;&gt;++&gt;++<span class="literal">+</span><span class="literal">+</span>&gt;++<span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span>&gt;++<span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span>&gt;++<span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span>&gt;++<span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span>&gt;++<span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span>&gt;++<span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span>&gt;++<span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span>&gt;++<span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span>&gt;++<span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span>&gt;++<span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span>&gt;++<span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span>&gt;++<span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span>&gt;++<span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="literal">+</span>&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;<span class="literal">-</span><span class="title">]</span>&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;--<span class="literal">-</span><span class="string">.</span>++<span class="string">.</span>&lt;++<span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="string">.</span>--<span class="string">.</span>&gt;++<span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="string">.</span>&lt;++<span class="literal">+</span><span class="string">.</span>&gt;&gt;--<span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="string">.</span>--<span class="string">.</span>&lt;&lt;<span class="literal">-</span><span class="string">.</span>&gt;<span class="literal">-</span><span class="string">.</span>&lt;&lt;&lt;&lt;&lt;<span class="literal">+</span><span class="string">.</span>&gt;&gt;&gt;&gt;&gt;&gt;<span class="string">.</span>&lt;&lt;<span class="string">.</span>&gt;<span class="string">.</span>&lt;&lt;&lt;&lt;&lt;<span class="string">.</span>&gt;&gt;&gt;&gt;<span class="literal">+</span><span class="string">.</span>++<span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="string">.</span>--<span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="string">.</span>&lt;++<span class="literal">+</span><span class="literal">+</span><span class="literal">+</span><span class="string">.</span>&gt;<span class="string">.</span>&lt;&lt;&lt;++<span class="string">.</span>&lt;<span class="string">.</span>&gt;&gt;&gt;&gt;&gt;&gt;++<span class="literal">+</span><span class="literal">+</span><span class="string">.</span></span><br></pre></td></tr></table></figure>
+
+<p>啊这不是<code>Brainfuck</code>嘛，一种神奇的图灵完备的语言，而且很像图灵机的运行方式呢（但又不是）</p>
+<blockquote>
+<p>Müller的目标是创建一种简单的、可以用最小的<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E7%BC%96%E8%AF%91%E5%99%A8">编译器</a>来实现的、符合<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%9B%BE%E7%81%B5%E5%AE%8C%E5%85%A8">图灵完全</a>思想的编程语言。这种语言由八种<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%BF%90%E7%AE%97%E7%AC%A6">运算符</a>构成，为<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/Amiga">Amiga</a>机器编写的编译器（第二版）只有240个<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%AD%97%E8%8A%82">字节</a>大小。[<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/Brainfuck#cite_note-1">1]</a></p>
+<p>就像它的名字所暗示的，Brainfuck<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A8%8B%E5%BA%8F">程序</a>很难读懂。尽管如此，Brainfuck<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%9B%BE%E7%81%B5%E6%9C%BA">图灵机</a>一样可以完成任何计算任务。虽然Brainfuck的计算方式如此与众不同，但它确实能够正确运行。</p>
+<p>这种语言基于一个简单的机器模型，除了指令，这个机器还包括：一个以字节为单位、被初始化为零的<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%95%B0%E7%BB%84">数组</a>、一个指向该数组的<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%8C%87%E9%92%88">指针</a>（初始时指向数组的第一个字节）、以及用于输入输出的两个<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%AD%97%E7%AF%80%E6%B5%81">字节流</a>。</p>
+<p>下面是这八种状态的描述，其中每个状态由一个<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%AD%97%E7%AC%A6">字符</a>标识：</p>
+<table>
+<thead>
+<tr>
+<th align="center">字符</th>
+<th align="center">含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><code>&gt;</code></td>
+<td align="center">指针加一</td>
+</tr>
+<tr>
+<td align="center"><code>&lt;</code></td>
+<td align="center">指针减一</td>
+</tr>
+<tr>
+<td align="center"><code>+</code></td>
+<td align="center">指针指向的字节的值加一</td>
+</tr>
+<tr>
+<td align="center"><code>-</code></td>
+<td align="center">指针指向的字节的值减一</td>
+</tr>
+<tr>
+<td align="center"><code>.</code></td>
+<td align="center">输出指针指向的单元内容（<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/ASCII%E7%A0%81">ASCII码</a>）</td>
+</tr>
+<tr>
+<td align="center"><code>,</code></td>
+<td align="center">输入内容到指针指向的单元（ASCII码）</td>
+</tr>
+<tr>
+<td align="center"><code>[</code></td>
+<td align="center">如果指针指向的单元值为零，向后跳转到对应的<code>]</code>指令的次一指令处</td>
+</tr>
+<tr>
+<td align="center"><code>]</code></td>
+<td align="center">如果指针指向的单元值不为零，向前跳转到对应的<code>[</code>指令的次一指令处</td>
+</tr>
+</tbody></table>
+<p>按照更节省时间的简单说法，<code>]</code>也可以说成“向前跳转到对应的<code>[</code>状态”。这两解释是一样的。</p>
+<p>第三种同价的说法，<code>[</code>意思是“向后跳转到对应的<code>]</code>”，<code>]</code>意思是“向前跳转到对应的<code>[</code>指令的次一指令处，如果指针指向的字节非零。”</p>
+<p>Brainfuck程序可以用下面的替换方法翻译成<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/C%E8%AF%AD%E8%A8%80">C语言</a>（假设<code>ptr</code>是<code>char *</code><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%B3%87%E6%96%99%E9%A1%9E%E5%9E%8B">类型</a>）：</p>
+<table>
+<thead>
+<tr>
+<th align="center">Brainfuck</th>
+<th align="center">C</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><code>&gt;</code></td>
+<td align="center"><code>++ptr;</code></td>
+</tr>
+<tr>
+<td align="center"><code>&lt;</code></td>
+<td align="center"><code>--ptr;</code></td>
+</tr>
+<tr>
+<td align="center"><code>+</code></td>
+<td align="center"><code>++*ptr;</code></td>
+</tr>
+<tr>
+<td align="center"><code>-</code></td>
+<td align="center"><code>--*ptr;</code></td>
+</tr>
+<tr>
+<td align="center"><code>.</code></td>
+<td align="center"><code>putchar(*ptr);</code></td>
+</tr>
+<tr>
+<td align="center"><code>,</code></td>
+<td align="center"><code>*ptr = getchar();</code></td>
+</tr>
+<tr>
+<td align="center"><code>[</code></td>
+<td align="center"><code>while (*ptr) &#123;</code></td>
+</tr>
+<tr>
+<td align="center"><code>]</code></td>
+<td align="center"><code>&#125;</code></td>
+</tr>
+</tbody></table>
+<p>——<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/Brainfuck">https://zh.wikipedia.org/wiki/Brainfuck</a></p>
+</blockquote>
+<p>用<a target="_blank" rel="noopener" href="https://www.cnblogs.com/qintangtao/p/7117433.html">Brainfuck反汇编-高级版(Python2)</a>可以反汇编所给Brainfuck代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">mem[0] +&#x3D; 8</span><br><span class="line">while mem[0]:</span><br><span class="line">        mem[2] +&#x3D; 2</span><br><span class="line">        mem[3] +&#x3D; 4</span><br><span class="line">        mem[4] +&#x3D; 6</span><br><span class="line">        mem[5] +&#x3D; 8</span><br><span class="line">        mem[6] +&#x3D; 10</span><br><span class="line">        mem[7] +&#x3D; 12</span><br><span class="line">        mem[8] +&#x3D; 14</span><br><span class="line">        mem[9] +&#x3D; 16</span><br><span class="line">        mem[10] +&#x3D; 18</span><br><span class="line">        mem[11] +&#x3D; 20</span><br><span class="line">        mem[12] +&#x3D; 22</span><br><span class="line">        mem[13] +&#x3D; 24</span><br><span class="line">        mem[14] +&#x3D; 26</span><br><span class="line">        mem[15] +&#x3D; 28</span><br><span class="line">        mem[16] +&#x3D; 30</span><br><span class="line">        mem[0] -&#x3D; 1</span><br><span class="line">mem[8] -&#x3D; 3</span><br><span class="line">cmp mem[8] data[data_ptr]</span><br><span class="line">mem[8] +&#x3D; 2</span><br><span class="line">cmp mem[8] data[data_ptr]</span><br><span class="line">mem[7] +&#x3D; 5</span><br><span class="line">cmp mem[7] data[data_ptr]</span><br><span class="line">mem[7] -&#x3D; 2</span><br><span class="line">cmp mem[7] data[data_ptr]</span><br><span class="line">mem[8] +&#x3D; 5</span><br><span class="line">cmp mem[8] data[data_ptr]</span><br><span class="line">mem[7] +&#x3D; 3</span><br><span class="line">cmp mem[7] data[data_ptr]</span><br><span class="line">mem[9] -&#x3D; 5</span><br><span class="line">cmp mem[9] data[data_ptr]</span><br><span class="line">mem[9] -&#x3D; 2</span><br><span class="line">cmp mem[9] data[data_ptr]</span><br><span class="line">mem[7] -&#x3D; 1</span><br><span class="line">cmp mem[7] data[data_ptr]</span><br><span class="line">mem[8] -&#x3D; 1</span><br><span class="line">cmp mem[8] data[data_ptr]</span><br><span class="line">mem[3] +&#x3D; 1</span><br><span class="line">cmp mem[3] data[data_ptr]</span><br><span class="line">cmp mem[9] data[data_ptr]</span><br><span class="line">cmp mem[7] data[data_ptr]</span><br><span class="line">cmp mem[8] data[data_ptr]</span><br><span class="line">cmp mem[3] data[data_ptr]</span><br><span class="line">mem[7] +&#x3D; 1</span><br><span class="line">cmp mem[7] data[data_ptr]</span><br><span class="line">mem[7] +&#x3D; 5</span><br><span class="line">cmp mem[7] data[data_ptr]</span><br><span class="line">mem[7] -&#x3D; 12</span><br><span class="line">cmp mem[7] data[data_ptr]</span><br><span class="line">mem[6] +&#x3D; 5</span><br><span class="line">cmp mem[6] data[data_ptr]</span><br><span class="line">cmp mem[7] data[data_ptr]</span><br><span class="line">mem[4] +&#x3D; 2</span><br><span class="line">cmp mem[4] data[data_ptr]</span><br><span class="line">cmp mem[3] data[data_ptr]</span><br><span class="line">mem[9] +&#x3D; 4</span><br><span class="line">cmp mem[9] data[data_ptr]</span><br></pre></td></tr></table></figure>
+
+<p>呃，其实直接用<a target="_blank" rel="noopener" href="http://ctf.ssleye.com/brain.html">网上现成</a>的BF解释器运行一下就行了，得到flag：<code>moectf&#123;yes!yes!fk_U_2!&#125;</code></p>
+<p>另，这是一个python写的BF解释器，<a target="_blank" rel="noopener" href="https://github.com/pocmo/Python-Brainfuck">https://github.com/pocmo/Python-Brainfuck</a></p>
+<blockquote>
+<p>Usage:<br> <code>./brainfuck.py yourcode.bf</code></p>
+<p>You can use it as a module as well:<br>  <code>import brainfuck</code></p>
+</blockquote>
+<p>git clone 到本地后，同目录下运行如下脚本也可以解出flag：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> brainfuck</span><br><span class="line"></span><br><span class="line">sourcecode = <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">++++++++[&gt;&gt;++&gt;++++&gt;++++++&gt;++++++++&gt;++++++++++&gt;++++++++++++&gt;++++++++++++++&gt;++++++++++++++++&gt;++++++++++++++++++&gt;++++++++++++++++++++&gt;++++++++++++++++++++++&gt;++++++++++++++++++++++++&gt;++++++++++++++++++++++++++&gt;++++++++++++++++++++++++++++&gt;++++++++++++++++++++++++++++++&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;-]&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;---.++.&lt;+++++.--.&gt;+++++.&lt;+++.&gt;&gt;-----.--.&lt;&lt;-.&gt;-.&lt;&lt;&lt;&lt;&lt;+.&gt;&gt;&gt;&gt;&gt;&gt;.&lt;&lt;.&gt;.&lt;&lt;&lt;&lt;&lt;.&gt;&gt;&gt;&gt;+.+++++.------------.&lt;+++++.&gt;.&lt;&lt;&lt;++.&lt;.&gt;&gt;&gt;&gt;&gt;&gt;++++.</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">brainfuck.evaluate(sourcecode)</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<br>
+
+<hr>
+<p><em>未完待续……</em></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CTF/" rel="tag"># CTF</a>
+              <a href="/tags/Misc/" rel="tag"># Misc</a>
+              <a href="/tags/Python/" rel="tag"># Python</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/12/%E3%80%90moeCTF%E9%A2%98%E8%A7%A3-0x04%E3%80%91Crypto/" rel="prev" title="【moeCTF题解-0x04】Crypto">
+      <i class="fa fa-chevron-left"></i> 【moeCTF题解-0x04】Crypto
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E3%80%90moeCTF%E9%A2%98%E8%A7%A3-0x05%E3%80%91Misc"><span class="nav-number">1.</span> <span class="nav-text">【moeCTF题解-0x05】Misc</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Misc"><span class="nav-number">2.</span> <span class="nav-text">Misc</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Welcome"><span class="nav-number">2.1.</span> <span class="nav-text">Welcome</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MD5"><span class="nav-number">2.2.</span> <span class="nav-text">MD5</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#base64"><span class="nav-number">2.3.</span> <span class="nav-text">base64</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hey-fxck-you"><span class="nav-number">2.4.</span> <span class="nav-text">hey fxck you!</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Framist</p>
+  <div class="site-description" itemprop="description">框架主义者的小窝</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/framist" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;framist" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:framist@163.com" title="E-Mail → mailto:framist@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/weixin_47102975" title="https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_47102975" rel="noopener" target="_blank">CSDN</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Framist</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='233' src="/lib/canvas-nest/canvas-nest-nomobile.min.js"></script>
+  <script size="300" alpha="0.2" zIndex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
