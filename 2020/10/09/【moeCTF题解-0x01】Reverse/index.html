@@ -774,7 +774,30 @@
   <span class="author" itemprop="copyrightHolder">Framist</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
-  </div><script src="https://cdn.jsdelivr.net/gh/Sanarous/files@1.151/js/click.min.js"></script>
+  </div><script>
+    let body = document.getElementsByTagName('body')[0];
+    body.addEventListener('click', (e) => {
+        let contentArr = ['欧拉~','ˋ( ° ▽、° ) ','木大~'];
+        let randomNum = function (n) {
+            return Math.floor(Math.random() * n)
+        }
+        let span = document.createElement('span');
+        span.innerHTML = `${contentArr[randomNum(contentArr.length)]}`;
+        span.style.color = `rgb(${randomNum(256)},${randomNum(256)},${randomNum(256)})`;
+        span.style.position = 'absolute';
+        span.style.top = `${e.pageY}px`;
+        span.style.left = `${e.pageX}px`;
+        span.style.transition = 'all 1s ease';
+        span.style.zIndex = 20000;
+        body.appendChild(span)
+        setTimeout(()=>{
+            span.style.top = span.offsetTop - 25 + 'px';
+            span.style.opacity = 0;
+            setTimeout(()=>{span.remove()},700)
+        },700)
+    })
+</script>
+
 
 <script type="text/javascript" color="255,255,255" pointColor='255,255,255' opacity='0.5' zIndex="-1" count="233" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
 
