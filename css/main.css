@@ -193,28 +193,28 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: 'Lato', "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-family: 'Noto Serif SC', 'Lato', "PingFang SC", "Microsoft YaHei", sans-serif;
   font-weight: bold;
   line-height: 1.5;
   margin: 20px 0 15px;
 }
 h1 {
-  font-size: 1.5em;
+  font-size: 1.625em;
 }
 h2 {
-  font-size: 1.375em;
+  font-size: 1.5em;
 }
 h3 {
-  font-size: 1.25em;
+  font-size: 1.375em;
 }
 h4 {
-  font-size: 1.125em;
+  font-size: 1.25em;
 }
 h5 {
-  font-size: 1em;
+  font-size: 1.125em;
 }
 h6 {
-  font-size: 0.875em;
+  font-size: 1em;
 }
 p {
   margin: 0 0 20px 0;
@@ -436,7 +436,7 @@ pre {
 }
 pre,
 code {
-  font-family: consolas, Menlo, monospace, "PingFang SC", "Microsoft YaHei";
+  font-family: 'Source Code Pro', consolas, Menlo, monospace, "PingFang SC", "Microsoft YaHei";
 }
 code {
   background: #eee;
@@ -1213,7 +1213,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #ffff46;
+  background: #d5ffa7;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
