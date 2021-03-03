@@ -22,15 +22,15 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="XDSEC个人周报0x04  这周的事儿，就下周再做吧  Web组会作业 用python实现一个简单的模版渲染，比如可以用replace&#x2F;正则+eval，并试着编写一个可以执行ls命令的模版。不用写得太复杂，100行以内">
+  <meta name="description" content="XDSEC个人周报0x04  这周的事儿，就下周再做吧">
 <meta property="og:type" content="article">
 <meta property="og:title" content="XDSEC个人周报0x04">
 <meta property="og:url" content="http://example.com/2021/01/24/XDSEC%E4%B8%AA%E4%BA%BA%E5%91%A8%E6%8A%A50x04/index.html">
 <meta property="og:site_name" content="Framist&#39;s Little House">
-<meta property="og:description" content="XDSEC个人周报0x04  这周的事儿，就下周再做吧  Web组会作业 用python实现一个简单的模版渲染，比如可以用replace&#x2F;正则+eval，并试着编写一个可以执行ls命令的模版。不用写得太复杂，100行以内">
+<meta property="og:description" content="XDSEC个人周报0x04  这周的事儿，就下周再做吧">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-01-24T04:52:02.617Z">
-<meta property="article:modified_time" content="2021-01-24T04:54:53.703Z">
+<meta property="article:modified_time" content="2021-01-25T02:29:10.429Z">
 <meta property="article:author" content="Framist">
 <meta property="article:tag" content="CTF">
 <meta name="twitter:card" content="summary">
@@ -191,10 +191,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2021-01-24 12:52:02 / 修改时间：12:54:53" itemprop="dateCreated datePublished" datetime="2021-01-24T12:52:02+08:00">2021-01-24</time>
+              <time title="创建时间：2021-01-24 12:52:02" itemprop="dateCreated datePublished" datetime="2021-01-24T12:52:02+08:00">2021-01-24</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-01-25 10:29:10" itemprop="dateModified" datetime="2021-01-25T10:29:10+08:00">2021-01-25</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -226,6 +232,17 @@
         <h1 id="XDSEC个人周报0x04"><a href="#XDSEC个人周报0x04" class="headerlink" title="XDSEC个人周报0x04"></a>XDSEC个人周报0x04</h1><ul>
 <li><input disabled type="checkbox"> <del>这周的事儿，就下周再做吧</del></li>
 </ul>
+<a id="more"></a>
+
+<h1 id="Web"><a href="#Web" class="headerlink" title="Web"></a>Web</h1><p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&mid=2247489907&idx=1&sn=a296cb42467cab6f0a7847be32f52dae&chksm=c2c663def5b1eac84b664c8c1cadf1c8ec23ea2e57e48e04add9b833c841256fc9449b62c0ec&scene=21#wechat_redirect">《如果让你来设计网络》</a></p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&mid=2247491962&idx=1&sn=aa4414483edaba487c080e91ad0efb93&chksm=c2c59bd7f5b212c12231394c585f3b063b0b2d5b05d6f05fddccdb4e856875e7ee1127bb30a7&mpshare=1&scene=23&srcid=0121ofhK0lA2TnwYQBHqXQt3&sharer_sharetime=1611197108861&sharer_shareid=e70d4a6034d20df60c0eb795b3edf7ad#rd">你管这破玩意儿叫TCP？</a></p>
+<h2 id="Python格式化字符串漏洞"><a href="#Python格式化字符串漏洞" class="headerlink" title="Python格式化字符串漏洞"></a>Python格式化字符串漏洞</h2><p><em>python &gt;= 3.6</em></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/traditional/archive/2004/01/13/9217594.html">基础知识</a></p>
+<p>示例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># str = &#x27;&#123;&quot;a&quot;:&quot;1&quot;, &quot;b&quot;: 2&#125;&#x27;</span></span><br><span class="line"><span class="comment"># json_data = eval(str)</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># print(type(json_data))</span></span><br><span class="line"><span class="comment"># print(json_data)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">evil_str = <span class="string">&#x27;&#123;&quot;a&quot;: f&quot;test &#123;__import__(\&#x27;os\&#x27;).system(\&#x27;whoami\&#x27;)&#125;&quot;&#125;&#x27;</span></span><br><span class="line">json_data = eval(evil_str)</span><br><span class="line"></span><br><span class="line">print(type(json_data))</span><br><span class="line">print(json_data)</span><br></pre></td></tr></table></figure>
+
+
+
 <h2 id="Web组会作业"><a href="#Web组会作业" class="headerlink" title="Web组会作业"></a>Web组会作业</h2><blockquote>
 <p>用python实现一个简单的模版渲染，比如可以用replace/正则+eval，并试着编写一个可以执行ls命令的模版。不用写得太复杂，100行以内</p>
 </blockquote>
@@ -267,7 +284,10 @@
     <a href="/2021/01/14/XDSEC%E4%B8%AA%E4%BA%BA%E5%91%A8%E6%8A%A50x03/" rel="prev" title="XDSEC个人周报0x03">
       <i class="fa fa-chevron-left"></i> XDSEC个人周报0x03
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2021/03/03/XDSEC%E4%B8%AA%E4%BA%BA%E5%91%A8%E6%8A%A50x05/" rel="next" title="XDSEC个人周报0x05">
+      XDSEC个人周报0x05 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -327,7 +347,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#XDSEC%E4%B8%AA%E4%BA%BA%E5%91%A8%E6%8A%A50x04"><span class="nav-number">1.</span> <span class="nav-text">XDSEC个人周报0x04</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Web%E7%BB%84%E4%BC%9A%E4%BD%9C%E4%B8%9A"><span class="nav-number">1.1.</span> <span class="nav-text">Web组会作业</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#XDSEC%E4%B8%AA%E4%BA%BA%E5%91%A8%E6%8A%A50x04"><span class="nav-number">1.</span> <span class="nav-text">XDSEC个人周报0x04</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Web"><span class="nav-number">2.</span> <span class="nav-text">Web</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Python%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%BC%8F%E6%B4%9E"><span class="nav-number">2.1.</span> <span class="nav-text">Python格式化字符串漏洞</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Web%E7%BB%84%E4%BC%9A%E4%BD%9C%E4%B8%9A"><span class="nav-number">2.2.</span> <span class="nav-text">Web组会作业</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -341,7 +361,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-count">22</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -415,7 +435,7 @@
   </div><script>
     let body = document.getElementsByTagName('body')[0];
     body.addEventListener('click', (e) => {
-        let contentArr = ['欧拉~','ˋ( ° ▽、° ) ','RGB!','_(:з」∠)_','哼','?','¿框架?','QAQ','qwq',':3'];
+        let contentArr = ['欧拉~','ˋ( ° ▽、° ) ','RGB!','_(:з」∠)_','哼','?','¿框架?','QAQ','bing的随机图片API貌似崩了，背景白色先将就吧',':3'];
         let randomNum = function (n) {
             return Math.floor(Math.random() * n)
         }
