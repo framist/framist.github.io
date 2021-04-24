@@ -165,6 +165,158 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://framist.github.io/2021/04/24/%E3%80%90MATLAB%E3%80%91%E5%A4%9A%E7%9B%AE%E6%A0%87%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95%20NSGA-II%20(gamultiobj)%20%E7%9A%84%E4%BD%BF%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Framist">
+      <meta itemprop="description" content="框架主义者的小窝">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Framist's Little House">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/04/24/%E3%80%90MATLAB%E3%80%91%E5%A4%9A%E7%9B%AE%E6%A0%87%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95%20NSGA-II%20(gamultiobj)%20%E7%9A%84%E4%BD%BF%E7%94%A8/" class="post-title-link" itemprop="url">【MATLAB】多目标优化算法NSGA-II(gamultiobj)的使用精解</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-04-24 21:04:46 / 修改时间：21:09:03" itemprop="dateCreated datePublished" datetime="2021-04-24T21:04:46+08:00">2021-04-24</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/MATLAB/" itemprop="url" rel="index"><span itemprop="name">MATLAB</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="【MATLAB】多目标优化算法NSGA-II-gamultiobj-的使用精解"><a href="#【MATLAB】多目标优化算法NSGA-II-gamultiobj-的使用精解" class="headerlink" title="【MATLAB】多目标优化算法NSGA-II(gamultiobj)的使用精解"></a>【MATLAB】多目标优化算法NSGA-II(gamultiobj)的使用精解</h1><blockquote>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_47102975/article/details/108253584">原始博文</a>因为写的比较潦草，评论中有疑问的网友较多，所以重新写了一下 2021-4-24</p>
+</blockquote>
+<p>对于多目标优化算法NSGA-II实现的细节与原理不在此说明。感兴趣的读者可另行查阅</p>
+<h2 id="gamultiobj的使用范式"><a href="#gamultiobj的使用范式" class="headerlink" title="gamultiobj的使用范式"></a>gamultiobj的使用范式</h2><h3 id="编写程序"><a href="#编写程序" class="headerlink" title="编写程序"></a>编写程序</h3><p>清除所有变量（非必须，但注意变量不能和下面所用的冲突）</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">clear</span><br></pre></td></tr></table></figure>
+<ul>
+<li>需求解模型的参数设置部分：（模型导入）</li>
+</ul>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">%% 模型设置</span></span><br><span class="line"><span class="comment">% 获取目标函数的函数句柄</span></span><br><span class="line">fitnessfcn=@Fun;</span><br><span class="line"><span class="comment">% 变量个数</span></span><br><span class="line">nvars=<span class="number">4</span>;</span><br><span class="line"><span class="comment">% 约束条件形式1：（若无取空数组[]）</span></span><br><span class="line"><span class="comment">% lb&lt;= X &lt;= ub</span></span><br><span class="line">lb=[<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>];</span><br><span class="line">ub=[];</span><br><span class="line"></span><br><span class="line"><span class="comment">% 约束条件形式2：（若无取空数组[]）</span></span><br><span class="line"><span class="comment">% A*X &lt;= b </span></span><br><span class="line">A = [<span class="number">0</span>    <span class="number">0</span> <span class="number">1</span> <span class="number">1</span></span><br><span class="line">    <span class="number">-1</span>/<span class="number">3</span>  <span class="number">0</span> <span class="number">0</span> <span class="number">0</span></span><br><span class="line">     <span class="number">0</span> <span class="number">-1</span>/<span class="number">2</span> <span class="number">0</span> <span class="number">0</span></span><br><span class="line">     <span class="number">0</span>    <span class="number">0</span> <span class="number">0</span> <span class="number">0</span>];</span><br><span class="line"></span><br><span class="line">b = [<span class="number">48</span> ; <span class="number">30</span> ; <span class="number">30</span> ; <span class="number">0</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">% 约束条件形式3：（若无取空数组[]）</span></span><br><span class="line"><span class="comment">% Aeq*X = beq</span></span><br><span class="line">Aeq=[<span class="number">1</span> <span class="number">1</span> <span class="number">0</span> <span class="number">0</span>;<span class="number">0</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span>; <span class="number">0</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span>; <span class="number">0</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span>];</span><br><span class="line">beq=[<span class="number">120</span>;<span class="number">0</span>;<span class="number">0</span>;<span class="number">0</span>];</span><br></pre></td></tr></table></figure>
+<p>目标函数: (这一段需放在脚本最后)</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">y</span>=<span class="title">Fun</span><span class="params">(x)</span></span></span><br><span class="line">	<span class="comment">% y是目标函数向量。有几个目标函数y就有多少个维度（数组y的长度）</span></span><br><span class="line">	<span class="comment">% 因为gamultiobj是以目标函数分量取极小值为目标，</span></span><br><span class="line">	<span class="comment">% 因此有些取极大值的目标函数注意取相反数</span></span><br><span class="line">	y(<span class="number">1</span>)=-(x(<span class="number">1</span>)*<span class="number">100</span>/<span class="number">3</span> + x(<span class="number">3</span>)*<span class="number">90</span>/<span class="number">3</span>  + x(<span class="number">2</span>)*<span class="number">80</span>/<span class="number">2</span>+x(<span class="number">4</span>)*<span class="number">70</span>/<span class="number">2</span>);</span><br><span class="line">	y(<span class="number">2</span>)=x(<span class="number">3</span>)+x(<span class="number">4</span>);</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>gamultiobj</code>求解器设置部分：</li>
+</ul>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">%% 求解器设置</span></span><br><span class="line"><span class="comment">% 最优个体系数paretoFraction</span></span><br><span class="line"><span class="comment">% 种群大小populationsize</span></span><br><span class="line"><span class="comment">% 最大进化代数generations</span></span><br><span class="line"><span class="comment">% 停止代数stallGenLimit</span></span><br><span class="line"><span class="comment">% 适应度函数偏差TolFun</span></span><br><span class="line"><span class="comment">% 函数gaplotpareto：绘制Pareto前沿 </span></span><br><span class="line">options=gaoptimset(<span class="string">&#x27;paretoFraction&#x27;</span>,<span class="number">0.3</span>,<span class="string">&#x27;populationsize&#x27;</span>,<span class="number">200</span>,<span class="string">&#x27;generations&#x27;</span>,<span class="number">300</span>,<span class="string">&#x27;stallGenLimit&#x27;</span>,<span class="number">200</span>,<span class="string">&#x27;TolFun&#x27;</span>,<span class="number">1e-10</span>,<span class="string">&#x27;PlotFcns&#x27;</span>,@gaplotpareto);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>gamultiobj</code>求解与结果输出部分：</li>
+</ul>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">%% 主求解</span></span><br><span class="line">[x,fval]=gamultiobj(fitnessfcn,nvars,A,b,Aeq,beq,lb,ub,options)</span><br><span class="line"></span><br><span class="line"><span class="comment">%% 结果提取</span></span><br><span class="line"><span class="comment">% 因为gamultiobj是以目标函数分量取极小值为目标，</span></span><br><span class="line"><span class="comment">% 因此在y=Fun(x)里取相反数的目标函数再取相反数画出原始情况</span></span><br><span class="line"><span class="built_in">plot</span>(-fval(:,<span class="number">1</span>),fval(:,<span class="number">2</span>),<span class="string">&#x27;pr&#x27;</span>)</span><br><span class="line">xlabel(<span class="string">&#x27;f_1(x)&#x27;</span>)</span><br><span class="line">ylabel(<span class="string">&#x27;f_2(x)&#x27;</span>)</span><br><span class="line">title(<span class="string">&#x27;Pareto front&#x27;</span>)</span><br><span class="line">grid on</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="RUN"><a href="#RUN" class="headerlink" title="RUN"></a>RUN</h3><p>求解时间受求解器设置影响，可能会较长，请耐心等待</p>
+<p>求解过程中会实时现成当前种群的情况：</p>
+<p><img src="https://pic4.zhimg.com/80/v2-7012d2d0f8fd78276942463fbfeb9a4b.gif" alt="程序输出"></p>
+<p>如果已经达到满意，也可点击<code>stop</code>按钮提前结束求解</p>
+<p>最后的求解结果，即Pareto最优解集储存在<code>[x,fval]</code>中，<code>fval</code>是<code>x</code>对应的目标函数值。<code>fval</code>大致构成了一条空间曲线——Pareto前沿。若各个解较为均匀分布，说明该图包含了大部分最优解情况，全局性优，适用性强。在满足Pareto最优的条件下，是没有办法在不让某一优化目标受损的情况下，令另一方目标获得更优的。所以这些解均为最优，对最优解的具体选择可以根据实际情况。</p>
+<p><img src="https://pic4.zhimg.com/80/v2-c4d381dfa5116c4902dc6a9f3aceff1f.png" alt="程序输出"></p>
+<p><img src="https://pic4.zhimg.com/80/v2-8d679d311e057dc178fb5bc1f8f80043.png" alt="程序输出"></p>
+<h2 id="例子1"><a href="#例子1" class="headerlink" title="例子1"></a>例子1</h2><p><img src="https://pic4.zhimg.com/80/v2-6d35282cb55285db78fd1136700e3ec3.png" alt="Image"></p>
+<p><img src="https://pic4.zhimg.com/80/v2-8d679d311e057dc178fb5bc1f8f80043.png" alt="Image"></p>
+<p>表1 工厂产品生产规格表</p>
+<table>
+<thead>
+<tr>
+<th>产品</th>
+<th>生产时间（h/公斤）</th>
+<th>利润（元/公斤）</th>
+<th>加班时利润（元/公斤）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>A</td>
+<td>3</td>
+<td>100</td>
+<td>90</td>
+</tr>
+<tr>
+<td>B</td>
+<td>2</td>
+<td>80</td>
+<td>70</td>
+</tr>
+</tbody></table>
+<p>设工厂每周生产产品A、B的常规生产时长为$x_1$、$x_2$（h），加班生产时长为$x_3$、$x_4$ （h）。令$x=\left( x_1,x_2,x_3,x_4 \right)$ 。设每周的利润函数为$Z(x)$，加班时长函数为$f(x)$。</p>
+<p>则目标函数为：<br>$$<br>Z\left( x \right) =\frac{x_1}{3}\times 100+\frac{x_3}{3}\times 90+\frac{x_2}{2}\times 80+\frac{x_4}{2}\times 70<br>$$</p>
+<p>$$<br>f\left( x \right) =x_3+x_4<br>$$</p>
+<p>约束条件为：<br>$$<br>\left{ \begin{array}{c}<br>    \begin{array}{c}<br>    x_i\leqslant b_i\left( i=1,2,3,4 \right)\<br>    300\times 40\leqslant \sum_{i=1}^4{x_id_i\leqslant 300\times 48}\<br>    150\leqslant x_3\<br>\end{array}\<br>    \sum_{i=1}^4{a_ix_i}\leqslant 20\<br>    x_i\geqslant 0\left( i=1,2,3,4 \right)\<br>\end{array} \right.<br>$$</p>
+<p>因此，数学模型可以归纳为：</p>
+<p>$$<br>min,,F\left( X \right) =\left( -Z\left( x \right) ,f\left( x \right) \right)<br>$$</p>
+<p>$$<br>\mathrm{s}.\mathrm{t}.\left{ \begin{array}{c}<br>    \begin{array}{c}<br>    x_i\leqslant b_i\left( i=1,2,3,4 \right)\<br>    300\times 40\leqslant \sum_{i=1}^4{x_id_i\leqslant 300\times 48}\<br>    150\leqslant x_3\<br>\end{array}\<br>    \sum_{i=1}^4{a_ix_i}\leqslant 20\<br>    x_i\geqslant 0\left( i=1,2,3,4 \right)\<br>\end{array} \right.<br>$$</p>
+<p>MATLAB求解如下：</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">clear</span><br><span class="line">clc</span><br><span class="line">fitnessfcn=@Fun;</span><br><span class="line"><span class="comment">% 变量个数</span></span><br><span class="line">nvars=<span class="number">4</span>;</span><br><span class="line"><span class="comment">% lb&lt;= X &lt;= ub</span></span><br><span class="line">lb=[<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>];</span><br><span class="line">ub=[<span class="number">270</span> <span class="number">240</span> <span class="number">460</span> <span class="number">130</span>];</span><br><span class="line"><span class="comment">% A*X &lt;= b </span></span><br><span class="line">A = [[<span class="number">13</span> <span class="number">13.5</span> <span class="number">14</span> <span class="number">11.5</span>]</span><br><span class="line">    -[<span class="number">13</span> <span class="number">13.5</span> <span class="number">14</span> <span class="number">11.5</span>]</span><br><span class="line">      <span class="number">0</span> <span class="number">0</span> <span class="number">-1</span> <span class="number">0</span></span><br><span class="line">     [<span class="number">0.015</span> <span class="number">0.02</span> <span class="number">0.018</span> <span class="number">0.011</span>]];</span><br><span class="line"></span><br><span class="line">b = [<span class="number">300</span>*<span class="number">48</span> ; <span class="number">-300</span>*<span class="number">40</span> ; <span class="number">-150</span> ; <span class="number">20</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">% Aeq*X = beq</span></span><br><span class="line">Aeq=[];beq=[];</span><br><span class="line"><span class="comment">%最优个体系数paretoFraction</span></span><br><span class="line"><span class="comment">%种群大小populationsize</span></span><br><span class="line"><span class="comment">%最大进化代数generations</span></span><br><span class="line"><span class="comment">%停止代数stallGenLimit</span></span><br><span class="line"><span class="comment">%适应度函数偏差TolFun</span></span><br><span class="line"><span class="comment">%函数gaplotpareto：绘制Pareto前沿 </span></span><br><span class="line">options=gaoptimset(<span class="string">&#x27;paretoFraction&#x27;</span>,<span class="number">0.3</span>,<span class="string">&#x27;populationsize&#x27;</span>,<span class="number">200</span>,<span class="string">&#x27;generations&#x27;</span>,<span class="number">300</span>,<span class="string">&#x27;stallGenLimit&#x27;</span>,<span class="number">200</span>,<span class="string">&#x27;TolFun&#x27;</span>,<span class="number">1e-10</span>,<span class="string">&#x27;PlotFcns&#x27;</span>,@gaplotpareto);</span><br><span class="line"></span><br><span class="line">[x,fval]=gamultiobj(fitnessfcn,nvars,A,b,Aeq,beq,lb,ub,options)</span><br><span class="line"></span><br><span class="line"><span class="built_in">plot</span>(-fval(:,<span class="number">1</span>),fval(:,<span class="number">2</span>),<span class="string">&#x27;pr&#x27;</span>)</span><br><span class="line">xlabel(<span class="string">&#x27;f_1(x)&#x27;</span>)</span><br><span class="line">ylabel(<span class="string">&#x27;f_2(x)&#x27;</span>)</span><br><span class="line">title(<span class="string">&#x27;Pareto front&#x27;</span>)</span><br><span class="line">grid on</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">y</span>=<span class="title">Fun</span><span class="params">(x)</span></span></span><br><span class="line">	b = [<span class="number">270</span> <span class="number">240</span> <span class="number">460</span> <span class="number">130</span>];</span><br><span class="line">	c = [<span class="number">300</span> <span class="number">300</span> <span class="number">600</span> <span class="number">200</span>];</span><br><span class="line">	t = [<span class="number">190</span> <span class="number">210</span> <span class="number">148</span> <span class="number">100</span>];</span><br><span class="line">	s = [<span class="number">200</span> <span class="number">230</span> <span class="number">160</span> <span class="number">114</span>];</span><br><span class="line">	a = [<span class="number">0.015</span> <span class="number">0.02</span> <span class="number">0.018</span> <span class="number">0.011</span>];</span><br><span class="line">	d = [<span class="number">13</span> <span class="number">13.5</span> <span class="number">14</span> <span class="number">11.5</span>];</span><br><span class="line">	y(<span class="number">1</span>)=-sum(x.*(s-t));</span><br><span class="line">	y(<span class="number">2</span>)=sum(a.*x);</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<p>得到结果：</p>
+<p><img src="https://pic4.zhimg.com/80/v2-0229e337eb704cdace41e17a1bf83657.png" alt="Image"></p>
+<p>x1 x2 x3 x4如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">119.231391258967	0.769608488165712	0	0</span><br><span class="line"></span><br><span class="line">119.231391258967	0.769608488165712	0	0</span><br><span class="line"></span><br><span class="line">0.000499510291359209	120.000482867813	13.1757491344817	34.8252467588411</span><br><span class="line"></span><br><span class="line">71.3391090591218	48.6614868846125	3.11344686170493	9.36001224382937</span><br><span class="line"></span><br><span class="line">…… …… …… ……</span><br><span class="line"></span><br><span class="line">27.0549008917871	92.9459248170927	9.47711506311976	25.3969178809142</span><br><span class="line"></span><br><span class="line">8.65187243477257	111.349067997015	13.3680683558073	31.7052095195761</span><br></pre></td></tr></table></figure>
+
+<h2 id="例子2"><a href="#例子2" class="headerlink" title="例子2"></a>例子2</h2><p><img src="https://pic4.zhimg.com/80/v2-f4ee18c79b4c3aefc84ab7e3f5ae286d.png" alt="Image"></p>
+<ul>
+<li>建立模型如下</li>
+</ul>
+<p>$$<br>minF\left( X \right) =\left( -Z\left( x \right) ,f\left( x \right) \right)<br>$$</p>
+<p>$$<br>\mathrm{s}.\mathrm{t}.\left{ \begin{array}{c}<br>    \begin{array}{c}<br>    x_i\leqslant b_i\left( i=1,2,3,4 \right)\<br>    300\times 40\leqslant \sum_{i=1}^4{x_id_i\leqslant 300\times 48}\<br>    150\leqslant x_3\<br>\end{array}\<br>    \sum_{i=1}^4{a_ix_i}\leqslant 20\<br>    x_i\geqslant 0\left( i=1,2,3,4 \right)\<br>\end{array} \right.<br>$$</p>
+<ul>
+<li>MATLAB求解如下</li>
+</ul>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">% 清除所有变量（非必须）</span></span><br><span class="line">clear</span><br><span class="line"></span><br><span class="line"><span class="comment">%% 模型设置</span></span><br><span class="line"><span class="comment">% 获取目标函数的函数句柄</span></span><br><span class="line">fitnessfcn=@Fun;</span><br><span class="line"><span class="comment">% 变量个数</span></span><br><span class="line">nvars=<span class="number">4</span>;</span><br><span class="line"><span class="comment">% 约束条件形式1：（若无取空数组[]）</span></span><br><span class="line"><span class="comment">% lb&lt;= X &lt;= ub</span></span><br><span class="line">lb=[<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>];</span><br><span class="line">ub=[];</span><br><span class="line"></span><br><span class="line"><span class="comment">% 约束条件形式2：（若无取空数组[]）</span></span><br><span class="line"><span class="comment">% A*X &lt;= b </span></span><br><span class="line">A = [<span class="number">0</span>    <span class="number">0</span> <span class="number">1</span> <span class="number">1</span></span><br><span class="line">    <span class="number">-1</span>/<span class="number">3</span>  <span class="number">0</span> <span class="number">0</span> <span class="number">0</span></span><br><span class="line">     <span class="number">0</span> <span class="number">-1</span>/<span class="number">2</span> <span class="number">0</span> <span class="number">0</span></span><br><span class="line">     <span class="number">0</span>    <span class="number">0</span> <span class="number">0</span> <span class="number">0</span>];</span><br><span class="line"></span><br><span class="line">b = [<span class="number">48</span> ; <span class="number">30</span> ; <span class="number">30</span> ; <span class="number">0</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">% 约束条件形式3：（若无取空数组[]）</span></span><br><span class="line"><span class="comment">% Aeq*X = beq</span></span><br><span class="line">Aeq=[<span class="number">1</span> <span class="number">1</span> <span class="number">0</span> <span class="number">0</span>;<span class="number">0</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span>; <span class="number">0</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span>; <span class="number">0</span> <span class="number">0</span> <span class="number">0</span> <span class="number">0</span>];</span><br><span class="line">beq=[<span class="number">120</span>;<span class="number">0</span>;<span class="number">0</span>;<span class="number">0</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">%% 求解器设置</span></span><br><span class="line"><span class="comment">% 最优个体系数paretoFraction</span></span><br><span class="line"><span class="comment">% 种群大小populationsize</span></span><br><span class="line"><span class="comment">% 最大进化代数generations</span></span><br><span class="line"><span class="comment">% 停止代数stallGenLimit</span></span><br><span class="line"><span class="comment">% 适应度函数偏差TolFun</span></span><br><span class="line"><span class="comment">% 函数gaplotpareto：绘制Pareto前沿 </span></span><br><span class="line">options=gaoptimset(<span class="string">&#x27;paretoFraction&#x27;</span>,<span class="number">0.3</span>,<span class="string">&#x27;populationsize&#x27;</span>,<span class="number">200</span>,<span class="string">&#x27;generations&#x27;</span>,<span class="number">300</span>,<span class="string">&#x27;stallGenLimit&#x27;</span>,<span class="number">200</span>,<span class="string">&#x27;TolFun&#x27;</span>,<span class="number">1e-10</span>,<span class="string">&#x27;PlotFcns&#x27;</span>,@gaplotpareto);</span><br><span class="line"></span><br><span class="line"><span class="comment">%% 主求解</span></span><br><span class="line">[x,fval]=gamultiobj(fitnessfcn,nvars,A,b,Aeq,beq,lb,ub,options)</span><br><span class="line"></span><br><span class="line"><span class="comment">%% 结果提取</span></span><br><span class="line"><span class="comment">% 因为gamultiobj是以目标函数分量取极小值为目标，</span></span><br><span class="line"><span class="comment">% 因此在y=Fun(x)里取相反数的目标函数再取相反数画出原始情况</span></span><br><span class="line"><span class="built_in">plot</span>(-fval(:,<span class="number">1</span>),fval(:,<span class="number">2</span>),<span class="string">&#x27;pr&#x27;</span>)</span><br><span class="line">xlabel(<span class="string">&#x27;f_1(x)&#x27;</span>)</span><br><span class="line">ylabel(<span class="string">&#x27;f_2(x)&#x27;</span>)</span><br><span class="line">title(<span class="string">&#x27;Pareto front&#x27;</span>)</span><br><span class="line">grid on</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">y</span>=<span class="title">Fun</span><span class="params">(x)</span></span></span><br><span class="line"><span class="comment">% y是目标函数向量。有几个目标函数y就有多少个维度（数组y的长度）</span></span><br><span class="line"><span class="comment">% 因为gamultiobj是以目标函数分量取极小值为目标，</span></span><br><span class="line"><span class="comment">% 因此有些取极大值的目标函数注意取相反数</span></span><br><span class="line">y(<span class="number">1</span>)=-(x(<span class="number">1</span>)*<span class="number">100</span>/<span class="number">3</span> + x(<span class="number">3</span>)*<span class="number">90</span>/<span class="number">3</span>  + x(<span class="number">2</span>)*<span class="number">80</span>/<span class="number">2</span>+x(<span class="number">4</span>)*<span class="number">70</span>/<span class="number">2</span>);</span><br><span class="line">y(<span class="number">2</span>)=x(<span class="number">3</span>)+x(<span class="number">4</span>);</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<p>求解结果为：</p>
+<p><img src="https://pic4.zhimg.com/80/v2-88416c9fe415edf3f84276f7fc25de27.png" alt="Image"></p>
+<p>x1 x2 x3 x4如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">257.911499184609	147.920309053797	368.392357989384	129.803238959239</span><br><span class="line"></span><br><span class="line">204.527452370415	215.831670926692	376.135110383218	129.541339137201</span><br><span class="line"></span><br><span class="line">251.942563886570	239.988410149935	456.713154231118	129.635721179650</span><br><span class="line"></span><br><span class="line">…… …… …… ……</span><br><span class="line"></span><br><span class="line">245.261897051381	238.784443203755	429.044675830294	129.548264747046</span><br><span class="line"></span><br><span class="line">216.531507460989	201.737471951873	368.856283121162	129.726418090506</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://framist.github.io/2021/04/23/Python%E4%B8%8A%E6%9C%BA%E4%BD%9C%E4%B8%9A1%E6%8A%A5%E5%91%8A/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -573,7 +725,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-22 00:02:07" itemprop="dateModified" datetime="2021-04-22T00:02:07+08:00">2021-04-22</time>
+                <time title="修改时间：2021-04-23 16:58:03" itemprop="dateModified" datetime="2021-04-23T16:58:03+08:00">2021-04-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -658,7 +810,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://framist.github.io/2021/04/07/XDSEC%E4%B8%AA%E4%BA%BA%E5%91%A8%E6%8A%A50x08/">
+    <link itemprop="mainEntityOfPage" href="https://framist.github.io/2021/04/07/XDSEC%E4%B8%AA%E4%BA%BA%E5%91%A8%E6%8A%A50x08+%E6%80%9D%E6%83%B3%E6%95%99%E8%82%B2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -672,7 +824,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/04/07/XDSEC%E4%B8%AA%E4%BA%BA%E5%91%A8%E6%8A%A50x08/" class="post-title-link" itemprop="url">XDSEC个人周报0x08</a>
+            <a href="/2021/04/07/XDSEC%E4%B8%AA%E4%BA%BA%E5%91%A8%E6%8A%A50x08+%E6%80%9D%E6%83%B3%E6%95%99%E8%82%B2/" class="post-title-link" itemprop="url">XDSEC个人周报0x08+思想教育</a>
         </h2>
 
         <div class="post-meta">
@@ -689,7 +841,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-11 21:55:23" itemprop="dateModified" datetime="2021-04-11T21:55:23+08:00">2021-04-11</time>
+                <time title="修改时间：2021-04-23 16:52:57" itemprop="dateModified" datetime="2021-04-23T16:52:57+08:00">2021-04-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -716,11 +868,11 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="XDSEC个人周报0x08"><a href="#XDSEC个人周报0x08" class="headerlink" title="XDSEC个人周报0x08"></a>XDSEC个人周报0x08</h1><p>2021-4-5 ~ 2021-4-11</p>
+          <h1 id="XDSEC个人周报0x08-思想教育"><a href="#XDSEC个人周报0x08-思想教育" class="headerlink" title="XDSEC个人周报0x08+思想教育"></a>XDSEC个人周报0x08+思想教育</h1><p>2021-4-5 ~ 2021-4-11</p>
 <p>2021春季学期第六周</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2021/04/07/XDSEC%E4%B8%AA%E4%BA%BA%E5%91%A8%E6%8A%A50x08/#more" rel="contents">
+              <a class="btn" href="/2021/04/07/XDSEC%E4%B8%AA%E4%BA%BA%E5%91%A8%E6%8A%A50x08+%E6%80%9D%E6%83%B3%E6%95%99%E8%82%B2/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -900,92 +1052,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://framist.github.io/2021/03/22/XDSEC%E4%B8%AA%E4%BA%BA%E5%91%A8%E6%8A%A50x07/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Framist">
-      <meta itemprop="description" content="框架主义者的小窝">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Framist's Little House">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/03/22/XDSEC%E4%B8%AA%E4%BA%BA%E5%91%A8%E6%8A%A50x07/" class="post-title-link" itemprop="url">XDSEC个人周报0x07</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-03-22 23:07:28" itemprop="dateCreated datePublished" datetime="2021-03-22T23:07:28+08:00">2021-03-22</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-07 11:17:29" itemprop="dateModified" datetime="2021-04-07T11:17:29+08:00">2021-04-07</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">信息安全</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8/%E4%B8%AA%E4%BA%BA%E5%91%A8%E6%8A%A5/" itemprop="url" rel="index"><span itemprop="name">个人周报</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="XDSEC个人周报0x07"><a href="#XDSEC个人周报0x07" class="headerlink" title="XDSEC个人周报0x07"></a>XDSEC个人周报0x07</h1><p>2021-3-22 ~ 2021-4-4</p>
-<p>2021春季学期第四、五周</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/03/22/XDSEC%E4%B8%AA%E4%BA%BA%E5%91%A8%E6%8A%A50x07/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1055,20 +1121,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-count">34</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-count">16</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-count">28</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
