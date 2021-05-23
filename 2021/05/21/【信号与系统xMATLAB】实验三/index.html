@@ -22,13 +22,14 @@
     var CONFIG = {"hostname":"framist.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="【信号与系统 x MATLAB】实验三">
+  <meta name="description" content="【信号与系统 x MATLAB】实验三  实验摘要：   用MATLAB 进行信号与系统课程第三次实验   主要内容有：  图片的高频信息与低频信息（合成、分解图片） 频域制作数字盲水印和去除数字盲水印   傅里叶变换、傅里叶逆变换与其时移特性">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【信号与系统 x MATLAB】实验三">
 <meta property="og:url" content="https://framist.github.io/2021/05/21/%E3%80%90%E4%BF%A1%E5%8F%B7%E4%B8%8E%E7%B3%BB%E7%BB%9FxMATLAB%E3%80%91%E5%AE%9E%E9%AA%8C%E4%B8%89/index.html">
 <meta property="og:site_name" content="Framist&#39;s Little House">
-<meta property="og:description" content="【信号与系统 x MATLAB】实验三">
+<meta property="og:description" content="【信号与系统 x MATLAB】实验三  实验摘要：   用MATLAB 进行信号与系统课程第三次实验   主要内容有：  图片的高频信息与低频信息（合成、分解图片） 频域制作数字盲水印和去除数字盲水印   傅里叶变换、傅里叶逆变换与其时移特性">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://framist.github.io/2021/05/21/%E3%80%90%E4%BF%A1%E5%8F%B7%E4%B8%8E%E7%B3%BB%E7%BB%9FxMATLAB%E3%80%91%E5%AE%9E%E9%AA%8C%E4%B8%89/image-20210524010515937.png">
 <meta property="og:image" content="https://framist.github.io/2021/05/21/%E3%80%90%E4%BF%A1%E5%8F%B7%E4%B8%8E%E7%B3%BB%E7%BB%9FxMATLAB%E3%80%91%E5%AE%9E%E9%AA%8C%E4%B8%89/image16216019328090.png">
 <meta property="og:image" content="https://framist.github.io/2021/05/21/%E3%80%90%E4%BF%A1%E5%8F%B7%E4%B8%8E%E7%B3%BB%E7%BB%9FxMATLAB%E3%80%91%E5%AE%9E%E9%AA%8C%E4%B8%89/image16216019328131.png">
 <meta property="og:image" content="https://framist.github.io/2021/05/21/%E3%80%90%E4%BF%A1%E5%8F%B7%E4%B8%8E%E7%B3%BB%E7%BB%9FxMATLAB%E3%80%91%E5%AE%9E%E9%AA%8C%E4%B8%89/image16216019328162.png">
@@ -36,14 +37,22 @@
 <meta property="og:image" content="https://framist.github.io/2021/05/21/%E3%80%90%E4%BF%A1%E5%8F%B7%E4%B8%8E%E7%B3%BB%E7%BB%9FxMATLAB%E3%80%91%E5%AE%9E%E9%AA%8C%E4%B8%89/image16216020273390.png">
 <meta property="og:image" content="https://framist.github.io/2021/05/21/%E3%80%90%E4%BF%A1%E5%8F%B7%E4%B8%8E%E7%B3%BB%E7%BB%9FxMATLAB%E3%80%91%E5%AE%9E%E9%AA%8C%E4%B8%89/image16216020273441.png">
 <meta property="og:image" content="https://framist.github.io/2021/05/21/%E3%80%90%E4%BF%A1%E5%8F%B7%E4%B8%8E%E7%B3%BB%E7%BB%9FxMATLAB%E3%80%91%E5%AE%9E%E9%AA%8C%E4%B8%89/image16216020273482.png">
+<meta property="og:image" content="https://framist.github.io/2021/05/21/%E3%80%90%E4%BF%A1%E5%8F%B7%E4%B8%8E%E7%B3%BB%E7%BB%9FxMATLAB%E3%80%91%E5%AE%9E%E9%AA%8C%E4%B8%89/image-20210524003436425.png">
+<meta property="og:image" content="https://framist.github.io/2021/05/21/%E3%80%90%E4%BF%A1%E5%8F%B7%E4%B8%8E%E7%B3%BB%E7%BB%9FxMATLAB%E3%80%91%E5%AE%9E%E9%AA%8C%E4%B8%89/image-20210524003441538.png">
+<meta property="og:image" content="https://framist.github.io/2021/05/21/%E3%80%90%E4%BF%A1%E5%8F%B7%E4%B8%8E%E7%B3%BB%E7%BB%9FxMATLAB%E3%80%91%E5%AE%9E%E9%AA%8C%E4%B8%89/image-20210524005324141.png">
+<meta property="og:image" content="https://framist.github.io/2021/05/21/%E3%80%90%E4%BF%A1%E5%8F%B7%E4%B8%8E%E7%B3%BB%E7%BB%9FxMATLAB%E3%80%91%E5%AE%9E%E9%AA%8C%E4%B8%89/image16217888134530.png">
+<meta property="og:image" content="https://framist.github.io/2021/05/21/%E3%80%90%E4%BF%A1%E5%8F%B7%E4%B8%8E%E7%B3%BB%E7%BB%9FxMATLAB%E3%80%91%E5%AE%9E%E9%AA%8C%E4%B8%89/image16217888134571.png">
+<meta property="og:image" content="https://framist.github.io/2021/05/21/%E3%80%90%E4%BF%A1%E5%8F%B7%E4%B8%8E%E7%B3%BB%E7%BB%9FxMATLAB%E3%80%91%E5%AE%9E%E9%AA%8C%E4%B8%89/image16217888134642.png">
+<meta property="og:image" content="https://framist.github.io/2021/05/21/%E3%80%90%E4%BF%A1%E5%8F%B7%E4%B8%8E%E7%B3%BB%E7%BB%9FxMATLAB%E3%80%91%E5%AE%9E%E9%AA%8C%E4%B8%89/image16217888134713.png">
+<meta property="og:image" content="https://framist.github.io/2021/05/21/%E3%80%90%E4%BF%A1%E5%8F%B7%E4%B8%8E%E7%B3%BB%E7%BB%9FxMATLAB%E3%80%91%E5%AE%9E%E9%AA%8C%E4%B8%89/image16217888134724.png">
 <meta property="article:published_time" content="2021-05-21T12:46:08.457Z">
-<meta property="article:modified_time" content="2021-05-21T13:09:23.538Z">
+<meta property="article:modified_time" content="2021-05-23T17:07:23.359Z">
 <meta property="article:author" content="Framist">
-<meta property="article:tag" content="信号与系统">
-<meta property="article:tag" content="作业">
 <meta property="article:tag" content="MATLAB">
+<meta property="article:tag" content="作业">
+<meta property="article:tag" content="信号与系统">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://framist.github.io/2021/05/21/%E3%80%90%E4%BF%A1%E5%8F%B7%E4%B8%8E%E7%B3%BB%E7%BB%9FxMATLAB%E3%80%91%E5%AE%9E%E9%AA%8C%E4%B8%89/image16216019328090.png">
+<meta name="twitter:image" content="https://framist.github.io/2021/05/21/%E3%80%90%E4%BF%A1%E5%8F%B7%E4%B8%8E%E7%B3%BB%E7%BB%9FxMATLAB%E3%80%91%E5%AE%9E%E9%AA%8C%E4%B8%89/image-20210524010515937.png">
 
 <link rel="canonical" href="https://framist.github.io/2021/05/21/%E3%80%90%E4%BF%A1%E5%8F%B7%E4%B8%8E%E7%B3%BB%E7%BB%9FxMATLAB%E3%80%91%E5%AE%9E%E9%AA%8C%E4%B8%89/">
 
@@ -201,10 +210,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2021-05-21 20:46:08 / 修改时间：21:09:23" itemprop="dateCreated datePublished" datetime="2021-05-21T20:46:08+08:00">2021-05-21</time>
+              <time title="创建时间：2021-05-21 20:46:08" itemprop="dateCreated datePublished" datetime="2021-05-21T20:46:08+08:00">2021-05-21</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-24 01:07:23" itemprop="dateModified" datetime="2021-05-24T01:07:23+08:00">2021-05-24</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -233,8 +248,31 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="【信号与系统-x-MATLAB】实验三"><a href="#【信号与系统-x-MATLAB】实验三" class="headerlink" title="【信号与系统 x MATLAB】实验三"></a>【信号与系统 x MATLAB】实验三</h1><a id="more"></a>
+        <h1 id="【信号与系统-x-MATLAB】实验三"><a href="#【信号与系统-x-MATLAB】实验三" class="headerlink" title="【信号与系统 x MATLAB】实验三"></a>【信号与系统 x MATLAB】实验三</h1><p>  <strong>实验摘要：</strong>  </p>
+<p>用MATLAB 进行信号与系统课程第三次实验  </p>
+<p>主要内容有：</p>
+<ul>
+<li>图片的高频信息与低频信息（合成、分解图片）</li>
+<li>频域制作数字盲水印和去除数字盲水印  </li>
+<li>傅里叶变换、傅里叶逆变换与其时移特性</li>
+</ul>
+<a id="more"></a>
 
+
+
+<p><strong>实验题目</strong>  </p>
+<ul>
+<li>图片的高频信息与低频信息合成图片。  </li>
+</ul>
+<p><strong>合成图片。</strong>找两张轮廓比较像的图片A和B，有一张是你本人。提取一张照片的低频信息，另一张图片的高频信息，结合这两个照片。设置不同的频率门限，组合照片，组合的效果是，放大看是A，缩小看是B。例如以下两张图片    </p>
+<p><strong>分解图片</strong>。把下图爱因斯坦和玛丽莲梦露分开（此图缩小是玛丽莲梦露，截取不同的频段）   </p>
+<p><img src="/2021/05/21/%E3%80%90%E4%BF%A1%E5%8F%B7%E4%B8%8E%E7%B3%BB%E7%BB%9FxMATLAB%E3%80%91%E5%AE%9E%E9%AA%8C%E4%B8%89/image-20210524010515937.png" alt="image-20210524010515937"></p>
+<ul>
+<li><p><strong>频域</strong>制作<strong>数字盲水印和去除数字盲水印</strong> <a target="_blank" rel="noopener" href="https://www.zhihu.com/question/50735753%EF%BC%8C%E7%9C%8B%E6%87%82%EF%BC%8C%E6%83%B3%E6%83%B3%EF%BC%8C%E6%9C%89%E6%83%B3%E6%B3%95%E5%86%99%E5%87%BA%E6%9D%A5%EF%BC%8C%E5%81%9A%E4%B8%80%E4%B8%AA%E5%A5%BD%E7%8E%A9%E7%9A%84%E4%B8%9C%E8%A5%BF%E3%80%82">https://www.zhihu.com/question/50735753，看懂，想想，有想法写出来，做一个好玩的东西。</a>                                                                            </p>
+</li>
+<li><p>傅里叶变换两题</p>
+</li>
+</ul>
 <div>
     <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,IE=9,chrome=1"><meta name="generator" content="MATLAB 2020b"><title>使用2维离散余弦变换（DCT）分解合成图像的高频和低频</title><style type="text/css">.rtcContent { padding: 30px; } .S0 { margin: 3px 10px 5px 4px; padding: 0px; line-height: 28.8px; min-height: 0px; white-space: pre-wrap; color: rgb(213, 80, 0); font-family: Helvetica, Arial, sans-serif; font-style: normal; font-size: 24px; font-weight: 400; text-align: left;  }
@@ -269,6 +307,34 @@
 <p><img src="/2021/05/21/%E3%80%90%E4%BF%A1%E5%8F%B7%E4%B8%8E%E7%B3%BB%E7%BB%9FxMATLAB%E3%80%91%E5%AE%9E%E9%AA%8C%E4%B8%89/image16216020273390.png" alt="img"></p>
 <p><img src="/2021/05/21/%E3%80%90%E4%BF%A1%E5%8F%B7%E4%B8%8E%E7%B3%BB%E7%BB%9FxMATLAB%E3%80%91%E5%AE%9E%E9%AA%8C%E4%B8%89/image16216020273441.png" alt="img"></p>
 <p><img src="/2021/05/21/%E3%80%90%E4%BF%A1%E5%8F%B7%E4%B8%8E%E7%B3%BB%E7%BB%9FxMATLAB%E3%80%91%E5%AE%9E%E9%AA%8C%E4%B8%89/image16216020273482.png" alt="img"></p>
+<h2 id="傅里叶变换"><a href="#傅里叶变换" class="headerlink" title="傅里叶变换"></a>傅里叶变换</h2><p><img src="/2021/05/21/%E3%80%90%E4%BF%A1%E5%8F%B7%E4%B8%8E%E7%B3%BB%E7%BB%9FxMATLAB%E3%80%91%E5%AE%9E%E9%AA%8C%E4%B8%89/image-20210524003436425.png" alt="image-20210524003436425"></p>
+<p><img src="/2021/05/21/%E3%80%90%E4%BF%A1%E5%8F%B7%E4%B8%8E%E7%B3%BB%E7%BB%9FxMATLAB%E3%80%91%E5%AE%9E%E9%AA%8C%E4%B8%89/image-20210524003441538.png" alt="image-20210524003441538"></p>
+<p>因为涉及到符号计算，于是直接上Mathematica写了： </p>
+<p> Mathematica代码：  </p>
+<p>$\text{FourierTransform}\left[e^{-2 | t| },t,\omega ,\text{FourierParameters}\to {1,-1}\right]$</p>
+<p>$\text{InverseFourierTransform}\left[\frac{1}{\omega ^2+1},\omega ,t,\text{FourierParameters}\to {1,-1}\right]$</p>
+<p>$\text{FourierTransform}\left[\frac{1}{2} e^{-2 t} \theta (t),t,\omega ,\text{FourierParameters}\to {1,-1}\right]$</p>
+<p>$Plot[{Norm[-(I/(2 (-2 I + [Omega])))],<br>  Arg[-(I/(2 (-2 I + [Omega])))]}, {[Omega], -4.2<code>, 4.2</code>},<br> PlotRange -&gt; {-4, 4}]$</p>
+<p>$FourierTransform[E^(-2*(t - 1))/2*HeavisideTheta[t - 1], t, [Omega],<br> FourierParameters -&gt; {1, -1}]$</p>
+<p>$\text{Plot}\left[\left{\left| -\frac{i \cos (\omega )+\sin (\omega )}{2 (-2 i+\omega )}\right| ,\arg \left(-\frac{\sin (\omega )+i \cos (\omega )}{2 (\omega -2 i)}\right)\right},{\omega ,-4.2,4.2},\text{PlotRange}\to {-4,4}\right]$</p>
+<p>输出：</p>
+<p><img src="/2021/05/21/%E3%80%90%E4%BF%A1%E5%8F%B7%E4%B8%8E%E7%B3%BB%E7%BB%9FxMATLAB%E3%80%91%E5%AE%9E%E9%AA%8C%E4%B8%89/image-20210524005324141.png" alt="image-20210524005324141"></p>
+<p>后来有同学问我MATLAB怎么写，于是用MATLAB又写了一遍<del>（MATLAB符号计算居然也能用，但依然大大不如Mathematica）</del></p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">clear</span><br><span class="line">syms t w</span><br><span class="line"></span><br><span class="line">f = <span class="built_in">exp</span>(<span class="number">-2</span>*<span class="built_in">abs</span>(t));</span><br><span class="line">fourier(f)</span><br><span class="line"></span><br><span class="line">F = <span class="number">1</span>/(<span class="number">1</span>+w^<span class="number">2</span>);</span><br><span class="line">ifourier(F)</span><br><span class="line"></span><br><span class="line">T = <span class="number">-5</span>:<span class="number">0.1</span>:<span class="number">5</span>;</span><br><span class="line">f1 = <span class="built_in">exp</span>(<span class="number">-2</span>*t)/<span class="number">2</span>*heaviside(t);</span><br><span class="line">fFwl = matlabFunction(fourier(f1))</span><br><span class="line"></span><br><span class="line"><span class="built_in">plot</span>(T,<span class="built_in">abs</span>(fFwl(T)),<span class="string">&#x27;.&#x27;</span>)</span><br><span class="line"><span class="built_in">hold</span> on </span><br><span class="line"><span class="built_in">plot</span>(T,<span class="built_in">angle</span>(fFwl(T)),<span class="string">&#x27;.&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">% 时域移动t-1</span></span><br><span class="line">f1 = <span class="built_in">exp</span>(<span class="number">-2</span>*(t<span class="number">-1</span>))/<span class="number">2</span>*heaviside(t<span class="number">-1</span>);</span><br><span class="line">fFwl = matlabFunction(fourier(f1))</span><br><span class="line"></span><br><span class="line"><span class="built_in">plot</span>(T,<span class="built_in">abs</span>(fFwl(T)))</span><br><span class="line"><span class="built_in">plot</span>(T,<span class="built_in">angle</span>(fFwl(T)))</span><br><span class="line"><span class="built_in">hold</span> off</span><br><span class="line"></span><br><span class="line">grid on</span><br></pre></td></tr></table></figure>
+
+<p>部分输出：</p>
+<p><img src="/2021/05/21/%E3%80%90%E4%BF%A1%E5%8F%B7%E4%B8%8E%E7%B3%BB%E7%BB%9FxMATLAB%E3%80%91%E5%AE%9E%E9%AA%8C%E4%B8%89/image16217888134530.png" alt="img"></p>
+<p><img src="/2021/05/21/%E3%80%90%E4%BF%A1%E5%8F%B7%E4%B8%8E%E7%B3%BB%E7%BB%9FxMATLAB%E3%80%91%E5%AE%9E%E9%AA%8C%E4%B8%89/image16217888134571.png" alt="img"></p>
+<p><img src="/2021/05/21/%E3%80%90%E4%BF%A1%E5%8F%B7%E4%B8%8E%E7%B3%BB%E7%BB%9FxMATLAB%E3%80%91%E5%AE%9E%E9%AA%8C%E4%B8%89/image16217888134642.png" alt="img"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">fFwl &#x3D; 包含以下值的 function_handle:</span><br><span class="line">    @(w)1.0.&#x2F;(w.*2.0i+4.0)</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="/2021/05/21/%E3%80%90%E4%BF%A1%E5%8F%B7%E4%B8%8E%E7%B3%BB%E7%BB%9FxMATLAB%E3%80%91%E5%AE%9E%E9%AA%8C%E4%B8%89/image16217888134713.png" alt="img"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">fFwl &#x3D; 包含以下值的 function_handle:</span><br><span class="line">    @(w)exp(w.*-1i).&#x2F;(w.*2.0i+4.0)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2021/05/21/%E3%80%90%E4%BF%A1%E5%8F%B7%E4%B8%8E%E7%B3%BB%E7%BB%9FxMATLAB%E3%80%91%E5%AE%9E%E9%AA%8C%E4%B8%89/image16217888134724.png" alt="img"></p>
+<p>这个可以看出傅里叶变换的时移特性：能量没变，相位变化了。</p>
 </body></html></div>
     </div>
 
@@ -295,9 +361,9 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/%E4%BF%A1%E5%8F%B7%E4%B8%8E%E7%B3%BB%E7%BB%9F/" rel="tag"># 信号与系统</a>
-              <a href="/tags/%E4%BD%9C%E4%B8%9A/" rel="tag"># 作业</a>
               <a href="/tags/MATLAB/" rel="tag"># MATLAB</a>
+              <a href="/tags/%E4%BD%9C%E4%B8%9A/" rel="tag"># 作业</a>
+              <a href="/tags/%E4%BF%A1%E5%8F%B7%E4%B8%8E%E7%B3%BB%E7%BB%9F/" rel="tag"># 信号与系统</a>
           </div>
 
         
@@ -369,7 +435,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E3%80%90%E4%BF%A1%E5%8F%B7%E4%B8%8E%E7%B3%BB%E7%BB%9F-x-MATLAB%E3%80%91%E5%AE%9E%E9%AA%8C%E4%B8%89"><span class="nav-number">1.</span> <span class="nav-text">【信号与系统 x MATLAB】实验三</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">使用2维离散余弦变换（DCT）分解合成图像的高频和低频</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link"><span class="nav-number">2.1.</span> <span class="nav-text">合成图像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link"><span class="nav-number">2.2.</span> <span class="nav-text">分解图像</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">给上一题的图片加上盲水印</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E3%80%90%E4%BF%A1%E5%8F%B7%E4%B8%8E%E7%B3%BB%E7%BB%9F-x-MATLAB%E3%80%91%E5%AE%9E%E9%AA%8C%E4%B8%89"><span class="nav-number">1.</span> <span class="nav-text">【信号与系统 x MATLAB】实验三</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">2.</span> <span class="nav-text">使用2维离散余弦变换（DCT）分解合成图像的高频和低频</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link"><span class="nav-number">2.1.</span> <span class="nav-text">合成图像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link"><span class="nav-number">2.2.</span> <span class="nav-text">分解图像</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">3.</span> <span class="nav-text">给上一题的图片加上盲水印</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%82%85%E9%87%8C%E5%8F%B6%E5%8F%98%E6%8D%A2"><span class="nav-number">3.1.</span> <span class="nav-text">傅里叶变换</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -460,7 +526,7 @@
   </div><script>
     let body = document.getElementsByTagName('body')[0];
     body.addEventListener('click', (e) => {
-        let contentArr = ['欧拉~','ˋ( ° ▽、° ) ','RGB!','_(:з」∠)_','哼','?','¿框架?','QAQ','bing的随机图片API貌似崩了，背景白色先将就吧',':3'];
+        let contentArr = ['欧拉~','ˋ( ° ▽、° ) ','RGB!','_(:з」∠)_','哼','?','¿框架?','QAQ','背景的随机图片API貌似崩了',':3','<3'];
         let randomNum = function (n) {
             return Math.floor(Math.random() * n)
         }
