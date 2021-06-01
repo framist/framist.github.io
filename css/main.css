@@ -1213,7 +1213,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #059cb4;
+  background: #612a25;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2497,7 +2497,7 @@ ul.breadcrumb li + li:last-child {
   padding: 0;
 }
 body {
-  background: url("https://uploadbeta.com/_s/upload/2017/09/11/e2d9206dda28f55f8ef16b172a5d9ff7.jpg");
+  background: url("https://uploadbeta.com/api/pictures/random/?key=BingEverydayWallpaperPicture");
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-position: 50% 50%;
