@@ -190,7 +190,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2021-06-01 11:42:55 / 修改时间：11:44:14" itemprop="dateCreated datePublished" datetime="2021-06-01T11:42:55+08:00">2021-06-01</time>
+              <time title="创建时间：2021-06-01 11:42:55 / 修改时间：11:46:53" itemprop="dateCreated datePublished" datetime="2021-06-01T11:42:55+08:00">2021-06-01</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -226,103 +226,14 @@
 <li>5.4 5.5</li>
 <li>5.10 5.11 5.15 5.17 5.18 5.20 5.23 5.28</li>
 </ul>
-<h2 id="课后学习面向对象编程概念（类、对象、继承、多态）"><a href="#课后学习面向对象编程概念（类、对象、继承、多态）" class="headerlink" title="课后学习面向对象编程概念（类、对象、继承、多态）"></a>课后学习面向对象编程概念（类、对象、继承、多态）</h2><p>已学习</p>
-<h2 id="Practice-Exercises"><a href="#Practice-Exercises" class="headerlink" title="Practice Exercises"></a>Practice Exercises</h2><p>5.4 5.5</p>
-<h3 id="5-4-Explain-why-spinlocks-are-not-appropriate-for-single-processor-systems-yet-are-often-used-in-multiprocessor-systems"><a href="#5-4-Explain-why-spinlocks-are-not-appropriate-for-single-processor-systems-yet-are-often-used-in-multiprocessor-systems" class="headerlink" title="5.4 Explain why spinlocks are not appropriate for single-processor systems yet are often used in multiprocessor systems."></a>5.4 Explain why spinlocks are not appropriate for single-processor systems yet are often used in multiprocessor systems.</h3><p>说明为什么自旋锁不适用于单处理器系统，但是经常在多处理器系统中使用。</p>
-<p>答：</p>
-<blockquote>
-<p>在单处理器系统中，使用自旋锁会造成其他进程忙等待（任何其他试图进入临界区的进程都必须在其进入代码中连续地循环），这样就浪费了CPU时钟。而对于多处理器系统，当一个进程在一个处理器自旋时，另一个进程可以在另一处理器上在其临界区内执行，且使用自旋锁，进程在等待锁时还在运行，不用进行上下文切换。</p>
-</blockquote>
-<p>Reference:<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_37205708/article/details/86548631?spm=1001.2014.3001.5501">操作系统学习笔记（五）—进程同步_雲的博客-CSDN博客</a></p>
-<h3 id="5-5-Show-that-if-the-wait-and-signal-semaphore-operations-are-not-executed-atomically-then-mutual-exclusion-may-be-violated"><a href="#5-5-Show-that-if-the-wait-and-signal-semaphore-operations-are-not-executed-atomically-then-mutual-exclusion-may-be-violated" class="headerlink" title="5.5 Show that, if the wait() and signal() semaphore operations are not executed atomically, then mutual exclusion may be violated."></a>5.5 Show that, if the <code>wait()</code> and <code>signal()</code> semaphore operations are not executed atomically, then mutual exclusion may be violated.</h3><p>证明如果<code>wait()</code>和<code>signal()</code>信号操作不是原子执行的，那么可能会违反互斥。</p>
-<p>证明：</p>
-<p> The definition of <code>wait()</code> is as follows:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">wait(S) &#123;</span><br><span class="line">    <span class="keyword">while</span>(S &lt;= <span class="number">0</span>)</span><br><span class="line">        ; <span class="comment">//busy wait</span></span><br><span class="line">    S--;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>The definition of <code>signal()</code> is as follows:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">signal(S) &#123;</span><br><span class="line">	S++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>如果非原子执行，那么可能会发生以下情况：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//S==1</span></span><br><span class="line">wait1(S) &#123;</span><br><span class="line">    <span class="keyword">while</span>(S &lt;= <span class="number">0</span>)</span><br><span class="line">        ; <span class="comment">//busy wait</span></span><br><span class="line">    wait2(S) &#123;</span><br><span class="line">        <span class="keyword">while</span>(S &lt;= <span class="number">0</span>)</span><br><span class="line">            ; <span class="comment">//busy wait</span></span><br><span class="line">        S--;</span><br><span class="line">    &#125;</span><br><span class="line">    S--;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-
-<p>1和2都同步运行了，违反互斥。</p>
-<h2 id="Exercises"><a href="#Exercises" class="headerlink" title="Exercises"></a>Exercises</h2><p>5.10 5.11 5.15 5.17 5.18 5.20 5.23 5.28</p>
-<h3 id="5-10-Explain-why-implementing-synchronization-primitives-by-disabling-interrupts-is-not-appropriate-in-a-single-processor-system-if-the-synchronization-primitives-are-to-be-used-in-user-level-programs"><a href="#5-10-Explain-why-implementing-synchronization-primitives-by-disabling-interrupts-is-not-appropriate-in-a-single-processor-system-if-the-synchronization-primitives-are-to-be-used-in-user-level-programs" class="headerlink" title="5.10 Explain why implementing synchronization primitives by disabling interrupts is not appropriate in a single-processor system if the synchronization primitives are to be used in user-level programs."></a>5.10 Explain why implementing synchronization primitives by disabling interrupts is not appropriate in a single-processor system if the synchronization primitives are to be used in user-level programs.</h3><p>如果同步原语要用于用户级程序，请解释为什么在单处理器系统中通过禁用中断来实现同步原语是不合适的。</p>
-<p>答：</p>
-<blockquote>
-<p>Implementing synchronization primitives by disabling interrupt is not appropriate because it reduces the flexibility of the system.</p>
-<p>Synchronization primitives will make a program at user level to be able to switch interupts, thereby disabling the timer interrupt. Once a program at user-level has the ability to disable interrupts it also disables context switching which is not recommended for a program at that level.</p>
-<p>Once the context switching is disabled, the program can now run on the processor without allowing other programs to execute, which is bad considering the fact that it is to be used in a single-processor system because single processor systems contain only one process, and only one program can run at a time.</p>
-</blockquote>
-<p>Reference: <a target="_blank" rel="noopener" href="https://brainly.com/question/15293990">Explain why implementing synchronization primitives by disabling interrupts is not appropriate in a - Brainly.com</a></p>
-<h3 id="5-11-Explain-why-interrupts-are-not-appropriate-for-implementing-synchronization-primitives-in-multiprocessor-system"><a href="#5-11-Explain-why-interrupts-are-not-appropriate-for-implementing-synchronization-primitives-in-multiprocessor-system" class="headerlink" title="5.11 Explain why interrupts are not appropriate for implementing synchronization primitives in multiprocessor system."></a>5.11 Explain why interrupts are not appropriate for implementing synchronization primitives in multiprocessor system.</h3><p>解释为什么中断不适合在多处理器系统中实现同步原语。</p>
-<p>答：多处理器之间的中断静止会很耗时，因为消息要传递到所有处理器。</p>
-<h3 id="5-15"><a href="#5-15" class="headerlink" title="5.15"></a>5.15</h3><p>Consider how to implement a mutex lock using an atomic hardware instruction. Assume that the following structure defining the mutex lock is available:</p>
-<p>考虑如何使用原子硬件指令实现互斥锁。 假设以下定义互斥锁的结构可用：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> available;</span><br><span class="line">&#125; lock;</span><br></pre></td></tr></table></figure>
-
-<p><code>(available == 0)</code> indicates that the lock is available, and a value of 1 indicates that the lock is unavailable. Using this struct, illustrate how the following functions can be implemented using the <code>test_and_set()</code> and <code>compare_and_swap()</code> instructions:</p>
-<p><code>(available == 0)</code>表示该锁是可用的，值为1表示该锁不可用。使用这个结构，说明如何使用<code>test_and_set()</code>和<code>compare_and_swap()</code>指令实现以下函数:</p>
-<ul>
-<li><code>void acquire(lock *mutex)</code></li>
-<li><code>void release(lock *mutex)</code></li>
-</ul>
-<p>Be sure to include any initialization that may be necessary. 请确保包括任何可能需要的初始化。</p>
-<p>答：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">acquire</span><span class="params">(lock *mutex)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(test_and_set(mutex-&gt;available))</span><br><span class="line">        ;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">release</span><span class="params">(lock *mutex)</span> </span>&#123;</span><br><span class="line">    mutex-&gt;available = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">acquire</span><span class="params">(lock *mutex)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(compare_and_swap(mutex-&gt;available,<span class="number">0</span>,<span class="number">1</span>))</span><br><span class="line">        ;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">release</span><span class="params">(lock *mutex)</span> </span>&#123;</span><br><span class="line">    mutex-&gt;available = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<hr>
-<h3 id="5-17"><a href="#5-17" class="headerlink" title="5.17"></a>5.17</h3><p>Assume that a system has multiple processing cores. For each of the following scenarios, describe which is a better locking mechanism — a spinlock or a mutex lock where waiting processes sleep while waiting for the lock to become available:</p>
-<p>假设一个系统有多个处理核心。对于以下每一种情况，请描述哪一种是更好的锁定机制——自旋锁或互斥锁，在自旋锁中，等待的进程在等待锁可用时进行睡眠。</p>
-<ul>
-<li>The lock is to be held for a short duration. 锁要保持很短的时间。</li>
-<li>The lock is to be held for a long duration. 锁定要保持较长的时间。</li>
-<li>A thread may be put to sleep while holding the lock. 一个线程在持有锁的时候可能会进入睡眠状态。</li>
-</ul>
-<p>答：</p>
-<h3 id="5-18"><a href="#5-18" class="headerlink" title="5.18"></a>5.18</h3><p>Assume that a context switch takes T time. Suggest an upper bound (in terms of T) for holding a spinlock. If the spinlock is held for any longer, a mutex lock (where waiting threads are put to sleep) is a better alternative.</p>
-<p>假设一个上下文切换需要T时间。建议一个持有自旋锁的上限（以T为单位）。如果自旋锁保持的时间再长一些，那么互斥锁（等待的线程会进入睡眠状态）是一个更好的选择。</p>
-<p>答：</p>
-<h3 id="5-20-Consider-the-code-example-for-allocating-and-releasing-processes-shown-in-Figure-5-23"><a href="#5-20-Consider-the-code-example-for-allocating-and-releasing-processes-shown-in-Figure-5-23" class="headerlink" title="5.20 Consider the code example for allocating and releasing processes shown in Figure 5.23."></a>5.20 Consider the code example for allocating and releasing processes shown in Figure 5.23.</h3><center>Figure 5.23 Allocating and releasing processes.</center>
-
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAX_PROCESSES 255</span></span><br><span class="line"><span class="keyword">int</span> number_of_processes = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* the implementation of fork() calls this function */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">allocate_process</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> new_pid;</span><br><span class="line">    <span class="keyword">if</span> (number_of_processes == MAX_PROCESSES)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">/* allocate necessary process resources */</span></span><br><span class="line">        ++number_of_processes;</span><br><span class="line">        <span class="keyword">return</span> new_pid;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* the implementation of exit() calls this function */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">release_process</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">/* release process resources */</span></span><br><span class="line">    --number_of_processes;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h4 id="a"><a href="#a" class="headerlink" title="a."></a>a.</h4><p>Identify the race condition(s). 识别竞争条件。</p>
-<p>答：<code>number_of_processes</code>可能产生竞争</p>
-<h4 id="b"><a href="#b" class="headerlink" title="b."></a>b.</h4><p>Assume you have a mutex lock named mutex with the operations <code>acquire()</code> and <code>release()</code>. Indicate where the locking needs to be placed to prevent the race condition(s). 假设你有一个名为mutex的互斥锁，操作是<code>acquire()</code>和<code>release()</code>。指示需要将锁定放置在何处以防止出现竞争条件。</p>
-<p>答：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAX_PROCESSES 255</span></span><br><span class="line"><span class="keyword">int</span> number_of_processes = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* the implementation of fork() calls this function */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">allocate_process</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> new_pid;</span><br><span class="line">    <span class="keyword">if</span> (number_of_processes == MAX_PROCESSES)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">/* allocate necessary process resources */</span></span><br><span class="line">        acquire();</span><br><span class="line">        ++number_of_processes;</span><br><span class="line">        release();</span><br><span class="line">        <span class="keyword">return</span> new_pid;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* the implementation of exit() calls this function */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">release_process</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">/* release process resources */</span></span><br><span class="line">    acquire();</span><br><span class="line">    --number_of_processes;</span><br><span class="line">    release();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="c"><a href="#c" class="headerlink" title="c."></a>c.</h4><p>Could we replace the integer variable</p>
-<p><code>int number_of_processes = 0</code></p>
-<p>with the atomic integer</p>
-<p><code>atomic_t number_of_processes = 0</code></p>
-<p>to prevent the race condition(s)</p>
-<p>答：</p>
-<blockquote>
-<p>对于Java中的运算操作，例如自增或自减，若没有进行额外的同步操作，在多线程环境下就是线程不安全的。num++解析为num=num+1，明显，这个操作不具备原子性，多线程并发共享这个变量时必然会出现问题。[1]</p>
-</blockquote>
-<p>可见，使用atomic integer仍然不足以解决竞争问题。</p>
-<h3 id="5-23-Show-how-to-implement-the-wait-and-signal-semaphore-operations-in-multiprocessor-environments-using-the-test-and-set-instruction-The-solution-should-exhibit-minimal-busy-waiting"><a href="#5-23-Show-how-to-implement-the-wait-and-signal-semaphore-operations-in-multiprocessor-environments-using-the-test-and-set-instruction-The-solution-should-exhibit-minimal-busy-waiting" class="headerlink" title="5.23 Show how to implement the wait() and signal() semaphore operations in multiprocessor environments using the test_and_set() instruction. The solution should exhibit minimal busy waiting."></a>5.23 Show how to implement the <code>wait()</code> and <code>signal()</code> semaphore operations in multiprocessor environments using the <code>test_and_set()</code> instruction. The solution should exhibit minimal busy waiting.</h3><p>展示如何在多处理器环境中使用<code>test_and_set()</code>指令实现<code>wait()</code>和<code>signal()</code>信号操作。该方案应表现出最小的繁忙等待。</p>
-<p>答：</p>
-<h3 id="5-28-Discuss-the-tradeoff-between-fairness-and-throughput-of-operations-in-the-readers–writers-problem-Propose-a-method-for-solving-the-readers–writers-problem-without-causing-starvation"><a href="#5-28-Discuss-the-tradeoff-between-fairness-and-throughput-of-operations-in-the-readers–writers-problem-Propose-a-method-for-solving-the-readers–writers-problem-without-causing-starvation" class="headerlink" title="5.28 Discuss the tradeoff between fairness and throughput of operations in the readers–writers problem. Propose a method for solving the readers–writers problem without causing starvation."></a>5.28 Discuss the tradeoff between fairness and throughput of operations in the readers–writers problem. Propose a method for solving the readers–writers problem without causing starvation.</h3><p>讨论读者-写者问题中操作的公平性和吞吐量之间的权衡。提出一种解决读者-写作者问题的方法，而不造成饥饿。</p>
-<p>答：</p>
-<hr>
-<p>注：</p>
-<p>因为能力所限，有些内容未认真及时完成。此作业的后续改进将会在上传到<a href="https://framist.github.io/">我的个人博客</a>，恳请老师谅解！</p>
-<p>参考资料：</p>
-<p>[1] <a target="_blank" rel="noopener" href="https://blog.csdn.net/fanrenxiang/article/details/80623884">原子操作类AtomicInteger详解_分享传递价值-CSDN博客_atomicinteger</a></p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/06/01/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%BA%94/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -366,7 +277,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2021-06-01 11:42:50 / 修改时间：11:44:22" itemprop="dateCreated datePublished" datetime="2021-06-01T11:42:50+08:00">2021-06-01</time>
+              <time title="创建时间：2021-06-01 11:42:50 / 修改时间：11:46:48" itemprop="dateCreated datePublished" datetime="2021-06-01T11:42:50+08:00">2021-06-01</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -400,153 +311,14 @@
 <li>4.7, 4.8, 4.9, 4.14, 4.15, 4.16, 4.17</li>
 <li>4.21</li>
 </ul>
-<h2 id="网上学习Linux中的信号（signal）机制"><a href="#网上学习Linux中的信号（signal）机制" class="headerlink" title="网上学习Linux中的信号（signal）机制"></a>网上学习Linux中的信号（signal）机制</h2><p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/f445bfeea40a">Linux 信号（signal） - 简书 (jianshu.com)</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/subo_peng/p/5325326.html">Linux信号（signal) 机制分析 - 苏博 - 博客园 (cnblogs.com)</a></p>
-<p>……</p>
-<h2 id="Practice-Exercises"><a href="#Practice-Exercises" class="headerlink" title="Practice Exercises"></a>Practice Exercises</h2><p>4.2, 4.4</p>
-<h3 id="4-2"><a href="#4-2" class="headerlink" title="4.2"></a>4.2</h3><h4 id="What-are-two-differences-between-user-level-threads-and-kernel-level-threads"><a href="#What-are-two-differences-between-user-level-threads-and-kernel-level-threads" class="headerlink" title="What are two differences between user-level threads and kernel-level threads?"></a>What are two differences between user-level threads and kernel-level threads?</h4><p>用户级线程和内核级线程之间的两个区别是什么？ </p>
-<table>
-<thead>
-<tr>
-<th>User-level threads</th>
-<th>Kernel-level threads</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>The existence of user-level threads is unknown to the kernel.</td>
-<td>The existence of the kernel-level threads is known to the kernel.</td>
-</tr>
-<tr>
-<td>User-level threads are managed without kernel support.</td>
-<td>Kernel-level threads are managed by the operating system.</td>
-</tr>
-<tr>
-<td>user-level threads are faster to create than are kernel-level threads.</td>
-<td>Kernel-level threads are user-level threads.</td>
-</tr>
-<tr>
-<td>User-level threads are scheduled by the thread library.</td>
-<td>Kernel-level threads are scheduled by the kernel.</td>
-</tr>
-</tbody></table>
-<h4 id="Under-what-circumstances-is-one-type-better-than-the-other"><a href="#Under-what-circumstances-is-one-type-better-than-the-other" class="headerlink" title="Under what circumstances is one type better than the other?"></a>Under what circumstances is one type better than the other?</h4><p>在哪种情况下哪种类型比另一种更好？</p>
-<blockquote>
-<ul>
-<li><strong>Circumstances where kernel-level threads are better than user-level threads:</strong></li>
-</ul>
-<p><em>If the kernel is single-threaded</em>, then kernel-level threads are better than user-level threads, because any user-level thread performing a blocking system call will cause the entire process to block, even if other threads are available to run within the application.</p>
-<p><em>针对内核是单线程</em>的情况，内核线程优于用户线程。因为任何执行阻塞系统调用的用户线程都会导致整个进程阻塞，即使应用程序中可以运行其他线程。</p>
-<p>For example a process P1 has 2 kernel level threads and process P2 has 2 user-level threads. If one thread in P1 gets blocked, its second thread is not affected. But in case of P2 if one thread is blocked (say for I/O), the whole process P2 along with the 2nd thread gets blocked.</p>
-<p>例如，有两个进程a和b。进程a有2个内核线程，而进程b有2个用户线程。如果a中的一个线程被阻塞，它的第二个线程不会受到影响。但是对于b，如果一个线程被阻塞(比如I/O)，整个进程b和第二个线程就会被阻塞。</p>
-<p><em>In a multiprocessor environment</em>, the kernel-level threads are better than user-level threads, because kernel-level threads can run on different processors simultaneously while user-level threads of a process will run on one processor only even if multiple processors are available.</p>
-<p><em>针对多处理器环境</em>，内核线程优于用户线程，因为内核线程可以在不同的处理器上同时运行，而即使有多个处理器可用，进程的用户线程也只能在一个处理器上运行。 </p>
-<ul>
-<li><strong>Circumstances where user-level threads are better than kernel-level threads:</strong></li>
-</ul>
-<p>If the kernel is time shared, then user-level threads are better than kernel-level threads, because in time shared systems context switching takes place frequently. Context switching between kernel level threads has high overhead, almost the same as a process whereas context switching between user-level threads has almost no overhead as compared to kernel level threads.</p>
-<p>对于时间共享型的内核，用户线程优于内核线程，因为共享系统上下文切换经常发生。内核线程之间的上下文切换具有很高的开销，几乎与进程相同，而与内核线程相比，用户线程之间的上下文切换几乎没有开销。</p>
-</blockquote>
-<h3 id="4-4"><a href="#4-4" class="headerlink" title="4.4"></a>4.4</h3><h4 id="What-resources-are-used-when-a-thread-is-created"><a href="#What-resources-are-used-when-a-thread-is-created" class="headerlink" title="What resources are used when a thread is created?"></a>What resources are used when a thread is created?</h4><p>创建线程时会使用哪些资源？ </p>
-<ol>
-<li>Code section</li>
-<li>Data section</li>
-<li>Other operation system resources such as open files and signals with other threads belonging to the same process whereas each and every process has separate code section, data section and operating system resources.</li>
-</ol>
-<h4 id="How-do-they-differ-from-those-used-when-a-process-is-created"><a href="#How-do-they-differ-from-those-used-when-a-process-is-created" class="headerlink" title="How do they differ from those used when a process is created?"></a>How do they differ from those used when a process is created?</h4><p>它们与创建进程时使用的那些有何不同？</p>
-<p>A thread is a basic unit of CPU utilization, also known as light weight process. So, creating either a user or kernel thread involves allocating a small data structure to hold a thread ID, a program counter, a register set, stack and priority, whereas creating a process involves allocating the large data structure called as PCB(Process Control Block) which includes a memory map, list of open files, and environment variables. Allocating and managing the memory map is typically the most time-consuming activity.</p>
-<h2 id="Exercises"><a href="#Exercises" class="headerlink" title="Exercises"></a>Exercises</h2><p>4.7, 4.8, 4.9, 4.14, 4.15, 4.16, 4.17</p>
-<h3 id="4-7-Under-what-circumstances-does-a-multithreaded-solution-using-multiple-kernel-threads-provide-better-performance-than-a-single-threaded-solution-on-a-single-processor-system"><a href="#4-7-Under-what-circumstances-does-a-multithreaded-solution-using-multiple-kernel-threads-provide-better-performance-than-a-single-threaded-solution-on-a-single-processor-system" class="headerlink" title="4.7 Under what circumstances does a multithreaded solution using multiple kernel threads provide better performance than a single-threaded solution on a single-processor system?"></a>4.7 Under what circumstances does a multithreaded solution using multiple kernel threads provide better performance than a single-threaded solution on a single-processor system?</h3><p>执行一些高并发式的任务</p>
-<h3 id="4-8-Which-of-the-following-components-of-program-state-are-shared-across-threads-in-a-multithreaded-process"><a href="#4-8-Which-of-the-following-components-of-program-state-are-shared-across-threads-in-a-multithreaded-process" class="headerlink" title="4.8 Which of the following components of program state are shared across threads in a multithreaded process?"></a>4.8 Which of the following components of program state are shared across threads in a multithreaded process?</h3><p>多线程进程中的线程之间共享以下哪些程序状态组件？</p>
-<ul>
-<li><input disabled type="checkbox"> a. Register values </li>
-<li><input checked disabled type="checkbox"> b. Heap memory </li>
-<li><input checked disabled type="checkbox"> c. Global variables </li>
-<li><input disabled type="checkbox"> d. Stack memory</li>
-</ul>
-<h3 id="4-9-Can-a-multithreaded-solution-using-multiple-user-level-threads-achieve-better-performance-on-a-multiprocessor-system-than-on-a-single-processor-system-Explain"><a href="#4-9-Can-a-multithreaded-solution-using-multiple-user-level-threads-achieve-better-performance-on-a-multiprocessor-system-than-on-a-single-processor-system-Explain" class="headerlink" title="4.9 Can a multithreaded solution using multiple user-level threads achieve better performance on a multiprocessor system than on a single-processor system? Explain"></a>4.9 Can a multithreaded solution using multiple user-level threads achieve better performance on a multiprocessor system than on a single-processor system? Explain</h3><p>No.</p>
-<p>A multithreaded system comprising of multiple user-level threads cannot make use of the different processors in a multiprocessor system simultaneously. The operating system sees only a single process and will not schedule the different threads of the process on separate processors. Consequently, there is no performance benefit associated with executing multiple user-level threads on a multiprocessor system.</p>
-<h3 id="4-14"><a href="#4-14" class="headerlink" title="4.14"></a>4.14</h3><p>A system with two dual-core processors has four processors available for scheduling. A CPU-intensive application is running on this system. All input is performed at program start-up, when a single file must be opened. Similarly, all output is performed just before the program terminates, when the program results must be written to a single file. Between startup and termination, the program is entirely CPU-bound. Your task is to improve the performance of this application by multithreading it. The application runs on a system that uses the one-to-one threading model (each user thread maps to a kernel thread).</p>
-<p>具有两个双核处理器的系统具有四个可用于调度的处理器。 此系统上正在运行CPU密集型应用程序。 当必须打开一个文件时，所有输入均在程序启动时执行。 同样，当必须将程序结果写入单个文件时，将在程序终止之前执行所有输出。 在启动和终止之间，该程序完全受CPU约束。 您的任务是通过对它进行多线程处理来提高其性能。 该应用程序在使用一对一线程模型的系统上运行（每个用户线程映射到一个内核线程）。</p>
-<h4 id="How-many-threads-will-you-create-to-perform-the-input-and-output-Explain"><a href="#How-many-threads-will-you-create-to-perform-the-input-and-output-Explain" class="headerlink" title="How many threads will you create to perform the input and output? Explain."></a>How many threads will you create to perform the input and output? Explain.</h4><p>1 threads.</p>
-<h4 id="How-many-threads-will-you-create-for-the-CPU-intensive-portion-of-the-application-Explain"><a href="#How-many-threads-will-you-create-for-the-CPU-intensive-portion-of-the-application-Explain" class="headerlink" title="How many threads will you create for the CPU-intensive portion of the application? Explain."></a>How many threads will you create for the CPU-intensive portion of the application? Explain.</h4><p>4 threads.</p>
-<p><strong>Explain:</strong></p>
-<p>Threads count depends upon the priority and requirements of the application. So only thread is enough for this kind of application and this thread is going to handle both input and output operation.</p>
-<ul>
-<li>It is a concurrency approach. Here, it only makes sense to create as many threads as there are blocking system calls, as the threads will be spent blocking.</li>
-<li>It doesn’t provides any benefits to create an additional threads.</li>
-<li>Thus, only a signal thread creation makes sense for input and a single thread for output.</li>
-<li>Four threads are created to perform the CPU-intensive portion of the application. It is because, there should be as many threads as there are processing cores.</li>
-<li>It would be the waste of processing resources to use fewer threads.</li>
-<li>Also any number greater than four would be unable to run.</li>
-</ul>
-<h3 id="4-15-Consider-the-following-code-segment"><a href="#4-15-Consider-the-following-code-segment" class="headerlink" title="4.15 Consider the following code segment:"></a>4.15 Consider the following code segment:</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pid_t</span> pid;</span><br><span class="line">pid = fork();</span><br><span class="line"><span class="keyword">if</span> (pid == <span class="number">0</span>) &#123; <span class="comment">/* child process */</span></span><br><span class="line">    fork();</span><br><span class="line">    <span class="function">thread <span class="title">create</span><span class="params">( . . .)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line">fork();</span><br></pre></td></tr></table></figure>
-
-<h4 id="a-How-many-unique-processes-are-created"><a href="#a-How-many-unique-processes-are-created" class="headerlink" title="a. How many unique processes are created?"></a>a. How many unique processes are created?</h4><ul>
-<li>The statement <code>pid = fork()</code>; before the if statement creates one process. The parent process say p creates this process. Let it be p1.</li>
-<li>The statement fork(); in the if statement creates one process. The parent process p creates this process. Let it be p2.</li>
-<li>After the if statement, parent process p, process p1 and process p2 will execute fork(); creating three new processes.<ul>
-<li>One process is created by parent process p.</li>
-<li>One process is created by process p1.</li>
-<li>One process is created by process p2.</li>
-</ul>
-</li>
-</ul>
-<p>Hence, <strong>5 unique processes</strong> (p1, p2, p3, p4, p5) will be created. If the parent process is also considered, then 6 unique processes (p, p1, p2, p3, p4, p1, p5) will be created.</p>
-<h4 id="b-How-many-unique-threads-are-created"><a href="#b-How-many-unique-threads-are-created" class="headerlink" title="b. How many unique threads are created?"></a>b. How many unique threads are created?</h4><ul>
-<li>Thread creation is done in if block. Only child process p1 is executed in the if block. Therefore, process p1 will be created one thread.</li>
-<li>In the if block one process p2 is created using fork(). Therefore, process p2 will also create a thread.</li>
-</ul>
-<p>Hence, <strong>2 unique threads</strong> will be created.</p>
-<h3 id="4-16"><a href="#4-16" class="headerlink" title="4.16"></a>4.16</h3><p>As described in Section 4.7.2, Linux does not distinguish between processes and threads. Instead, Linux treats both in the same way, allowing a task to be more akin to a process or a thread depending on the set of flags passed to the <code>clone()</code> system call. However, other operating systems, such as Windows, treat processes and threads differently. Typically, such systems use a notation in which the data structure for a process contains pointers to the separate threads belonging to the process. Contrast these two approaches for modeling processes and threads within the kernel.</p>
-<p>如第4.7.2节所述，Linux不区分进程和线程。 取而代之的是，Linux以相同的方式对待两者，从而使任务更类似于进程或线程，具体取决于传递给<code>clone()</code>系统调用的标志集。 但是，其他操作系统（例如Windows）对进程和线程的处理方式也有所不同。 通常，此类系统使用一种表示法，其中进程的数据结构包含指向属于该进程的单独线程的指针。</p>
-<p>对比这两种在内核中对进程和线程进行建模的方法。</p>
-<p>Linux operating systems consider both threads and processes as tasks; it cannot distinguish between them. In contrast, windows operating system threads and processes differently.<br>This approach has pros and cons while modeling threads and processes inside the kernel.</p>
-<p><strong>Pros:</strong></p>
-<ul>
-<li>Linux consider this as similar, so codes belong to operating system can be cut down easily.</li>
-<li>Scheduler present in the Linux operating systems do not need special code to test threads coupled with each processes.</li>
-<li>It considers different threads and processes as a single task during the time of scheduling.</li>
-</ul>
-<p><strong>Cons:</strong></p>
-<ul>
-<li><p>This ability makes it harder for the Linux operating system to inflict process-wide resource limitations directly.</p>
-</li>
-<li><p>Extra steps are needed to recognize the each processes belong to appropriate threads and complexity in performing relevant tasks.</p>
-</li>
-</ul>
-<h3 id="4-17-The-program-shown-in-Figure-4-16-uses-the-Pthreads-API-What-would-be-the-output-from-the-program-at-LINE-C-and-LINE-P"><a href="#4-17-The-program-shown-in-Figure-4-16-uses-the-Pthreads-API-What-would-be-the-output-from-the-program-at-LINE-C-and-LINE-P" class="headerlink" title="4.17 The program shown in Figure 4.16 uses the Pthreads API. What would be the output from the program at LINE C and LINE P?"></a>4.17 The program shown in Figure 4.16 uses the Pthreads API. What would be the output from the program at <code>LINE C</code> and <code>LINE P</code>?</h3><p>Figure 4.16:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pthread.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;types.h&gt;</span></span></span><br><span class="line"><span class="keyword">int</span> value = <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">runner</span><span class="params">(<span class="keyword">void</span> *param)</span></span>; <span class="comment">/* the thread */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span> </span>&#123;</span><br><span class="line">	<span class="keyword">pid_t</span> pid;</span><br><span class="line">	<span class="keyword">pthread_t</span> tid;</span><br><span class="line">	<span class="keyword">pthread_attr_t</span> attr;</span><br><span class="line">	pid = fork();</span><br><span class="line">	<span class="keyword">if</span> (pid == <span class="number">0</span>) &#123; <span class="comment">/* child process */</span></span><br><span class="line">		pthread_attr_init(&amp;attr);</span><br><span class="line">		pthread_create(&amp;tid, &amp;attr, runner, <span class="literal">NULL</span>);</span><br><span class="line">		pthread_join(tid, <span class="literal">NULL</span>);</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;CHILD: value = %d&quot;</span>, value); <span class="comment">/* LINE C */</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (pid &gt; <span class="number">0</span>) &#123; <span class="comment">/* parent process */</span></span><br><span class="line">		wait(<span class="literal">NULL</span>);</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;PARENT: value = %d&quot;</span>, value); <span class="comment">/* LINE P */</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">runner</span><span class="params">(<span class="keyword">void</span> *param)</span> </span>&#123;</span><br><span class="line">	value = <span class="number">5</span>;</span><br><span class="line">	pthread_exit(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>The output of <code>LINE C</code> in the program:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CHILD: value &#x3D; 5</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>The child process in the thread is forked by parent process and child process each have its own memory space.</li>
-<li>After forking, the parent process waits for the completion of child process.</li>
-<li>`New thread is created for child process and the runner() function is called which set the value of the global vairlable to 5.</li>
-<li>`Thus, after execution of this line, the value displayed will be 5.</li>
-</ul>
-<p>The output of <code>LINE P</code> in the program:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PARENT: value &#x3D; 0</span><br></pre></td></tr></table></figure>
-
-
-<ul>
-<li>After completing the child process, the value of the global variable present in parent process remains 0.</li>
-<li>Thus, after execution of this line, the value displayed will be 0.</li>
-</ul>
-<h2 id="Programming-Problems"><a href="#Programming-Problems" class="headerlink" title="Programming Problems"></a>Programming Problems</h2><h3 id="4-21"><a href="#4-21" class="headerlink" title="4.21"></a>4.21</h3><p>Write a multithreaded program that calculates various statistical values for a list of numbers. This program will be passed a series of numbers on the command line and will then create three separate worker threads. One thread will determine the average of the numbers, the second will determine the maximum value, and the third will determine the minimum value. For example, suppose your program is passed the integers:</p>
-<p><code>90 81 78 95 79 72 85</code></p>
-<p>The program will report:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">The average value is 82 </span><br><span class="line">The minimum value is 72 </span><br><span class="line">The maximum value is 95</span><br></pre></td></tr></table></figure>
-
-<p>The variables representing the average, minimum, and maximum values will be stored globally. The worker threads will set these values, and the parent thread will output the values once the workers have exited. (We could obviously expand this program by creating additional threads that determine other statistical values, such as median and standard deviation.)</p>
-<hr>
-<p>注：</p>
-<p>因为时间所限，有些内容未认真完成。此作业的后续改进将会在上传到<a href="https://framist.github.io/">我的个人博客</a>，恳请老师谅解！</p>
-<p>参考资料：</p>
-<p>[1] <a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_37205708/article/details/86518889">操作系统学习笔记（三） —线程_雲的博客-CSDN博客</a></p>
-<p>[2] <a target="_blank" rel="noopener" href="https://github.com/Criviere/os">Criviere/os (github.com)</a></p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/06/01/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%9B%9B/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -590,7 +362,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2021-06-01 11:42:46 / 修改时间：11:44:36" itemprop="dateCreated datePublished" datetime="2021-06-01T11:42:46+08:00">2021-06-01</time>
+              <time title="创建时间：2021-06-01 11:42:46 / 修改时间：11:46:43" itemprop="dateCreated datePublished" datetime="2021-06-01T11:42:46+08:00">2021-06-01</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -624,90 +396,14 @@
 <li>3.1, 3.5</li>
 <li>3.8, 3.9, 3.12, 3.13, 3.14, 3.17</li>
 </ul>
-<h2 id="uptime-command"><a href="#uptime-command" class="headerlink" title="uptime command"></a><code>uptime</code> command</h2><p>参考：<a target="_blank" rel="noopener" href="https://wangchujiang.com/linux-command/c/uptime.html">uptime 命令，Linux uptime 命令详解：查看Linux系统负载信息 - Linux 命令搜索引擎 (wangchujiang.com)</a></p>
-<blockquote>
-<p>查看Linux系统负载信息</p>
-<p><strong>uptime命令</strong> 能够打印系统总共运行了多长时间和系统的平均负载。uptime命令可以显示的信息显示依次为：现在时间、系统已经运行了多长时间、目前有多少登陆用户、系统在过去的1分钟、5分钟和15分钟内的平均负载。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uptime(选项)</span><br></pre></td></tr></table></figure>
-
-<p>使用uptime命令查看系统负载：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@LinServ-1 ~]# uptime -V    #显示uptime命令版本信息</span><br><span class="line">procps version 3.2.7</span><br><span class="line"></span><br><span class="line">[root@LinServ-1 ~]# uptime</span><br><span class="line"> 15:31:30 up 127 days,  3:00,  1 user,  load average: 0.00, 0.00, 0.00</span><br></pre></td></tr></table></figure>
-
-<p><strong>显示内容说明：</strong></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">15:31:30             # 系统当前时间</span><br><span class="line">up 127 days,  3:00   # 主机已运行时间,时间越大，说明你的机器越稳定。</span><br><span class="line">1 user               # 用户连接数，是总连接数而不是用户数</span><br><span class="line">load average: 0.00, 0.00, 0.00         #  系统平均负载，统计最近1，5，15分钟的系统平均负载</span><br></pre></td></tr></table></figure>
-
-<p>那么什么是系统平均负载呢？ 系统平均负载是指在特定时间间隔内运行队列中的平均进程数。</p>
-<p>如果每个CPU内核的当前活动进程数不大于3的话，那么系统的性能是良好的。如果每个CPU内核的任务数大于5，那么这台机器的性能有严重问题。</p>
-<p>如果你的linux主机是1个双核CPU的话，当Load Average 为6的时候说明机器已经被充分使用了。</p>
-</blockquote>
-<h2 id="Code-Examples-of-Message-queue-POSIX-System-V"><a href="#Code-Examples-of-Message-queue-POSIX-System-V" class="headerlink" title="Code Examples of Message queue (POSIX, System V)"></a>Code Examples of <code>Message queue</code> (POSIX, System V)</h2><h3 id="POSIX"><a href="#POSIX" class="headerlink" title="POSIX"></a>POSIX</h3><p>引用课本上的例子：</p>
-<p>Producer process illustrating POSIX shared-memory API.</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/shm.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/stat.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="comment">/* the size (in bytes) of shared memory object */</span></span><br><span class="line">	<span class="keyword">const</span> <span class="keyword">int</span> SIZE = <span class="number">4096</span>;</span><br><span class="line">	<span class="comment">/* name of the shared memory object */</span></span><br><span class="line">	<span class="keyword">const</span> <span class="keyword">char</span> *name = <span class="string">&quot;OS&quot;</span>;</span><br><span class="line">	<span class="comment">/* strings written to shared memory */</span></span><br><span class="line">	<span class="keyword">const</span> <span class="keyword">char</span> *message_0 = <span class="string">&quot;Hello&quot;</span>;</span><br><span class="line">	<span class="keyword">const</span> <span class="keyword">char</span> *message_1 = <span class="string">&quot;World!&quot;</span>;</span><br><span class="line">	<span class="comment">/* shared memory file descriptor */</span></span><br><span class="line">	<span class="keyword">int</span> shm_fd;</span><br><span class="line">	<span class="comment">/* pointer to shared memory obect */</span></span><br><span class="line">	<span class="keyword">void</span> *ptr;</span><br><span class="line">	<span class="comment">/* create the shared memory object */</span></span><br><span class="line">	shm_fd = shm_open(name, O_CREAT | O_RDRW, <span class="number">0666</span>);</span><br><span class="line">	<span class="comment">/* configure the size of the shared memory object */</span></span><br><span class="line">	ftruncate(shm_fd, SIZE);</span><br><span class="line">	<span class="comment">/* memory map the shared memory object */</span></span><br><span class="line">	ptr = mmap(<span class="number">0</span>, SIZE, PROT_WRITE, MAP_SHARED, shm_fd, <span class="number">0</span>);</span><br><span class="line">	<span class="comment">/* write to the shared memory object */</span></span><br><span class="line">	<span class="built_in">sprintf</span>(ptr, <span class="string">&quot;%s&quot;</span>, message_0);</span><br><span class="line">	ptr += <span class="built_in">strlen</span>(message_0);</span><br><span class="line">	<span class="built_in">sprintf</span>(ptr, <span class="string">&quot;%s&quot;</span>, message_1);</span><br><span class="line">	ptr += <span class="built_in">strlen</span>(message_1);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>Producer process illustrating POSIX shared-memory API.</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/shm.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/stat.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="comment">/* the size (in bytes) of shared memory object */</span></span><br><span class="line">	<span class="keyword">const</span> <span class="keyword">int</span> SIZE <span class="number">4096</span>;</span><br><span class="line">	<span class="comment">/* name of the shared memory object */</span></span><br><span class="line">	<span class="keyword">const</span> <span class="keyword">char</span> *name = <span class="string">&quot;OS&quot;</span>;</span><br><span class="line">	<span class="comment">/* shared memory file descriptor */</span></span><br><span class="line">	<span class="keyword">int</span> shm_fd;</span><br><span class="line">	<span class="comment">/* pointer to shared memory obect */</span></span><br><span class="line">	<span class="keyword">void</span> *ptr;</span><br><span class="line">	<span class="comment">/* open the shared memory object */</span></span><br><span class="line">	shm fd = shm open(name, O_RDONLY, <span class="number">0666</span>);</span><br><span class="line">	<span class="comment">/* memory map the shared memory object */</span></span><br><span class="line">	ptr = mmap(<span class="number">0</span>, SIZE, PROT_READ, MAP_SHARED, shm_fd, <span class="number">0</span>);</span><br><span class="line">	<span class="comment">/* read from the shared memory object */</span></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%s&quot;</span>, (<span class="keyword">char</span> *)ptr);</span><br><span class="line">	<span class="comment">/* remove the shared memory object */</span></span><br><span class="line">	<span class="function">shm <span class="title">unlink</span><span class="params">(name)</span></span>;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>但不能成功运行</p>
-<h3 id="System-V"><a href="#System-V" class="headerlink" title="System V"></a>System V</h3><p>参考：<a target="_blank" rel="noopener" href="https://feichashao.com/ipc-mq/">使用 System V message queue 实现进程间通信 – 肥叉烧 feichashao.com</a></p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// C Program for Message Queue (Writer Process)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/ipc.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/msg.h&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="comment">// structure for message queue</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">mesg_buffer</span> &#123;</span></span><br><span class="line">    <span class="keyword">long</span> mesg_type;</span><br><span class="line">    <span class="keyword">char</span> mesg_text[<span class="number">100</span>];</span><br><span class="line">&#125; message;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">key_t</span> key;</span><br><span class="line">    <span class="keyword">int</span> msgid;</span><br><span class="line"> </span><br><span class="line">    <span class="comment">// ftok to generate unique key</span></span><br><span class="line">    <span class="comment">// 每个程序都可以用相同的 pathname 和 proj_id 来获取相同的 key.</span></span><br><span class="line">    key = ftok(<span class="string">&quot;progfile&quot;</span>, <span class="number">65</span>);</span><br><span class="line"> </span><br><span class="line">    <span class="comment">// msgget creates a message queue</span></span><br><span class="line">    <span class="comment">// and returns identifier</span></span><br><span class="line">    msgid = msgget(key, <span class="number">0666</span> | IPC_CREAT);</span><br><span class="line">    message.mesg_type = <span class="number">1</span>;</span><br><span class="line"> </span><br><span class="line">    <span class="comment">// 获取用户输入</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Write Data : &quot;</span>);</span><br><span class="line">    gets(message.mesg_text);</span><br><span class="line"> </span><br><span class="line">    <span class="comment">// msgsnd to send message</span></span><br><span class="line">    msgsnd(msgid, &amp;message, <span class="keyword">sizeof</span>(message), <span class="number">0</span>);</span><br><span class="line"> </span><br><span class="line">    <span class="comment">// display the message</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Data send is : %s \n&quot;</span>, message.mesg_text);</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// C Program for Message Queue (Reader Process)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/ipc.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/msg.h&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="comment">// structure for message queue</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">mesg_buffer</span> &#123;</span></span><br><span class="line">    <span class="keyword">long</span> mesg_type;</span><br><span class="line">    <span class="keyword">char</span> mesg_text[<span class="number">100</span>];</span><br><span class="line">&#125; message;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">key_t</span> key;</span><br><span class="line">    <span class="keyword">int</span> msgid;</span><br><span class="line"> </span><br><span class="line">    <span class="comment">// ftok to generate unique key</span></span><br><span class="line">    <span class="comment">// 使用跟 writer 相同的 pathname 和 proj_id 来获取 key.</span></span><br><span class="line">    key = ftok(<span class="string">&quot;progfile&quot;</span>, <span class="number">65</span>);</span><br><span class="line"> </span><br><span class="line">    <span class="comment">// msgget creates a message queue</span></span><br><span class="line">    <span class="comment">// and returns identifier</span></span><br><span class="line">    msgid = msgget(key, <span class="number">0666</span> | IPC_CREAT);</span><br><span class="line"> </span><br><span class="line">    <span class="comment">// msgrcv to receive message</span></span><br><span class="line">    msgrcv(msgid, &amp;message, <span class="keyword">sizeof</span>(message), <span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line"> </span><br><span class="line">    <span class="comment">// display the message</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Data Received is : %s \n&quot;</span>,</span><br><span class="line">                    message.mesg_text);</span><br><span class="line"> </span><br><span class="line">    <span class="comment">// to destroy the message queue</span></span><br><span class="line">    msgctl(msgid, IPC_RMID, <span class="literal">NULL</span>);</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>也不能成功运行……</p>
-<p><em>马上就要交作业了，就先放在这里吧</em></p>
-<h2 id="Practice-Exercises"><a href="#Practice-Exercises" class="headerlink" title="Practice Exercises"></a>Practice Exercises</h2><p>3.1, 3.5</p>
-<h3 id="3-1-Using-the-program-shown-in-Figure-3-30-explain-what-the-output-will-be-at-LINE-A"><a href="#3-1-Using-the-program-shown-in-Figure-3-30-explain-what-the-output-will-be-at-LINE-A" class="headerlink" title="3.1 Using the program shown in Figure 3.30, explain what the output will be at LINE A."></a>3.1 Using the program shown in Figure 3.30, explain what the output will be at LINE A.</h3><p>Figure 3.30 What output will be at Line A?</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="keyword">int</span> value = <span class="number">5</span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">pid_t</span> pid;</span><br><span class="line">	pid = fork();</span><br><span class="line">	<span class="keyword">if</span> (pid == <span class="number">0</span>) &#123; <span class="comment">/* child process */</span></span><br><span class="line">		value += <span class="number">15</span>;</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (pid &gt; <span class="number">0</span>) &#123; <span class="comment">/* parent process */</span></span><br><span class="line">		wait(<span class="literal">NULL</span>);</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;PARENT: value = %d&quot;</span>, value); <span class="comment">/* LINE A */</span></span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>output:</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PARENT: value = 5%             </span><br></pre></td></tr></table></figure>
-
-<p>子进程改变的是子进程的value值，当控制权给回父进程之后，他的值保持为5。</p>
-<h3 id="3-5-When-a-process-creates-a-new-process-using-the-fork-operation-which-of-the-following-states-is-shared-between-the-parent-process-and-the-child-process"><a href="#3-5-When-a-process-creates-a-new-process-using-the-fork-operation-which-of-the-following-states-is-shared-between-the-parent-process-and-the-child-process" class="headerlink" title="3.5 When a process creates a new process using the fork() operation, which of the following states is shared between the parent process and the child process?"></a>3.5 When a process creates a new process using the fork() operation, which of the following states is shared between the parent process and the child process?</h3><ul>
-<li><input disabled type="checkbox"> a. Stack </li>
-<li><input disabled type="checkbox"> b. Heap </li>
-<li><input checked disabled type="checkbox"> c. Shared memory segments</li>
-</ul>
-<p>a和b由子进程新建</p>
-<h2 id="Exercises"><a href="#Exercises" class="headerlink" title="Exercises"></a>Exercises</h2><p>3.8, 3.9, 3.12, 3.13, 3.14, 3.17</p>
-<h3 id="3-8-Describe-the-differences-among-short-term-medium-term-and-long-term-scheduling"><a href="#3-8-Describe-the-differences-among-short-term-medium-term-and-long-term-scheduling" class="headerlink" title="3.8 Describe the differences among short-term, medium-term, and long-term scheduling."></a>3.8 Describe the differences among short-term, medium-term, and long-term scheduling.</h3><p>长期调度决定哪些进程进入到系统中，。</p>
-<p>中期调度决定进入到系统中的进程哪些可以竞争处理器， 即哪些进程可以进入到就绪队列。</p>
-<p>短期调度决定将处理器分配给就绪队列中的哪些进程。</p>
-<p>[2]</p>
-<h3 id="3-9-Describe-the-actions-taken-by-a-kernel-to-context-switch-between-processes"><a href="#3-9-Describe-the-actions-taken-by-a-kernel-to-context-switch-between-processes" class="headerlink" title="3.9 Describe the actions taken by a kernel to context-switch between processes."></a>3.9 Describe the actions taken by a kernel to context-switch between processes.</h3><p>内核在进行进程上下文切换时， 首先将当前进程的上下文保存在内存中的PCB中， 然后再将下一个进程在内存中的PCB里的上下文读取出来。 上下文包含CPU寄存器里的内容， 堆， 用户栈， 内存管理信息， 数据， 文本。</p>
-<p>[3]</p>
-<h3 id="3-12-Including-the-initial-parent-process-how-many-processes-are-created-by-the-program-shown-in-Figure-3-32"><a href="#3-12-Including-the-initial-parent-process-how-many-processes-are-created-by-the-program-shown-in-Figure-3-32" class="headerlink" title="3.12 Including the initial parent process, how many processes are created by the program shown in Figure 3.32?"></a>3.12 Including the initial parent process, how many processes are created by the program shown in Figure 3.32?</h3><p>Figure 3.32 How many processes are created?</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i++)</span><br><span class="line">    	fork();	</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>共16个</p>
-<p>因为fork是把进程<strong>当前</strong>的情况拷贝一份</p>
-<h3 id="3-13-Explain-the-circumstances-under-which-which-the-line-of-code-marked-printf-“LINE-J”-in-Figure-3-33-will-be-reached"><a href="#3-13-Explain-the-circumstances-under-which-which-the-line-of-code-marked-printf-“LINE-J”-in-Figure-3-33-will-be-reached" class="headerlink" title="3.13 Explain the circumstances under which which the line of code marked printf(“LINE J”) in Figure 3.33 will be reached."></a>3.13 Explain the circumstances under which which the line of code marked printf(“LINE J”) in Figure 3.33 will be reached.</h3><p>Figure 3.33 When will LINE J be reached?</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">pid_t</span> pid;</span><br><span class="line">	<span class="comment">/* fork a child process */</span></span><br><span class="line">	pid = fork();</span><br><span class="line">	<span class="keyword">if</span> (pid &lt; <span class="number">0</span>) &#123; <span class="comment">/* error occurred */</span></span><br><span class="line">		<span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;Fork Failed&quot;</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (pid == <span class="number">0</span>) &#123; <span class="comment">/* child process */</span></span><br><span class="line">		execlp(<span class="string">&quot;/bin/ls&quot;</span>, <span class="string">&quot;ls&quot;</span>, <span class="literal">NULL</span>);</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;LINE J&quot;</span>);</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123; <span class="comment">/* parent process */</span></span><br><span class="line">		<span class="comment">/* parent will wait for the child to complete */</span></span><br><span class="line">		wait(<span class="literal">NULL</span>);</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;Child Complete&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><code>execlp()</code>函数属于<code>exec()</code>函数族</p>
-<p>如果<code>execlp</code>调用成功,进程自己的执行代码就会变成加载程序的代码,<code>execlp()</code>后边的代码也就不会执行了</p>
-<p>所以无法到达<code>printf(“LINE J”)</code>代码</p>
-<h3 id="3-14-Using-the-program-in-Figure-3-34-identify-the-values-of-pid-at-lines-A-B-C-and-D-Assume-that-the-actual-pids-of-the-parent-and-child-are-2600-and-2603-respectively"><a href="#3-14-Using-the-program-in-Figure-3-34-identify-the-values-of-pid-at-lines-A-B-C-and-D-Assume-that-the-actual-pids-of-the-parent-and-child-are-2600-and-2603-respectively" class="headerlink" title="3.14 Using the program in Figure 3.34, identify the values of pid at lines A, B, C, and D. (Assume that the actual pids of the parent and child are 2600 and 2603, respectively.)"></a>3.14 Using the program in Figure 3.34, identify the values of pid at lines A, B, C, and D. (Assume that the actual pids of the parent and child are 2600 and 2603, respectively.)</h3><p>Figure 3.34 What are the pid values?</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	pid—<span class="keyword">_t</span> pid, pid1;</span><br><span class="line">	<span class="comment">/* fork a child process */</span></span><br><span class="line">	pid = fork();</span><br><span class="line">	<span class="keyword">if</span> (pid &lt; <span class="number">0</span>) &#123; <span class="comment">/* error occurred */</span></span><br><span class="line">		<span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;Fork Failed&quot;</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (pid == <span class="number">0</span>) &#123; <span class="comment">/* child process */</span></span><br><span class="line">		pid1 = getpid();</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;child: pid = %d&quot;</span>, pid);	  <span class="comment">/* A */</span></span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;child: pid1 = %d&quot;</span>, pid1); <span class="comment">/* B */</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> &#123; <span class="comment">/* parent process */</span></span><br><span class="line">		pid1 = getpid();</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;parent: pid = %d&quot;</span>, pid);   <span class="comment">/* C */</span></span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;parent: pid1 = %d&quot;</span>, pid1); <span class="comment">/* D */</span></span><br><span class="line">		wait(<span class="literal">NULL</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>A：0</p>
-<p>B：2603</p>
-<p>C：2603</p>
-<p>D：2600</p>
-<h3 id="3-17-Using-the-program-shown-in-Figure-3-35-explain-what-the-output-will-be-at-lines-X-and-Y"><a href="#3-17-Using-the-program-shown-in-Figure-3-35-explain-what-the-output-will-be-at-lines-X-and-Y" class="headerlink" title="3.17 Using the program shown in Figure 3.35, explain what the output will be at lines X and Y."></a>3.17 Using the program shown in Figure 3.35, explain what the output will be at lines X and Y.</h3><p>Figure 3.35 What output will be at Line X and Line Y?</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> SIZE 5</span></span><br><span class="line"><span class="keyword">int</span> nums[SIZE] = &#123;<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>&#125;;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line">	<span class="keyword">pid_t</span> pid;</span><br><span class="line">	pid = fork();</span><br><span class="line">	<span class="keyword">if</span> (pid == <span class="number">0</span>) &#123;</span><br><span class="line">		<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; SIZE; i++) &#123;</span><br><span class="line">			nums[i] *= -i;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;CHILD: %d &quot;</span>, nums[i]); <span class="comment">/* LINE X */</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (pid &gt; <span class="number">0</span>) &#123;</span><br><span class="line">		wait(<span class="literal">NULL</span>);</span><br><span class="line">		<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; SIZE; i++)</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;PARENT: %d &quot;</span>, nums[i]); <span class="comment">/* LINE Y */</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>output:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CHILD: 0 CHILD: -1 CHILD: -4 CHILD: -9 CHILD: -16 PARENT: 0 PARENT: 1 PARENT: 2 PARENT: 3 PARENT: 4</span><br></pre></td></tr></table></figure>
-
-<p>父子进程变量不共享</p>
-<hr>
-<p>参考资料：</p>
-<p>[1] <a target="_blank" rel="noopener" href="https://blog.csdn.net/zhousiyu369/article/details/93759978">zhousiyu369的博客-CSDN博客</a></p>
-<p>[2] <a target="_blank" rel="noopener" href="https://baike.baidu.com/item/execlp/4475625?fr=aladdin">Karry Wang - 博客园 (cnblogs.com)</a></p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/06/01/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%B8%89/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -751,7 +447,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2021-06-01 11:42:40 / 修改时间：11:44:54" itemprop="dateCreated datePublished" datetime="2021-06-01T11:42:40+08:00">2021-06-01</time>
+              <time title="创建时间：2021-06-01 11:42:40 / 修改时间：11:46:38" itemprop="dateCreated datePublished" datetime="2021-06-01T11:42:40+08:00">2021-06-01</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -787,84 +483,14 @@
 <li>2.1、2.2、2.3、3.4、2.5、2.6、2.7、2.8、2.9</li>
 <li>2.12、2.13、2.15、2.16、2.17、2.18、2.19、2.21、2.22</li>
 </ul>
-<h2 id="网上学习理解程序执行中的函数调用过程"><a href="#网上学习理解程序执行中的函数调用过程" class="headerlink" title="网上学习理解程序执行中的函数调用过程"></a>网上学习理解程序执行中的函数调用过程</h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/a514371309/article/details/78504974">程序是如何执行的（三）函数调用</a></p>
-<h2 id="网上学习了解“Linux启动过程”"><a href="#网上学习了解“Linux启动过程”" class="headerlink" title="网上学习了解“Linux启动过程”"></a>网上学习了解“Linux启动过程”</h2><p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/cXbCd_nK4_VssJaUREiPmA">计算机的启动过程</a></p>
-<h2 id="Practice-Exercises"><a href="#Practice-Exercises" class="headerlink" title="Practice Exercises"></a>Practice Exercises</h2><p>2.1、2.2、2.3、3.4、2.5、2.6、2.7、2.8、2.9</p>
-<h3 id="2-1-What-is-the-purpose-of-system-calls"><a href="#2-1-What-is-the-purpose-of-system-calls" class="headerlink" title="2.1 What is the purpose of system calls?"></a>2.1 What is the purpose of system calls?</h3><p>让用户级进程可以请求操作系统所提供的服务</p>
-<h3 id="2-2-What-are-the-five-major-activities-of-an-operating-system-with-regard-to-process-management"><a href="#2-2-What-are-the-five-major-activities-of-an-operating-system-with-regard-to-process-management" class="headerlink" title="2.2 What are the five major activities of an operating system with regard to process management?"></a>2.2 What are the five major activities of an operating system with regard to process management?</h3><p>在进程管理方面，操作系统的五个主要活动是什么?</p>
-<ul>
-<li>用户和系统进程地创建和删除</li>
-<li>进程的挂起和恢复</li>
-<li>提供进程同步的机制</li>
-<li>提供进程通信的机制</li>
-<li>提供死锁处理的机制</li>
-</ul>
-<h3 id="2-3-What-are-the-three-major-activities-of-an-operating-system-with-regard-to-memory-management"><a href="#2-3-What-are-the-three-major-activities-of-an-operating-system-with-regard-to-memory-management" class="headerlink" title="2.3 What are the three major activities of an operating system with regard to memory management?"></a>2.3 What are the three major activities of an operating system with regard to memory management?</h3><ul>
-<li>跟踪内存使用情况</li>
-<li>当内存空间可用的时候,确定将哪些进程调入内存</li>
-<li>按需要分配和回收内存</li>
-</ul>
-<h3 id="2-4-What-are-the-three-major-activities-of-an-operating-system-with-regard-to-secondary-storage-management"><a href="#2-4-What-are-the-three-major-activities-of-an-operating-system-with-regard-to-secondary-storage-management" class="headerlink" title="2.4 What are the three major activities of an operating system with regard to secondary-storage management?"></a>2.4 What are the three major activities of an operating system with regard to secondary-storage management?</h3><p>关于二级存储管理，操作系统的三个主要活动是什么?</p>
-<ul>
-<li>剩余空间的管理</li>
-<li>存储分配</li>
-<li>磁盘调度</li>
-</ul>
-<h3 id="2-5-What-is-the-purpose-of-the-command-interpreter-Why-is-it-usually-separate-from-the-kernel"><a href="#2-5-What-is-the-purpose-of-the-command-interpreter-Why-is-it-usually-separate-from-the-kernel" class="headerlink" title="2.5 What is the purpose of the command interpreter? Why is it usually separate from the kernel?"></a>2.5 What is the purpose of the command interpreter? Why is it usually separate from the kernel?</h3><h4 id="命令解释器的目的是什么"><a href="#命令解释器的目的是什么" class="headerlink" title="命令解释器的目的是什么?"></a>命令解释器的目的是什么?</h4><p>读取命令(从用户或者命令文件)并执行(转化成系统调用)</p>
-<h4 id="为什么它通常与内核分开"><a href="#为什么它通常与内核分开" class="headerlink" title="为什么它通常与内核分开?"></a>为什么它通常与内核分开?</h4><p>可能会经常改变</p>
-<h3 id="2-6-What-system-calls-have-to-be-executed-by-a-command-interpreter-or-shell-in-order-to-start-a-new-process"><a href="#2-6-What-system-calls-have-to-be-executed-by-a-command-interpreter-or-shell-in-order-to-start-a-new-process" class="headerlink" title="2.6 What system calls have to be executed by a command interpreter or shell in order to start a new process?"></a>2.6 What system calls have to be executed by a command interpreter or shell in order to start a new process?</h3><p>为了启动一个新进程，什么系统调用必须由命令解释器或shell执行?</p>
-<h3 id="2-7-What-is-the-purpose-of-system-programs"><a href="#2-7-What-is-the-purpose-of-system-programs" class="headerlink" title="2.7 What is the purpose of system programs?"></a>2.7 What is the purpose of system programs?</h3><p>为程序开发和运行提供了方便的环境</p>
-<p>给用户提供基本的公共功能函数,为用户在不用自己写代码的情况下解决公用问题</p>
-<h3 id="2-8-What-is-the-main-advantage-of-the-layered-approach-to-system-design-What-are-the-disadvantages-of-the-layered-approach"><a href="#2-8-What-is-the-main-advantage-of-the-layered-approach-to-system-design-What-are-the-disadvantages-of-the-layered-approach" class="headerlink" title="2.8 What is the main advantage of the layered approach to system design? What are the disadvantages of the layered approach?"></a>2.8 What is the main advantage of the layered approach to system design? What are the disadvantages of the layered approach?</h3><h4 id="系统设计的分层方法的主要优点是什么"><a href="#系统设计的分层方法的主要优点是什么" class="headerlink" title="系统设计的分层方法的主要优点是什么?"></a>系统设计的分层方法的主要优点是什么?</h4><p>As in all cases of modular design, designing an operating system in a  modular way has several advantages. The system is easier to debug and modify because changes affect only limited sections of the system rather than touching all sections of the operating system. Information is kept only where it is needed and is accessible only within a defined and restricted area, so any bugs affecting that data must be limited to a specific module or layer.</p>
-<p>与模块化设计的所有情况一样，以模块化的方式设计操作系统有几个优点。该系统更容易调试和修改，因为更改只影响系统的有限部分，而不会影响操作系统的所有部分。信息只保存在需要的地方，并且只能在定义和限制的区域内访问，因此任何影响该数据的bug都必须限制在特定的模块或层中。</p>
-<p>1、开发人员可以只关注整个结构中的其中某一层；<br>2、可以很容易的用新的实现来替换原有层次的实现；<br>3、可以降低层与层之间的依赖；<br>4、有利于标准化；<br>5、利于各层逻辑的复用。</p>
-<p>[3]</p>
-<h4 id="分层方法的缺点是什么"><a href="#分层方法的缺点是什么" class="headerlink" title="分层方法的缺点是什么?"></a>分层方法的缺点是什么?</h4><p>1、降低了系统的性能。这是不言而喻的。如果不采用分层式结构，很多业务可以直接造访数据库，以此获取相应的数据，如今却必须通过中间层来完成。<br>2、有时会导致级联的修改。这种修改尤其体现在自上而下的方向。如果在表示层中需要增加一个功能，为保证其设计符合分层式结构，可能需要在相应的业务逻辑层和数据访问层中都增加相应的代码。<br>[3]</p>
-<h3 id="2-9-List-five-services-provided-by-an-operating-system-and-explain-how-each-creates-convenience-for-users-In-which-cases-would-it-be-impossible-for-user-level-programs-to-provide-these-services-Explain-your-answer"><a href="#2-9-List-five-services-provided-by-an-operating-system-and-explain-how-each-creates-convenience-for-users-In-which-cases-would-it-be-impossible-for-user-level-programs-to-provide-these-services-Explain-your-answer" class="headerlink" title="2.9 List five services provided by an operating system, and explain how each creates convenience for users. In which cases would it be impossible for user-level programs to provide these services? Explain your answer."></a>2.9 List five services provided by an operating system, and explain how each creates convenience for users. In which cases would it be impossible for user-level programs to provide these services? Explain your answer.</h3><p>列出操作系统提供的五种服务，并解释每种服务如何为用户提供便利。在哪种情况下，用户级程序不可能提供这些服务?解释你的答案。</p>
-<p><strong>执行程序</strong><br>操作系统加载文件的目录到内存中并开始执行。在用户程序不能合理分配CPU时间的情况下不能提供该项服务。</p>
-<p><strong>I/O操作</strong></p>
-<p>程序运行过程中需要I/O设备上的数据时通过I/O命令或I/O指令,请求操作统的服务。</p>
-<p><strong>文件系统操作</strong></p>
-<p>文件系统让用户按文件名创建,读写,修改,删除文件,使用方便,安全可靠。当设计多用户访问或共享文件时,操作系统还提供信息保护机制。</p>
-<p><strong>通信服务</strong></p>
-<p>在很多情况下，一个进程要与另外的进程交换信息，进程通信可以借助共享內存实<br>现，也可使用消息消息传送技术实现。</p>
-<p><strong>错误检测</strong></p>
-<p>操作系统可以不做和处理各种硬件和软件造成的差镨和异常，并让他们造成的影响缩小在最小范围内</p>
-<h2 id="Exercises"><a href="#Exercises" class="headerlink" title="Exercises"></a>Exercises</h2><p>2.12、2.13、2.15、2.16、2.17、2.18、2.19、2.21、2.22</p>
-<h3 id="2-12-The-services-and-functions-provided-by-an-operating-system-can-be-divided-into-two-main-categories-Briefly-describe-the-two-categories-and-discuss-how-they-differ"><a href="#2-12-The-services-and-functions-provided-by-an-operating-system-can-be-divided-into-two-main-categories-Briefly-describe-the-two-categories-and-discuss-how-they-differ" class="headerlink" title="2.12 The services and functions provided by an operating system can be divided into two main categories. Briefly describe the two categories, and discuss how they differ."></a>2.12 The services and functions provided by an operating system can be divided into two main categories. Briefly describe the two categories, and discuss how they differ.</h3><p>操作系统提供的服务和功能可以分为两大类。简要描述这两个类别，并讨论它们的区别。</p>
-<p>操作系统提供的一类服务是<strong>在系统中不同并发运行的进程之间强制保护</strong>。进程只允许访问与它们关联的内存位置。此外，进程不允许损坏与其他进程相关联的文件。进程也不允许在没有操作系统介入的情况下直接访问设备。</p>
-<p>操作系统提供的第二类服务是<strong>提供低层硬件不能直接支持的功能</strong>。虚拟内存和文件系统就是操作系统提供的两类服务的例子。</p>
-<h3 id="2-13-Describe-three-general-methods-for-passing-parameters-to-the-operating-system"><a href="#2-13-Describe-three-general-methods-for-passing-parameters-to-the-operating-system" class="headerlink" title="2.13 Describe three general methods for passing parameters to the operating system."></a>2.13 Describe three general methods for passing parameters to the operating system.</h3><p>a. Pass parameters in registers<br>a. 寄存器传递参数<br>b. Registers pass starting addresses of blocks of parameters<br>b. 寄存器传递参数的起始地址<br>c. Parameters can be placed, or pushed, onto the stack by the program,<br>and popped off the stack by the operating system<br>c. 参数通过操作系统可以被程序放置，或者压入栈，弹出栈</p>
-<h3 id="2-15-What-are-the-five-major-activities-of-an-operating-system-with-regard-to-file-management"><a href="#2-15-What-are-the-five-major-activities-of-an-operating-system-with-regard-to-file-management" class="headerlink" title="2.15 What are the five major activities of an operating system with regard to file management?"></a>2.15 What are the five major activities of an operating system with regard to file management?</h3><p>在文件管理方面，操作系统的五个主要活动是什么?</p>
-<p>• The creation and deletion of files<br>创建和删除文件<br>• The creation and deletion of directories<br>目录的创建和删除<br>• The support of primitives for manipulating files and directories<br>支持操作文件和目录的原语<br>• The mapping of files onto secondary storage<br>文件到辅助存储的映射<br>• The backup of files on stable (nonvolatile) storage media<br>在稳定(非易失性)存储介质上备份文件</p>
-<h3 id="2-16-What-are-the-advantages-and-disadvantages-of-using-the-same-system-call-interface-for-manipulating-both-files-and-devices"><a href="#2-16-What-are-the-advantages-and-disadvantages-of-using-the-same-system-call-interface-for-manipulating-both-files-and-devices" class="headerlink" title="2.16 What are the advantages and disadvantages of using the same system-call interface for manipulating both files and devices?"></a>2.16 What are the advantages and disadvantages of using the same system-call interface for manipulating both files and devices?</h3><p>使用同一个系统调用接口来操作文件和设备的优点和缺点是什么?</p>
-<p><strong>优点</strong></p>
-<p>可以像访问文件系统中的文件一样访问每个设备。因为大多数内核都是通过文件接口来处理设备的，所以相对容易通过实现具体硬件的代码来支持抽象的文件接口来增加一个新的设备驱动器。因此，这个有利于双方用户代码的发展， 它可以以同样的方式来访问设备和文件，并且设备驱动代码可以支持一个定义明确的API。</p>
-<p><strong>缺点</strong></p>
-<p>使用相同的接口的弊端在于它可能很难捕捉在文件访问API上下文中某些设备的功能，从而导致功能损失或性能损失。</p>
-<h3 id="2-17-Would-it-be-possible-for-the-user-to-develop-a-new-command-interpreter-using-the-system-call-interface-provided-by-the-operating-system"><a href="#2-17-Would-it-be-possible-for-the-user-to-develop-a-new-command-interpreter-using-the-system-call-interface-provided-by-the-operating-system" class="headerlink" title="2.17 Would it be possible for the user to develop a new command interpreter using the system-call interface provided by the operating system?"></a>2.17 Would it be possible for the user to develop a new command interpreter using the system-call interface provided by the operating system?</h3><p>用户应该能够使用系统提供的系统调用开发新的命令解释器。命令解释器允许用户这样创建和管理进程并且确定它们的通信方式(通过管道和文件)。由于所有这些功能都可以被用户级的程序进行系统调用，因此用户可以开发出一个新的命令行解释器。</p>
-<h3 id="2-18-What-are-the-two-models-of-interprocess-communication？What-are-the-strengths-and-weaknesses-of-the-two-approaches"><a href="#2-18-What-are-the-two-models-of-interprocess-communication？What-are-the-strengths-and-weaknesses-of-the-two-approaches" class="headerlink" title="2.18 What are the two models of interprocess communication？What are the strengths and weaknesses of the two approaches?"></a>2.18 What are the two models of interprocess communication？What are the strengths and weaknesses of the two approaches?</h3><p>进程间通信的两种模型是<strong>消息传递模型</strong>和<strong>共享内存模型</strong>。</p>
-<p>消息传递对于交换小数量的消息非常有用，因为不需要避免冲突。它的实现要比共享内存简单。当它在一台计算机中发生的时候，共享内存允许最大速度并且方便通信，因为它可以在内存传输。然而，这种方法在共享内存的进程之间的保护和同步方面做出了妥协</p>
-<h3 id="2-19-Why-is-the-separation-of-mechanism-and-policy-desirable"><a href="#2-19-Why-is-the-separation-of-mechanism-and-policy-desirable" class="headerlink" title="2.19 Why is the separation of mechanism and policy desirable?"></a>2.19 Why is the separation of mechanism and policy desirable?</h3><p>机制和策略必须分离，以确保系统方便更改。没有两个系统安装是相同的，因此每个安装要让操作系统配合它的需要。机制和策略分离下，策略在机制不变的情况下，可以随意更改，这样的安排提供一个更灵活的系统。</p>
-<h3 id="2-21-What-is-the-main-advantage-of-the-microkernel-approach-to-system-design-How-do-user-programs-and-system-services-interact-in-a-microkernel-architecture-What-are-the-disadvantages-of-using-the-microkernel-approach"><a href="#2-21-What-is-the-main-advantage-of-the-microkernel-approach-to-system-design-How-do-user-programs-and-system-services-interact-in-a-microkernel-architecture-What-are-the-disadvantages-of-using-the-microkernel-approach" class="headerlink" title="2.21 What is the main advantage of the microkernel approach to system design? How do user programs and system services interact in a microkernel architecture? What are the disadvantages of using the microkernel approach?"></a>2.21 What is the main advantage of the microkernel approach to system design? How do user programs and system services interact in a microkernel architecture? What are the disadvantages of using the microkernel approach?</h3><h4 id="微内核方法在系统设计方面的主要优势是什么"><a href="#微内核方法在系统设计方面的主要优势是什么" class="headerlink" title="微内核方法在系统设计方面的主要优势是什么?"></a>微内核方法在系统设计方面的主要优势是什么?</h4><p>(a) 添加新服务不需要修改内核</p>
-<p>(b) 由于在用户模式下进行的操作比在内核模式下进行的操作多，因此更安全</p>
-<p>(c) 更简单的内核设计和功能通常会带来更可靠的结果系统。</p>
-<h4 id="在微内核体系结构中，用户程序和系统服务如何交互"><a href="#在微内核体系结构中，用户程序和系统服务如何交互" class="headerlink" title="在微内核体系结构中，用户程序和系统服务如何交互?"></a>在微内核体系结构中，用户程序和系统服务如何交互?</h4><p>用户程序和系统服务在微内核架构中通常使用进程间通信机制例如消息传递来交互。这些消息由操作系统传递。</p>
-<h4 id="使用微内核方法的缺点是什么"><a href="#使用微内核方法的缺点是什么" class="headerlink" title="使用微内核方法的缺点是什么?"></a>使用微内核方法的缺点是什么?</h4><p>微内核架构的主要缺点是与进程间通信相关的开销有关，并且频繁的使用操作系统消息传递功能来使用户进程和系统服务可以彼此交互。</p>
-<h3 id="2-22-What-are-the-advantages-of-using-loadable-kernel-modules"><a href="#2-22-What-are-the-advantages-of-using-loadable-kernel-modules" class="headerlink" title="2.22 What are the advantages of using loadable kernel modules?"></a>2.22 What are the advantages of using loadable kernel modules?</h3><p>使用**可加载内核模块(LVM)**的优点是什么？</p>
-<p>LKM与普通应用程序之间的区别主要体现在四个方面。</p>
-<p>第一，也是最重要的区别，普通应用程序运行在用户空间，而LKM运行在内核空间。通过区分不同的运行空间，操作系统能够安全地保护操作系统中一些重要数据结构的内容不被普通应用程序所修改，达到保证操作系统正常运转的目的。</p>
-<p>第二，普通应用程序的目标很明确，它们从头至尾都是为了完成某一项特定任务。而LKM是在内核中注册并为后续应用程序的请求提供服务的。</p>
-<p>第三，普通应用程序可以调用并没有在其中定义的函数，但一个LKM是链接到内核上的，它所能调用的函数只有内核导出来的那些函数。</p>
-<p>第四，普通应用程序和LKM处理错误的方式不同。当应用程序中出现错误时并不会给系统造成很大的伤害。LKM则不然，在其中出现的错误对子系统来说通常是致命的，至少对于当前正在运行的进程而言。LKM中的一个错误常常会导致整个系统崩溃。</p>
-<p>[4]</p>
-<hr>
-<p>参考资料：</p>
-<p>[1] <a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_32252957/article/details/84726541">https://blog.csdn.net/qq_32252957/article/details/84726541</a></p>
-<p>[2] <a target="_blank" rel="noopener" href="https://www.doc88.com/p-7334220872657.html">https://www.doc88.com/p-7334220872657.html</a></p>
-<p>[3] <a target="_blank" rel="noopener" href="https://blog.csdn.net/gengwei80/article/details/2141880/">https://blog.csdn.net/gengwei80/article/details/2141880/</a></p>
-<p>[4] <a target="_blank" rel="noopener" href="http://www.elecfans.com/emb/20180908772045.html">http://www.elecfans.com/emb/20180908772045.html</a></p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/06/01/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%BA%8C/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -914,7 +540,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-06-01 11:40:46" itemprop="dateModified" datetime="2021-06-01T11:40:46+08:00">2021-06-01</time>
+                <time title="修改时间：2021-06-01 11:47:33" itemprop="dateModified" datetime="2021-06-01T11:47:33+08:00">2021-06-01</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -943,136 +569,14 @@
       
           <h1 id="【数据库原理】第4-5章作业"><a href="#【数据库原理】第4-5章作业" class="headerlink" title="【数据库原理】第4-5章作业"></a>【数据库原理】第4-5章作业</h1><p>题量： 16 满分： 100.0 分</p>
 <p><em>以下为正确答案</em></p>
-<h2 id="一-单选题（共10题-70-0分）"><a href="#一-单选题（共10题-70-0分）" class="headerlink" title="一.单选题（共10题,70.0分）"></a>一.单选题（共10题,70.0分）</h2><h3 id="1"><a href="#1" class="headerlink" title="1."></a>1.</h3><p>下述SQL命令中，允许用户定义新关系时，引用其他关系的主码作为外码的是（）。</p>
-<p>（7.0分）</p>
-<ul>
-<li><p><input disabled type="checkbox">  A <code>INSERT</code></p>
-</li>
-<li><p><input disabled type="checkbox">  B <code>DELETE</code></p>
-</li>
-<li><p><input checked disabled type="checkbox">  C <code>REFERENCES</code></p>
-</li>
-<li><p><input disabled type="checkbox">  D <code>SELECT</code></p>
-</li>
-</ul>
-<h3 id="2"><a href="#2" class="headerlink" title="2."></a>2.</h3><p>下述SQL命令的短语中，不用于定义属性上约束条件的是（）。</p>
-<p>（7.0分）</p>
-<ul>
-<li><p><input disabled type="checkbox">  A <code>NOT NULL</code>短语</p>
-</li>
-<li><p><input disabled type="checkbox">  B <code>UNIQUE</code>短语  </p>
-</li>
-<li><p><input disabled type="checkbox">  C <code>CHECK</code>短语</p>
-</li>
-<li><p><input checked disabled type="checkbox">  D <code>HAVING</code>短语</p>
-</li>
-</ul>
-<h3 id="3"><a href="#3" class="headerlink" title="3"></a>3</h3><p> 关于约束叙述正确的是（    ）。</p>
-<p>（7.0分）</p>
-<ul>
-<li><p><input disabled type="checkbox">  A 每个约束只能作用于一个列上</p>
-</li>
-<li><p><input disabled type="checkbox">  B 每个约束可以作用多个列，但是必须在一个表里</p>
-</li>
-<li><p><input checked disabled type="checkbox">  C 每个约束可以作用到多个表的多个列</p>
-</li>
-<li><p><input disabled type="checkbox">  D 以上都不对</p>
-</li>
-</ul>
-<h3 id="4"><a href="#4" class="headerlink" title="4"></a>4</h3><p>下列（     ）是对触发器的描述。</p>
-<p>（7.0分）</p>
-<ul>
-<li><p><input disabled type="checkbox">  A 定义了一个有相关列和行的集合</p>
-</li>
-<li><p><input checked disabled type="checkbox">  B 当用户修改数据时，一种特殊形式的存储过程被自动执行</p>
-</li>
-<li><p><input disabled type="checkbox">  C SQL语句的预编译集合</p>
-</li>
-<li><p><input disabled type="checkbox">  D 它根据一或多列的值，提供对数据库表的行的快速访问</p>
-</li>
-</ul>
-<h3 id="5"><a href="#5" class="headerlink" title="5"></a>5</h3><p>在数据库的表定义在，限制成绩属性列的取值在0～100的范围内，属于数据的（   ）约束。</p>
-<p>（7.0分）</p>
-<ul>
-<li><p><input disabled type="checkbox">  A 实体完整性</p>
-</li>
-<li><p><input disabled type="checkbox">  B 参照完整性</p>
-</li>
-<li><p><input checked disabled type="checkbox">  C 用户自定义</p>
-</li>
-<li><p><input disabled type="checkbox">  D 用户操作</p>
-</li>
-</ul>
-<h3 id="6"><a href="#6" class="headerlink" title="6"></a>6</h3><p>保护数据库,防止未经授权的或不合法的使用造成的数据泄漏、更改破坏。这是指数据的　。（7.0分）</p>
-<ul>
-<li><p><input checked disabled type="checkbox">  A安全性</p>
-</li>
-<li><p><input disabled type="checkbox">  B完整性</p>
-</li>
-<li><p><input disabled type="checkbox">  C并发控制</p>
-</li>
-<li><p><input disabled type="checkbox">  D恢复</p>
-</li>
-</ul>
-<h3 id="7"><a href="#7" class="headerlink" title="7"></a>7</h3><p>在数据系统中,对存取权限的定义称为　。（7.0分）</p>
-<ul>
-<li><p><input disabled type="checkbox">  A 命令</p>
-</li>
-<li><p><input checked disabled type="checkbox">  B 授权</p>
-</li>
-<li><p><input disabled type="checkbox">  C 定义</p>
-</li>
-<li><p><input disabled type="checkbox">  D 审计</p>
-</li>
-</ul>
-<h3 id="8"><a href="#8" class="headerlink" title="8"></a>8</h3><p>数据库管理系统通常提供授权功能来控制不同用户访问数据的权限,这主要是为了实现数据库的　。（7.0分）</p>
-<ul>
-<li><p><input disabled type="checkbox">  A 可靠性</p>
-</li>
-<li><p><input disabled type="checkbox">  B 一致性</p>
-</li>
-<li><p><input disabled type="checkbox">  C 完整性</p>
-</li>
-<li><p><input checked disabled type="checkbox">  D 安全性</p>
-</li>
-</ul>
-<h3 id="9"><a href="#9" class="headerlink" title="9"></a>9</h3><p>下列SQL语句中,能够实现“收回用户ZHAO对学生表(STUD)中学号(XH)的修改权”这一功能的是　。（7.0分）</p>
-<ul>
-<li><p><input disabled type="checkbox">  A <code>REVOKE UPDATE(XH) ON TABLE FROM ZHAO</code></p>
-</li>
-<li><p><input disabled type="checkbox">  B <code>REVOKE UPDATE(XH) ON TABLE FROM PUBLIC</code></p>
-</li>
-<li><p><input checked disabled type="checkbox">  C <code>REVOKE UPDATE(XH) ON STUD FROM ZHAO</code></p>
-</li>
-<li><p><input disabled type="checkbox">  D <code>REVOKE UPDATE(XH) ON STUD FROM PUBLIC</code></p>
-</li>
-</ul>
-<h3 id="10"><a href="#10" class="headerlink" title="10"></a>10</h3><p>把对关系SC的属性GRADE的修改权授予用户ZHAO的SQL语句是　。（7.0分）</p>
-<ul>
-<li><p><input disabled type="checkbox">  A <code>GRANT GRADE ON SC TO ZHAO</code></p>
-</li>
-<li><p><input disabled type="checkbox">  B <code>GRANT UPDATE ON SC TO ZHAO</code></p>
-</li>
-<li><p><input checked disabled type="checkbox">  C <code>GRANT UPDATE (GRADE) ON SC TO ZHAO</code></p>
-</li>
-<li><p><input disabled type="checkbox">  D <code>GRANT UPDATE ON SC (GRADE) TO ZHAO</code></p>
-</li>
-</ul>
-<h2 id="二-填空题（共6题-30-0分）"><a href="#二-填空题（共6题-30-0分）" class="headerlink" title="二.填空题（共6题,30.0分）"></a>二.填空题（共6题,30.0分）</h2><h3 id="1-1"><a href="#1-1" class="headerlink" title="1"></a>1</h3><p>数据库的完整性是指数据的   1  和   2  。</p>
-<p>（5.0分）<br>第一空：正确性</p>
-<p>第二空：相容性</p>
-<h3 id="2-1"><a href="#2-1" class="headerlink" title="2"></a>2</h3><p>数据库完整性的定义一般由SQL的          语句来实现。它们作为数据库模式的一部分存入          中。</p>
-<p>（5.0分）<br>第一空：数据定义语言</p>
-<p>第二空：数据字典</p>
-<h3 id="3-1"><a href="#3-1" class="headerlink" title="3"></a>3</h3><p>关系模型的实体完整性在CREATE TABLE中用_关键字来实现。</p>
-<p>（5.0分）<br>第一空：PRIMARY KEY</p>
-<h3 id="4-1"><a href="#4-1" class="headerlink" title="4"></a>4</h3><p>当参照完整性检查出现违约情况时，则DBMS可以采用_、_和_策略处理。</p>
-<p>（5.0分）<br>第一空：拒绝执行</p>
-<p>第二空：级联操作</p>
-<p>第三空：设置为空值</p>
-<h3 id="5-1"><a href="#5-1" class="headerlink" title="5"></a>5</h3><p>在SQL语言中,为了数据库的安全性,设置了对数据的存取进行控制的语句,对用户授权使用__1__语句,收回所授的权限使用__2__语句。（5.0分）<br>第一空：GRANT REVOKE</p>
-<h3 id="6-1"><a href="#6-1" class="headerlink" title="6"></a>6</h3><p>DBMS存取控制机制主要包括两部分:自主存取控制和__1__。（5.0分）<br>第一空：强制存取控制</p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/05/31/%E3%80%90%E6%95%B0%E6%8D%AE%E5%BA%93%E5%8E%9F%E7%90%86%E3%80%91%E7%AC%AC4-5%E7%AB%A0%E4%BD%9C%E4%B8%9A/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
