@@ -30,14 +30,14 @@
 <meta property="og:site_name" content="Framist&#39;s Little House">
 <meta property="og:description" content="Operating System Concepts Exercises 1操作系统作业1  1.1, 1.5, 1.6  1.12, 1.15, 1.19, 1.22, 1.23, 1.27">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://framist.github.io/2021/03/11/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%B8%80/image-20210318111753265.png">
+<meta property="og:image" content="https://framist.github.io/2021/03/11/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%B8%80/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%B8%80/image-20210318111753265.png">
 <meta property="article:published_time" content="2021-03-11T13:42:42.620Z">
 <meta property="article:modified_time" content="2021-06-01T03:46:33.410Z">
 <meta property="article:author" content="Framist">
 <meta property="article:tag" content="学习">
 <meta property="article:tag" content="操作系统">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://framist.github.io/2021/03/11/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%B8%80/image-20210318111753265.png">
+<meta name="twitter:image" content="https://framist.github.io/2021/03/11/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%B8%80/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%B8%80/image-20210318111753265.png">
 
 <link rel="canonical" href="https://framist.github.io/2021/03/11/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%B8%80/">
 
@@ -296,7 +296,7 @@
 <p>The different levels are based on access speed as well as size. In general, the<br>closer the cache is to the CPU, the faster the access. However, faster caches are typically more costly. Therefore, smaller and faster caches are placed local to each CPU, and shared caches that are larger, yet slower, are shared among several different processors.<br>不同层次是基于访问速度和大小。一般来说，缓存离CPU越近，访问速度越快(越近实际上<br>容量也越小)。然而，更快的缓存通常更昂贵.因此更小更快的缓存被放置在每个CPU的本地，<br>较大但较慢的共享缓存在几个不同的缓存之间共享处理器。</p>
 </blockquote>
 <h3 id="1-23-Consider-an-SMP-system-similar-to-the-one-shown-in-Figure-1-6-Illustrate-with-an-example-how-data-residing-in-memory-could-in-fact-have-a-different-value-in-each-of-the-local-caches"><a href="#1-23-Consider-an-SMP-system-similar-to-the-one-shown-in-Figure-1-6-Illustrate-with-an-example-how-data-residing-in-memory-could-in-fact-have-a-different-value-in-each-of-the-local-caches" class="headerlink" title="1.23 Consider an SMP system similar to the one shown in Figure 1.6. Illustrate with an example how data residing in memory could in fact have a different value in each of the local caches."></a>1.23 Consider an SMP system similar to the one shown in Figure 1.6. Illustrate with an example how data residing in memory could in fact have a different value in each of the local caches.</h3><p>考虑一个类似于图1.6所示的SMP系统。用一个例子说明驻留在内存中的数据实际上如何在每个本地缓存中具有不同的值。</p>
-<p><img src="/2021/03/11/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%B8%80/image-20210318111753265.png" alt="image-20210318111753265"></p>
+<p><img data-src="%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%B8%80/image-20210318111753265.png" alt="image-20210318111753265"></p>
 <blockquote>
 <p>Say processor 1 reads data A with value 5 from main memory into its local cache.<br>Similarly, processor 2 reads data A into its local cache as well. Processor 1 then<br>updates A to 10. However, since A resides in processor 1’s local cache, the update only<br>occurs there and not in the local cache for processor 2.<br>处理器1从主内存读取A的值是5，保存到本地缓存中.相似的，处理器2从主内存也读取A<br>的值。处理器1然后将A更改成10.然而，因为A在处理器1的本地缓存中，更新只在这里而不再<br>处理器2的本地缓存。(这里实际上有两个问题，一个是处理器1更新时再自己本地缓存更新，<br>一个是处理器2的值就是旧值，得不到最新的A值。大家可以阅读缓存一致性的文章，但是还不<br>保证变量的可见性，详见Java volatile)</p>
 </blockquote>
