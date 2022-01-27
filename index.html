@@ -197,7 +197,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-01-27 20:20:54" itemprop="dateModified" datetime="2022-01-27T20:20:54+08:00">2022-01-27</time>
+                <time title="修改时间：2022-01-27 23:04:39" itemprop="dateModified" datetime="2022-01-27T23:04:39+08:00">2022-01-27</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -220,34 +220,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <a id="more"></a>
-
-<h1 id="临时的主页"><a href="#临时的主页" class="headerlink" title="临时的主页"></a>临时的主页</h1><p>用 typora 随便写了一下</p>
-<h1 id="备案"><a href="#备案" class="headerlink" title="备案"></a>备案</h1><p><em>早知道备案这么麻烦就租香港的服务器了</em></p>
-<p><a href="https://beian.miit.gov.cn/" target="_blank">浙ICP备2022002862号-1</a></p>
-<h1 id="思源笔记"><a href="#思源笔记" class="headerlink" title="思源笔记"></a>思源笔记</h1><p><strong>先备份一下老的</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -zcvf siyuan_backup.tar.gz [思源的数据目录]</span><br></pre></td></tr></table></figure>
-
-<p><code>rz</code>命令和<code>sz</code>命令</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sz siyuan_backup.tar.gz</span><br></pre></td></tr></table></figure>
-
-<p>上传备份文件</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rz</span><br><span class="line">tar -zxvf [原文件名].tar.gz <span class="comment"># 注：z代表用gzip算法来压缩/解压。</span></span><br></pre></td></tr></table></figure>
-
-<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/427328444">思源笔记docker搭建及后续使用优化</a></p>
-<p>docker-compose.yml 文件</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&#x27;3&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">siyuan:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">b3log/siyuan:latest</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">siyuan</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">user:</span> <span class="string">&quot;1000:1000&quot;</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;6806:6806&quot;</span> <span class="comment"># 宿主机端口：容器端口</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/root/siyuan/workspace:/siyuan/workspace</span> <span class="comment"># workspace 是思源的数据目录</span></span><br><span class="line">    <span class="attr">command:</span> [<span class="string">--resident=true</span>,<span class="string">--workspace=/root/Documents/SiYuan</span>,<span class="string">--ssl=false</span>,<span class="string">--accessAuthCode=password</span>,<span class="string">--servePath=sy.framist.top</span>,<span class="string">--workspace=/siyuan/workspace/</span> ]</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>镜像中是使用默认创建的普通用户 <code>siyuan</code>（uid 1000/gid 1000）来启动内核进程的，所以在宿主机创建工作空间文件夹时请注意设置该文件夹所属用户组：<code>chown -R 1000:1000 ./workspace</code>，在启动容器时需要带参数 <code>-u 1000:1000</code>。</p>
-</blockquote>
-<p><code>docker-compose up -d</code> 后台启动容器</p>
-<h2 id="反向代理"><a href="#反向代理" class="headerlink" title="反向代理"></a>反向代理</h2><p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/4e761ec96f67">Nginx 多个子域名映射到不同的端口或 ip</a></p>
-<p><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1558240">https://cloud.tencent.com/developer/article/1558240</a></p>
-<p>注意要在阿里云的DNS云解析设置中添加子域名解析记录，否则反向代理不生效。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"># cp nginx_siyuan.conf &#x2F;etc&#x2F;nginx&#x2F;sites-available&#x2F;siyuan.conf</span><br><span class="line"># ln -s &#x2F;etc&#x2F;nginx&#x2F;sites-available&#x2F;siyuan.conf &#x2F;etc&#x2F;nginx&#x2F;sites-enabled&#x2F;sy.framist.top.conf</span><br><span class="line">server &#123;</span><br><span class="line">    listen 80;</span><br><span class="line"></span><br><span class="line">    server_name sy.framist.top;</span><br><span class="line"></span><br><span class="line">    location &#x2F; &#123;</span><br><span class="line">        proxy_pass       http:&#x2F;&#x2F;127.0.0.1:6806;</span><br><span class="line">        proxy_set_header Host      $host;</span><br><span class="line">        proxy_set_header X-Real-IP $remote_addr;</span><br><span class="line">    &#125;</span><br><span class="line">    # 配置 WebSocket 反代 &#96;&#x2F;ws&#96;</span><br><span class="line">    location &#x2F;ws &#123; </span><br><span class="line">        proxy_pass http:&#x2F;&#x2F;127.0.0.1:6806; </span><br><span class="line">        proxy_read_timeout 60s; </span><br><span class="line">        proxy_http_version 1.1; </span><br><span class="line">        proxy_set_header Upgrade $http_upgrade; </span><br><span class="line">        proxy_set_header Connection &#39;Upgrade&#39;; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h1 id="code-server"><a href="#code-server" class="headerlink" title="code-server"></a>code-server</h1><h1 id="HedgeDoc"><a href="#HedgeDoc" class="headerlink" title="HedgeDoc"></a>HedgeDoc</h1>
+          <h1 id="建站实验：framist-top"><a href="#建站实验：framist-top" class="headerlink" title="建站实验：framist.top"></a>建站实验：framist.top</h1>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/01/26/%E5%BB%BA%E7%AB%99%E5%AE%9E%E9%AA%8C/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
