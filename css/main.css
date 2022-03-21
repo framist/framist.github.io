@@ -1193,7 +1193,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #087d9c;
+  background: #c35d6e;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2485,6 +2485,7 @@ mjx-container + br {
 }
 body {
   background: url("https://pic4.zhimg.com/80/v2-fd488df1eb41e9ec70ddd3dbd646c7d0.png");
+  background-repeat: no-repeat;
   background-attachment: fixed;
   background-position: 50% 50%;
 }
