@@ -1193,7 +1193,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #3dd5ff;
+  background: #087d9c;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2489,14 +2489,26 @@ body {
   background-position: 50% 50%;
 }
 .content-wrap {
-  background: rgba(255,255,255,0.9);
+  background-color: rgba(255,255,255,0.8);
+/* 目前 Safari 系浏览器仅支持 -webkit-backdrop-filter */
+  -webkit-backdrop-filter: brightness(150%) blur(30px);
+  backdrop-filter: brightness(150%) blur(30px);
 }
 .sidebar {
-  opacity: 0.9;
+  background-color: rgba(255,255,255,0.8);
+/* 目前 Safari 系浏览器仅支持 -webkit-backdrop-filter */
+  -webkit-backdrop-filter: brightness(150%) blur(30px);
+  backdrop-filter: brightness(150%) blur(30px);
 }
 .header-inner {
-  background: rgba(255,255,255,0.9);
+  background-color: rgba(255,255,255,0.8);
+/* 目前 Safari 系浏览器仅支持 -webkit-backdrop-filter */
+  -webkit-backdrop-filter: brightness(150%) blur(30px);
+  backdrop-filter: brightness(150%) blur(30px);
 }
 .popup {
-  opacity: 0.9;
+  background-color: rgba(255,255,255,0.8);
+/* 目前 Safari 系浏览器仅支持 -webkit-backdrop-filter */
+  -webkit-backdrop-filter: brightness(150%) blur(30px);
+  backdrop-filter: brightness(150%) blur(30px);
 }
