@@ -1193,7 +1193,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #d66949;
+  background: #c29aab;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2484,26 +2484,24 @@ mjx-container + br {
   padding: 0;
 }
 body {
-  background: url("https://pic4.zhimg.com/80/v2-fd488df1eb41e9ec70ddd3dbd646c7d0.png");
+  background-color: #e2e2e2;
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-position: 50% 50%;
+  background-size: cover;
 }
 .content-wrap {
   background-color: rgba(255,255,255,0.8);
-/* 目前 Safari 系浏览器仅支持 -webkit-backdrop-filter */
   -webkit-backdrop-filter: brightness(150%) blur(30px);
   backdrop-filter: brightness(150%) blur(30px);
 }
 .header-inner {
   background-color: rgba(255,255,255,0.8);
-/* 目前 Safari 系浏览器仅支持 -webkit-backdrop-filter */
   -webkit-backdrop-filter: brightness(150%) blur(30px);
   backdrop-filter: brightness(150%) blur(30px);
 }
 .sidebar-inner {
   background-color: rgba(255,255,255,0.8);
-/* 目前 Safari 系浏览器仅支持 -webkit-backdrop-filter */
   -webkit-backdrop-filter: brightness(150%) blur(30px);
   backdrop-filter: brightness(150%) blur(30px);
 }

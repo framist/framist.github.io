@@ -30,14 +30,14 @@
 <meta property="og:site_name" content="Framist&#39;s Little House">
 <meta property="og:description" content="Operating System Concepts Exercises 5Process Synchronization   操作系统作业5  课后学习面向对象编程概念（类、对象、继承、多态） 5.4 5.5 5.10 5.11 5.15 5.17 5.18 5.20 5.23 5.28">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://framist.github.io/2021/06/01/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%BA%94/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%BA%94/clip_image002.jpg">
+<meta property="og:image" content="https://framist.github.io/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%BA%94/clip_image002.jpg">
 <meta property="article:published_time" content="2021-06-01T03:42:55.482Z">
 <meta property="article:modified_time" content="2021-10-08T11:01:37.553Z">
 <meta property="article:author" content="Framist">
 <meta property="article:tag" content="学习">
 <meta property="article:tag" content="操作系统">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://framist.github.io/2021/06/01/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%BA%94/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%BA%94/clip_image002.jpg">
+<meta name="twitter:image" content="https://framist.github.io/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%BA%94/clip_image002.jpg">
 
 <link rel="canonical" href="https://framist.github.io/2021/06/01/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%BA%94/">
 
@@ -259,9 +259,9 @@
 <p>Reference:<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_37205708/article/details/86548631?spm=1001.2014.3001.5501">操作系统学习笔记（五）—进程同步_雲的博客-CSDN博客</a></p>
 <blockquote>
 <p><strong>Answer:</strong></p>
-<p>On a single-processor system, the thread holding a lock cannot be running while another thread is testing the lock, because only one thread/process can be running at a time. Therefore the thread will continue to spin and waste CPU cycles until its time slice end. That is why threads on a single-processer system should always sleep rather than spin, if they encounter a lock that is held.</p>
+<p>On a single-processor system, the thread holding a lock cannot be running while another thread is testing the lock, because only one thread&#x2F;process can be running at a time. Therefore the thread will continue to spin and waste CPU cycles until its time slice end. That is why threads on a single-processer system should always sleep rather than spin, if they encounter a lock that is held.</p>
 <p>On a multiprocessor system, multiple threads (the thread holding a lock, and the thread testing the lock) can actually be running at the same time. Therefore, it is appropriate for a thread waiting for lock to go into a spin wait, because the lock could be released while it is waiting.</p>
-<p>在一个单处理器系统中，当另一个线程在测试锁的时候，持有锁的线程不能运行，因为一次只能有一个线程/进程在运行。因此，该线程将继续旋转并浪费CPU周期，直到其时间片结束。这就是为什么在单处理器系统上的线程，如果遇到一个被持有的锁，应该总是睡觉而不是旋转。</p>
+<p>在一个单处理器系统中，当另一个线程在测试锁的时候，持有锁的线程不能运行，因为一次只能有一个线程&#x2F;进程在运行。因此，该线程将继续旋转并浪费CPU周期，直到其时间片结束。这就是为什么在单处理器系统上的线程，如果遇到一个被持有的锁，应该总是睡觉而不是旋转。</p>
 <p>在多处理器系统中，多个线程（持有锁的线程和测试锁的线程）实际上可以在同一时间运行。因此，等待锁的线程进入自旋等待是合适的，因为锁可能在它等待时被释放。</p>
 </blockquote>
 <h3 id="5-5-Show-that-if-the-wait-and-signal-semaphore-operations-are-not-executed-atomically-then-mutual-exclusion-may-be-violated"><a href="#5-5-Show-that-if-the-wait-and-signal-semaphore-operations-are-not-executed-atomically-then-mutual-exclusion-may-be-violated" class="headerlink" title="5.5 Show that, if the wait() and signal() semaphore operations are not executed atomically, then mutual exclusion may be violated."></a>5.5 Show that, if the <code>wait()</code> and <code>signal()</code> semaphore operations are not executed atomically, then mutual exclusion may be violated.</h3><p>证明如果<code>wait()</code>和<code>signal()</code>信号操作不是原子执行的，那么可能会违反互斥。</p>
@@ -278,7 +278,7 @@
 <p>1和2都同步运行了，违反互斥。</p>
 <blockquote>
 <p><strong>Answer:</strong></p>
-<p><img data-src="%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%BA%94/clip_image002.jpg" alt="img"></p>
+<p><img data-src="/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%BA%94/clip_image002.jpg" alt="img"></p>
 <p><em>A wait operation atomically decrements the value associated with a semaphore.</em> If two wait operations are executed on a semaphore when its value is 1, and if the two operations are not performed atomically, then it is possible that both operations might proceed to decrement the semaphore value, thereby violating mutual exclusion.</p>
 <p><em>一个等待操作会以原子方式递减与信号灯相关的值</em>。如果当一个信号灯的值为1时，在其上执行两个等待操作，并且这两个操作不是原子执行的，那么这两个操作就有可能继续递减信号灯的值，从而违反了互斥原则。</p>
 </blockquote>
@@ -302,10 +302,10 @@
 <p><strong>Answer:</strong></p>
 <p>Depends on how interrupts are implemented, but regardless of how, it is a poor choice of techniques.</p>
 <p>Case 1 – interrupts are disabled for ONE processor only – result is that threads running on other processors could ignore the synchronization primitive and access the shared data.</p>
-<p>Case 2 – interrupts are disabled for ALL processors – this means task dispatching, handling I/O completion, etc. is also disabled on ALL processors, so threads running on all CPUs can grind to a halt.</p>
+<p>Case 2 – interrupts are disabled for ALL processors – this means task dispatching, handling I&#x2F;O completion, etc. is also disabled on ALL processors, so threads running on all CPUs can grind to a halt.</p>
 <p>这取决于中断是如何实现的，但无论如何，这都是一种糟糕的技术选择。</p>
 <p>情况1 – 中断只对一个处理器禁用 – 其结果是，在其他处理器上运行的线程可以忽略同步原语并访问共享数据。</p>
-<p>情况2 – 中断在所有处理器上被禁用 – 这意味着任务调度、处理I/O完成等也在所有处理器上被禁用，因此在所有CPU上运行的线程都可能陷入停顿。</p>
+<p>情况2 – 中断在所有处理器上被禁用 – 这意味着任务调度、处理I&#x2F;O完成等也在所有处理器上被禁用，因此在所有CPU上运行的线程都可能陷入停顿。</p>
 </blockquote>
 <h3 id="5-15-Consider-how-to-implement-a-mutex-lock-using-an-atomic-hardware-instruction-Assume-that-the-following-structure-defining-the-mutex-lock-is-available"><a href="#5-15-Consider-how-to-implement-a-mutex-lock-using-an-atomic-hardware-instruction-Assume-that-the-following-structure-defining-the-mutex-lock-is-available" class="headerlink" title="5.15 Consider how to implement a mutex lock using an atomic hardware instruction. Assume that the following structure defining the mutex lock is available:"></a>5.15 Consider how to implement a mutex lock using an atomic hardware instruction. Assume that the following structure defining the mutex lock is available:</h3><p>考虑如何使用原子硬件指令实现互斥锁。 假设以下定义互斥锁的结构可用：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> available;</span><br><span class="line">&#125; lock;</span><br></pre></td></tr></table></figure>
@@ -355,7 +355,7 @@
 <p>The maximum time that can be tolerable in terms of time t will be &lt;2xT Thus exceeding the maximum time, a mutex lock will be used instead of spin lock where the threads that are in wait mode are switched to sleep mode</p>
 <p>就时间t而言，可以容忍的最大时间将是&lt;2xT 因此，超过最大时间，将使用互斥锁而不是自旋锁，处于等待模式的线程被切换到睡眠模式。</p>
 </blockquote>
-<p>==?==</p>
+<p>&#x3D;&#x3D;?&#x3D;&#x3D;</p>
 <h3 id="5-20-Consider-the-code-example-for-allocating-and-releasing-processes-shown-in-Figure-5-23"><a href="#5-20-Consider-the-code-example-for-allocating-and-releasing-processes-shown-in-Figure-5-23" class="headerlink" title="5.20 Consider the code example for allocating and releasing processes shown in Figure 5.23."></a>5.20 Consider the code example for allocating and releasing processes shown in Figure 5.23.</h3><center>Figure 5.23 Allocating and releasing processes.</center>
 
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAX_PROCESSES 255</span></span><br><span class="line"><span class="keyword">int</span> number_of_processes = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* the implementation of fork() calls this function */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">allocate_process</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> new_pid;</span><br><span class="line">    <span class="keyword">if</span> (number_of_processes == MAX_PROCESSES)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">/* allocate necessary process resources */</span></span><br><span class="line">        ++number_of_processes;</span><br><span class="line">        <span class="keyword">return</span> new_pid;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* the implementation of exit() calls this function */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">release_process</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">/* release process resources */</span></span><br><span class="line">    --number_of_processes;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -375,17 +375,17 @@
 <p>to prevent the race condition(s)</p>
 <p><strong>答：</strong></p>
 <blockquote>
-<p>对于Java中的运算操作，例如自增或自减，若没有进行额外的同步操作，在多线程环境下就是线程不安全的。num++解析为num=num+1，明显，这个操作不具备原子性，多线程并发共享这个变量时必然会出现问题。[1]</p>
+<p>对于Java中的运算操作，例如自增或自减，若没有进行额外的同步操作，在多线程环境下就是线程不安全的。num++解析为num&#x3D;num+1，明显，这个操作不具备原子性，多线程并发共享这个变量时必然会出现问题。[1]</p>
 </blockquote>
 <p>可见，使用atomic integer仍然不足以解决竞争问题。</p>
 <blockquote>
 <p><strong>Answer:</strong></p>
 <p>a. There is a race condition on the variable number of processes.</p>
 <p>b. A call to acquire() must be placed upon entering each function and a call to release() immediately before exiting each function.</p>
-<p>c. No, it would not help. The reason is because the race occurs in the allocate process() function where number of processes is first tested in the if statement, yet is updated afterwards, based upon the value of the test. It is possible that number of processes = 254 at the time of the test, yet because of the race condition, is set to 255 by another thread before it is incremented yet again.</p>
+<p>c. No, it would not help. The reason is because the race occurs in the allocate process() function where number of processes is first tested in the if statement, yet is updated afterwards, based upon the value of the test. It is possible that number of processes &#x3D; 254 at the time of the test, yet because of the race condition, is set to 255 by another thread before it is incremented yet again.</p>
 <p>a. 进程的可变数量上存在一个竞赛条件。</p>
 <p>b. 在进入每个函数时必须调用<code>acquisition()</code>，在退出每个函数前必须立即调用<code>release()</code>。</p>
-<p>c. 不，这没有帮助。原因是竞赛发生在<code>allocate process()</code>函数中，其中进程数首先在if语句中被测试，但之后又根据测试值被更新。有可能在测试时进程数=254，但由于竞赛条件，在再次递增前被另一个线程设置为255。</p>
+<p>c. 不，这没有帮助。原因是竞赛发生在<code>allocate process()</code>函数中，其中进程数首先在if语句中被测试，但之后又根据测试值被更新。有可能在测试时进程数&#x3D;254，但由于竞赛条件，在再次递增前被另一个线程设置为255。</p>
 </blockquote>
 <h3 id="5-23-Show-how-to-implement-the-wait-and-signal-semaphore-operations-in-multiprocessor-environments-using-the-test-and-set-instruction-The-solution-should-exhibit-minimal-busy-waiting"><a href="#5-23-Show-how-to-implement-the-wait-and-signal-semaphore-operations-in-multiprocessor-environments-using-the-test-and-set-instruction-The-solution-should-exhibit-minimal-busy-waiting" class="headerlink" title="5.23 Show how to implement the wait() and signal() semaphore operations in multiprocessor environments using the test_and_set() instruction. The solution should exhibit minimal busy waiting."></a>5.23 Show how to implement the <code>wait()</code> and <code>signal()</code> semaphore operations in multiprocessor environments using the <code>test_and_set()</code> instruction. The solution should exhibit minimal busy waiting.</h3><p>展示如何在多处理器环境中使用<code>test_and_set()</code>指令实现<code>wait()</code>和<code>signal()</code>信号操作。该方案应表现出最小的繁忙等待。</p>
 <p>答：</p>
@@ -406,8 +406,8 @@
 <p>相对于允许单个写作者专门访问共享值而言，偏向于多个读者，可以提高读者-写作者问题的吞吐量。另一方面，偏爱读者可能会导致写手的饥饿。</p>
 <p>When a reader arrives and notices that another reader is accessing the database, then it would enter the critical section only if there are no waiting writers. </p>
 <p>当一个读者来到这里并注意到另一个读者正在访问 数据库，那么只有当没有等待的写手时，它才会进入关键部分。</p>
-<p>The starvation in the readers/writers problem could be avoided by keeping timestamps associated with waiting processes. When a writer is finished with its task, it would wake up the process that has been waiting for the longest duration. </p>
-<p>读者/写作者问题中的饥饿现象可以通过保留与等待进程相关的时间戳来避免。当一个写手完成其任务时，它将唤醒等待时间最长的进程。</p>
+<p>The starvation in the readers&#x2F;writers problem could be avoided by keeping timestamps associated with waiting processes. When a writer is finished with its task, it would wake up the process that has been waiting for the longest duration. </p>
+<p>读者&#x2F;写作者问题中的饥饿现象可以通过保留与等待进程相关的时间戳来避免。当一个写手完成其任务时，它将唤醒等待时间最长的进程。</p>
 </blockquote>
 <hr>
 <p><strong>注：</strong></p>
@@ -544,20 +544,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">69</span>
+          <span class="site-state-item-count">70</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-count">25</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-count">42</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

@@ -279,9 +279,9 @@
 <thead>
 <tr>
 <th>产品</th>
-<th>生产时间（h/公斤）</th>
-<th>利润（元/公斤）</th>
-<th>加班时利润（元/公斤）</th>
+<th>生产时间（h&#x2F;公斤）</th>
+<th>利润（元&#x2F;公斤）</th>
+<th>加班时利润（元&#x2F;公斤）</th>
 </tr>
 </thead>
 <tbody><tr>
@@ -297,13 +297,13 @@
 <td>70</td>
 </tr>
 </tbody></table>
-<p>设工厂每周生产产品A、B的常规生产时长为$x_1$、$x_2$（h），加班生产时长为$x_3$、$x_4$ （h）。令$x=\left( x_1,x_2,x_3,x_4 \right)$ 。设每周的利润函数为$Z(x)$，加班时长函数为$f(x)$。</p>
-<p>则目标函数为：<br>$$<br>Z\left( x \right) =\frac{x_1}{3}\times 100+\frac{x_3}{3}\times 90+\frac{x_2}{2}\times 80+\frac{x_4}{2}\times 70<br>$$</p>
-<p>$$<br>f\left( x \right) =x_3+x_4<br>$$</p>
-<p>约束条件为：<br>$$<br>\mathrm{s}.\mathrm{t}.\left{ \begin{array}{c}<br>    \begin{array}{c}<br>    \mathrm{x}_1+\mathrm{x}_2=120\<br>    \mathrm{x}_3+\mathrm{x}_4\leqslant 48\<br>\end{array}\<br>    \frac{\mathrm{x}_1}{3}\geqslant 30\<br>    \frac{\mathrm{x}_2}{2}\geqslant 30\<br>    \mathrm{x}_1,\mathrm{x}_2,\mathrm{x}_3,\mathrm{x}_4\geqslant 0\<br>\end{array} \right.<br>$$</p>
+<p>设工厂每周生产产品A、B的常规生产时长为$x_1$、$x_2$（h），加班生产时长为$x_3$、$x_4$ （h）。令$x&#x3D;\left( x_1,x_2,x_3,x_4 \right)$ 。设每周的利润函数为$Z(x)$，加班时长函数为$f(x)$。</p>
+<p>则目标函数为：<br>$$<br>Z\left( x \right) &#x3D;\frac{x_1}{3}\times 100+\frac{x_3}{3}\times 90+\frac{x_2}{2}\times 80+\frac{x_4}{2}\times 70<br>$$</p>
+<p>$$<br>f\left( x \right) &#x3D;x_3+x_4<br>$$</p>
+<p>约束条件为：<br>$$<br>\mathrm{s}.\mathrm{t}.\left{ \begin{array}{c}<br>    \begin{array}{c}<br>    \mathrm{x}_1+\mathrm{x}_2&#x3D;120\<br>    \mathrm{x}_3+\mathrm{x}_4\leqslant 48\<br>\end{array}\<br>    \frac{\mathrm{x}_1}{3}\geqslant 30\<br>    \frac{\mathrm{x}_2}{2}\geqslant 30\<br>    \mathrm{x}_1,\mathrm{x}_2,\mathrm{x}_3,\mathrm{x}_4\geqslant 0\<br>\end{array} \right.<br>$$</p>
 <p>因此，数学模型可以归纳为：</p>
-<p>$$<br>min,,F\left( X \right) =\left( -Z\left( x \right) ,f\left( x \right) \right)<br>$$</p>
-<p>$$<br>\mathrm{s}.\mathrm{t}.\left{ \begin{array}{c}<br>    \begin{array}{c}<br>    \mathrm{x}_1+\mathrm{x}_2=120\<br>    \mathrm{x}_3+\mathrm{x}_4\leqslant 48\<br>\end{array}\<br>    \frac{\mathrm{x}_1}{3}\geqslant 30\<br>    \frac{\mathrm{x}_2}{2}\geqslant 30\<br>    \mathrm{x}_1,\mathrm{x}_2,\mathrm{x}_3,\mathrm{x}_4\geqslant 0\<br>\end{array} \right.<br>$$</p>
+<p>$$<br>min,,F\left( X \right) &#x3D;\left( -Z\left( x \right) ,f\left( x \right) \right)<br>$$</p>
+<p>$$<br>\mathrm{s}.\mathrm{t}.\left{ \begin{array}{c}<br>    \begin{array}{c}<br>    \mathrm{x}_1+\mathrm{x}_2&#x3D;120\<br>    \mathrm{x}_3+\mathrm{x}_4\leqslant 48\<br>\end{array}\<br>    \frac{\mathrm{x}_1}{3}\geqslant 30\<br>    \frac{\mathrm{x}_2}{2}\geqslant 30\<br>    \mathrm{x}_1,\mathrm{x}_2,\mathrm{x}_3,\mathrm{x}_4\geqslant 0\<br>\end{array} \right.<br>$$</p>
 <p>MATLAB求解如下：</p>
 <figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">clear</span><br><span class="line">clc</span><br><span class="line">fitnessfcn=@Fun;</span><br><span class="line"><span class="comment">% 变量个数</span></span><br><span class="line">nvars=<span class="number">4</span>;</span><br><span class="line"><span class="comment">% lb&lt;= X &lt;= ub</span></span><br><span class="line">lb=[<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>];</span><br><span class="line">ub=[<span class="number">270</span> <span class="number">240</span> <span class="number">460</span> <span class="number">130</span>];</span><br><span class="line"><span class="comment">% A*X &lt;= b </span></span><br><span class="line">A = [[<span class="number">13</span> <span class="number">13.5</span> <span class="number">14</span> <span class="number">11.5</span>]</span><br><span class="line">    -[<span class="number">13</span> <span class="number">13.5</span> <span class="number">14</span> <span class="number">11.5</span>]</span><br><span class="line">      <span class="number">0</span> <span class="number">0</span> <span class="number">-1</span> <span class="number">0</span></span><br><span class="line">     [<span class="number">0.015</span> <span class="number">0.02</span> <span class="number">0.018</span> <span class="number">0.011</span>]];</span><br><span class="line"></span><br><span class="line">b = [<span class="number">300</span>*<span class="number">48</span> ; <span class="number">-300</span>*<span class="number">40</span> ; <span class="number">-150</span> ; <span class="number">20</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">% Aeq*X = beq</span></span><br><span class="line">Aeq=[];beq=[];</span><br><span class="line"><span class="comment">%最优个体系数paretoFraction</span></span><br><span class="line"><span class="comment">%种群大小populationsize</span></span><br><span class="line"><span class="comment">%最大进化代数generations</span></span><br><span class="line"><span class="comment">%停止代数stallGenLimit</span></span><br><span class="line"><span class="comment">%适应度函数偏差TolFun</span></span><br><span class="line"><span class="comment">%函数gaplotpareto：绘制Pareto前沿 </span></span><br><span class="line">options=gaoptimset(<span class="string">&#x27;paretoFraction&#x27;</span>,<span class="number">0.3</span>,<span class="string">&#x27;populationsize&#x27;</span>,<span class="number">200</span>,<span class="string">&#x27;generations&#x27;</span>,<span class="number">300</span>,<span class="string">&#x27;stallGenLimit&#x27;</span>,<span class="number">200</span>,<span class="string">&#x27;TolFun&#x27;</span>,<span class="number">1e-10</span>,<span class="string">&#x27;PlotFcns&#x27;</span>,@gaplotpareto);</span><br><span class="line"></span><br><span class="line">[x,fval]=gamultiobj(fitnessfcn,nvars,A,b,Aeq,beq,lb,ub,options)</span><br><span class="line"></span><br><span class="line"><span class="built_in">plot</span>(-fval(:,<span class="number">1</span>),fval(:,<span class="number">2</span>),<span class="string">&#x27;pr&#x27;</span>)</span><br><span class="line">xlabel(<span class="string">&#x27;f_1(x)&#x27;</span>)</span><br><span class="line">ylabel(<span class="string">&#x27;f_2(x)&#x27;</span>)</span><br><span class="line">title(<span class="string">&#x27;Pareto front&#x27;</span>)</span><br><span class="line">grid on</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">y</span>=<span class="title">Fun</span><span class="params">(x)</span></span></span><br><span class="line">	b = [<span class="number">270</span> <span class="number">240</span> <span class="number">460</span> <span class="number">130</span>];</span><br><span class="line">	c = [<span class="number">300</span> <span class="number">300</span> <span class="number">600</span> <span class="number">200</span>];</span><br><span class="line">	t = [<span class="number">190</span> <span class="number">210</span> <span class="number">148</span> <span class="number">100</span>];</span><br><span class="line">	s = [<span class="number">200</span> <span class="number">230</span> <span class="number">160</span> <span class="number">114</span>];</span><br><span class="line">	a = [<span class="number">0.015</span> <span class="number">0.02</span> <span class="number">0.018</span> <span class="number">0.011</span>];</span><br><span class="line">	d = [<span class="number">13</span> <span class="number">13.5</span> <span class="number">14</span> <span class="number">11.5</span>];</span><br><span class="line">	y(<span class="number">1</span>)=-sum(x.*(s-t));</span><br><span class="line">	y(<span class="number">2</span>)=sum(a.*x);</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
 
@@ -313,15 +313,15 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">119.231391258967	0.769608488165712	0	0</span><br><span class="line"></span><br><span class="line">119.231391258967	0.769608488165712	0	0</span><br><span class="line"></span><br><span class="line">0.000499510291359209	120.000482867813	13.1757491344817	34.8252467588411</span><br><span class="line"></span><br><span class="line">71.3391090591218	48.6614868846125	3.11344686170493	9.36001224382937</span><br><span class="line"></span><br><span class="line">…… …… …… ……</span><br><span class="line"></span><br><span class="line">27.0549008917871	92.9459248170927	9.47711506311976	25.3969178809142</span><br><span class="line"></span><br><span class="line">8.65187243477257	111.349067997015	13.3680683558073	31.7052095195761</span><br></pre></td></tr></table></figure>
 
 <h2 id="例子2"><a href="#例子2" class="headerlink" title="例子2"></a>例子2</h2><p><img data-src="https://pic4.zhimg.com/80/v2-f4ee18c79b4c3aefc84ab7e3f5ae286d.png" alt="Image"></p>
-<p>用$\mathrm{i}=1,2,3,4$分别表示A、B、C、D四种产品，$x_i$表示第i种产品的产量（kg）。设最大产量为$b_i$，销售量为$c_i$，成本为$t_i$，售价为$s_i$，能耗为$a_i$，生产时间为$d_i$。设该问题的利润函数为 $Z\left( x \right)$，能耗函数为$f\left( x \right)$。<br>则利润函数为：</p>
-<p>$$<br>Z\left( X \right) =\sum_{i=1}^4{x_i\left( s_i-t_i \right)}<br>$$</p>
+<p>用$\mathrm{i}&#x3D;1,2,3,4$分别表示A、B、C、D四种产品，$x_i$表示第i种产品的产量（kg）。设最大产量为$b_i$，销售量为$c_i$，成本为$t_i$，售价为$s_i$，能耗为$a_i$，生产时间为$d_i$。设该问题的利润函数为 $Z\left( x \right)$，能耗函数为$f\left( x \right)$。<br>则利润函数为：</p>
+<p>$$<br>Z\left( X \right) &#x3D;\sum_{i&#x3D;1}^4{x_i\left( s_i-t_i \right)}<br>$$</p>
 <p>能耗函数为：</p>
-<p>$$<br>f\left( x \right) =\sum_{i=1}^4{a_ix_i}<br>$$</p>
+<p>$$<br>f\left( x \right) &#x3D;\sum_{i&#x3D;1}^4{a_ix_i}<br>$$</p>
 <ul>
 <li>建立模型如下</li>
 </ul>
-<p>$$<br>minF\left( X \right) =\left( -Z\left( x \right) ,f\left( x \right) \right)<br>$$</p>
-<p>$$<br>\mathrm{s}.\mathrm{t}.\left{ \begin{array}{c}<br>    \begin{array}{c}<br>    x_i\leqslant b_i\left( i=1,2,3,4 \right)\<br>    300\times 40\leqslant \sum_{i=1}^4{x_id_i\leqslant 300\times 48}\<br>    150\leqslant x_3\<br>\end{array}\<br>    \sum_{i=1}^4{a_ix_i}\leqslant 20\<br>    x_i\geqslant 0\left( i=1,2,3,4 \right)\<br>\end{array} \right.<br>$$</p>
+<p>$$<br>minF\left( X \right) &#x3D;\left( -Z\left( x \right) ,f\left( x \right) \right)<br>$$</p>
+<p>$$<br>\mathrm{s}.\mathrm{t}.\left{ \begin{array}{c}<br>    \begin{array}{c}<br>    x_i\leqslant b_i\left( i&#x3D;1,2,3,4 \right)\<br>    300\times 40\leqslant \sum_{i&#x3D;1}^4{x_id_i\leqslant 300\times 48}\<br>    150\leqslant x_3\<br>\end{array}\<br>    \sum_{i&#x3D;1}^4{a_ix_i}\leqslant 20\<br>    x_i\geqslant 0\left( i&#x3D;1,2,3,4 \right)\<br>\end{array} \right.<br>$$</p>
 <ul>
 <li>MATLAB求解如下</li>
 </ul>
@@ -465,20 +465,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">69</span>
+          <span class="site-state-item-count">70</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-count">25</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-count">42</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

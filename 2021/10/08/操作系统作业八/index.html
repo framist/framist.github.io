@@ -253,7 +253,7 @@
 <li>调用(call)的函数也必需是可重入的。</li>
 </ul>
 <p>上述条件就是要求可重入函数使用的所有变量都保存在<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%91%BC%E5%8F%AB%E5%A0%86%E7%96%8A">呼叫堆叠</a>的当前<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/w/index.php?title=%E5%87%BD%E6%95%B0%E6%A0%88&action=edit&redlink=1">函数栈</a>（frame）上，因此同一执行线程重入执行该函数时加载了新的函数帧，与前一次执行该函数时使用的函数帧不冲突、不互相覆盖，从而保证了可重入执行安全。</p>
-<p>多“用户/对象/进程<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%B0%83%E5%BA%A6_(%E8%AE%A1%E7%AE%97%E6%9C%BA)">优先级</a>”以及<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%A4%9A%E8%BF%9B%E7%A8%8B">多进程</a>（Multiple processes），一般会使得对可重入代码的控制变得复杂。同时，IO代码通常不是可重入的，因为他们依赖于像磁盘这样共享的、单独的（类似<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E7%B7%A8%E7%A8%8B">编程</a>中的<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/w/index.php?title=%E9%9D%9C%E6%85%8B&action=edit&redlink=1">静态</a>、<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%85%A8%E5%9F%9F%E8%AE%8A%E6%95%B8">全域</a>）资源。</p>
+<p>多“用户&#x2F;对象&#x2F;进程<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%B0%83%E5%BA%A6_(%E8%AE%A1%E7%AE%97%E6%9C%BA)">优先级</a>”以及<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%A4%9A%E8%BF%9B%E7%A8%8B">多进程</a>（Multiple processes），一般会使得对可重入代码的控制变得复杂。同时，IO代码通常不是可重入的，因为他们依赖于像磁盘这样共享的、单独的（类似<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E7%B7%A8%E7%A8%8B">编程</a>中的<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/w/index.php?title=%E9%9D%9C%E6%85%8B&action=edit&redlink=1">静态</a>、<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%85%A8%E5%9F%9F%E8%AE%8A%E6%95%B8">全域</a>）资源。</p>
 <p>可重入性是<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%87%BD%E6%95%B8%E7%A8%8B%E5%BC%8F%E8%AA%9E%E8%A8%80">函数编程语言</a>的关键特性之一。</p>
 </blockquote>
 <p>[1]</p>
@@ -442,7 +442,7 @@
 <h4 id="e-2000001"><a href="#e-2000001" class="headerlink" title="e. 2000001"></a>e. 2000001</h4><p><strong>答：</strong> 1953；129</p>
 <blockquote>
 <p><strong>Answer:</strong></p>
-<p>Page size =2n=1024 B= 210 B</p>
+<p>Page size &#x3D;2n&#x3D;1024 B&#x3D; 210 B</p>
 <table>
 <thead>
 <tr>
@@ -480,46 +480,46 @@
 </blockquote>
 <h3 id="8-21-The-BTV-operating-system-has-a-21-bit-virtual-address-yet-on-certain-embedded-devices-it-has-only-a-16-bit-physical-address-It-also-has-a-2-KB-page-size-How-many-entries-are-there-in-each-of-the-following"><a href="#8-21-The-BTV-operating-system-has-a-21-bit-virtual-address-yet-on-certain-embedded-devices-it-has-only-a-16-bit-physical-address-It-also-has-a-2-KB-page-size-How-many-entries-are-there-in-each-of-the-following" class="headerlink" title="8.21 The BTV operating system has a 21-bit virtual address, yet on certain embedded devices, it has only a 16-bit physical address. It also has a 2-KB page size. How many entries are there in each of the following?"></a>8.21 The BTV operating system has a 21-bit virtual address, yet on certain embedded devices, it has only a 16-bit physical address. It also has a 2-KB page size. How many entries are there in each of the following?</h3><p>BTV操作系统有一个21位的虚拟地址，然而在某些嵌入式设备上，它只有一个16位的物理地址。它也有一个2KB的页面大小。以下每个条目有多少个？</p>
 <h4 id="a-A-conventional-single-level-page-table"><a href="#a-A-conventional-single-level-page-table" class="headerlink" title="a. A conventional, single-level page table"></a>a. A conventional, single-level page table</h4><p>一个传统的、单层的页表 </p>
-<p><del><strong>答：</strong> $\frac{2^{21}}{2\times 8\times 1024}=128 个$</del></p>
-<p> $\frac{2^{21}}{2\times 1024}=1024 个$</p>
+<p><del><strong>答：</strong> $\frac{2^{21}}{2\times 8\times 1024}&#x3D;128 个$</del></p>
+<p> $\frac{2^{21}}{2\times 1024}&#x3D;1024 个$</p>
 <h4 id="b-An-inverted-page-table"><a href="#b-An-inverted-page-table" class="headerlink" title="b. An inverted page table"></a>b. An inverted page table</h4><p>一个倒置的页表</p>
-<p><del><strong>答：</strong> $\frac{2^{16}}{2\times 8\times 1024}=4 个$​</del></p>
-<p>$\frac{2^{16}}{2\times 1024}=32 个$</p>
+<p><del><strong>答：</strong> $\frac{2^{16}}{2\times 8\times 1024}&#x3D;4 个$​</del></p>
+<p>$\frac{2^{16}}{2\times 1024}&#x3D;32 个$</p>
 <blockquote>
 <p><strong>Answer:</strong></p>
 <p>a. 2^10</p>
 <p>b. 2^5</p>
 </blockquote>
 <h3 id="8-23-Consider-a-logical-address-space-of-256-pages-with-a-4-KB-page-size-mapped-onto-a-physical-memory-of-64-frames"><a href="#8-23-Consider-a-logical-address-space-of-256-pages-with-a-4-KB-page-size-mapped-onto-a-physical-memory-of-64-frames" class="headerlink" title="8.23 Consider a logical address space of 256 pages with a 4-KB page size, mapped onto a physical memory of 64 frames."></a>8.23 Consider a logical address space of 256 pages with a 4-KB page size, mapped onto a physical memory of 64 frames.</h3><p>考虑一个具有4KB页大小的256页的逻辑地址空间，映射到64帧的物理内存上。</p>
-<h4 id="a-How-many-bits-are-required-in-the-logical-address"><a href="#a-How-many-bits-are-required-in-the-logical-address" class="headerlink" title="a. How many bits are required in the logical address?"></a>a. How many bits are required in the logical address?</h4><p><strong>答：</strong> $12+8=20 bits$</p>
-<h4 id="b-How-many-bits-are-required-in-the-physical-address"><a href="#b-How-many-bits-are-required-in-the-physical-address" class="headerlink" title="b. How many bits are required in the physical address?"></a>b. How many bits are required in the physical address?</h4><p><strong>答：</strong> $12+6=18bits$</p>
+<h4 id="a-How-many-bits-are-required-in-the-logical-address"><a href="#a-How-many-bits-are-required-in-the-logical-address" class="headerlink" title="a. How many bits are required in the logical address?"></a>a. How many bits are required in the logical address?</h4><p><strong>答：</strong> $12+8&#x3D;20 bits$</p>
+<h4 id="b-How-many-bits-are-required-in-the-physical-address"><a href="#b-How-many-bits-are-required-in-the-physical-address" class="headerlink" title="b. How many bits are required in the physical address?"></a>b. How many bits are required in the physical address?</h4><p><strong>答：</strong> $12+6&#x3D;18bits$</p>
 <blockquote>
 <p><strong>Answer:</strong></p>
-<p>a.  The logical address requires 8 bits for the page number because there are 256=2^8, of them. Then, the logical address requires 12 bits of the offset because there are 4KB=2^12B of them. So, the logical address requires a total is 20 bits.</p>
-<p>b.  The physical address requires 6 bits for the frame number because there are 64=2^6 of them. Then, the physical address also requires 12 bits of the offset because there are 4KB=2^12B them. So, the physical address requires a total is 18 bits.</p>
+<p>a.  The logical address requires 8 bits for the page number because there are 256&#x3D;2^8, of them. Then, the logical address requires 12 bits of the offset because there are 4KB&#x3D;2^12B of them. So, the logical address requires a total is 20 bits.</p>
+<p>b.  The physical address requires 6 bits for the frame number because there are 64&#x3D;2^6 of them. Then, the physical address also requires 12 bits of the offset because there are 4KB&#x3D;2^12B them. So, the physical address requires a total is 18 bits.</p>
 </blockquote>
 <h3 id="8-28-Consider-the-following-segment-table"><a href="#8-28-Consider-the-following-segment-table" class="headerlink" title="8.28 Consider the following segment table:"></a>8.28 Consider the following segment table:</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Segment Base Length </span><br><span class="line">------- ---- ------</span><br><span class="line">0       219     600 </span><br><span class="line">1       2300    14 </span><br><span class="line">2       90      100 </span><br><span class="line">3       1327    580 </span><br><span class="line">4       1952    96</span><br></pre></td></tr></table></figure>
 
 <p>What are the physical addresses for the following logical addresses? </p>
-<h4 id="a-0-430"><a href="#a-0-430" class="headerlink" title="a. 0,430"></a>a. 0,430</h4><p><strong>答：</strong> 219+430=649</p>
-<h4 id="b-1-10"><a href="#b-1-10" class="headerlink" title="b. 1,10"></a>b. 1,10</h4><p><strong>答：</strong> 2300+10=2310</p>
+<h4 id="a-0-430"><a href="#a-0-430" class="headerlink" title="a. 0,430"></a>a. 0,430</h4><p><strong>答：</strong> 219+430&#x3D;649</p>
+<h4 id="b-1-10"><a href="#b-1-10" class="headerlink" title="b. 1,10"></a>b. 1,10</h4><p><strong>答：</strong> 2300+10&#x3D;2310</p>
 <h4 id="c-2-500"><a href="#c-2-500" class="headerlink" title="c. 2,500"></a>c. 2,500</h4><p><strong>答：</strong> 非法</p>
-<h4 id="d-3-400"><a href="#d-3-400" class="headerlink" title="d. 3,400"></a>d. 3,400</h4><p><strong>答：</strong> 1327+400=1727</p>
+<h4 id="d-3-400"><a href="#d-3-400" class="headerlink" title="d. 3,400"></a>d. 3,400</h4><p><strong>答：</strong> 1327+400&#x3D;1727</p>
 <h4 id="e-4-112"><a href="#e-4-112" class="headerlink" title="e. 4,112"></a>e. 4,112</h4><p><strong>答：</strong> 非法</p>
 <blockquote>
 <p><strong>Answer:</strong></p>
-<p>a.  219 +430 =649. Segment 0 has a length of 600, which is greater than 430.</p>
-<p>b.  2300+10=2310. Segment 1 has a length of 14, which is greater than 10.</p>
+<p>a.  219 +430 &#x3D;649. Segment 0 has a length of 600, which is greater than 430.</p>
+<p>b.  2300+10&#x3D;2310. Segment 1 has a length of 14, which is greater than 10.</p>
 <p>c.   Illegal reference. </p>
-<p>d.  1327+400=1727. Segment 3 has a length of 580, which is greater than 400.</p>
+<p>d.  1327+400&#x3D;1727. Segment 3 has a length of 580, which is greater than 400.</p>
 <p>e.  Illegal reference. Segment 4 has a length of 96, which is less than 112.</p>
 </blockquote>
 <h3 id="8-29-What-is-the-purpose-of-paging-the-page-tables"><a href="#8-29-What-is-the-purpose-of-paging-the-page-tables" class="headerlink" title="8.29 What is the purpose of paging the page tables?"></a>8.29 What is the purpose of paging the page tables?</h3><p>分页页表的目的是什么</p>
 <p><strong>答：</strong>  页表本身可能会很大</p>
 <blockquote>
 <p><strong>Answer:</strong></p>
-<p>Since most modern computer systems support a large logical address space (32/64 bits), the page table itself becomes excessively large (space cost). We know <strong>the fact that entire sections of virtual address space are frequently unused</strong>. Paging the page tables have no entries for these spaces, greatly decreasing the amount of memory needed to store virtual memory data structures.</p>
-<p>由于大多数现代计算机系统支持大的逻辑地址空间（32/64位），页表本身变得过分庞大（空间成本）。我们知道<strong>的事实是，虚拟地址空间的整个部分经常是未使用的</strong>。分页表没有这些空间的条目，大大减少了存储虚拟内存数据结构所需的内存量。</p>
+<p>Since most modern computer systems support a large logical address space (32&#x2F;64 bits), the page table itself becomes excessively large (space cost). We know <strong>the fact that entire sections of virtual address space are frequently unused</strong>. Paging the page tables have no entries for these spaces, greatly decreasing the amount of memory needed to store virtual memory data structures.</p>
+<p>由于大多数现代计算机系统支持大的逻辑地址空间（32&#x2F;64位），页表本身变得过分庞大（空间成本）。我们知道<strong>的事实是，虚拟地址空间的整个部分经常是未使用的</strong>。分页表没有这些空间的条目，大大减少了存储虚拟内存数据结构所需的内存量。</p>
 </blockquote>
 <hr>
 <p><strong>注：</strong></p>
@@ -656,20 +656,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">69</span>
+          <span class="site-state-item-count">70</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-count">25</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-count">42</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

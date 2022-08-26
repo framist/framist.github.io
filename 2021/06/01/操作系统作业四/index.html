@@ -30,14 +30,14 @@
 <meta property="og:site_name" content="Framist&#39;s Little House">
 <meta property="og:description" content="Operating System Concepts Exercises 4Threads  操作系统作业4  网上学习Linux中的信号（signal）机制 4.2, 4.4, 4.7, 4.8, 4.9, 4.14, 4.15, 4.16, 4.17 4.21  每题最后一个引用块是老师提供的参考答案">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://framist.github.io/2021/06/01/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%9B%9B/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%9B%9B/image-20210701012014413.png">
+<meta property="og:image" content="https://framist.github.io/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%9B%9B/image-20210701012014413.png">
 <meta property="article:published_time" content="2021-06-01T03:42:50.962Z">
 <meta property="article:modified_time" content="2021-10-08T10:59:10.432Z">
 <meta property="article:author" content="Framist">
 <meta property="article:tag" content="学习">
 <meta property="article:tag" content="操作系统">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://framist.github.io/2021/06/01/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%9B%9B/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%9B%9B/image-20210701012014413.png">
+<meta name="twitter:image" content="https://framist.github.io/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%9B%9B/image-20210701012014413.png">
 
 <link rel="canonical" href="https://framist.github.io/2021/06/01/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%9B%9B/">
 
@@ -287,8 +287,8 @@
 </ul>
 <p><em>If the kernel is single-threaded</em>, then kernel-level threads are better than user-level threads, because any user-level thread performing a blocking system call will cause the entire process to block, even if other threads are available to run within the application.</p>
 <p><em>针对内核是单线程</em>的情况，内核线程优于用户线程。因为任何执行阻塞系统调用的用户线程都会导致整个进程阻塞，即使应用程序中可以运行其他线程。</p>
-<p>For example a process P1 has 2 kernel level threads and process P2 has 2 user-level threads. If one thread in P1 gets blocked, its second thread is not affected. But in case of P2 if one thread is blocked (say for I/O), the whole process P2 along with the 2nd thread gets blocked.</p>
-<p>例如，有两个进程a和b。进程a有2个内核线程，而进程b有2个用户线程。如果a中的一个线程被阻塞，它的第二个线程不会受到影响。但是对于b，如果一个线程被阻塞(比如I/O)，整个进程b和第二个线程就会被阻塞。</p>
+<p>For example a process P1 has 2 kernel level threads and process P2 has 2 user-level threads. If one thread in P1 gets blocked, its second thread is not affected. But in case of P2 if one thread is blocked (say for I&#x2F;O), the whole process P2 along with the 2nd thread gets blocked.</p>
+<p>例如，有两个进程a和b。进程a有2个内核线程，而进程b有2个用户线程。如果a中的一个线程被阻塞，它的第二个线程不会受到影响。但是对于b，如果一个线程被阻塞(比如I&#x2F;O)，整个进程b和第二个线程就会被阻塞。</p>
 <p><em>In a multiprocessor environment</em>, the kernel-level threads are better than user-level threads, because kernel-level threads can run on different processors simultaneously while user-level threads of a process will run on one processor only even if multiple processors are available.</p>
 <p><em>针对多处理器环境</em>，内核线程优于用户线程，因为内核线程可以在不同的处理器上同时运行，而即使有多个处理器可用，进程的用户线程也只能在一个处理器上运行。 </p>
 <ul>
@@ -401,7 +401,7 @@
 <p><strong>Answer:</strong></p>
 <p>a) 6 processes </p>
 <p>b) 2 threads</p>
-<p><img data-src="%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%9B%9B/image-20210701012014413.png" alt="image-20210701012014413"></p>
+<p><img data-src="/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%9B%9B/image-20210701012014413.png" alt="image-20210701012014413"></p>
 </blockquote>
 <h3 id="4-16"><a href="#4-16" class="headerlink" title="4.16*"></a>4.16*</h3><p>As described in Section 4.7.2, Linux does not distinguish between processes and threads. Instead, Linux treats both in the same way, allowing a task to be more akin to a process or a thread depending on the set of flags passed to the <code>clone()</code> system call. However, other operating systems, such as Windows, treat processes and threads differently. Typically, such systems use a notation in which the data structure for a process contains pointers to the separate threads belonging to the process. Contrast these two approaches for modeling processes and threads within the kernel.</p>
 <p>**(不要求)**如第4.7.2节所述，Linux不区分进程和线程。 取而代之的是，Linux以相同的方式对待两者，从而使任务更类似于进程或线程，具体取决于传递给<code>clone()</code>系统调用的标志集。 但是，其他操作系统（例如Windows）对进程和线程的处理方式也有所不同。 通常，此类系统使用一种表示法，其中进程的数据结构包含指向属于该进程的单独线程的指针。</p>
@@ -466,7 +466,7 @@
 <p>翻译：deepl</p>
 <p>参考资料：</p>
 <p>[1] <a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_37205708/article/details/86518889">操作系统学习笔记（三） —线程_雲的博客-CSDN博客</a></p>
-<p>[2] <a target="_blank" rel="noopener" href="https://github.com/Criviere/os">Criviere/os (github.com)</a></p>
+<p>[2] <a target="_blank" rel="noopener" href="https://github.com/Criviere/os">Criviere&#x2F;os (github.com)</a></p>
 <p>[3] Operating System Concepts – 9th Edition 及其答案</p>
 
     </div>
@@ -598,20 +598,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">69</span>
+          <span class="site-state-item-count">70</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-count">25</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-count">42</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

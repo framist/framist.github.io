@@ -30,14 +30,14 @@
 <meta property="og:site_name" content="Framist&#39;s Little House">
 <meta property="og:description" content="Operating System Concepts Exercises 1Introduction  操作系统作业1  1.1, 1.5, 1.6  1.12, 1.15, 1.19, 1.22, 1.23, 1.27  每题最后一个引用块是老师提供的参考答案">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://framist.github.io/2021/03/11/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%B8%80/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%B8%80/image-20210318111753265.png">
+<meta property="og:image" content="https://framist.github.io/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%B8%80/image-20210318111753265.png">
 <meta property="article:published_time" content="2021-03-11T13:42:42.620Z">
 <meta property="article:modified_time" content="2021-10-08T10:54:58.704Z">
 <meta property="article:author" content="Framist">
 <meta property="article:tag" content="学习">
 <meta property="article:tag" content="操作系统">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://framist.github.io/2021/03/11/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%B8%80/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%B8%80/image-20210318111753265.png">
+<meta name="twitter:image" content="https://framist.github.io/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%B8%80/image-20210318111753265.png">
 
 <link rel="canonical" href="https://framist.github.io/2021/03/11/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%B8%80/">
 
@@ -262,7 +262,7 @@
 </li>
 <li><p>To allocate the separate resources of the computer as needed to solve the problem given. The allocation process should be as fair and efficient as possible.根据需要分配计算机的单独资源来解决给出的问题。分配过程应是尽可能的公平和有效的。</p>
 </li>
-<li><p>As a control program, it serves two major functions: (1) supervision of the execution of user programs to prevent errors and improper use of the computer, and (2) management of the operation and control of I/O devices.作为一个控制程序，它主要提供两个功能：（1）监督用户程序的执行，以防止错误和不当使用计算机，以及对I/O设备的操作和控制的（2）管理输入输出设备的运行和控制的管理</p>
+<li><p>As a control program, it serves two major functions: (1) supervision of the execution of user programs to prevent errors and improper use of the computer, and (2) management of the operation and control of I&#x2F;O devices.作为一个控制程序，它主要提供两个功能：（1）监督用户程序的执行，以防止错误和不当使用计算机，以及对I&#x2F;O设备的操作和控制的（2）管理输入输出设备的运行和控制的管理</p>
 </li>
 </ol>
 </blockquote>
@@ -279,7 +279,7 @@
 <p>如果尝试在用户模式下执行特权指令，则不会执行并视为非法指令。硬件将其陷阱到操作系统。</p>
 <p>Various examples of Privileged Instructions include:</p>
 <ul>
-<li>l I/O instructions and Halt instructions</li>
+<li>l I&#x2F;O instructions and Halt instructions</li>
 <li>l Turn off all Interrupts</li>
 <li>l Set the Timer</li>
 <li>l Context Switching</li>
@@ -305,10 +305,10 @@
 <li><input checked disabled type="checkbox"> e. Turn off interrupts. </li>
 <li><input checked disabled type="checkbox"> f. Modify entries in device-status table. </li>
 <li><input checked disabled type="checkbox"> g. Switch from user to kernel mode. </li>
-<li><input checked disabled type="checkbox"> h. Access I/O device.</li>
+<li><input checked disabled type="checkbox"> h. Access I&#x2F;O device.</li>
 </ul>
 <blockquote>
-<p>Set value of timer, clear memory, turn off interrupts, modify entries in device-status table, Switch from user to kernel mode, access I/O device. </p>
+<p>Set value of timer, clear memory, turn off interrupts, modify entries in device-status table, Switch from user to kernel mode, access I&#x2F;O device. </p>
 <p>The rest can be performed in user mode.</p>
 </blockquote>
 <h2 id="Exercises"><a href="#Exercises" class="headerlink" title="Exercises"></a>Exercises</h2><h3 id="1-12-In-a-multiprogramming-and-time-sharing-environment-several-users-share-the-system-simultaneously-This-situation-can-result-in-various-security-problems"><a href="#1-12-In-a-multiprogramming-and-time-sharing-environment-several-users-share-the-system-simultaneously-This-situation-can-result-in-various-security-problems" class="headerlink" title="1.12 In a multiprogramming and time-sharing environment, several users share the system simultaneously. This situation can result in various security problems."></a>1.12 In a multiprogramming and time-sharing environment, several users share the system simultaneously. This situation can result in various security problems.</h3><p>在多道程序设计和分时环境中，几个用户同时共享系统。这种情况会导致各种安全问题。</p>
@@ -342,8 +342,8 @@
 <p>需考虑体系结构，如缓存，内存及总线竞争</p>
 <blockquote>
 <p><strong>Answer</strong>：</p>
-<p>Symmetric processing treats all processors as equals; I/O can be processed on any of them. Process can be scheduled on any of them.对称处理将所有处理器平等处理，其中任何一个都可以处理I/O。进程可以在其中的任何一个进程上进行安排。</p>
-<p>Asymmetric processing designates one CPU as the master, which is the only one capable of performing I/O; the master distributes computational work among the other CPUs (worker).不对称处理指定一个CPU作为主计算机，这是唯一能够执行I/O的主计算机；主计算机将在其他CPU之间分配计算工作。</p>
+<p>Symmetric processing treats all processors as equals; I&#x2F;O can be processed on any of them. Process can be scheduled on any of them.对称处理将所有处理器平等处理，其中任何一个都可以处理I&#x2F;O。进程可以在其中的任何一个进程上进行安排。</p>
+<p>Asymmetric processing designates one CPU as the master, which is the only one capable of performing I&#x2F;O; the master distributes computational work among the other CPUs (worker).不对称处理指定一个CPU作为主计算机，这是唯一能够执行I&#x2F;O的主计算机；主计算机将在其他CPU之间分配计算工作。</p>
 <p><strong>Advantages:</strong> </p>
 <p>Multiprocessor systems can save money, by sharing power supplies and peripherals. 多处理器系统可以通过共享电源和外设来省钱。</p>
 <p>Can execute programs more quickly (parallel)可以更快地执行程序（并行）</p>
@@ -354,11 +354,11 @@
 <h3 id="1-19-What-is-the-purpose-of-interrupts-How-does-an-interrupt-differ-from-a-trap-Can-traps-be-generated-intentionally-by-a-user-program-If-so-for-what-purpose"><a href="#1-19-What-is-the-purpose-of-interrupts-How-does-an-interrupt-differ-from-a-trap-Can-traps-be-generated-intentionally-by-a-user-program-If-so-for-what-purpose" class="headerlink" title="1.19 What is the purpose of interrupts? How does an interrupt differ from a trap? Can traps be generated intentionally by a user program? If so, for what purpose?"></a>1.19 What is the purpose of interrupts? How does an interrupt differ from a trap? Can traps be generated intentionally by a user program? If so, for what purpose?</h3><p>中断的目的是什么?中断与陷阱有何不同?陷阱可以由用户程序故意产生吗?如果有，是为了什么目的?</p>
 <p><strong>答：</strong></p>
 <blockquote>
-<p>An interrupt is a hardware-generated change of flow within the system. An interrupt handler is summoned to deal with the cause of the interrupt; control is then returned to the interrupted context and instruction. A trap is a software-generated interrupt.<br>An interrupt can be used to signal the completion of an I/O to obviate the need for device polling. A trap can be used to call operating system routines or to catch arithmetic errors<br>中断是系统中由硬件产生的流变化。调用中断处理程序来解决造成中断的原因;控制返回到<br>   中断的上下文和指令处。陷阱是由软件产生的中断，中断可以用来发出I/O完成的信号，以消除<br>对设备轮询。陷阱可以用来调用操作系统例程或捕获算数错误。</p>
+<p>An interrupt is a hardware-generated change of flow within the system. An interrupt handler is summoned to deal with the cause of the interrupt; control is then returned to the interrupted context and instruction. A trap is a software-generated interrupt.<br>An interrupt can be used to signal the completion of an I&#x2F;O to obviate the need for device polling. A trap can be used to call operating system routines or to catch arithmetic errors<br>中断是系统中由硬件产生的流变化。调用中断处理程序来解决造成中断的原因;控制返回到<br>   中断的上下文和指令处。陷阱是由软件产生的中断，中断可以用来发出I&#x2F;O完成的信号，以消除<br>对设备轮询。陷阱可以用来调用操作系统例程或捕获算数错误。</p>
 </blockquote>
 <blockquote>
 <p> <strong>Answer:</strong></p>
-<p>An interrupt is a hardware-generated signal that changes the flow within the system. An interrupt can be used to signal the completion of I/O so that the CPU doesn’t have to spend cycles polling the device. 中断是一种硬件生成的信号，可以改变系统内部的流量。一个中断可以用来发出I/O的完成信号，这样CPU就不必花费一个周期来轮询设备了。</p>
+<p>An interrupt is a hardware-generated signal that changes the flow within the system. An interrupt can be used to signal the completion of I&#x2F;O so that the CPU doesn’t have to spend cycles polling the device. 中断是一种硬件生成的信号，可以改变系统内部的流量。一个中断可以用来发出I&#x2F;O的完成信号，这样CPU就不必花费一个周期来轮询设备了。</p>
 <p>A trap is a software-generated interrupt. A trap can be used to invoke call system calls.（陷阱是一种由软件生成的中断。一个陷阱可以用于调用呼叫系统调用。）</p>
 <p>Exception is raised when an abnormal condition occurs during execution. (For example, Memory protection violation, page fault, illegal instruction)在执行过程中出现异常情况时，会引发异常。（例如，内存保护违规、页面故障、非法指令）</p>
 </blockquote>
@@ -374,7 +374,7 @@
 <p>The different levels are based on access speed as well as size. In general, the closer the cache is to the CPU, the faster the access. However, faster caches are typically more costly. Therefore, smaller and faster caches are placed local to each CPU, and shared caches that are larger, yet slower, are shared among several different processors.不同的级别是基于访问速度和大小的。一般来说，缓存越接近CPU，访问速度就越快。然而，更快的缓存通常会更昂贵。因此，较小、更快的缓存被放在每个CPU的本地，而更大但较慢的共享缓存则在几个不同的处理器之间共享。</p>
 </blockquote>
 <h3 id="1-23-Consider-an-SMP-system-similar-to-the-one-shown-in-Figure-1-6-Illustrate-with-an-example-how-data-residing-in-memory-could-in-fact-have-a-different-value-in-each-of-the-local-caches"><a href="#1-23-Consider-an-SMP-system-similar-to-the-one-shown-in-Figure-1-6-Illustrate-with-an-example-how-data-residing-in-memory-could-in-fact-have-a-different-value-in-each-of-the-local-caches" class="headerlink" title="1.23 Consider an SMP system similar to the one shown in Figure 1.6. Illustrate with an example how data residing in memory could in fact have a different value in each of the local caches."></a>1.23 Consider an SMP system similar to the one shown in Figure 1.6. Illustrate with an example how data residing in memory could in fact have a different value in each of the local caches.</h3><p>考虑一个类似于图1.6所示的SMP系统。用示例说明内存中的数据在每个本地缓存中具有不同的值。</p>
-<p><img data-src="%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%B8%80/image-20210318111753265.png" alt="image-20210318111753265"></p>
+<p><img data-src="/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%B8%80/image-20210318111753265.png" alt="image-20210318111753265"></p>
 <p><strong>答：</strong></p>
 <blockquote>
 <p>Say processor 1 reads data A with value 5 from main memory into its local cache.<br>Similarly, processor 2 reads data A into its local cache as well. Processor 1 then<br>updates A to 10. However, since A resides in processor 1’s local cache, the update only<br>occurs there and not in the local cache for processor 2.<br>处理器1从主内存读取A的值是5，保存到本地缓存中.相似的，处理器2从主内存也读取A<br>的值。处理器1然后将A更改成10.然而，因为A在处理器1的本地缓存中，更新只在这里而不再<br>处理器2的本地缓存。(这里实际上有两个问题，一个是处理器1更新时再自己本地缓存更新，<br>一个是处理器2的值就是旧值，得不到最新的A值。大家可以阅读缓存一致性的文章，但是还不<br>保证变量的可见性，详见Java volatile)</p>
@@ -533,20 +533,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">69</span>
+          <span class="site-state-item-count">70</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-count">25</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-count">42</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
