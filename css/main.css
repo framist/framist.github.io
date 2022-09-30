@@ -1193,7 +1193,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #c29aab;
+  background: #05cb20;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -1439,6 +1439,7 @@ pre .javascript .function {
   color: #808080;
   display: inline-block;
   margin: 0 5px;
+  animation: iconAnimate 1.33s ease-in-out infinite;
 }
 .powered-by,
 .theme-info {
@@ -2484,6 +2485,7 @@ mjx-container + br {
   padding: 0;
 }
 body {
+  background: url("https://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/%E9%94%A4%E5%AD%90.jpg");
   background-color: #e2e2e2;
   background-repeat: no-repeat;
   background-attachment: fixed;
