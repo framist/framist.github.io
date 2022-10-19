@@ -166,6 +166,137 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://framist.github.io/2021/06/02/%E3%80%90Python%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%E3%80%91%E4%B8%8A%E6%9C%BA%E4%BD%9C%E4%B8%9A/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Framist">
+      <meta itemprop="description" content="框架主义者的小窝">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Framist's Little House">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/06/02/%E3%80%90Python%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%E3%80%91%E4%B8%8A%E6%9C%BA%E4%BD%9C%E4%B8%9A/" class="post-title-link" itemprop="url">【Python程序设计】上机作业 - 人类高质量代码</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-06-02 16:18:53" itemprop="dateCreated datePublished" datetime="2021-06-02T16:18:53+08:00">2021-06-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-10-05 16:35:04" itemprop="dateModified" datetime="2022-10-05T16:35:04+08:00">2022-10-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">计算机科学</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E8%AF%BE%E4%B8%9A%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">课业学习</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E8%AF%BE%E4%B8%9A%E5%AD%A6%E4%B9%A0/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="【Python程序设计】上机作业"><a href="#【Python程序设计】上机作业" class="headerlink" title="【Python程序设计】上机作业"></a>【Python程序设计】上机作业</h1><p>有些代码是嫖的，但大部分代码尽自己可能尝试以最简单或是最有趣的方式实现。</p>
+<p><del>Python课自然是没有听的，肯定有更好更规范的写法，欢迎讨论</del></p>
+<p>目录：</p>
+<ul>
+<li><a href="#python%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%E4%B8%8A%E6%9C%BA%E4%BD%9C%E4%B8%9A">【Python程序设计】上机作业</a></li>
+<li><a href="#python%E7%AC%AC%E4%B8%80%E6%AC%A1%E4%B8%8A%E6%9C%BA%E6%8A%A5%E5%91%8A">【Python】第一次上机报告</a><ul>
+<li><a href="#1%E5%AE%89%E8%A3%85-python%E4%BD%BF%E7%94%A8-python-%E8%A7%A3%E9%87%8A%E5%99%A8">1）安装 Python，使用 Python 解释器。</a></li>
+<li><a href="#2%E7%AE%80%E5%8D%95%E7%9A%84%E5%8A%A0%E5%87%8F%E4%B9%98%E9%99%A4%E8%BF%90%E7%AE%97%E8%B0%83%E7%94%A8%E6%A0%87%E5%87%86%E6%A8%A1%E5%9D%97-math-%E4%B8%AD%E7%9A%84%E6%95%B0%E5%AD%A6%E5%87%BD%E6%95%B0">2）简单的加减乘除运算，调用标准模块 math 中的数学函数。</a></li>
+<li><a href="#3%E7%BC%96%E5%86%99%E5%92%8C%E8%BF%90%E8%A1%8C-python-%E8%84%9A%E6%9C%AC">3）编写和运行 Python 脚本。</a></li>
+<li><a href="#4%E7%BC%96%E5%86%99%E7%A8%8B%E5%BA%8F%E7%94%9F%E6%88%90%E5%8C%85%E5%90%AB-1000-%E4%B8%AA-0-%E5%88%B0-100-%E4%B9%8B%E9%97%B4%E7%9A%84%E9%9A%8F%E6%9C%BA%E6%95%B4%E6%95%B0%E5%B9%B6%E7%BB%9F%E8%AE%A1%E6%AF%8F%E4%B8%AA%E5%85%83%E7%B4%A0%E7%9A%84%E5%87%BA%E7%8E%B0%E6%AC%A1%E6%95%B0">4）编写程序，生成包含 1000 个 0 到 100 之间的随机整数，并统计每个元素的出现次数。</a></li>
+<li><a href="#5%E7%BC%96%E5%86%99%E7%A8%8B%E5%BA%8F%E7%94%9F%E6%88%90%E5%8C%85%E5%90%AB-20-%E4%B8%AA%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%9A%84%E5%88%97%E8%A1%A8%E7%84%B6%E5%90%8E%E5%B0%86%E5%89%8D-10-%E4%B8%AA%E5%85%83%E7%B4%A0%E5%8D%87%E5%BA%8F%E6%8E%92%E5%88%97%E5%90%8E-10-%E4%B8%AA%E5%85%83%E7%B4%A0%E9%99%8D%E5%BA%8F%E6%8E%92%E5%88%97%E5%B9%B6%E8%BE%93%E5%87%BA%E7%BB%93%E6%9E%9C">5）编写程序，生成包含 20 个随机数的列表，然后将前 10 个元素升序排列，后 10 个元素降序排列，并输出结果。</a></li>
+<li><a href="#6%E7%BC%96%E5%86%99%E7%A8%8B%E5%BA%8F%E8%BF%90%E8%A1%8C%E5%90%8E%E7%94%A8%E6%88%B7%E8%BE%93%E5%85%A5-4-%E4%BD%8D%E6%95%B4%E6%95%B0%E4%BD%9C%E4%B8%BA%E5%B9%B4%E4%BB%BD%E5%88%A4%E6%96%AD%E5%85%B6%E6%98%AF%E5%90%A6%E4%B8%BA%E9%97%B0%E5%B9%B4%E5%A6%82%E6%9E%9C%E5%B9%B4%E4%BB%BD%E8%83%BD%E8%A2%AB400-%E6%95%B4%E9%99%A4%E5%88%99%E4%B8%BA%E9%97%B0%E5%B9%B4%E5%A6%82%E6%9E%9C%E5%B9%B4%E4%BB%BD%E8%83%BD%E8%A2%AB-4-%E6%95%B4%E9%99%A4%E4%BD%86%E4%B8%8D%E8%83%BD%E8%A2%AB-100-%E6%95%B4%E9%99%A4%E4%B9%9F%E4%B8%BA%E9%97%B0%E5%B9%B4">6）编写程序，运行后用户输入 4 位整数作为年份，判断其是否为闰年。如果年份能被400 整除，则为闰年；如果年份能被 4 整除但不能被 100 整除也为闰年。</a></li>
+</ul>
+</li>
+<li><a href="#python%E7%AC%AC%E4%BA%8C%E6%AC%A1%E4%B8%8A%E6%9C%BA%E6%8A%A5%E5%91%8A">【Python】第二次上机报告</a><ul>
+<li><a href="#%E4%BE%8B4-1-%E7%BC%96%E5%86%99%E5%87%BD%E6%95%B0%E5%AE%9E%E7%8E%B0%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%8A%A0%E5%AF%86%E5%92%8C%E8%A7%A3%E5%AF%86%E5%BE%AA%E7%8E%AF%E4%BD%BF%E7%94%A8%E6%8C%87%E5%AE%9A%E5%AF%86%E9%92%A5%E9%87%87%E7%94%A8%E7%AE%80%E5%8D%95%E7%9A%84%E5%BC%82%E6%88%96%E7%AE%97%E6%B3%95">例4-1 编写函数实现字符串加密和解密，循环使用指定密钥，采用简单的异或算法</a><ul>
+<li><a href="#%E6%B7%BB%E5%8A%A0%E6%B3%A8%E9%87%8A">添加注释：</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8zip%E5%87%BD%E6%95%B0">使用zip()函数：</a></li>
+<li><a href="#%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B%E7%9A%84%E5%86%99%E6%B3%95">函数式编程的写法：</a></li>
+<li><a href="#%E4%BC%98%E5%8C%96%E4%BB%A3%E7%A0%81%E4%BD%BF%E7%94%A8base64%E4%BD%BF%E4%B8%8D%E5%8F%AF%E8%A7%81%E5%AD%97%E7%AC%A6%E5%8F%AF%E8%A7%81">优化代码，使用base64，使不可见字符可见</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BE%8B4-2-%E7%BC%96%E5%86%99%E7%A8%8B%E5%BA%8F%E7%94%9F%E6%88%90%E5%A4%A7%E9%87%8F%E9%9A%8F%E6%9C%BA%E4%BF%A1%E6%81%AF%E8%BF%99%E5%9C%A8%E9%9C%80%E8%A6%81%E8%8E%B7%E5%8F%96%E5%A4%A7%E9%87%8F%E6%95%B0%E6%8D%AE%E6%9D%A5%E6%B5%8B%E8%AF%95%E6%88%96%E6%BC%94%E7%A4%BA%E8%BD%AF%E4%BB%B6%E5%8A%9F%E8%83%BD%E7%9A%84%E6%97%B6%E5%80%99%E9%9D%9E%E5%B8%B8%E6%9C%89%E7%94%A8%E4%B8%8D%E4%BB%85%E8%83%BD%E7%9C%9F%E5%AE%9E%E5%B1%95%E7%A4%BA%E8%BD%AF%E4%BB%B6%E5%8A%9F%E8%83%BD%E6%88%96%E7%AE%97%E6%B3%95%E8%BF%98%E5%8F%AF%E4%BB%A5%E9%81%BF%E5%85%8D%E6%B3%84%E9%9C%B2%E7%9C%9F%E5%AE%9E%E6%95%B0%E6%8D%AE%E6%88%96%E8%80%85%E5%BC%95%E8%B5%B7%E4%B8%8D%E5%BF%85%E8%A6%81%E7%9A%84%E4%BA%89%E8%AE%AE">例4-2 编写程序，生成大量随机信息，这在需要获取大量数据来测试或演示软件功能的时候非常有用，不仅能真实展示软件功能或算法，还可以避免泄露真实数据或者引起不必要的争议。</a></li>
+<li><a href="#%E4%BE%8B4-3-%E6%A3%80%E6%9F%A5%E5%B9%B6%E5%88%A4%E6%96%AD%E5%AF%86%E7%A0%81%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E5%AE%89%E5%85%A8%E5%BC%BA%E5%BA%A6%E8%BF%99%E5%AE%9E%E9%99%85%E4%B8%8A%E6%98%AF%E4%B8%80%E4%B8%AA%E5%88%86%E7%B1%BB%E9%97%AE%E9%A2%98">例4-3 检查并判断密码字符串的安全强度。这实际上是一个分类问题。</a></li>
+<li><a href="#%E4%BE%8B4-4-%E7%BC%96%E5%86%99%E7%A8%8B%E5%BA%8F%E6%8A%8A%E4%B8%80%E4%B8%AA%E8%8B%B1%E6%96%87%E5%8F%A5%E5%AD%90%E4%B8%AD%E7%9A%84%E5%8D%95%E8%AF%8D%E5%80%92%E7%BD%AE%E6%A0%87%E7%82%B9%E7%AC%A6%E5%8F%B7%E4%B8%8D%E5%80%92%E7%BD%AE%E4%BE%8B%E5%A6%82-i-like-beijing-%E7%BB%8F%E8%BF%87%E5%87%BD%E6%95%B0%E5%90%8E%E5%8F%98%E4%B8%BAbeijing-like-i">例4-4 编写程序，把一个英文句子中的单词倒置，标点符号不倒置，例如 I like beijing. 经过函数后变为：beijing. like I</a></li>
+<li><a href="#%E4%BE%8B4-5-%E7%BC%96%E5%86%99%E7%A8%8B%E5%BA%8F%E6%9F%A5%E6%89%BE%E4%B8%80%E4%B8%AA%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%B8%AD%E6%9C%80%E9%95%BF%E7%9A%84%E6%95%B0%E5%AD%97%E5%AD%90%E4%B8%B2">例4-5 编写程序，查找一个字符串中最长的数字子串</a></li>
+</ul>
+</li>
+<li><a href="#python%E7%AC%AC%E4%B8%89%E6%AC%A1%E4%B8%8A%E6%9C%BA%E6%8A%A5%E5%91%8A">【Python】第三次上机报告</a><ul>
+<li><a href="#1%E7%BC%96%E5%86%99%E5%87%BD%E6%95%B0%E6%8E%A5%E6%94%B6%E4%B8%80%E4%B8%AA%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%88%86%E5%88%AB%E7%BB%9F%E8%AE%A1%E5%A4%A7%E5%86%99%E5%AD%97%E6%AF%8D%E5%B0%8F%E5%86%99%E5%AD%97%E6%AF%8D%E6%95%B0%E5%AD%97%E5%85%B6%E4%BB%96%E5%AD%97%E7%AC%A6%E7%9A%84%E4%B8%AA%E6%95%B0%E5%B9%B6%E4%BB%A5%E5%85%83%E7%BB%84%E7%9A%84%E5%BD%A2%E5%BC%8F%E8%BF%94%E5%9B%9E%E7%BB%93%E6%9E%9C">1）编写函数，接收一个字符串，分别统计大写字母、小写字母、数字、其他字符的个数，并以元组的形式返回结果。</a></li>
+<li><a href="#2%E7%BC%96%E5%86%99%E5%87%BD%E6%95%B0%E5%8F%AF%E4%BB%A5%E6%8E%A5%E6%94%B6%E4%BB%BB%E6%84%8F%E5%A4%9A%E4%B8%AA%E6%95%B4%E6%95%B0%E5%B9%B6%E8%BE%93%E5%87%BA%E5%85%B6%E4%B8%AD%E7%9A%84%E6%9C%80%E5%A4%A7%E5%80%BC%E5%92%8C%E6%89%80%E6%9C%89%E6%95%B4%E6%95%B0%E4%B9%8B%E5%92%8C">2）编写函数，可以接收任意多个整数并输出其中的最大值和所有整数之和。</a></li>
+<li><a href="#3%E7%BC%96%E5%86%99%E5%87%BD%E6%95%B0%E6%A8%A1%E6%8B%9F%E5%86%85%E7%BD%AE%E5%87%BD%E6%95%B0-sorted">3）编写函数，模拟内置函数 sorted()。</a></li>
+<li><a href="#4%E7%94%A8%E5%AD%97%E5%85%B8%E5%BB%BA%E7%AB%8B%E4%B8%80%E4%B8%AA%E9%80%9A%E8%AE%AF%E5%BD%95%E5%90%91%E5%AD%97%E5%85%B8%E4%B8%AD%E6%B7%BB%E5%8A%A0%E5%92%8C%E5%88%A0%E9%99%A4%E9%80%9A%E8%AE%AF%E4%BA%BA%E5%90%8D%E5%AD%97%E7%94%B5%E8%AF%9D%E9%82%AE%E7%AE%B1%E5%B7%A5%E4%BD%9C%E5%8D%95%E4%BD%8D%E7%AD%89%E6%9F%A5%E8%AF%A2%E6%9F%90%E4%B8%AA%E4%BA%BA%E7%9A%84%E4%BF%A1%E6%81%AF%E7%84%B6%E5%90%8E%E8%BE%93%E5%87%BA%E9%80%9A%E8%AE%AF%E5%BD%95%E4%B8%AD%E6%89%80%E6%9C%89%E4%BA%BA%E7%9A%84%E4%BF%A1%E6%81%AF">4）用字典建立一个通讯录，向字典中添加和删除通讯人（名字、电话、邮箱、工作单位等），查询某个人的信息，然后输出通讯录中所有人的信息。</a></li>
+<li><a href="#5%E7%94%A8%E7%94%9F%E6%88%90%E5%99%A8%E7%9A%84%E6%96%B9%E5%BC%8F%E8%AE%A1%E7%AE%97%E4%BB%BB%E6%84%8F%E8%B5%B7%E6%AD%A2%E8%8C%83%E5%9B%B4%E5%86%85%E8%B4%A8%E6%95%B0%E7%9A%84%E5%92%8C%E8%B4%A8%E6%95%B0%E5%8F%88%E7%A7%B0%E7%B4%A0%E6%95%B0%E6%98%AF%E5%A4%A7%E4%BA%8E-1-%E7%9A%84%E8%87%AA%E7%84%B6%E6%95%B0%E9%99%A4%E4%BA%86-1-%E5%92%8C%E5%AE%83%E6%9C%AC%E8%BA%AB%E5%A4%96%E4%B8%8D%E8%83%BD%E8%A2%AB%E5%85%B6%E4%BB%96%E8%87%AA%E7%84%B6%E6%95%B0%E6%95%B4%E9%99%A4">5）用生成器的方式计算任意起止范围内质数的和。质数,又称素数,是大于 1 的自然数，除了 1 和它本身外，不能被其他自然数整除。</a></li>
+</ul>
+</li>
+<li><a href="#python%E7%AC%AC%E5%9B%9B%E6%AC%A1%E4%B8%8A%E6%9C%BA%E6%8A%A5%E5%91%8A">【Python】第四次上机报告</a><ul>
+<li><a href="#%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E6%A0%88stack%E7%9A%84%E7%B1%BB">实现一个栈（Stack）的类</a></li>
+<li><a href="#%E5%BD%A2%E7%8A%B6%E7%9A%84%E7%B1%BB">形状的类</a></li>
+</ul>
+</li>
+</ul>
+<p><img data-src="https://pic4.zhimg.com/80/v2-160aa1b6ef8ced6ca18584164864428a.png" alt="Image"></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/06/02/%E3%80%90Python%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%E3%80%91%E4%B8%8A%E6%9C%BA%E4%BD%9C%E4%B8%9A/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://framist.github.io/2021/06/01/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%BA%94/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1005,99 +1136,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://framist.github.io/2021/04/29/%E3%80%90MiniL2020%E9%A2%98%E8%A7%A3%E3%80%91%E6%97%A5%E5%B8%B8%E7%8E%A9%E8%80%8D/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Framist">
-      <meta itemprop="description" content="框架主义者的小窝">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Framist's Little House">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/04/29/%E3%80%90MiniL2020%E9%A2%98%E8%A7%A3%E3%80%91%E6%97%A5%E5%B8%B8%E7%8E%A9%E8%80%8D/" class="post-title-link" itemprop="url">【Mini L 2020 题解】日常玩耍</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-04-29 21:56:05" itemprop="dateCreated datePublished" datetime="2021-04-29T21:56:05+08:00">2021-04-29</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-10-05 16:34:19" itemprop="dateModified" datetime="2022-10-05T16:34:19+08:00">2022-10-05</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">计算机科学</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">网络安全</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/CTF/" itemprop="url" rel="index"><span itemprop="name">CTF</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/CTF/MiniL/" itemprop="url" rel="index"><span itemprop="name">MiniL</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="Mini-L-2020-题解"><a href="#Mini-L-2020-题解" class="headerlink" title="Mini L 2020 题解"></a>Mini L 2020 题解</h1><p>在MiniL2021之前玩耍一下</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/04/29/%E3%80%90MiniL2020%E9%A2%98%E8%A7%A3%E3%80%91%E6%97%A5%E5%B8%B8%E7%8E%A9%E8%80%8D/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1167,7 +1205,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">73</span>
+          <span class="site-state-item-count">74</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
