@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Noto Serif SC:300,300italic,400,400italic,700,700italic|Source Code Pro:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-big-counter.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"framist.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Operating System Concepts Exercises 6CPU Scheduling  操作系统作业6  6.2, 6.3, 6.6, 6.9 6.10, 6.13, 6.16, 6.17, 6.19, 6.21, 6.23, 6.28">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【操作系统概念-作业6】CPU Scheduling">
+<meta property="og:url" content="https://framist.github.io/2021/06/03/%E3%80%90%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%91/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%85%AD/index.html">
+<meta property="og:site_name" content="Framist&#39;s Little House">
+<meta property="og:description" content="Operating System Concepts Exercises 6CPU Scheduling  操作系统作业6  6.2, 6.3, 6.6, 6.9 6.10, 6.13, 6.16, 6.17, 6.19, 6.21, 6.23, 6.28">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://framist.github.io/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%85%AD/clip_image002.jpg">
+<meta property="og:image" content="https://framist.github.io/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%85%AD/clip_image002.gif">
+<meta property="og:image" content="https://framist.github.io/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%85%AD/clip_image004.gif">
+<meta property="og:image" content="https://framist.github.io/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%85%AD/clip_image006.gif">
+<meta property="og:image" content="https://framist.github.io/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%85%AD/clip_image002-1625118663277.jpg">
+<meta property="article:published_time" content="2021-06-03T11:44:50.718Z">
+<meta property="article:modified_time" content="2022-10-05T08:35:33.930Z">
+<meta property="article:author" content="Framist">
+<meta property="article:tag" content="学习">
+<meta property="article:tag" content="操作系统">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://framist.github.io/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%85%AD/clip_image002.jpg">
+
+<link rel="canonical" href="https://framist.github.io/2021/06/03/%E3%80%90%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%91/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%85%AD/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【操作系统概念-作业6】CPU Scheduling | Framist's Little House</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Framist's Little House</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">◇ 自顶而下 - 面向未来 ◇</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://framist.github.io/2021/06/03/%E3%80%90%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%91/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%85%AD/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Framist">
+      <meta itemprop="description" content="框架主义者的小窝">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Framist's Little House">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【操作系统概念-作业6】CPU Scheduling
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-06-03 19:44:50" itemprop="dateCreated datePublished" datetime="2021-06-03T19:44:50+08:00">2021-06-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-10-05 16:35:33" itemprop="dateModified" datetime="2022-10-05T16:35:33+08:00">2022-10-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">计算机科学</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E8%AF%BE%E4%B8%9A%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">课业学习</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E8%AF%BE%E4%B8%9A%E5%AD%A6%E4%B9%A0/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index"><span itemprop="name">操作系统</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Operating-System-Concepts-Exercises-6"><a href="#Operating-System-Concepts-Exercises-6" class="headerlink" title="Operating System Concepts Exercises 6"></a><em>Operating System Concepts</em> Exercises 6</h1><center>CPU Scheduling</center>
+
+<p>操作系统作业6</p>
+<ul>
+<li>6.2, 6.3, 6.6, 6.9</li>
+<li>6.10, 6.13, 6.16, 6.17, 6.19, 6.21, 6.23, 6.28</li>
+</ul>
+<span id="more"></span>
+
+<h2 id="Practice-Exercises"><a href="#Practice-Exercises" class="headerlink" title="Practice Exercises"></a>Practice Exercises</h2><p>6.2, 6.3, 6.6, 6.9</p>
+<h3 id="6-2-Explain-the-difference-between-preemptive-and-nonpreemptive-scheduling"><a href="#6-2-Explain-the-difference-between-preemptive-and-nonpreemptive-scheduling" class="headerlink" title="6.2 Explain the difference between preemptive and nonpreemptive scheduling."></a>6.2 Explain the difference between preemptive and nonpreemptive scheduling.</h3><p>解释一下抢占式调度和非抢占式调度的区别。</p>
+<p><strong>答：</strong> </p>
+<p>教材P263</p>
+<blockquote>
+<p>CPU-scheduling decisions may take place under the following four circumstances:</p>
+<ol>
+<li>When a process switches from the running state to the waiting state (for<br>  example, as the result of an I&#x2F;O request or an invocation of wait() for<br>  the termination of a child process)</li>
+<li>When a process switches from the running state to the ready state (for example, when an interrupt occurs) </li>
+<li>When a process switches from the waiting state to the ready state (for example, at completion of I&#x2F;O) </li>
+<li>When a process terminates</li>
+</ol>
+<p>For situations 1 and 4, there is no choice in terms of scheduling. A new process (if one exists in the ready queue) must be selected for execution. There is a choice, however, for situations 2 and 3. When scheduling takes place only under circumstances 1 and 4, we say that the scheduling scheme is nonpreemptive or cooperative. Otherwise, it is preemptive. Under nonpreemptive scheduling, once the CPU has been allocated to a process, the process keeps the CPU until it releases the CPU either by terminating or by switching to the waiting state.</p>
+</blockquote>
+<blockquote>
+<p><strong>Answer:</strong></p>
+<p>Preemptive scheduling allows a process to be interrupted in the midst of its execution, taking the CPU away and allocating it to another process. Nonpreemptive scheduling ensures that a process relinquishes control of the CPU only when it finishes with its current CPU burst.</p>
+<p>Understanding four conditions under which CPU scheduling decisions take place.</p>
+<p>抢占式调度允许一个进程在其执行过程中被打断，带走CPU并将其分配给另一个进程。非抢占式调度确保一个进程只有在完成其当前的CPU突发时才放弃对CPU的控制。</p>
+<p>了解CPU调度决策发生的四个条件。</p>
+</blockquote>
+<h3 id="6-3-Suppose-that-the-following-processes-arrive-for-execution-at-the-times-indicated-Each-process-will-run-for-the-amount-of-time-listed-In-answering-the-questions-use-nonpreemptive-scheduling-and-base-all-decisions-on-the-information-you-have-at-the-time-the-decision-must-be-made"><a href="#6-3-Suppose-that-the-following-processes-arrive-for-execution-at-the-times-indicated-Each-process-will-run-for-the-amount-of-time-listed-In-answering-the-questions-use-nonpreemptive-scheduling-and-base-all-decisions-on-the-information-you-have-at-the-time-the-decision-must-be-made" class="headerlink" title="6.3 Suppose that the following processes arrive for execution at the times indicated. Each process will run for the amount of time listed. In answering the questions, use nonpreemptive scheduling, and base all decisions on the information you have at the time the decision must be made."></a>6.3 Suppose that the following processes arrive for execution at the times indicated. Each process will run for the amount of time listed. In answering the questions, use nonpreemptive scheduling, and base all decisions on the information you have at the time the decision must be made.</h3><p>假设以下进程在指定的时间到达执行。每个进程将运行一定的时间。在回答这些问题时，请使用非抢占式调度，并将所有的决定建立在你必须做出决定时的信息上。</p>
+<table>
+<thead>
+<tr>
+<th>Process</th>
+<th>Arrival Time</th>
+<th>Burst Time</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>$P_1$</td>
+<td>0.0</td>
+<td>8</td>
+</tr>
+<tr>
+<td>$P_2$</td>
+<td>0.4</td>
+<td>4</td>
+</tr>
+<tr>
+<td>$P_3$</td>
+<td>1.0</td>
+<td>1</td>
+</tr>
+</tbody></table>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">gantt</span><br><span class="line">axisFormat %S</span><br><span class="line">title 进程到达时间及执行时间</span><br><span class="line">section 同步执行</span><br><span class="line">   P1            :des1, 2021-6-2 0:0:0, 8s</span><br><span class="line">   P2            :des2, 2021-6-2 0:0:0.4, 4s</span><br><span class="line">   P3            :des2, 2021-6-2 0:0:1, 1s</span><br></pre></td></tr></table></figure>
+
+<h4 id="a-What-is-the-average-turnaround-time-for-these-processes-with-the-FCFS-scheduling-algorithm"><a href="#a-What-is-the-average-turnaround-time-for-these-processes-with-the-FCFS-scheduling-algorithm" class="headerlink" title="a. What is the average turnaround time for these processes with the FCFS scheduling algorithm?"></a>a. What is the average turnaround time for these processes with the FCFS scheduling algorithm?</h4><p>在FCFS调度算法下，这些进程的平均周转时间是多少？</p>
+<p><strong>答：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">gantt</span><br><span class="line">axisFormat %S</span><br><span class="line">title 进程到达时间及执行时间</span><br><span class="line">section 同步执行</span><br><span class="line">   P1            :des1, 2021-6-2 0:0:0, 8s</span><br><span class="line">   P2            :des2, 2021-6-2 0:0:0.4, 4s</span><br><span class="line">   P3            :des2, 2021-6-2 0:0:1, 1s</span><br><span class="line">section FCFS</span><br><span class="line">   P1            :des1, 2021-6-2 0:0:0, 8s</span><br><span class="line">   P2            :des2,after des1, 4s</span><br><span class="line">   P3            :des3, after des2, 1s</span><br></pre></td></tr></table></figure>
+
+<p>平均等待时间：<br>$$<br>\frac{0+(12-4.4)+(13-2)}{3}&#x3D;6.2<br>$$</p>
+<p>平均周转时间：</p>
+<p>$$<br>\frac{8+(12-0.4)+(13-1)}{3}&#x3D;10.533333…<br>$$</p>
+<h4 id="b-What-is-the-average-turnaround-time-for-these-processes-with-the-SJF-scheduling-algorithm"><a href="#b-What-is-the-average-turnaround-time-for-these-processes-with-the-SJF-scheduling-algorithm" class="headerlink" title="b. What is the average turnaround time for these processes with the SJF scheduling algorithm?"></a>b. What is the average turnaround time for these processes with the SJF scheduling algorithm?</h4><p>在SJF调度算法下，这些进程的平均周转时间是多少？</p>
+<p><strong>答：</strong></p>
+<p>抢占式的SJF：（最短剩余时间有限 SRTN ）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">gantt</span><br><span class="line">axisFormat %S</span><br><span class="line">title 进程到达时间及执行时间</span><br><span class="line">section 同步执行</span><br><span class="line">   P1            :des1, 2021-6-2 0:0:0, 8s</span><br><span class="line">   P2            :des2, 2021-6-2 0:0:0.4, 4s</span><br><span class="line">   P3            :des2, 2021-6-2 0:0:1, 1s</span><br><span class="line">section SFJ（抢占式）</span><br><span class="line">   P1            :des1, 2021-6-2 0:0:0,2021-6-2 0:0:0.4</span><br><span class="line">   P2            :des2, 2021-6-2 0:0:0.4, 2021-6-2 0:0:1</span><br><span class="line">   P3            :des3, 2021-6-2 0:0:1, 1s</span><br><span class="line">   P2            :des4, after des3,2021-6-2 0:0:5</span><br><span class="line">   P1            :des5, after des4,2021-6-2 0:0:13</span><br></pre></td></tr></table></figure>
+
+<p>平均等待时间：<br>$$<br>\frac{(13-8)+(5-4.4)+(0)}{3}&#x3D;1.8666666…<br>$$</p>
+<p>平均周转时间：</p>
+<p>$$<br>\frac{13+(5-0.4)+(2-1)}{3}&#x3D;6.2<br>$$</p>
+<p><em>答案中所提供的是非抢占式的SJF。</em></p>
+<h4 id="c-The-SJF-algorithm-is-supposed-to-improve-performance-but-notice-that-we-chose-to-run-process-P1-at-time-0-because-we-did-not-know-that-two-shorter-processes-would-arrive-soon-Compute-what-the-average-turnaround-time-will-be-if-the-CPU-is-left-idle-for-the-first-1-unit-and-then-SJF-scheduling-is-used-Remember-that-processes-P1-and-P2-are-waiting-during-this-idle-time-so-their-waiting-time-may-increase-This-algorithm-could-be-called-future-knowledge-scheduling"><a href="#c-The-SJF-algorithm-is-supposed-to-improve-performance-but-notice-that-we-chose-to-run-process-P1-at-time-0-because-we-did-not-know-that-two-shorter-processes-would-arrive-soon-Compute-what-the-average-turnaround-time-will-be-if-the-CPU-is-left-idle-for-the-first-1-unit-and-then-SJF-scheduling-is-used-Remember-that-processes-P1-and-P2-are-waiting-during-this-idle-time-so-their-waiting-time-may-increase-This-algorithm-could-be-called-future-knowledge-scheduling" class="headerlink" title="c. The SJF algorithm is supposed to improve performance, but notice that we chose to run process P1 at time 0 because we did not know that two shorter processes would arrive soon. Compute what the average turnaround time will be if the CPU is left idle for the first 1 unit and then SJF scheduling is used. Remember that processes P1 and P2 are waiting during this idle time, so their waiting time may increase. This algorithm could be called future-knowledge scheduling."></a>c. The SJF algorithm is supposed to improve performance, but notice that we chose to run process P1 at time 0 because we did not know that two shorter processes would arrive soon. Compute what the average turnaround time will be if the CPU is left idle for the first 1 unit and then SJF scheduling is used. Remember that processes P1 and P2 are waiting during this idle time, so their waiting time may increase. This algorithm could be called future-knowledge scheduling.</h4><p>SJF算法应该是为了提高性能，但是注意到我们选择在时间0运行进程P1，因为我们不知道两个较短的进程会很快到达。计算一下如果CPU在最初的1个单元中处于空闲状态，然后使用SJF调度，平均周转时间将是多少。记住，进程P1和P2在这段空闲时间内正在等待，所以他们的等待时间可能会增加。这种算法可以称为未来知识调度。</p>
+<p><strong>答：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">gantt</span><br><span class="line">axisFormat %S</span><br><span class="line">title 进程到达时间及执行时间</span><br><span class="line">section 同步执行</span><br><span class="line">   P1            :des1, 2021-6-2 0:0:0, 8s</span><br><span class="line">   P2            :des2, 2021-6-2 0:0:0.4, 4s</span><br><span class="line">   P3            :des2, 2021-6-2 0:0:1, 1s</span><br><span class="line">section &quot;FKS&quot;</span><br><span class="line">   P3            :des3, 2021-6-2 0:0:1, 1s</span><br><span class="line">   P2            :des4, after des3,4s</span><br><span class="line">   P1            :des5, after des4,8s</span><br></pre></td></tr></table></figure>
+
+<p>平均等待时间：<br>$$<br>\frac{(0)+(6-4.4)+(14-8)}{3}&#x3D;2.5333333…<br>$$</p>
+<p>平均周转时间：</p>
+<p>$$<br>\frac{(14-0)+(6-0.4)+(2-1)}{3}&#x3D;6.8666666…<br>$$</p>
+<blockquote>
+<p><strong>Answer:</strong></p>
+<p>a.  10.53</p>
+<p>b.  9.53</p>
+<p>c.  6.86</p>
+<p>Remember that turnaround time is finishing time minus arrival time, so you have to subtract the arrival times to compute the turnaround times.</p>
+<p><img data-src="/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%85%AD/clip_image002.jpg" alt="img"></p>
+</blockquote>
+<h3 id="6-6-Suppose-that-a-scheduling-algorithm-at-the-level-of-short-term-CPU-scheduling-favors-those-processes-that-have-used-the-least-processor-time-in-the-recent-past-Why-will-this-algorithm-favor-I-x2F-O-bound-programs-and-yet-not-permanently-starve-CPU-bound-programs"><a href="#6-6-Suppose-that-a-scheduling-algorithm-at-the-level-of-short-term-CPU-scheduling-favors-those-processes-that-have-used-the-least-processor-time-in-the-recent-past-Why-will-this-algorithm-favor-I-x2F-O-bound-programs-and-yet-not-permanently-starve-CPU-bound-programs" class="headerlink" title="6.6 Suppose that a scheduling algorithm (at the level of short-term CPU scheduling) favors those processes that have used the least processor time in the recent past. Why will this algorithm favor I&#x2F;O-bound programs and yet not permanently starve CPU-bound programs?"></a>6.6 Suppose that a scheduling algorithm (at the level of short-term CPU scheduling) favors those processes that have used the least processor time in the recent past. Why will this algorithm favor I&#x2F;O-bound programs and yet not permanently starve CPU-bound programs?</h3><p>假设一个调度算法（在短期CPU调度的层面上）偏向于那些在最近使用最少处理器时间的进程。为什么这个算法会偏向于I&#x2F;O绑定的程序，却不会让CPU绑定的程序长期处于饥饿状态？</p>
+<p><strong>答：</strong></p>
+<p>I&#x2F;O-bound programs 一般CPU时间较短，所以先执行，且因为其执行速度快，很快将执行完再执行CPU-bound programs。Like SJF.</p>
+<blockquote>
+<p><strong>Answer:</strong></p>
+<p>It will favor the I&#x2F;O-bound programs because of the relatively short CPU burst request by them; however, the CPU-bound programs will not starve because the I&#x2F;O-bound programs will relinquish the CPU relatively often to do their I&#x2F;O.</p>
+<p>这将有利于绑定I&#x2F;O的程序，因为它们要求的CPU突发时间相对较短；然而，绑定CPU的程序不会挨饿，因为绑定I&#x2F;O的程序会相对频繁地放弃CPU来做他们的I&#x2F;O。</p>
+</blockquote>
+<h3 id="6-9-The-traditional-UNIX-scheduler-enforces-an-inverse-relationship-between-priority-numbers-and-priorities-the-higher-the-number-the-lower-the-priority-The-scheduler-recalculates-process-priorities-once-per-second-using-the-following-function"><a href="#6-9-The-traditional-UNIX-scheduler-enforces-an-inverse-relationship-between-priority-numbers-and-priorities-the-higher-the-number-the-lower-the-priority-The-scheduler-recalculates-process-priorities-once-per-second-using-the-following-function" class="headerlink" title="6.9 The traditional UNIX scheduler enforces an inverse relationship between priority numbers and priorities: the higher the number, the lower the priority. The scheduler recalculates process priorities once per second using the following function:"></a>6.9 The traditional UNIX scheduler enforces an inverse relationship between priority numbers and priorities: the higher the number, the lower the priority. The scheduler recalculates process priorities once per second using the following function:</h3><p>传统的UNIX调度程序在优先级数字和优先级之间执行一种相反的关系：数字越大，优先级越低。调度器使用以下函数每秒钟重新计算一次进程的优先级:</p>
+<p><code>Priority = (recent CPU usage / 2) + base</code> </p>
+<p>where base &#x3D; 60 and <em>recent CPU usage</em> refers to a value indicating how often a process has used the CPU since priorities were last recalculated. </p>
+<p>其中 base&#x3D;60，<em>recent CPU usage</em>指的是一个值，表示自从上次重新计算优先级以来，一个进程使用CPU的频率。</p>
+<p>Assume that recent CPU usage is 40 for process P1, 18 for process P2, and 10 for process P3. What will be the new priorities for these three processes when priorities are recalculated? Based on this information, does the traditional UNIX scheduler raise or lower the relative priority of a CPU-bound process?</p>
+<p>假设进程P1最近的CPU使用率为40，进程P2为18，进程P3为10。当优先级被重新计算时，这三个进程的新优先级将是什么？基于这些信息，传统的UNIX调度程序是提高还是降低一个 CPU-bound进程的相对优先级？</p>
+<p><strong>答：</strong><br>$$<br>P_1&#x3D;\frac{40}{2}+60&#x3D;80<br>\<br>P_2&#x3D;\frac{18}{2}+60&#x3D;69<br>\<br>P_3&#x3D;\frac{10}{2}+60&#x3D;65<br>$$<br>Will lower the relative priority of a CPU-bound process.</p>
+<blockquote>
+<p><strong>Answer:</strong></p>
+<p>The priorities assigned to the processes are 80, 69, and 65 respectively. The scheduler lowers the relative priority of CPU-bound processes.</p>
+</blockquote>
+<h2 id="Exercises"><a href="#Exercises" class="headerlink" title="Exercises"></a>Exercises</h2><p>6.10, 6.13, 6.16, 6.17, 6.19, 6.21, 6.23, 6.28</p>
+<h3 id="6-10-Why-is-it-important-for-the-scheduler-to-distinguish-I-x2F-O-bound-programs-from-CPU-bound-programs"><a href="#6-10-Why-is-it-important-for-the-scheduler-to-distinguish-I-x2F-O-bound-programs-from-CPU-bound-programs" class="headerlink" title="6.10 Why is it important for the scheduler to distinguish I&#x2F;O-bound programs from CPU-bound programs?"></a>6.10 Why is it important for the scheduler to distinguish I&#x2F;O-bound programs from CPU-bound programs?</h3><p>为什么对调度员来说，区分绑定I&#x2F;O的程序和绑定CPU的程序很重要？</p>
+<p><strong>答：</strong>Because 这两种类型的程序 have huge difference.</p>
+<blockquote>
+<p><strong>Answer:</strong></p>
+<p>I&#x2F;O-bound programs have the property of performing only a small amount of computation before performing I&#x2F;O. Such programs <strong>typically do not use up their entire CPU quantum</strong>. </p>
+<p>CPU-bound programs, on the other hand, use their entire quantum without performing any blocking I&#x2F;O operations. </p>
+<p>Consequently, one could make better use of the computer’s resources (<strong>CPU and I&#x2F;O devices</strong>) by giving higher priority to I&#x2F;O-bound programs and allow them to execute ahead of the CPU-bound programs.</p>
+<p>I&#x2F;O绑定的程序具有在执行I&#x2F;O之前只进行少量计算的特性。这样的程序<strong>通常不会用尽其整个CPU quantum</strong>。</p>
+<p>而另一方面，受CPU约束的程序在不执行任何阻塞性I&#x2F;O操作的情况下使用其整个CPU quantum。</p>
+<p>因此，人们可以通过给绑定I&#x2F;O的程序以更高的优先级，让它们在绑定CPU的程序之前执行，从而更好地利用计算机的资源（<strong>CPU和I&#x2F;O设备</strong>）。</p>
+</blockquote>
+<h3 id="6-13-In-Chapter-5-we-discussed-possible-race-conditions-on-various-kernel-data-structures-Most-scheduling-algorithms-maintain-a-run-queue-which-lists-processes-eligible-to-run-on-a-processor-On-multicore-systems-there-are-two-general-options-1-each-processing-core-has-its-own-run-queue-or-2-a-single-run-queue-is-shared-by-all-processing-cores-What-are-the-advantages-and-disadvantages-of-each-of-these-approaches"><a href="#6-13-In-Chapter-5-we-discussed-possible-race-conditions-on-various-kernel-data-structures-Most-scheduling-algorithms-maintain-a-run-queue-which-lists-processes-eligible-to-run-on-a-processor-On-multicore-systems-there-are-two-general-options-1-each-processing-core-has-its-own-run-queue-or-2-a-single-run-queue-is-shared-by-all-processing-cores-What-are-the-advantages-and-disadvantages-of-each-of-these-approaches" class="headerlink" title="6.13  In Chapter 5, we discussed possible race conditions on various kernel data structures. Most scheduling algorithms maintain a run queue, which lists processes eligible to run on a processor. On multicore systems, there are two general options: (1) each processing core has its own run queue, or (2) a single run queue is shared by all processing cores. What are the advantages and disadvantages of each of these approaches?"></a>6.13  In Chapter 5, we discussed possible race conditions on various kernel data structures. Most scheduling algorithms maintain a <em>run queue</em>, which lists processes eligible to run on a processor. On multicore systems, there are two general options: (1) each processing core has its own run queue, or (2) a single run queue is shared by all processing cores. What are the advantages and disadvantages of each of these approaches?</h3><p>在第五章中，我们讨论了各种内核数据结构上可能存在的竞赛条件。大多数调度算法保持一个<em>运行队列</em>，它列出了有资格在处理器上运行的进程。在多核系统中，一般有两种选择。1）每个处理核心有自己的运行队列，或者2）所有处理核心共享一个运行队列。这些方法各自的优缺点是什么？</p>
+<p><strong>答：</strong></p>
+<h4 id="1-each-processing-core-has-its-own-run-queue"><a href="#1-each-processing-core-has-its-own-run-queue" class="headerlink" title="(1) each processing core has its own run queue."></a>(1) each processing core has its own run queue.</h4><p>优点：不易冲突</p>
+<p>缺点：管理不便</p>
+<h4 id="2-a-single-run-queue-is-shared-by-all-processing-cores"><a href="#2-a-single-run-queue-is-shared-by-all-processing-cores" class="headerlink" title="(2) a single run queue is shared by all processing cores."></a>(2) a single run queue is shared by all processing cores.</h4><p>优点：管理方便</p>
+<p>缺点：同步麻烦，可能会出现冲突</p>
+<blockquote>
+<p><strong>Answer:</strong></p>
+<p>The primary advantage of each processing core having its own run queue is that there is no contention over a single run queue when the scheduler is running concurrently on 2 or more processors. When a scheduling decision must be made for a processing core, the scheduler only need to look no further than its private run queue. </p>
+<p>A disadvantage of a single shared run queue is that it must be protected with locks to prevent a race condition and a processing core may be available to run a thread, yet it must first acquire the lock to retrieve the thread from the single queue. However, load balancing would likely not be an issue with a single run queue, whereas when each processing core has its own run queue, there must be some sort of load balancing between the different run queues.</p>
+<p>每个处理核心都有自己的运行队列的主要优点是，当调度器在2个或更多的处理器上同时运行时，不会出现对单一运行队列的争夺。当必须为一个处理核心做出调度决定时，调度器只需要在其私有的运行队列中寻找。</p>
+<p>单一共享运行队列的缺点是，它必须用锁来保护，以防止出现竞赛条件，一个处理核心可能可以运行一个线程，但它必须首先获得锁，才能从单一队列中检索到线程。然而，对于单个运行队列来说，负载平衡可能不是一个问题，而当每个处理核心有自己的运行队列时，不同的运行队列之间必须有某种负载平衡。</p>
+</blockquote>
+<h3 id="6-16-Consider-the-following-set-of-processes-with-the-length-of-the-CPU-burst-given-in-milliseconds"><a href="#6-16-Consider-the-following-set-of-processes-with-the-length-of-the-CPU-burst-given-in-milliseconds" class="headerlink" title="6.16  Consider the following set of processes, with the length of the CPU burst given in milliseconds:"></a>6.16  Consider the following set of processes, with the length of the CPU burst given in milliseconds:</h3><p>考虑以下一组进程， CPU burst 的长度以毫秒为单位。</p>
+<table>
+<thead>
+<tr>
+<th>Process</th>
+<th>Burst Time</th>
+<th>Priority</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>$P_1$</td>
+<td>2</td>
+<td>2</td>
+</tr>
+<tr>
+<td>$P_2$</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>$P_3$</td>
+<td>8</td>
+<td>4</td>
+</tr>
+<tr>
+<td>$P_4$</td>
+<td>4</td>
+<td>2</td>
+</tr>
+<tr>
+<td>$P_5$</td>
+<td>5</td>
+<td>3</td>
+</tr>
+</tbody></table>
+<p>The processes are assumed to have arrived in the order P1, P2, P3, P4, P5, all at time 0. 假设这些过程以P1, P2, P3, P4, P5的顺序到达在时间0。</p>
+<h4 id="a-Draw-four-Gantt-charts-that-illustrate-the-execution-of-these-processes-using-the-following-scheduling-algorithms-FCFS-SJF-nonpreemptive-priority-a-larger-priority-number-implies-a-higher-priority-and-RR-quantum-x3D-2"><a href="#a-Draw-four-Gantt-charts-that-illustrate-the-execution-of-these-processes-using-the-following-scheduling-algorithms-FCFS-SJF-nonpreemptive-priority-a-larger-priority-number-implies-a-higher-priority-and-RR-quantum-x3D-2" class="headerlink" title="a. Draw four Gantt charts that illustrate the execution of these processes using the following scheduling algorithms: FCFS, SJF, nonpreemptive priority (a larger priority number implies a higher priority), and RR (quantum &#x3D; 2)."></a>a. Draw four Gantt charts that illustrate the execution of these processes using the following scheduling algorithms: FCFS, SJF, nonpreemptive priority (a larger priority number implies a higher priority), and RR (quantum &#x3D; 2).</h4><p>画出四张甘特图，说明这些进程使用下列调度算法的执行情况。FCFS，SJF，非抢占优先权（较大的优先级数字意味着较高的优先级），以及RR（quantum &#x3D; 2）。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">gantt</span><br><span class="line">axisFormat %S</span><br><span class="line">title 进程执行甘特图</span><br><span class="line">section 同步执行</span><br><span class="line">   P1            :des1, 2021-6-2 0:0:0, 2s</span><br><span class="line">   P2            :des2, 2021-6-2 0:0:0, 1s</span><br><span class="line">   P3            :des3, 2021-6-2 0:0:0, 8s</span><br><span class="line">   P4            :des4, 2021-6-2 0:0:0, 4s</span><br><span class="line">   P5            :des5, 2021-6-2 0:0:0, 5s</span><br><span class="line">section FCFS</span><br><span class="line">   P1            :F1, 2021-6-2 0:0:0, 2s</span><br><span class="line">   P2            :F2, after F1, 1s</span><br><span class="line">   P3            :F3, after F2, 8s</span><br><span class="line">   P4            :F4, after F3, 4s</span><br><span class="line">   P5            :F5, after F4, 5s</span><br><span class="line">section SJF</span><br><span class="line">   P2            :SFJ1, 2021-6-2 0:0:0, 1s</span><br><span class="line">   P1            :SFJ2, after SFJ1, 2s</span><br><span class="line">   P4            :SFJ3, after SFJ2, 4s</span><br><span class="line">   P5            :SFJ4, after SFJ3, 5s</span><br><span class="line">   P3            :SFJ5, after SFJ4, 8s</span><br><span class="line">section Nonpreemptive Priority</span><br><span class="line">   P3(p&#x3D;4)            :NP1, 2021-6-2 0:0:0, 8s</span><br><span class="line">   P5(p&#x3D;3)            :NP2, after NP1, 5s</span><br><span class="line">   P1(p&#x3D;2)            :NP3, after NP2, 2s</span><br><span class="line">   P4(p&#x3D;2)            :NP4, after NP3, 4s</span><br><span class="line">   P2(p&#x3D;1)            :NP5, after NP4, 1s</span><br><span class="line">section PR</span><br><span class="line">   P1            :PR1, 2021-6-2 0:0:0, 2s</span><br><span class="line">   P2            :PR2, after PR1, 1s</span><br><span class="line">   P3            :PR3, after PR2, 2s</span><br><span class="line">   P4            :PR4, after PR3, 2s</span><br><span class="line">   P5            :PR5, after PR4, 5s</span><br><span class="line">   P3            :PR6, after PR5, 2s</span><br><span class="line">   P4            :PR7, after PR6, 2s</span><br><span class="line">   P3            :PR8, after PR7, 2s</span><br><span class="line">   P3            :PR9, after PR8, 2s</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h4 id="b-What-is-the-turnaround-time-of-each-process-for-each-of-the-scheduling-algorithms-in-part-a"><a href="#b-What-is-the-turnaround-time-of-each-process-for-each-of-the-scheduling-algorithms-in-part-a" class="headerlink" title="b. What is the turnaround time of each process for each of the scheduling algorithms in part a?"></a>b. What is the turnaround time of each process for each of the scheduling algorithms in part a?</h4><p>对于a部分中的每种调度算法，每个流程的周转时间是多少？</p>
+<p><strong>答：</strong>略，按之前题目的公式计算</p>
+<h4 id="c-What-is-the-waiting-time-of-each-process-for-each-of-these-scheduling-algorithms"><a href="#c-What-is-the-waiting-time-of-each-process-for-each-of-these-scheduling-algorithms" class="headerlink" title="c. What is the waiting time of each process for each of these scheduling algorithms?"></a>c. What is the waiting time of each process for each of these scheduling algorithms?</h4><p>在这些调度算法中，每个进程的等待时间是多少？</p>
+<p><strong>答：</strong>略，按之前题目的公式计算</p>
+<h4 id="d-Which-of-the-algorithms-results-in-the-minimum-average-waiting-time-over-all-processes"><a href="#d-Which-of-the-algorithms-results-in-the-minimum-average-waiting-time-over-all-processes" class="headerlink" title="d. Which of the algorithms results in the minimum average waiting time (over all processes)?"></a>d. Which of the algorithms results in the minimum average waiting time (over all processes)?</h4><p>哪种算法能使平均等待时间最小（在所有进程中）？</p>
+<blockquote>
+<p><strong>Answer:</strong></p>
+<p><img data-src="/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%85%AD/clip_image002.gif" alt="img"></p>
+<p><img data-src="/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%85%AD/clip_image004.gif" alt="img"></p>
+<p><img data-src="/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%85%AD/clip_image006.gif" alt="img"></p>
+<p>d. Shortest Job First.</p>
+</blockquote>
+<h3 id="6-17"><a href="#6-17" class="headerlink" title="6.17"></a>6.17</h3><p>The following processes are being scheduled using a preemptive, roundrobin scheduling algorithm. Each process is assigned a numerical priority, with a higher number indicating a higher relative priority. In addition to the processes listed below, the system also has an <em>idlet task</em> (which consumes no CPU resources and is identified as $P_{idle}$). This task has priority 0 and is scheduled whenever the system has no other available processes to run. The length of a time quantum is 10 units. If a process is preempted by a higher-priority process, the preempted process is placed at the end of the queue.</p>
+<p>下面的进程正在使用一个抢占式的轮流调度算法进行调度。每个进程都被分配了一个数字的优先级，数字越大表示相对优先级越高。除了下面列出的进程，系统还有一个<em>idlet任务</em>（它不消耗CPU资源，被标识为$P_{idle}$）。这个任务的优先级为0，只要系统没有其他可用的进程可以运行，它就会被安排。一个时间量子的长度是10个单位。如果一个进程被更高优先级的进程抢占，被抢占的进程将被放在队列的最后。</p>
+<table>
+<thead>
+<tr>
+<th>Process</th>
+<th>Priority</th>
+<th>Burst</th>
+<th>Arrival</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>$P_1$</td>
+<td>40</td>
+<td>20</td>
+<td>0</td>
+</tr>
+<tr>
+<td>$P_2$</td>
+<td>30</td>
+<td>25</td>
+<td>25</td>
+</tr>
+<tr>
+<td>$P_3$</td>
+<td>30</td>
+<td>25</td>
+<td>30</td>
+</tr>
+<tr>
+<td>$P_4$</td>
+<td>35</td>
+<td>15</td>
+<td>60</td>
+</tr>
+<tr>
+<td>$P_5$</td>
+<td>5</td>
+<td>10</td>
+<td>100</td>
+</tr>
+<tr>
+<td>$P_6$</td>
+<td>10</td>
+<td>10</td>
+<td>105</td>
+</tr>
+</tbody></table>
+<h4 id="a-Show-the-scheduling-order-of-the-processes-using-a-Gantt-chart"><a href="#a-Show-the-scheduling-order-of-the-processes-using-a-Gantt-chart" class="headerlink" title="a. Show the scheduling order of the processes using a Gantt chart."></a>a. Show the scheduling order of the processes using a Gantt chart.</h4><p>用甘特图显示流程的调度顺序。</p>
+<p><strong>答：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">gantt</span><br><span class="line">axisFormat %S</span><br><span class="line">title 进程执行甘特图</span><br><span class="line">section 同步执行</span><br><span class="line">   P_1 (p&#x3D;40)            :des1, 2021-6-2 0:0:0 , 20s</span><br><span class="line">   P_2 (p&#x3D;30)            :des2, 2021-6-2 0:0:25, 25s</span><br><span class="line">   P_3 (p&#x3D;30)            :des3, 2021-6-2 0:0:30, 25s</span><br><span class="line">   P_4 (p&#x3D;35)            :des4, 2021-6-2 0:1:0 , 15s</span><br><span class="line">   P_5 (p&#x3D;5 )            :des5, 2021-6-2 0:1:40, 10s</span><br><span class="line">   P_6 (p&#x3D;10)            :des6, 2021-6-2 0:1:45, 10s</span><br><span class="line">   P_idle (p&#x3D;0)   :done,  des7, 2021-6-2 0:0:0 , 120s</span><br><span class="line">section PRS</span><br><span class="line">   P_1 (p&#x3D;40)            :PRS1, 2021-6-2 0:0:0 , 20s</span><br><span class="line">   P_idle (p&#x3D;0)   :done,  PRS2, after PRS1 , 5s</span><br><span class="line">   P_2 (p&#x3D;30)            :PRS3, 2021-6-2 0:0:25, 5s</span><br><span class="line">   P_3 (p&#x3D;30)            :PRS4, 2021-6-2 0:0:30, 10s</span><br><span class="line">   P_2 (p&#x3D;30)            :PRS5, after PRS4, 10s</span><br><span class="line">   P_3 (p&#x3D;30)            :PRS6, after PRS5, 10s</span><br><span class="line">   P_4 (p&#x3D;35)            :PRS7, 2021-6-2 0:1:0 , 15s</span><br><span class="line">   P_3 (p&#x3D;30)            :PRS8, after PRS7, 5s</span><br><span class="line">   P_2 (p&#x3D;30)            :PRS9, after PRS8, 10s</span><br><span class="line">   P_idle (p&#x3D;0)   :done,  PRS10, after PRS9 , 10s</span><br><span class="line">   P_5 (p&#x3D;5 )            :PRS11, 2021-6-2 0:1:40, 5s</span><br><span class="line">   P_6 (p&#x3D;10)            :PRS12, 2021-6-2 0:1:45, 10s</span><br><span class="line">   P_5 (p&#x3D;5 )            :PRS13, after PRS12, 5s</span><br></pre></td></tr></table></figure>
+
+<h4 id="b-What-is-the-turnaround-time-for-each-process"><a href="#b-What-is-the-turnaround-time-for-each-process" class="headerlink" title="b. What is the turnaround time for each process?"></a>b. What is the turnaround time for each process?</h4><p>每个过程的周转时间是多少？ </p>
+<p><strong>答：</strong>略，按之前题目的公式计算</p>
+<h4 id="c-What-is-the-waiting-time-for-each-process"><a href="#c-What-is-the-waiting-time-for-each-process" class="headerlink" title="c. What is the waiting time for each process?"></a>c. What is the waiting time for each process?</h4><p>每个程序的等待时间是多少？</p>
+<p><strong>答：</strong>略，按之前题目的公式计算</p>
+<h4 id="d-What-is-the-CPU-utilization-rate"><a href="#d-What-is-the-CPU-utilization-rate" class="headerlink" title="d. What is the CPU utilization rate?"></a>d. What is the CPU utilization rate?</h4><p>CPU的利用率是多少？</p>
+<blockquote>
+<p><strong>Answer:</strong></p>
+<p>a. </p>
+<p>0-P1<br>10-P1<br>20-Pidle<br>25-P2<br>35-P3<br>45-P2<br>55-P3<br>60-P4<br>70-P4<br>75-P2<br>80-P3<br>90-Pidle<br>100-P5<br>105-P6<br>115-P5<br>120- end </p>
+<p><img data-src="/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%85%AD/clip_image002-1625118663277.jpg" alt="img"></p>
+<p>b. p1: 20-0 &#x3D; 20, p2: 80-25 &#x3D; 55, p3: 90 - 30 &#x3D; 60, p4: 75-60 &#x3D; 15, p5: 120-100 &#x3D; 20, p6: 115-105 &#x3D; 10</p>
+<p>c. p1: 0, p2: 40, p3: 35, p4: 0, p5: 10, p6: 0</p>
+<p>d. 105&#x2F;120 &#x3D; 87.5 percent.</p>
+</blockquote>
+<h3 id="6-19-Which-of-the-following-scheduling-algorithms-could-result-in-starvation"><a href="#6-19-Which-of-the-following-scheduling-algorithms-could-result-in-starvation" class="headerlink" title="6.19 Which of the following scheduling algorithms could result in starvation?"></a>6.19 Which of the following scheduling algorithms could result in starvation?</h3><p>以下哪种调度算法可能导致饥饿？</p>
+<ul>
+<li><input disabled type="checkbox"> a. First-come, first-served </li>
+<li><input checked disabled type="checkbox"> b. Shortest job first </li>
+<li><input disabled type="checkbox"> c. Round robin </li>
+<li><input checked disabled type="checkbox"> d. Priority</li>
+</ul>
+<blockquote>
+<p><strong>Answer:</strong></p>
+<p>Shortest job first and priority-based scheduling algorithms could result in starvation.</p>
+</blockquote>
+<h3 id="6-21-Consider-a-system-running-ten-I-x2F-O-bound-tasks-and-one-CPU-bound-task-Assume-that-the-I-x2F-O-bound-tasks-issue-an-I-x2F-O-operation-once-for-every-millisecond-of-CPU-computing-and-that-each-I-x2F-O-operation-takes-10-milliseconds-to-complete-Also-assume-that-the-context-switching-overhead-is-0-1-millisecond-and-that-all-processes-are-long-running-tasks-Describe-the-CPU-utilization-for-a-round-robin-scheduler-when"><a href="#6-21-Consider-a-system-running-ten-I-x2F-O-bound-tasks-and-one-CPU-bound-task-Assume-that-the-I-x2F-O-bound-tasks-issue-an-I-x2F-O-operation-once-for-every-millisecond-of-CPU-computing-and-that-each-I-x2F-O-operation-takes-10-milliseconds-to-complete-Also-assume-that-the-context-switching-overhead-is-0-1-millisecond-and-that-all-processes-are-long-running-tasks-Describe-the-CPU-utilization-for-a-round-robin-scheduler-when" class="headerlink" title="6.21 Consider a system running ten I&#x2F;O-bound tasks and one CPU-bound task. Assume that the I&#x2F;O-bound tasks issue an I&#x2F;O operation once for every millisecond of CPU computing and that each I&#x2F;O operation takes 10 milliseconds to complete. Also assume that the context-switching overhead is 0.1 millisecond and that all processes are long-running tasks. Describe the CPU utilization for a round-robin scheduler when:"></a>6.21 Consider a system running ten I&#x2F;O-bound tasks and one CPU-bound task. Assume that the I&#x2F;O-bound tasks issue an I&#x2F;O operation once for every millisecond of CPU computing and that each I&#x2F;O operation takes 10 milliseconds to complete. Also assume that the context-switching overhead is 0.1 millisecond and that all processes are long-running tasks. Describe the CPU utilization for a round-robin scheduler when:</h3><p>考虑一个正在运行十个I&#x2F;O-bound任务和一个CPU-bound任务的系统。假设I&#x2F;O绑定的任务在CPU计算的每一毫秒发出一次I&#x2F;O操作，每个I&#x2F;O操作需要10毫秒才能完成。还假设上下文切换开销为0.1毫秒，所有进程都是长期运行的任务。描述一下轮回调度器的CPU利用率，当:</p>
+<h4 id="a-The-time-quantum-is-1-millisecond"><a href="#a-The-time-quantum-is-1-millisecond" class="headerlink" title="a. The time quantum is 1 millisecond"></a>a. The time quantum is 1 millisecond</h4><h4 id="b-The-time-quantum-is-10-milliseconds"><a href="#b-The-time-quantum-is-10-milliseconds" class="headerlink" title="b. The time quantum is 10 milliseconds"></a>b. The time quantum is 10 milliseconds</h4><blockquote>
+<p><strong>Answer:</strong></p>
+<p>a. The time quantum is 1 millisecond: Irrespective of which process is scheduled, the scheduler incurs a 0.1 millisecond context-switching cost for every context-switch. This results in a CPU utilization of 1&#x2F;1.1 * 100 &#x3D; 91%.</p>
+<p>b. The time quantum is 10 milliseconds: The I&#x2F;O-bound tasks incur a context switch after using up only 1 millisecond of the time quantum. The time required to cycle through all the processes is therefore 10*1.1 + 10.1 (as each I&#x2F;O-bound task executes for 1 millisecond and then incur the context switch task, whereas the CPU-bound task executes for 10 milliseconds before incurring a context switch). The CPU utilization is therefore 20&#x2F;21.1 * 100 &#x3D; 94%.</p>
+<p>答案：<br>a. 时间量子是1毫秒：无论哪个进程被调度，调度器对每个上下文切换都会产生0.1毫秒的上下文切换成本。这导致CPU利用率为1&#x2F;1.1 * 100 &#x3D; 91%。<br>b. 时间量子是10毫秒。I&#x2F;O绑定的任务在只用了1毫秒的时间量子后就会发生上下文切换。因此，所有进程循环所需的时间是10*1.1+10.1（因为每个I&#x2F;O绑定的任务执行1毫秒，然后发生上下文切换任务，而CPU绑定的任务在发生上下文切换之前执行10毫秒）。因此，CPU的利用率是20&#x2F;21.1 * 100 &#x3D; 94%。</p>
+</blockquote>
+<h3 id="6-23"><a href="#6-23" class="headerlink" title="6.23"></a>6.23</h3><p>Consider a preemptive priority scheduling algorithm based on dynamically changing priorities. Larger priority numbers imply higher priority. When a process is waiting for the CPU (in the ready queue, but not running), its priority changes at a rate $\alpha$. When it is running, its priority changes at a rate $\beta$. All processes are given a priority of 0 when they enter the ready queue. The parameters $\alpha$ and $\beta$ can be set to give many different scheduling algorithms.</p>
+<p>考虑一种基于动态变化的优先级的抢占式优先级调度算法。较大的优先级数字意味着较高的优先级。当一个进程在等待CPU时（在准备队列中，但没有运行），它的优先级以$\alpha$的速度变化。当它正在运行时，它的优先级以$\beta$的速度变化。所有进程在进入就绪队列时都被赋予0的优先级。参数$\alpha$和$\beta$可以被设置为许多不同的调度算法。</p>
+<h4 id="a-What-is-the-algorithm-that-results-from-beta-gt-alpha-gt-0"><a href="#a-What-is-the-algorithm-that-results-from-beta-gt-alpha-gt-0" class="headerlink" title="a. What is the algorithm that results from $\beta$ &gt; $\alpha$ &gt; 0?"></a>a. What is the algorithm that results from $\beta$ &gt; $\alpha$ &gt; 0?</h4><p><strong>答：</strong>等同于FCFS</p>
+<h4 id="b-What-is-the-algorithm-that-results-from-alpha-lt-beta-lt-0"><a href="#b-What-is-the-algorithm-that-results-from-alpha-lt-beta-lt-0" class="headerlink" title="b. What is the algorithm that results from $\alpha$ &lt; $\beta$ &lt; 0?"></a>b. What is the algorithm that results from $\alpha$ &lt; $\beta$ &lt; 0?</h4><p><strong>答：</strong>等同于LCFS</p>
+<blockquote>
+<p><strong>Answer:</strong></p>
+<p>First case is FCFS; second case is LIFO (last in, first out).</p>
+</blockquote>
+<h3 id="6-28"><a href="#6-28" class="headerlink" title="6.28"></a>6.28</h3><p>Assume that two tasks A and B are running on a Linux system. The nice values of A and B are −5 and +5, respectively. Using the CFS scheduler as a guide, describe how the respective values of <code>vruntime</code> vary between the two processes given each of the following scenarios: </p>
+<p>假设有两个任务A和B在一个Linux系统上运行。A和B的 nice values 分别为-5和+5。以CFS调度器为指导，描述在以下每种情况下，两个进程的 “vruntime”值如何变化。</p>
+<h4 id="Both-A-and-B-are-CPU-bound"><a href="#Both-A-and-B-are-CPU-bound" class="headerlink" title="Both A and B are CPU-bound."></a>Both A and B are CPU-bound.</h4><h4 id="A-is-I-x2F-O-bound-and-B-is-CPU-bound"><a href="#A-is-I-x2F-O-bound-and-B-is-CPU-bound" class="headerlink" title="A is I&#x2F;O-bound, and B is CPU-bound."></a>A is I&#x2F;O-bound, and B is CPU-bound.</h4><h4 id="A-is-CPU-bound-and-B-is-I-x2F-O-bound"><a href="#A-is-CPU-bound-and-B-is-I-x2F-O-bound" class="headerlink" title="A is CPU-bound, and B is I&#x2F;O-bound."></a>A is CPU-bound, and B is I&#x2F;O-bound.</h4><p><strong>答：</strong></p>
+<blockquote>
+<p><strong>Answer:</strong></p>
+<p>• Since A has a higher priority than B, vruntime will move more slowly for A than B. If both A and B are CPU-bound (that is they both use the CPU for as long as it is allocated to them), vruntime will generally be smaller for A than B, and hence A will have a greater priority to run over B.</p>
+<p>• In this situation, vruntime will be much smaller for A than B as (1) vruntime will move more slowly for A than B due to priority differences, and (2) Awill require less CPU-time as it is I&#x2F;O-bound.</p>
+<p>• This situation is not as clear, and it is possible that B may end up running in favor of A as it will be using the processor less than A and in fact its value of vruntime may in fact be less than the value of vruntime for B.</p>
+<ul>
+<li><p>如果A和B都是CPU绑定的（也就是只要分配给他们的CPU，他们都会使用），那么A的vruntime通常会比B小，因此A会比B有更大的运行优先权。</p>
+</li>
+<li><p>在这种情况下，A的vruntime将比B小得多，因为（1）由于优先级的不同，A的vruntime将比B移动得更慢，（2）Awill需要的CPU时间更少，因为它是I&#x2F;O绑定的。</p>
+</li>
+<li><p>这种情况并不明确，有可能B最终会有利于A的运行，因为它对处理器的使用比A少，事实上它的vruntime值可能事实上小于B的vruntime值。</p>
+</li>
+</ul>
+</blockquote>
+<hr>
+<p><strong>注：</strong></p>
+<p>参考资料：</p>
+<p>[1] <a target="_blank" rel="noopener" href="https://mermaid-js.github.io/mermaid/#/">mermaid - Markdownish syntax for generating flowcharts, sequence diagrams, class diagrams, gantt charts and git graphs. (mermaid-js.github.io)</a></p>
+<p>[2] Operating System Concepts – 9th Edition 及其答案</p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      <div style="display: inline-block;">
+        <img src="/images/dogecoin.png" alt="Framist dogecoin">
+        <p>dogecoin</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Framist
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://framist.github.io/2021/06/03/%E3%80%90%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%91/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%85%AD/" title="【操作系统概念-作业6】CPU Scheduling">https://framist.github.io/2021/06/03/【操作系统】/操作系统作业六/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%AD%A6%E4%B9%A0/" rel="tag"># 学习</a>
+              <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag"># 操作系统</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/06/02/%E3%80%90PL%E3%80%91/%E3%80%90Python%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%E3%80%91%E4%B8%8A%E6%9C%BA%E4%BD%9C%E4%B8%9A/" rel="prev" title="【Python程序设计】上机作业 - 人类高质量代码">
+      <i class="fa fa-chevron-left"></i> 【Python程序设计】上机作业 - 人类高质量代码
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/06/05/%E3%80%90%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%91/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%B8%83/" rel="next" title="【操作系统概念-作业7】Deadlocks">
+      【操作系统概念-作业7】Deadlocks <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Operating-System-Concepts-Exercises-6"><span class="nav-number">1.</span> <span class="nav-text">Operating System Concepts Exercises 6</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Practice-Exercises"><span class="nav-number">1.1.</span> <span class="nav-text">Practice Exercises</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-Explain-the-difference-between-preemptive-and-nonpreemptive-scheduling"><span class="nav-number">1.1.1.</span> <span class="nav-text">6.2 Explain the difference between preemptive and nonpreemptive scheduling.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-3-Suppose-that-the-following-processes-arrive-for-execution-at-the-times-indicated-Each-process-will-run-for-the-amount-of-time-listed-In-answering-the-questions-use-nonpreemptive-scheduling-and-base-all-decisions-on-the-information-you-have-at-the-time-the-decision-must-be-made"><span class="nav-number">1.1.2.</span> <span class="nav-text">6.3 Suppose that the following processes arrive for execution at the times indicated. Each process will run for the amount of time listed. In answering the questions, use nonpreemptive scheduling, and base all decisions on the information you have at the time the decision must be made.</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#a-What-is-the-average-turnaround-time-for-these-processes-with-the-FCFS-scheduling-algorithm"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">a. What is the average turnaround time for these processes with the FCFS scheduling algorithm?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#b-What-is-the-average-turnaround-time-for-these-processes-with-the-SJF-scheduling-algorithm"><span class="nav-number">1.1.2.2.</span> <span class="nav-text">b. What is the average turnaround time for these processes with the SJF scheduling algorithm?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#c-The-SJF-algorithm-is-supposed-to-improve-performance-but-notice-that-we-chose-to-run-process-P1-at-time-0-because-we-did-not-know-that-two-shorter-processes-would-arrive-soon-Compute-what-the-average-turnaround-time-will-be-if-the-CPU-is-left-idle-for-the-first-1-unit-and-then-SJF-scheduling-is-used-Remember-that-processes-P1-and-P2-are-waiting-during-this-idle-time-so-their-waiting-time-may-increase-This-algorithm-could-be-called-future-knowledge-scheduling"><span class="nav-number">1.1.2.3.</span> <span class="nav-text">c. The SJF algorithm is supposed to improve performance, but notice that we chose to run process P1 at time 0 because we did not know that two shorter processes would arrive soon. Compute what the average turnaround time will be if the CPU is left idle for the first 1 unit and then SJF scheduling is used. Remember that processes P1 and P2 are waiting during this idle time, so their waiting time may increase. This algorithm could be called future-knowledge scheduling.</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-6-Suppose-that-a-scheduling-algorithm-at-the-level-of-short-term-CPU-scheduling-favors-those-processes-that-have-used-the-least-processor-time-in-the-recent-past-Why-will-this-algorithm-favor-I-x2F-O-bound-programs-and-yet-not-permanently-starve-CPU-bound-programs"><span class="nav-number">1.1.3.</span> <span class="nav-text">6.6 Suppose that a scheduling algorithm (at the level of short-term CPU scheduling) favors those processes that have used the least processor time in the recent past. Why will this algorithm favor I&#x2F;O-bound programs and yet not permanently starve CPU-bound programs?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-9-The-traditional-UNIX-scheduler-enforces-an-inverse-relationship-between-priority-numbers-and-priorities-the-higher-the-number-the-lower-the-priority-The-scheduler-recalculates-process-priorities-once-per-second-using-the-following-function"><span class="nav-number">1.1.4.</span> <span class="nav-text">6.9 The traditional UNIX scheduler enforces an inverse relationship between priority numbers and priorities: the higher the number, the lower the priority. The scheduler recalculates process priorities once per second using the following function:</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Exercises"><span class="nav-number">1.2.</span> <span class="nav-text">Exercises</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-10-Why-is-it-important-for-the-scheduler-to-distinguish-I-x2F-O-bound-programs-from-CPU-bound-programs"><span class="nav-number">1.2.1.</span> <span class="nav-text">6.10 Why is it important for the scheduler to distinguish I&#x2F;O-bound programs from CPU-bound programs?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-13-In-Chapter-5-we-discussed-possible-race-conditions-on-various-kernel-data-structures-Most-scheduling-algorithms-maintain-a-run-queue-which-lists-processes-eligible-to-run-on-a-processor-On-multicore-systems-there-are-two-general-options-1-each-processing-core-has-its-own-run-queue-or-2-a-single-run-queue-is-shared-by-all-processing-cores-What-are-the-advantages-and-disadvantages-of-each-of-these-approaches"><span class="nav-number">1.2.2.</span> <span class="nav-text">6.13  In Chapter 5, we discussed possible race conditions on various kernel data structures. Most scheduling algorithms maintain a run queue, which lists processes eligible to run on a processor. On multicore systems, there are two general options: (1) each processing core has its own run queue, or (2) a single run queue is shared by all processing cores. What are the advantages and disadvantages of each of these approaches?</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-each-processing-core-has-its-own-run-queue"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">(1) each processing core has its own run queue.</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-a-single-run-queue-is-shared-by-all-processing-cores"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">(2) a single run queue is shared by all processing cores.</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-16-Consider-the-following-set-of-processes-with-the-length-of-the-CPU-burst-given-in-milliseconds"><span class="nav-number">1.2.3.</span> <span class="nav-text">6.16  Consider the following set of processes, with the length of the CPU burst given in milliseconds:</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#a-Draw-four-Gantt-charts-that-illustrate-the-execution-of-these-processes-using-the-following-scheduling-algorithms-FCFS-SJF-nonpreemptive-priority-a-larger-priority-number-implies-a-higher-priority-and-RR-quantum-x3D-2"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">a. Draw four Gantt charts that illustrate the execution of these processes using the following scheduling algorithms: FCFS, SJF, nonpreemptive priority (a larger priority number implies a higher priority), and RR (quantum &#x3D; 2).</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#b-What-is-the-turnaround-time-of-each-process-for-each-of-the-scheduling-algorithms-in-part-a"><span class="nav-number">1.2.3.2.</span> <span class="nav-text">b. What is the turnaround time of each process for each of the scheduling algorithms in part a?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#c-What-is-the-waiting-time-of-each-process-for-each-of-these-scheduling-algorithms"><span class="nav-number">1.2.3.3.</span> <span class="nav-text">c. What is the waiting time of each process for each of these scheduling algorithms?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#d-Which-of-the-algorithms-results-in-the-minimum-average-waiting-time-over-all-processes"><span class="nav-number">1.2.3.4.</span> <span class="nav-text">d. Which of the algorithms results in the minimum average waiting time (over all processes)?</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-17"><span class="nav-number">1.2.4.</span> <span class="nav-text">6.17</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#a-Show-the-scheduling-order-of-the-processes-using-a-Gantt-chart"><span class="nav-number">1.2.4.1.</span> <span class="nav-text">a. Show the scheduling order of the processes using a Gantt chart.</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#b-What-is-the-turnaround-time-for-each-process"><span class="nav-number">1.2.4.2.</span> <span class="nav-text">b. What is the turnaround time for each process?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#c-What-is-the-waiting-time-for-each-process"><span class="nav-number">1.2.4.3.</span> <span class="nav-text">c. What is the waiting time for each process?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#d-What-is-the-CPU-utilization-rate"><span class="nav-number">1.2.4.4.</span> <span class="nav-text">d. What is the CPU utilization rate?</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-19-Which-of-the-following-scheduling-algorithms-could-result-in-starvation"><span class="nav-number">1.2.5.</span> <span class="nav-text">6.19 Which of the following scheduling algorithms could result in starvation?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-21-Consider-a-system-running-ten-I-x2F-O-bound-tasks-and-one-CPU-bound-task-Assume-that-the-I-x2F-O-bound-tasks-issue-an-I-x2F-O-operation-once-for-every-millisecond-of-CPU-computing-and-that-each-I-x2F-O-operation-takes-10-milliseconds-to-complete-Also-assume-that-the-context-switching-overhead-is-0-1-millisecond-and-that-all-processes-are-long-running-tasks-Describe-the-CPU-utilization-for-a-round-robin-scheduler-when"><span class="nav-number">1.2.6.</span> <span class="nav-text">6.21 Consider a system running ten I&#x2F;O-bound tasks and one CPU-bound task. Assume that the I&#x2F;O-bound tasks issue an I&#x2F;O operation once for every millisecond of CPU computing and that each I&#x2F;O operation takes 10 milliseconds to complete. Also assume that the context-switching overhead is 0.1 millisecond and that all processes are long-running tasks. Describe the CPU utilization for a round-robin scheduler when:</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#a-The-time-quantum-is-1-millisecond"><span class="nav-number">1.2.6.1.</span> <span class="nav-text">a. The time quantum is 1 millisecond</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#b-The-time-quantum-is-10-milliseconds"><span class="nav-number">1.2.6.2.</span> <span class="nav-text">b. The time quantum is 10 milliseconds</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-23"><span class="nav-number">1.2.7.</span> <span class="nav-text">6.23</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#a-What-is-the-algorithm-that-results-from-beta-gt-alpha-gt-0"><span class="nav-number">1.2.7.1.</span> <span class="nav-text">a. What is the algorithm that results from $\beta$ &gt; $\alpha$ &gt; 0?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#b-What-is-the-algorithm-that-results-from-alpha-lt-beta-lt-0"><span class="nav-number">1.2.7.2.</span> <span class="nav-text">b. What is the algorithm that results from $\alpha$ &lt; $\beta$ &lt; 0?</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-28"><span class="nav-number">1.2.8.</span> <span class="nav-text">6.28</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Both-A-and-B-are-CPU-bound"><span class="nav-number">1.2.8.1.</span> <span class="nav-text">Both A and B are CPU-bound.</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#A-is-I-x2F-O-bound-and-B-is-CPU-bound"><span class="nav-number">1.2.8.2.</span> <span class="nav-text">A is I&#x2F;O-bound, and B is CPU-bound.</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#A-is-CPU-bound-and-B-is-I-x2F-O-bound"><span class="nav-number">1.2.8.3.</span> <span class="nav-text">A is CPU-bound, and B is I&#x2F;O-bound.</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Framist</p>
+  <div class="site-description" itemprop="description">框架主义者的小窝</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">79</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/framist" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;framist" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:framist@163.com" title="E-Mail → mailto:framist@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/weixin_47102975" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_47102975" rel="noopener" target="_blank"><i class="fas fa-angle-right fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://framist.top/" title="http:&#x2F;&#x2F;framist.top&#x2F;" rel="noopener" target="_blank">个人主页</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://framist.github.io/2020/10/11/%E6%88%91%E8%BA%AB%E8%BE%B9%E7%9A%84CS%E5%A4%A7%E4%BD%AC%E4%BB%AC/" title="https:&#x2F;&#x2F;framist.github.io&#x2F;2020&#x2F;10&#x2F;11&#x2F;%E6%88%91%E8%BA%AB%E8%BE%B9%E7%9A%84CS%E5%A4%A7%E4%BD%AC%E4%BB%AC&#x2F;">我身边的大佬们</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yuexiavqiufeng.github.io/" title="https:&#x2F;&#x2F;yuexiavqiufeng.github.io&#x2F;" rel="noopener" target="_blank">yuexiavqiufeng</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://github.com/framist" title="https:&#x2F;&#x2F;github.com&#x2F;framist" rel="noopener" target="_blank">广告位招租</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">浙ICP备2022002862号-1 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-at"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Framist</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div><script>
+    let body = document.getElementsByTagName('body')[0];
+    body.addEventListener('click', (e) => {
+        let contentArr = ['欧拉~','ˋ( ° ▽、° ) ','RGB!','_(:з」∠)_','哼','?','¿框架?','QAQ',':3','<3','疯掉了',
+                            'whoami',
+                            'whoareU',
+                            'NULL',
+                            'None',
+                            ' ',
+                            '代价是什么呢？',
+                            '...',
+                            'Big Brother is Watching You',
+                            '喵~', '嗷~', '呜~', '哞~', '咩~', '咕~', '嘎~', '嘤~',
+                            '你看到了。',
+                            '¿爱情障眼法?','¿物种认同障碍?',
+                            '微润欧美，小润终南山，中润润与市，大润中南海',
+                            'init param:<br/>1LTKvNaux7CjrNHJ09C0y87Eo7/Rrbu3zfm4tKOsus7Ksbb41rmjv9a5zqrWucv51rmjrLTLzsTT1rrOtOajvw==',
+                            '这里没有时间的意义',
+                            '嘿嘿嘿，好想被随机异或哦，<br/>嘿嘿嘿，嘿嘿嘿，异或我的异或',
+                            '记忆赋予时间的意义，而不是时间赋予记忆的意义',
+                            '放弃 P ∨ ¬P 吧！',
+                            '抽象是普适性的代价 —— 3b1b',
+                            '得易见平凡，仿照上例显然',
+                            '留作习题答案略，读者自证不难',
+                            '反之亦然同理，推论自然成立',
+                            '略去过程 Q . E . D ，由上可知证毕'];
+        let randomNum = function (n) {
+            return Math.floor(Math.random() * n)
+        }
+        let span = document.createElement('span');
+        span.innerHTML = `${contentArr[randomNum(contentArr.length)]}`;
+        span.style.color = `rgb(${randomNum(256)},${randomNum(256)},${randomNum(256)})`;
+        span.style.position = 'absolute';
+        span.style.top = `${e.pageY}px`;
+        span.style.left = `${e.pageX}px`;
+        span.style.transition = 'all 1s ease';
+        span.style.zIndex = 20000;
+        body.appendChild(span)
+        setTimeout(()=>{
+            span.style.top = span.offsetTop - 25 + 'px';
+            span.style.opacity = 0;
+            setTimeout(()=>{span.remove()},1000)
+        },700)
+    })
+</script>
+
+
+<div style="width: 100px; height: 100px; margin: 0 auto;">
+<script type="text/javascript" id="clstr_globe" src="//clustrmaps.com/globe.js?d=gRWtX21uVt_tIdj_T64nMvo4FK1UrTWME23CVLOzNCg"></script>
+</div>
+<!--
+<script type="text/javascript" 
+color="255,255,255" 
+pointColor='64,184,209' 
+opacity='1' 
+zIndex="-1" 
+count="233" 
+src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js">
+</script>
+-->
+
+
+        
+<div class="busuanzi-count">
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script data-pjax>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '267a9d4a89b9b72b2229',
+      clientSecret: '2dba1f14d21da707ed6c4497fecc05d6178b4fa3',
+      repo        : 'blog-comment',
+      owner       : 'framist',
+      admin       : ['framist'],
+      id          : 'cfd3ddcfbf05e6d15c4d0585e1ee4552',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Noto Serif SC:300,300italic,400,400italic,700,700italic|Source Code Pro:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-big-counter.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"framist.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Operating System Concepts Exercises 2Operating-System Structures  操作系统作业2  网上学习理解程序执行中的函数调用过程 网上学习了解“Linux启动过程”   2.1、2.2、2.3、3.4、2.5、2.6、2.7、2.8、2.9 2.12、2.13、2.15、2.16、2.17、2.18、2.19、2.21、2.22  每题最后">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【操作系统概念-作业2】Operating-System Structures">
+<meta property="og:url" content="https://framist.github.io/2021/06/01/%E3%80%90%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%91/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%BA%8C/index.html">
+<meta property="og:site_name" content="Framist&#39;s Little House">
+<meta property="og:description" content="Operating System Concepts Exercises 2Operating-System Structures  操作系统作业2  网上学习理解程序执行中的函数调用过程 网上学习了解“Linux启动过程”   2.1、2.2、2.3、3.4、2.5、2.6、2.7、2.8、2.9 2.12、2.13、2.15、2.16、2.17、2.18、2.19、2.21、2.22  每题最后">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-06-01T03:42:40.739Z">
+<meta property="article:modified_time" content="2022-10-05T08:35:22.244Z">
+<meta property="article:author" content="Framist">
+<meta property="article:tag" content="学习">
+<meta property="article:tag" content="操作系统">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://framist.github.io/2021/06/01/%E3%80%90%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%91/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%BA%8C/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【操作系统概念-作业2】Operating-System Structures | Framist's Little House</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Framist's Little House</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">◇ 自顶而下 - 面向未来 ◇</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://framist.github.io/2021/06/01/%E3%80%90%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%91/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%BA%8C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Framist">
+      <meta itemprop="description" content="框架主义者的小窝">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Framist's Little House">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【操作系统概念-作业2】Operating-System Structures
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-06-01 11:42:40" itemprop="dateCreated datePublished" datetime="2021-06-01T11:42:40+08:00">2021-06-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-10-05 16:35:22" itemprop="dateModified" datetime="2022-10-05T16:35:22+08:00">2022-10-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">计算机科学</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E8%AF%BE%E4%B8%9A%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">课业学习</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E8%AF%BE%E4%B8%9A%E5%AD%A6%E4%B9%A0/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index"><span itemprop="name">操作系统</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Operating-System-Concepts-Exercises-2"><a href="#Operating-System-Concepts-Exercises-2" class="headerlink" title="Operating System Concepts Exercises 2"></a><em>Operating System Concepts</em> Exercises 2</h1><center>Operating-System Structures</center>
+
+<p>操作系统作业2</p>
+<ul>
+<li>网上学习理解程序执行中的函数调用过程</li>
+<li>网上学习了解“Linux启动过程”</li>
+</ul>
+<ul>
+<li>2.1、2.2、2.3、3.4、2.5、2.6、2.7、2.8、2.9</li>
+<li>2.12、2.13、2.15、2.16、2.17、2.18、2.19、2.21、2.22</li>
+</ul>
+<p><em>每题最后一个引用块是老师提供的参考答案</em></p>
+<span id="more"></span>
+
+<h2 id="网上学习理解程序执行中的函数调用过程"><a href="#网上学习理解程序执行中的函数调用过程" class="headerlink" title="网上学习理解程序执行中的函数调用过程"></a>网上学习理解程序执行中的函数调用过程</h2><p><strong>答：</strong></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/a514371309/article/details/78504974">程序是如何执行的（三）函数调用</a></p>
+<h2 id="网上学习了解“Linux启动过程”"><a href="#网上学习了解“Linux启动过程”" class="headerlink" title="网上学习了解“Linux启动过程”"></a>网上学习了解“Linux启动过程”</h2><p><strong>答：</strong></p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/cXbCd_nK4_VssJaUREiPmA">计算机的启动过程</a></p>
+<h2 id="Practice-Exercises"><a href="#Practice-Exercises" class="headerlink" title="Practice Exercises"></a>Practice Exercises</h2><p>2.1、2.2、2.3、3.4、2.5、2.6、2.7、2.8、2.9</p>
+<h3 id="2-1-What-is-the-purpose-of-system-calls"><a href="#2-1-What-is-the-purpose-of-system-calls" class="headerlink" title="2.1 What is the purpose of system calls?"></a>2.1 What is the purpose of system calls?</h3><p><strong>答：</strong></p>
+<p>让用户级进程可以请求操作系统所提供的服务</p>
+<blockquote>
+<p><strong>Answer:</strong></p>
+<p>System calls allow user-level processes to request services of the operating system.</p>
+</blockquote>
+<h3 id="2-2-What-are-the-five-major-activities-of-an-operating-system-with-regard-to-process-management"><a href="#2-2-What-are-the-five-major-activities-of-an-operating-system-with-regard-to-process-management" class="headerlink" title="2.2 What are the five major activities of an operating system with regard to process management?"></a>2.2 What are the five major activities of an operating system with regard to process management?</h3><p>在<strong>进程管理</strong>方面，操作系统的五个主要活动是什么?</p>
+<p><strong>答：</strong></p>
+<ul>
+<li>用户和系统进程地创建和删除</li>
+<li>进程的挂起和恢复</li>
+<li>提供进程同步的机制</li>
+<li>提供进程通信的机制</li>
+<li>提供死锁处理的机制</li>
+</ul>
+<blockquote>
+<p>The five major activities are:</p>
+<p>a. The creation and deletion of both user and system processes</p>
+<p>b. The suspension and resumption of processes</p>
+<p>c. The provision of mechanisms for process synchronization</p>
+<p>d. The provision of mechanisms for process communication</p>
+<p>e. The provision of mechanisms for deadlock handling</p>
+</blockquote>
+<h3 id="2-3-What-are-the-three-major-activities-of-an-operating-system-with-regard-to-memory-management"><a href="#2-3-What-are-the-three-major-activities-of-an-operating-system-with-regard-to-memory-management" class="headerlink" title="2.3 What are the three major activities of an operating system with regard to memory management?"></a>2.3 What are the three major activities of an operating system with regard to memory management?</h3><p>在<strong>内存管理</strong>方面，操作系统的三个主要活动是什么？</p>
+<p><strong>答：</strong></p>
+<ul>
+<li>跟踪内存使用情况</li>
+<li>当内存空间可用的时候,确定将哪些进程调入内存</li>
+<li>按需要分配和回收内存</li>
+</ul>
+<blockquote>
+<p><strong>Answer:</strong></p>
+<p>The three major activities are:</p>
+<p>a. Keep track of which parts of memory are currently being used and by whom.</p>
+<p>b. Decide which processes are to be loaded into memory when memory space becomes available.</p>
+<p>c. Allocate and deallocate memory space as needed.</p>
+</blockquote>
+<h3 id="2-4-What-are-the-three-major-activities-of-an-operating-system-with-regard-to-secondary-storage-management"><a href="#2-4-What-are-the-three-major-activities-of-an-operating-system-with-regard-to-secondary-storage-management" class="headerlink" title="2.4 What are the three major activities of an operating system with regard to secondary-storage management?"></a>2.4 What are the three major activities of an operating system with regard to secondary-storage management?</h3><p>关于<strong>二级存储管理</strong>，操作系统的三个主要活动是什么?</p>
+<p><strong>答：</strong></p>
+<ul>
+<li>剩余空间的管理</li>
+<li>存储分配</li>
+<li>磁盘调度</li>
+</ul>
+<blockquote>
+<p><strong>Answer:</strong></p>
+<p>The three major activities are:</p>
+<p>• Free-space management.</p>
+<p>• Storage allocation.</p>
+<p>• Disk scheduling.</p>
+</blockquote>
+<h3 id="2-5-What-is-the-purpose-of-the-command-interpreter-Why-is-it-usually-separate-from-the-kernel"><a href="#2-5-What-is-the-purpose-of-the-command-interpreter-Why-is-it-usually-separate-from-the-kernel" class="headerlink" title="2.5 What is the purpose of the command interpreter? Why is it usually separate from the kernel?"></a>2.5 What is the purpose of the command interpreter? Why is it usually separate from the kernel?</h3><h4 id="命令解释器的目的是什么"><a href="#命令解释器的目的是什么" class="headerlink" title="命令解释器的目的是什么?"></a>命令解释器的目的是什么?</h4><p><strong>答：</strong></p>
+<p>读取命令(从用户或者命令文件)并执行(转化成系统调用)</p>
+<h4 id="为什么它通常与内核分开"><a href="#为什么它通常与内核分开" class="headerlink" title="为什么它通常与内核分开?"></a>为什么它通常与内核分开?</h4><p><strong>答：</strong></p>
+<p>可能会经常改变</p>
+<blockquote>
+<p><strong>Answer:</strong> </p>
+<p>It reads commands from the user or from a file of commands and creates processes to execute them, usually by turning them into one or more system calls. It is usually not part of the kernel since the command interpreter is subject to changes.</p>
+<p>它从用户或命令文件中读取命令，并创建进程来执行这些命令，通常是把它们变成一个或多个系统调用。它通常不是内核的一部分，因为命令解释器是可以改变的。</p>
+</blockquote>
+<h3 id="2-6-What-system-calls-have-to-be-executed-by-a-command-interpreter-or-shell-in-order-to-start-a-new-process"><a href="#2-6-What-system-calls-have-to-be-executed-by-a-command-interpreter-or-shell-in-order-to-start-a-new-process" class="headerlink" title="2.6 What system calls have to be executed by a command interpreter or shell in order to start a new process?"></a>2.6 What system calls have to be executed by a command interpreter or shell in order to start a new process?</h3><p>为了启动一个新的进程，命令解释器或外壳必须执行哪些系统调用？</p>
+<p><strong>答：</strong></p>
+<blockquote>
+<p><strong>Answer:</strong></p>
+<p>In Unix&#x2F;Linux systems, a fork system call followed by an exec system call need to be performed to start a new process. The fork call clones the currently executing process, while the exec call overlays a new process based on a different executable over the calling process.</p>
+<p>在Unix&#x2F;Linux系统中，需要执行fork系统调用后exec系统调用来启动一个新进程。fork调用会克隆当前执行的进程，而exec调用则会在调用进程上覆盖一个基于不同可执行文件的新进程。</p>
+</blockquote>
+<h3 id="2-7-What-is-the-purpose-of-system-programs"><a href="#2-7-What-is-the-purpose-of-system-programs" class="headerlink" title="2.7 What is the purpose of system programs?"></a>2.7 What is the purpose of system programs?</h3><p><strong>答：</strong></p>
+<p>为程序开发和运行提供了方便的环境</p>
+<p>给用户提供基本的公共功能函数,为用户在不用自己写代码的情况下解决公用问题</p>
+<blockquote>
+<p><strong>Answer:</strong></p>
+<p>System programs can be thought of as bundles of useful system calls. They provide basic system-level functionality to users so that users do not need to write their own programs to solve common problems.</p>
+</blockquote>
+<h3 id="2-8-What-is-the-main-advantage-of-the-layered-approach-to-system-design-What-are-the-disadvantages-of-the-layered-approach"><a href="#2-8-What-is-the-main-advantage-of-the-layered-approach-to-system-design-What-are-the-disadvantages-of-the-layered-approach" class="headerlink" title="2.8 What is the main advantage of the layered approach to system design? What are the disadvantages of the layered approach?"></a>2.8 What is the main advantage of the layered approach to system design? What are the disadvantages of the layered approach?</h3><h4 id="系统设计的分层方法的主要优点是什么"><a href="#系统设计的分层方法的主要优点是什么" class="headerlink" title="系统设计的分层方法的主要优点是什么?"></a>系统设计的分层方法的主要优点是什么?</h4><p><strong>答：</strong></p>
+<p>As in all cases of modular design, designing an operating system in a  modular way has several advantages. The system is easier to debug and modify because changes affect only limited sections of the system rather than touching all sections of the operating system. Information is kept only where it is needed and is accessible only within a defined and restricted area, so any bugs affecting that data must be limited to a specific module or layer.</p>
+<p>与模块化设计的所有情况一样，以模块化的方式设计操作系统有几个优点。该系统更容易调试和修改，因为更改只影响系统的有限部分，而不会影响操作系统的所有部分。信息只保存在需要的地方，并且只能在定义和限制的区域内访问，因此任何影响该数据的bug都必须限制在特定的模块或层中。</p>
+<p>1、开发人员可以只关注整个结构中的其中某一层；<br>2、可以很容易的用新的实现来替换原有层次的实现；<br>3、可以降低层与层之间的依赖；<br>4、有利于标准化；<br>5、利于各层逻辑的复用。</p>
+<p>[3]</p>
+<h4 id="分层方法的缺点是什么"><a href="#分层方法的缺点是什么" class="headerlink" title="分层方法的缺点是什么?"></a>分层方法的缺点是什么?</h4><p><strong>答：</strong></p>
+<p>1、降低了系统的性能。这是不言而喻的。如果不采用分层式结构，很多业务可以直接造访数据库，以此获取相应的数据，如今却必须通过中间层来完成。<br>2、有时会导致级联的修改。这种修改尤其体现在自上而下的方向。如果在表示层中需要增加一个功能，为保证其设计符合分层式结构，可能需要在相应的业务逻辑层和数据访问层中都增加相应的代码。<br>[3]</p>
+<blockquote>
+<p> <strong>Answer:</strong></p>
+<p> The main advantage of the layered approach is modularity. The layered approach is selected such that each layer uses function and services of only lower level layers. This approach simplifies debugging and system verification.</p>
+<p> The problem is deciding what order in which to place the layers, as no layer can call upon the services of any higher layer, and so many chicken-and-egg situations may arise.</p>
+<p> Layered approaches can also be less efficient, as a request for service from a higher layer has to filter through all lower layers before it reaches the HW, possibly with significant processing at each step.</p>
+<p> 分层方法的主要优点是模块化。分层方法的选择是，每一层都只使用较低层次的功能和服务。这种方法简化了调试和系统验证。</p>
+<p> 问题是决定以什么顺序放置这些层，因为没有一个层可以调用任何高层的服务，所以可能会出现许多鸡生蛋蛋生鸡的情况。</p>
+<p> 分层方法也可能效率较低，因为来自上层的服务请求在到达HW之前必须经过所有下层的过滤，可能在每一步都要进行大量的处理。</p>
+</blockquote>
+<h3 id="2-9-List-five-services-provided-by-an-operating-system-and-explain-how-each-creates-convenience-for-users-In-which-cases-would-it-be-impossible-for-user-level-programs-to-provide-these-services-Explain-your-answer"><a href="#2-9-List-five-services-provided-by-an-operating-system-and-explain-how-each-creates-convenience-for-users-In-which-cases-would-it-be-impossible-for-user-level-programs-to-provide-these-services-Explain-your-answer" class="headerlink" title="2.9 List five services provided by an operating system, and explain how each creates convenience for users. In which cases would it be impossible for user-level programs to provide these services? Explain your answer."></a>2.9 List five services provided by an operating system, and explain how each creates convenience for users. In which cases would it be impossible for user-level programs to provide these services? Explain your answer.</h3><p>列出操作系统提供的五种服务，并解释每种服务如何为用户提供便利。在哪种情况下，用户级程序不可能提供这些服务?解释你的答案。</p>
+<p><strong>答：</strong></p>
+<p><strong>执行程序</strong><br>操作系统加载文件的目录到内存中并开始执行。在用户程序不能合理分配CPU时间的情况下不能提供该项服务。</p>
+<p><strong>I&#x2F;O操作</strong></p>
+<p>程序运行过程中需要I&#x2F;O设备上的数据时通过I&#x2F;O命令或I&#x2F;O指令,请求操作统的服务。</p>
+<p><strong>文件系统操作</strong></p>
+<p>文件系统让用户按文件名创建,读写,修改,删除文件,使用方便,安全可靠。当设计多用户访问或共享文件时,操作系统还提供信息保护机制。</p>
+<p><strong>通信服务</strong></p>
+<p>在很多情况下，一个进程要与另外的进程交换信息，进程通信可以借助共享內存实<br>现，也可使用消息消息传送技术实现。</p>
+<p><strong>错误检测</strong></p>
+<p>操作系统可以不做和处理各种硬件和软件造成的差镨和异常，并让他们造成的影响缩小在最小范围内</p>
+<blockquote>
+<p><strong>Answer:</strong></p>
+<p>The five services are:</p>
+<p>a. <strong>Program execution</strong>. The operating system loads the contents (or sections) of an executable file into memory and begins its execution. A user-level program could not be trusted to properly allocate CPU time.</p>
+<p>b. <strong>I&#x2F;O operations</strong>. Disks, tapes, serial lines, and other devices must be communicated with at a very low level. The user need only specify the device and the operation to perform on it, while the system converts that request into device-specific or controller-specific commands. User-level programs cannot be trusted to access only devices which they should have access to and to access them only when they are otherwise unused.</p>
+<p>c. <strong>File-system manipulation</strong>. There are many details in file creation, deletion, allocation, and naming that users should not have to perform. Blocks of disk space are used by files and must be tracked. Deleting a file requires removing the name file information and freeing the allocated blocks. Protections must also be checked to assure proper file access. User programs could neither ensure adherence to protection methods nor be trusted to allocate only free blocks and deallocate blocks on file deletion.</p>
+<p>d. <strong>Communications</strong>. Message passing between systems requires messages to be turned into packets of information, sent to the network controller, transmitted across a communications medium, and reassembled by the destination system. Packet ordering and data correction must take place. Again, user programs might not coordinate access to the network device, or they might receive packets destined for other processes.</p>
+<p>e. <strong>Error detection</strong>. Error detection occurs at both the hardware and software levels. At the hardware level, all data transfers must be inspected to ensure that data have not been corrupted in transit. All data on media must be checked to be sure they have not changed since they were written to the media. At the software level, media must be checked for data consistency; for instance, whether the number of allocated and unallocated blocks of storage match the total number on the device. There, errors are frequently process-independent (for instance, the corruption of data on a disk), so there must be a global program (the operating system) that handles all types of errors. Also, by having errors processed by the operating system, processes need not contain code to catch and correct all the errors possible on a system.<br>a. 程序执行。操作系统将可执行文件的内容（或部分）加载到内存中并开始执行。不能相信一个用户级程序能正确分配CPU时间。<br>b. I&#x2F;O操作。磁盘、磁带、串行线和其他设备必须在一个非常低的水平上进行通信。用户只需要指定设备和要对其进行的操作，而系统则将该请求转换为特定于设备或控制器的命令。不能相信用户级程序只访问他们应该访问的设备，并且只在其他情况下不使用这些设备时才访问。<br>c. 文件系统的操作。在文件的创建、删除、分配和命名方面，有许多细节是用户不应该执行的。磁盘空间的块被文件使用，必须被跟踪。删除一个文件需要删除名称文件信息并释放分配的块。保护措施也必须被检查，以保证正确的文件访问。用户程序既不能确保遵守保护方法，也不能被信任为只分配空闲块，并在文件删除时取消分配块。<br>d. 通讯。系统之间的信息传递需要将信息变成信息包，发送到网络控制器，在通信介质上传输，并由目的地系统重新组装。数据包的排序和数据校正必须进行。同样，用户程序可能不会协调对网络设备的访问，或者他们可能会收到以其他进程为目的地的数据包。<br>e. 错误检测。错误检测同时发生在硬件和软件层面。在硬件层面上，所有的数据传输必须被检查，以确保数据在传输过程中没有被破坏。必须检查媒体上的所有数据，以确保它们在被写入媒体后没有改变。在软件层面，必须检查媒体的数据一致性；例如，已分配和未分配的存储块的数量是否与设备上的总数相符。在那里，错误经常是与进程无关的（例如，磁盘上的数据损坏），所以必须有一个全局程序（操作系统）来处理所有类型的错误。另外，通过由操作系统处理错误，进程不需要包含代码来捕捉和纠正系统上可能出现的所有错误。</p>
+</blockquote>
+<h2 id="Exercises"><a href="#Exercises" class="headerlink" title="Exercises"></a>Exercises</h2><p>2.12、2.13、2.15、2.16、2.17、2.18、2.19、2.21、2.22</p>
+<h3 id="2-12-The-services-and-functions-provided-by-an-operating-system-can-be-divided-into-two-main-categories-Briefly-describe-the-two-categories-and-discuss-how-they-differ"><a href="#2-12-The-services-and-functions-provided-by-an-operating-system-can-be-divided-into-two-main-categories-Briefly-describe-the-two-categories-and-discuss-how-they-differ" class="headerlink" title="2.12 The services and functions provided by an operating system can be divided into two main categories. Briefly describe the two categories, and discuss how they differ."></a>2.12 The services and functions provided by an operating system can be divided into two main categories. Briefly describe the two categories, and discuss how they differ.</h3><p>操作系统提供的服务和功能可以分为两大类。简要描述这两个类别，并讨论它们的区别。</p>
+<p><strong>答：</strong></p>
+<p>操作系统提供的一类服务是<strong>在系统中不同并发运行的进程之间强制保护</strong>。进程只允许访问与它们关联的内存位置。此外，进程不允许损坏与其他进程相关联的文件。进程也不允许在没有操作系统介入的情况下直接访问设备。</p>
+<p>操作系统提供的第二类服务是<strong>提供低层硬件不能直接支持的功能</strong>。虚拟内存和文件系统就是操作系统提供的两类服务的例子。</p>
+<blockquote>
+<p><strong>Answer</strong>：</p>
+<p>Functions and services which are directly <strong>helpful to the user</strong> (networking, computer sharing, error detection, consistent computing)</p>
+<p><strong>对用户有直接帮助</strong>的功能和服务（网络、计算机共享、错误检测、一致计算）。</p>
+<p>Functions and resources which ensure <strong>efficient operation</strong> through resource sharing; resource allocation, user account tracking, and protection&#x2F;security</p>
+<p>通过资源共享确保<strong>有效运行</strong>的功能和资源；资源分配、用户账户跟踪和保护&#x2F;安全</p>
+</blockquote>
+<h3 id="2-13-Describe-three-general-methods-for-passing-parameters-to-the-operating-system"><a href="#2-13-Describe-three-general-methods-for-passing-parameters-to-the-operating-system" class="headerlink" title="2.13 Describe three general methods for passing parameters to the operating system."></a>2.13 Describe three general methods for passing parameters to the operating system.</h3><p>描述三种向操作系统传递参数的一般方法。</p>
+<blockquote>
+<p><strong>Answer:</strong></p>
+<p>a. Pass parameters in registers 寄存器传递参数</p>
+<p>b. Registers pass starting addresses of blocks of parameters 寄存器传递参数的起始地址</p>
+<p>c. Parameters can be placed, or pushed, onto the stack by the program, and popped off the stack by the operating system  参数可以由程序放置或推入堆栈，并由操作系统从堆栈中弹出。</p>
+</blockquote>
+<h3 id="2-15-What-are-the-five-major-activities-of-an-operating-system-with-regard-to-file-management"><a href="#2-15-What-are-the-five-major-activities-of-an-operating-system-with-regard-to-file-management" class="headerlink" title="2.15 What are the five major activities of an operating system with regard to file management?"></a>2.15 What are the five major activities of an operating system with regard to file management?</h3><p>在文件管理方面，操作系统的五个主要活动是什么?</p>
+<blockquote>
+<p><strong>Answer:</strong></p>
+<p>• The creation and deletion of files</p>
+<p>创建和删除文件</p>
+<p>• The creation and deletion of directories</p>
+<p>目录的创建和删除</p>
+<p>• The support of primitives for manipulating files and directories</p>
+<p>支持操作文件和目录的原语</p>
+<p>• The mapping of files onto secondary storage</p>
+<p>文件到辅助存储的映射</p>
+<p>• The backup of files on stable (nonvolatile) storage media</p>
+<p>在稳定(非易失性)存储介质上备份文件</p>
+</blockquote>
+<h3 id="2-16-What-are-the-advantages-and-disadvantages-of-using-the-same-system-call-interface-for-manipulating-both-files-and-devices"><a href="#2-16-What-are-the-advantages-and-disadvantages-of-using-the-same-system-call-interface-for-manipulating-both-files-and-devices" class="headerlink" title="2.16 What are the advantages and disadvantages of using the same system-call interface for manipulating both files and devices?"></a>2.16 What are the advantages and disadvantages of using the same system-call interface for manipulating both files and devices?</h3><p>使用同一个系统调用接口来操作文件和设备的优点和缺点是什么?</p>
+<p><strong>优点</strong></p>
+<p>可以像访问文件系统中的文件一样访问每个设备。因为大多数内核都是通过文件接口来处理设备的，所以相对容易通过实现具体硬件的代码来支持抽象的文件接口来增加一个新的设备驱动器。因此，这个有利于双方用户代码的发展， 它可以以同样的方式来访问设备和文件，并且设备驱动代码可以支持一个定义明确的API。</p>
+<p><strong>缺点</strong></p>
+<p>使用相同的接口的弊端在于它可能很难捕捉在文件访问API上下文中某些设备的功能，从而导致功能损失或性能损失。</p>
+<blockquote>
+<p><strong>Answer</strong>：</p>
+<p>Each device can be accessed as though it was a file in the file system. Since most of the kernel deals with devices through this file interface, it is relatively easy to add a new device driver by implementing the hardware-specific code to support this abstract file interface. Therefore, this <em>benefits the development of both user program code, which can be written to access devices and files in the same manner, and device-driver code, which can be written to support a well-defined API.</em> </p>
+<p>The disadvantage with using the same interface is that it might be difficult to capture the functionality of certain devices within the context of the file access API, thereby resulting in either a loss of functionality or a loss of performance. Some of this could be overcomed by the use of the <em>ioctl operation</em> that provides a general-purpose interface for processes to invoke operations on devices.</p>
+<p>每个设备都可以被访问，就好像它是文件系统中的一个文件。由于大部分内核都是通过这个文件接口来处理设备的，所以通过实现特定硬件的代码来支持这个抽象的文件接口，增加一个新的设备驱动程序是比较容易的。因此，这*有利于用户程序代码和设备驱动程序代码的开发，前者可以以同样的方式访问设备和文件，后者可以支持一个定义明确的API。</p>
+<p>使用相同接口的缺点是，可能很难在文件访问API的范围内捕获某些设备的功能，从而导致功能的损失或性能的损失。有些问题可以通过使用<em>ioctl操作</em>来克服，该操作为进程提供了一个通用的接口来调用设备上的操作。</p>
+</blockquote>
+<h3 id="2-17-Would-it-be-possible-for-the-user-to-develop-a-new-command-interpreter-using-the-system-call-interface-provided-by-the-operating-system"><a href="#2-17-Would-it-be-possible-for-the-user-to-develop-a-new-command-interpreter-using-the-system-call-interface-provided-by-the-operating-system" class="headerlink" title="2.17 Would it be possible for the user to develop a new command interpreter using the system-call interface provided by the operating system?"></a>2.17 Would it be possible for the user to develop a new command interpreter using the system-call interface provided by the operating system?</h3><p>用户是否可以使用操作系统提供的系统调用接口开发一个新的命令解释器？</p>
+<p><strong>答：</strong></p>
+<p>用户应该能够使用系统提供的系统调用开发新的命令解释器。命令解释器允许用户这样创建和管理进程并且确定它们的通信方式(通过管道和文件)。由于所有这些功能都可以被用户级的程序进行系统调用，因此用户可以开发出一个新的命令行解释器。</p>
+<blockquote>
+<p><strong>Answer:</strong></p>
+<p><strong>Yes.</strong></p>
+<p>A user should be able to develop a new command interpreter using the system-call interface provided by the operating system. The command interpreter allows a user to create and manage processes and also determine ways by which they communicate (such as through pipes and files). As all of this functionality could be accessed by a user level program using the system calls, it should be possible for the user to develop a new command-line interpreter.</p>
+</blockquote>
+<h3 id="2-18-What-are-the-two-models-of-interprocess-communication？What-are-the-strengths-and-weaknesses-of-the-two-approaches"><a href="#2-18-What-are-the-two-models-of-interprocess-communication？What-are-the-strengths-and-weaknesses-of-the-two-approaches" class="headerlink" title="2.18 What are the two models of interprocess communication？What are the strengths and weaknesses of the two approaches?"></a>2.18 What are the two models of interprocess communication？What are the strengths and weaknesses of the two approaches?</h3><p><strong>答：</strong></p>
+<p>进程间通信的两种模型是<strong>消息传递模型</strong>和<strong>共享内存模型</strong>。</p>
+<p>消息传递对于交换小数量的消息非常有用，因为不需要避免冲突。它的实现要比共享内存简单。当它在一台计算机中发生的时候，共享内存允许最大速度并且方便通信，因为它可以在内存传输。然而，这种方法在共享内存的进程之间的保护和同步方面做出了妥协</p>
+<blockquote>
+<p><strong>Answer:</strong></p>
+<p>One is <em>message-passing model</em> and the other is <em>shared-memory model</em>. </p>
+<p>一个是<em>消息传递模型</em>，另一个是<em>共享内存模型</em>。</p>
+<p>Shared-memory strengths and weaknesses: it allows higher speed and convenience of communication. However, in the areas of protection and synchronization between the processes some problems exist.</p>
+<p>共享内存的优点和缺点：它允许更高的速度和便利的通信。然而，在进程之间的保护和同步方面，存在一些问题。</p>
+<p>Message-passing strengths and weaknesses: message can be exchanged between the processes either directly or indirectly through a common mailbox. It is useful for exchanging smaller amounts of data and easier to implement for inter-computer communication. However, its speed is slower than shared-memory model.</p>
+<p>消息传递的优点和缺点：消息可以在进程之间直接或间接地通过一个共同的邮箱进行交换。它对交换较小数量的数据很有用，对计算机间的通信也更容易实现。然而，它的速度比共享内存模型慢。</p>
+</blockquote>
+<h3 id="2-19-Why-is-the-separation-of-mechanism-and-policy-desirable"><a href="#2-19-Why-is-the-separation-of-mechanism-and-policy-desirable" class="headerlink" title="2.19 Why is the separation of mechanism and policy desirable?"></a>2.19 Why is the separation of mechanism and policy desirable?</h3><p><strong>答：</strong></p>
+<blockquote>
+<p><strong>Answer:</strong></p>
+<p>Mechanism and policy must be separate to ensure that systems are easy to modify. </p>
+<p>No two system installations are the same, so each installation may want to tune the operating system to suit its needs. With mechanism and policy separate, the policy may be changed at will while the mechanism stays unchanged. This arrangement provides a more flexible system.</p>
+<p>机制和策略必须分开，以确保系统易于修改。<br>没有两个系统的安装是相同的，所以每个安装都可能想调整操作系统以适应其需求。在机制和策略分开的情况下，策略可以随意改变，而机制则保持不变。这种安排提供了一个更灵活的系统。</p>
+</blockquote>
+<h3 id="2-21-What-is-the-main-advantage-of-the-microkernel-approach-to-system-design-How-do-user-programs-and-system-services-interact-in-a-microkernel-architecture-What-are-the-disadvantages-of-using-the-microkernel-approach"><a href="#2-21-What-is-the-main-advantage-of-the-microkernel-approach-to-system-design-How-do-user-programs-and-system-services-interact-in-a-microkernel-architecture-What-are-the-disadvantages-of-using-the-microkernel-approach" class="headerlink" title="2.21 What is the main advantage of the microkernel approach to system design? How do user programs and system services interact in a microkernel architecture? What are the disadvantages of using the microkernel approach?"></a>2.21 What is the main advantage of the microkernel approach to system design? How do user programs and system services interact in a microkernel architecture? What are the disadvantages of using the microkernel approach?</h3><h4 id="微内核方法在系统设计方面的主要优势是什么"><a href="#微内核方法在系统设计方面的主要优势是什么" class="headerlink" title="微内核方法在系统设计方面的主要优势是什么?"></a>微内核方法在系统设计方面的主要优势是什么?</h4><p><strong>答：</strong></p>
+<p>(a) 添加新服务不需要修改内核</p>
+<p>(b) 由于在用户模式下进行的操作比在内核模式下进行的操作多，因此更安全</p>
+<p>(c) 更简单的内核设计和功能通常会带来更可靠的结果系统。</p>
+<blockquote>
+<p>Benefits typically include the following:</p>
+<p>(a) adding a new service does not require modifying the kernel, </p>
+<p>(b) it is more secure as more operations are done in user mode than in kernel mode</p>
+<p>(c) a simpler kernel design and functionality typically results in a more reliable operating system. </p>
+</blockquote>
+<h4 id="在微内核体系结构中，用户程序和系统服务如何交互"><a href="#在微内核体系结构中，用户程序和系统服务如何交互" class="headerlink" title="在微内核体系结构中，用户程序和系统服务如何交互?"></a>在微内核体系结构中，用户程序和系统服务如何交互?</h4><p><strong>答：</strong></p>
+<p>用户程序和系统服务在微内核架构中通常使用进程间通信机制例如消息传递来交互。这些消息由操作系统传递。</p>
+<blockquote>
+<p>User programs and system services interact in a microkernel architecture by using inter process communication mechanisms such as messaging. These messages are conveyed by the operating system. </p>
+</blockquote>
+<h4 id="使用微内核方法的缺点是什么"><a href="#使用微内核方法的缺点是什么" class="headerlink" title="使用微内核方法的缺点是什么?"></a>使用微内核方法的缺点是什么?</h4><p><strong>答：</strong></p>
+<p>微内核架构的主要缺点是与进程间通信相关的开销有关，并且频繁的使用操作系统消息传递功能来使用户进程和系统服务可以彼此交互。</p>
+<blockquote>
+<p>The primary disadvantages of the microkernel architecture are the overheads associated with inter process communication and the frequent use of the operating system’s messaging functions in order to enable the user process and the system service to interact with each other (context switching).</p>
+</blockquote>
+<h3 id="2-22-What-are-the-advantages-of-using-loadable-kernel-modules"><a href="#2-22-What-are-the-advantages-of-using-loadable-kernel-modules" class="headerlink" title="2.22 What are the advantages of using loadable kernel modules?"></a>2.22 What are the advantages of using loadable kernel modules?</h3><p>使用**可加载内核模块(LVM)**的优点是什么？</p>
+<p><strong>答：</strong></p>
+<p>LKM与普通应用程序之间的区别主要体现在四个方面。</p>
+<p>第一，也是最重要的区别，普通应用程序运行在用户空间，而LKM运行在内核空间。通过区分不同的运行空间，操作系统能够安全地保护操作系统中一些重要数据结构的内容不被普通应用程序所修改，达到保证操作系统正常运转的目的。</p>
+<p>第二，普通应用程序的目标很明确，它们从头至尾都是为了完成某一项特定任务。而LKM是在内核中注册并为后续应用程序的请求提供服务的。</p>
+<p>第三，普通应用程序可以调用并没有在其中定义的函数，但一个LKM是链接到内核上的，它所能调用的函数只有内核导出来的那些函数。</p>
+<p>第四，普通应用程序和LKM处理错误的方式不同。当应用程序中出现错误时并不会给系统造成很大的伤害。LKM则不然，在其中出现的错误对子系统来说通常是致命的，至少对于当前正在运行的进程而言。LKM中的一个错误常常会导致整个系统崩溃。</p>
+<p>[4]</p>
+<blockquote>
+<p><strong>Answer:</strong></p>
+<p>Without loadable kernel modules, an operating system would have to include all possible anticipated functionality already compiled directly into the base kernel. Much of that functionality would reside in memory without being used, wasting memory, and would require that users rebuild and reboot the base kernel every time they require new functionality. Most operating systems supporting loadable kernel modules will include modules to support most desired functionality, and dynamically load the modules as needed.</p>
+<p>如果没有可加载的内核模块，操作系统将不得不包括所有可能的预期功能，这些功能已经被直接编译到基本内核中。许多功能将停留在内存中而不被使用，浪费了内存，并且需要用户在每次需要新功能时重建和重启基本内核。大多数支持可加载内核模块的操作系统将包括支持大多数所需功能的模块，并在需要时动态地加载这些模块。</p>
+</blockquote>
+<hr>
+<p><strong>注：</strong></p>
+<p>翻译：deepl</p>
+<p>参考资料：</p>
+<p>[1] <a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_32252957/article/details/84726541">https://blog.csdn.net/qq_32252957/article/details/84726541</a></p>
+<p>[2] <a target="_blank" rel="noopener" href="https://www.doc88.com/p-7334220872657.html">https://www.doc88.com/p-7334220872657.html</a></p>
+<p>[3] <a target="_blank" rel="noopener" href="https://blog.csdn.net/gengwei80/article/details/2141880/">https://blog.csdn.net/gengwei80/article/details/2141880/</a></p>
+<p>[4] <a target="_blank" rel="noopener" href="http://www.elecfans.com/emb/20180908772045.html">http://www.elecfans.com/emb/20180908772045.html</a></p>
+<p>[5] Operating System Concepts – 9th Edition 及其答案</p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      <div style="display: inline-block;">
+        <img src="/images/dogecoin.png" alt="Framist dogecoin">
+        <p>dogecoin</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Framist
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://framist.github.io/2021/06/01/%E3%80%90%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%91/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%BA%8C/" title="【操作系统概念-作业2】Operating-System Structures">https://framist.github.io/2021/06/01/【操作系统】/操作系统作业二/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%AD%A6%E4%B9%A0/" rel="tag"># 学习</a>
+              <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag"># 操作系统</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/05/31/%E3%80%90%E6%95%B0%E6%8D%AE%E5%BA%93%E5%8E%9F%E7%90%86%E3%80%91%E7%AC%AC4-5%E7%AB%A0%E4%BD%9C%E4%B8%9A/" rel="prev" title="【数据库原理】实验报告">
+      <i class="fa fa-chevron-left"></i> 【数据库原理】实验报告
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/06/01/%E3%80%90%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%91/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%B8%89/" rel="next" title="【操作系统概念-作业3】Operating-System Structures">
+      【操作系统概念-作业3】Operating-System Structures <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Operating-System-Concepts-Exercises-2"><span class="nav-number">1.</span> <span class="nav-text">Operating System Concepts Exercises 2</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E4%B8%8A%E5%AD%A6%E4%B9%A0%E7%90%86%E8%A7%A3%E7%A8%8B%E5%BA%8F%E6%89%A7%E8%A1%8C%E4%B8%AD%E7%9A%84%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E8%BF%87%E7%A8%8B"><span class="nav-number">1.1.</span> <span class="nav-text">网上学习理解程序执行中的函数调用过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E4%B8%8A%E5%AD%A6%E4%B9%A0%E4%BA%86%E8%A7%A3%E2%80%9CLinux%E5%90%AF%E5%8A%A8%E8%BF%87%E7%A8%8B%E2%80%9D"><span class="nav-number">1.2.</span> <span class="nav-text">网上学习了解“Linux启动过程”</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Practice-Exercises"><span class="nav-number">1.3.</span> <span class="nav-text">Practice Exercises</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-What-is-the-purpose-of-system-calls"><span class="nav-number">1.3.1.</span> <span class="nav-text">2.1 What is the purpose of system calls?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-What-are-the-five-major-activities-of-an-operating-system-with-regard-to-process-management"><span class="nav-number">1.3.2.</span> <span class="nav-text">2.2 What are the five major activities of an operating system with regard to process management?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-What-are-the-three-major-activities-of-an-operating-system-with-regard-to-memory-management"><span class="nav-number">1.3.3.</span> <span class="nav-text">2.3 What are the three major activities of an operating system with regard to memory management?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-What-are-the-three-major-activities-of-an-operating-system-with-regard-to-secondary-storage-management"><span class="nav-number">1.3.4.</span> <span class="nav-text">2.4 What are the three major activities of an operating system with regard to secondary-storage management?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-What-is-the-purpose-of-the-command-interpreter-Why-is-it-usually-separate-from-the-kernel"><span class="nav-number">1.3.5.</span> <span class="nav-text">2.5 What is the purpose of the command interpreter? Why is it usually separate from the kernel?</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E8%A7%A3%E9%87%8A%E5%99%A8%E7%9A%84%E7%9B%AE%E7%9A%84%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">1.3.5.1.</span> <span class="nav-text">命令解释器的目的是什么?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E5%AE%83%E9%80%9A%E5%B8%B8%E4%B8%8E%E5%86%85%E6%A0%B8%E5%88%86%E5%BC%80"><span class="nav-number">1.3.5.2.</span> <span class="nav-text">为什么它通常与内核分开?</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-6-What-system-calls-have-to-be-executed-by-a-command-interpreter-or-shell-in-order-to-start-a-new-process"><span class="nav-number">1.3.6.</span> <span class="nav-text">2.6 What system calls have to be executed by a command interpreter or shell in order to start a new process?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-7-What-is-the-purpose-of-system-programs"><span class="nav-number">1.3.7.</span> <span class="nav-text">2.7 What is the purpose of system programs?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-8-What-is-the-main-advantage-of-the-layered-approach-to-system-design-What-are-the-disadvantages-of-the-layered-approach"><span class="nav-number">1.3.8.</span> <span class="nav-text">2.8 What is the main advantage of the layered approach to system design? What are the disadvantages of the layered approach?</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1%E7%9A%84%E5%88%86%E5%B1%82%E6%96%B9%E6%B3%95%E7%9A%84%E4%B8%BB%E8%A6%81%E4%BC%98%E7%82%B9%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">1.3.8.1.</span> <span class="nav-text">系统设计的分层方法的主要优点是什么?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E5%B1%82%E6%96%B9%E6%B3%95%E7%9A%84%E7%BC%BA%E7%82%B9%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">1.3.8.2.</span> <span class="nav-text">分层方法的缺点是什么?</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-9-List-five-services-provided-by-an-operating-system-and-explain-how-each-creates-convenience-for-users-In-which-cases-would-it-be-impossible-for-user-level-programs-to-provide-these-services-Explain-your-answer"><span class="nav-number">1.3.9.</span> <span class="nav-text">2.9 List five services provided by an operating system, and explain how each creates convenience for users. In which cases would it be impossible for user-level programs to provide these services? Explain your answer.</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Exercises"><span class="nav-number">1.4.</span> <span class="nav-text">Exercises</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-12-The-services-and-functions-provided-by-an-operating-system-can-be-divided-into-two-main-categories-Briefly-describe-the-two-categories-and-discuss-how-they-differ"><span class="nav-number">1.4.1.</span> <span class="nav-text">2.12 The services and functions provided by an operating system can be divided into two main categories. Briefly describe the two categories, and discuss how they differ.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-13-Describe-three-general-methods-for-passing-parameters-to-the-operating-system"><span class="nav-number">1.4.2.</span> <span class="nav-text">2.13 Describe three general methods for passing parameters to the operating system.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-15-What-are-the-five-major-activities-of-an-operating-system-with-regard-to-file-management"><span class="nav-number">1.4.3.</span> <span class="nav-text">2.15 What are the five major activities of an operating system with regard to file management?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-16-What-are-the-advantages-and-disadvantages-of-using-the-same-system-call-interface-for-manipulating-both-files-and-devices"><span class="nav-number">1.4.4.</span> <span class="nav-text">2.16 What are the advantages and disadvantages of using the same system-call interface for manipulating both files and devices?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-17-Would-it-be-possible-for-the-user-to-develop-a-new-command-interpreter-using-the-system-call-interface-provided-by-the-operating-system"><span class="nav-number">1.4.5.</span> <span class="nav-text">2.17 Would it be possible for the user to develop a new command interpreter using the system-call interface provided by the operating system?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-18-What-are-the-two-models-of-interprocess-communication%EF%BC%9FWhat-are-the-strengths-and-weaknesses-of-the-two-approaches"><span class="nav-number">1.4.6.</span> <span class="nav-text">2.18 What are the two models of interprocess communication？What are the strengths and weaknesses of the two approaches?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-19-Why-is-the-separation-of-mechanism-and-policy-desirable"><span class="nav-number">1.4.7.</span> <span class="nav-text">2.19 Why is the separation of mechanism and policy desirable?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-21-What-is-the-main-advantage-of-the-microkernel-approach-to-system-design-How-do-user-programs-and-system-services-interact-in-a-microkernel-architecture-What-are-the-disadvantages-of-using-the-microkernel-approach"><span class="nav-number">1.4.8.</span> <span class="nav-text">2.21 What is the main advantage of the microkernel approach to system design? How do user programs and system services interact in a microkernel architecture? What are the disadvantages of using the microkernel approach?</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BE%AE%E5%86%85%E6%A0%B8%E6%96%B9%E6%B3%95%E5%9C%A8%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1%E6%96%B9%E9%9D%A2%E7%9A%84%E4%B8%BB%E8%A6%81%E4%BC%98%E5%8A%BF%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">1.4.8.1.</span> <span class="nav-text">微内核方法在系统设计方面的主要优势是什么?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9C%A8%E5%BE%AE%E5%86%85%E6%A0%B8%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E4%B8%AD%EF%BC%8C%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E5%92%8C%E7%B3%BB%E7%BB%9F%E6%9C%8D%E5%8A%A1%E5%A6%82%E4%BD%95%E4%BA%A4%E4%BA%92"><span class="nav-number">1.4.8.2.</span> <span class="nav-text">在微内核体系结构中，用户程序和系统服务如何交互?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%BE%AE%E5%86%85%E6%A0%B8%E6%96%B9%E6%B3%95%E7%9A%84%E7%BC%BA%E7%82%B9%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">1.4.8.3.</span> <span class="nav-text">使用微内核方法的缺点是什么?</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-22-What-are-the-advantages-of-using-loadable-kernel-modules"><span class="nav-number">1.4.9.</span> <span class="nav-text">2.22 What are the advantages of using loadable kernel modules?</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Framist</p>
+  <div class="site-description" itemprop="description">框架主义者的小窝</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">79</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/framist" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;framist" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:framist@163.com" title="E-Mail → mailto:framist@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/weixin_47102975" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_47102975" rel="noopener" target="_blank"><i class="fas fa-angle-right fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://framist.top/" title="http:&#x2F;&#x2F;framist.top&#x2F;" rel="noopener" target="_blank">个人主页</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://framist.github.io/2020/10/11/%E6%88%91%E8%BA%AB%E8%BE%B9%E7%9A%84CS%E5%A4%A7%E4%BD%AC%E4%BB%AC/" title="https:&#x2F;&#x2F;framist.github.io&#x2F;2020&#x2F;10&#x2F;11&#x2F;%E6%88%91%E8%BA%AB%E8%BE%B9%E7%9A%84CS%E5%A4%A7%E4%BD%AC%E4%BB%AC&#x2F;">我身边的大佬们</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yuexiavqiufeng.github.io/" title="https:&#x2F;&#x2F;yuexiavqiufeng.github.io&#x2F;" rel="noopener" target="_blank">yuexiavqiufeng</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://github.com/framist" title="https:&#x2F;&#x2F;github.com&#x2F;framist" rel="noopener" target="_blank">广告位招租</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">浙ICP备2022002862号-1 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-at"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Framist</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div><script>
+    let body = document.getElementsByTagName('body')[0];
+    body.addEventListener('click', (e) => {
+        let contentArr = ['欧拉~','ˋ( ° ▽、° ) ','RGB!','_(:з」∠)_','哼','?','¿框架?','QAQ',':3','<3','疯掉了',
+                            'whoami',
+                            'whoareU',
+                            'NULL',
+                            'None',
+                            ' ',
+                            '代价是什么呢？',
+                            '...',
+                            'Big Brother is Watching You',
+                            '喵~', '嗷~', '呜~', '哞~', '咩~', '咕~', '嘎~', '嘤~',
+                            '你看到了。',
+                            '¿爱情障眼法?','¿物种认同障碍?',
+                            '微润欧美，小润终南山，中润润与市，大润中南海',
+                            'init param:<br/>1LTKvNaux7CjrNHJ09C0y87Eo7/Rrbu3zfm4tKOsus7Ksbb41rmjv9a5zqrWucv51rmjrLTLzsTT1rrOtOajvw==',
+                            '这里没有时间的意义',
+                            '嘿嘿嘿，好想被随机异或哦，<br/>嘿嘿嘿，嘿嘿嘿，异或我的异或',
+                            '记忆赋予时间的意义，而不是时间赋予记忆的意义',
+                            '放弃 P ∨ ¬P 吧！',
+                            '抽象是普适性的代价 —— 3b1b',
+                            '得易见平凡，仿照上例显然',
+                            '留作习题答案略，读者自证不难',
+                            '反之亦然同理，推论自然成立',
+                            '略去过程 Q . E . D ，由上可知证毕'];
+        let randomNum = function (n) {
+            return Math.floor(Math.random() * n)
+        }
+        let span = document.createElement('span');
+        span.innerHTML = `${contentArr[randomNum(contentArr.length)]}`;
+        span.style.color = `rgb(${randomNum(256)},${randomNum(256)},${randomNum(256)})`;
+        span.style.position = 'absolute';
+        span.style.top = `${e.pageY}px`;
+        span.style.left = `${e.pageX}px`;
+        span.style.transition = 'all 1s ease';
+        span.style.zIndex = 20000;
+        body.appendChild(span)
+        setTimeout(()=>{
+            span.style.top = span.offsetTop - 25 + 'px';
+            span.style.opacity = 0;
+            setTimeout(()=>{span.remove()},1000)
+        },700)
+    })
+</script>
+
+
+<div style="width: 100px; height: 100px; margin: 0 auto;">
+<script type="text/javascript" id="clstr_globe" src="//clustrmaps.com/globe.js?d=gRWtX21uVt_tIdj_T64nMvo4FK1UrTWME23CVLOzNCg"></script>
+</div>
+<!--
+<script type="text/javascript" 
+color="255,255,255" 
+pointColor='64,184,209' 
+opacity='1' 
+zIndex="-1" 
+count="233" 
+src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js">
+</script>
+-->
+
+
+        
+<div class="busuanzi-count">
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script data-pjax>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '267a9d4a89b9b72b2229',
+      clientSecret: '2dba1f14d21da707ed6c4497fecc05d6178b4fa3',
+      repo        : 'blog-comment',
+      owner       : 'framist',
+      admin       : ['framist'],
+      id          : 'c578a0f12cf2f1fc1d691fdc222ec979',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+    </div>
+</body>
+</html>

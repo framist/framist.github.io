@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Noto Serif SC:300,300italic,400,400italic,700,700italic|Source Code Pro:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-big-counter.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"framist.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="补遗：CS61a 通过“圣经”《SICP》了解到这门课。SCIP 读着有点困难，想通过课程的引导。但是这个课程要比书基础很多，就当对计科学习的回顾和补遗了。本笔记也会在我读完 SICP 后更新。 课程地址：CS 61A Fall 2022">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CS61a-Note">
+<meta property="og:url" content="https://framist.github.io/2022/12/19/%E3%80%90PL%E3%80%91/CS61a-Note/index.html">
+<meta property="og:site_name" content="Framist&#39;s Little House">
+<meta property="og:description" content="补遗：CS61a 通过“圣经”《SICP》了解到这门课。SCIP 读着有点困难，想通过课程的引导。但是这个课程要比书基础很多，就当对计科学习的回顾和补遗了。本笔记也会在我读完 SICP 后更新。 课程地址：CS 61A Fall 2022">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/4c0421d86cf84b69abb1064e0a4d49a2.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/7b5eaa3cd4f46fd5e7b9f9a32661b5cf.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/7308ebe2af73b93cf8f630b19e1741ea.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/2eb3fdb4b7d438d61137c75506b976a0.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/dcd26683345ba8c9674ec12ce9b5dbe6.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/e0e8035b140b7f981e7eb096b06a55a4.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/8491791bb778785721775338f6e229d5.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/10d0a70af601faaef4d90fdde0edc4d3.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/495d434b19ec8ac3bcb99f756102ab14.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/80157222f0af1186d5bad7f25c266113.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/bbf21ac053af20a07f9bf4769482c33a.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/32805646bf890f984c29df911fe643ff.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/33969c2799e3ec203d90795d72dc433a.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/94cd7c4246d6daf50cbaa881166c8a21.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/f299a37ce53911cbc09094fe635c4fe7.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/426bbc8958fdf886295fe3efe8227eb2.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/102a9e449970178b62ed58d575f6a84f.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/16935072c732b5df37c052d52f3c6d65.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/14a8356e9dcf5d561770536f095e5a26.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/2efaf83c5de0186730225c4f7154dabd.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/11f2392d4e5af79fd531d99aaf20068d.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/42b3fe83b98fd3e99d50428bdaf557ef.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/b39364dc9ac426a424f9e516bd96dc22.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/c4156746436905597eaab5ab6617ece7.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/fef082fbd632a7d4f4c778329fbcb499.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/7b92163429e37527b201c5b77bb0f6fe.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/bc1ead7ca41fb3c714c694f990b5bb60.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/313ad8dd7623fb62bf83dd95b1a55de5.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/c6181e0184daaa4b3305fd0542bc0e88.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/bc59bda258efaca0124c4661d2823129.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/d83dc17da00884882e3e13311fc83b99.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/a5ad0226f282b300085d0ad4919f7143.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/00c34bc5916147aa4badbb6084004497.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/140a108570eba1c150fef39e5bf57ce4.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/ac7113bc76a804f013626b7fb580bb83.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/9fe397d5554757f97a1a457c2534deac.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/ff762062140452e6b4b22cbd6c2f6a38.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/a1c3a8a98ff1a7e05ba57b4e21d56d21.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/a022b4f47f9641cee856100b898074a2.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/e3d43b104c644f5069c685d579e50a63.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/90274b84909437823fa352c6bf99df45.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/e61d2b2cfe06292cc2cc5f4c6fea3a09.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/f72b467cd3e02b9459a390a035ffaceb.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/9809599ed55640a3a83147c5de645414.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/4bdb266250b1ffa4c381ad060333f770.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/8048d54bb88f5bb6c8e5ed353233adce.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/fffb88b8ad9d85b9dbe0f3e9c326fc52.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/4a9554af6e262425623b75624659a8ad.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/0ad65f1812afa31c68de42e5bac1d59a.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/7505609552dfff4c1cc234aa20304031.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/e9ace85cb39913850c98ded5c57387dd.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/7d8ca3f682c159d43f27a147069c844f.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/fa3d06cfba7008222ed151c2a20d8a5a.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/5bdaaa750201c421fe1d2e893ab4f80f.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/af3708b68c9e63ba8b66eb8dc060670c.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/294a3229f3ca49de61a14ce31d8366f4.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/c7ab37b802c31ee860e8ab43579fbd5c.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/6d6f347dffd8f1635d4636cbe0b7cb17.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/28eda904cc9e18900f37f77d9629e77f.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/a3ab6c2a4b2e2a15613e9de62143d362.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/43e53bcf918d3b275ee47ae830a6defa.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/23757e08c2ae6d36a5a7851ff6d7c838.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/img_convert/6250a859515c06dd7d30e67002c2fb7a.png">
+<meta property="article:published_time" content="2022-12-19T07:21:12.000Z">
+<meta property="article:modified_time" content="2023-08-14T12:33:17.077Z">
+<meta property="article:author" content="Framist">
+<meta property="article:tag" content="PL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/4c0421d86cf84b69abb1064e0a4d49a2.png">
+
+<link rel="canonical" href="https://framist.github.io/2022/12/19/%E3%80%90PL%E3%80%91/CS61a-Note/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>CS61a-Note | Framist's Little House</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Framist's Little House</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">◇ 自顶而下 - 面向未来 ◇</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://framist.github.io/2022/12/19/%E3%80%90PL%E3%80%91/CS61a-Note/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Framist">
+      <meta itemprop="description" content="框架主义者的小窝">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Framist's Little House">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CS61a-Note
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-12-19 15:21:12" itemprop="dateCreated datePublished" datetime="2022-12-19T15:21:12+08:00">2022-12-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-08-14 20:33:17" itemprop="dateModified" datetime="2023-08-14T20:33:17+08:00">2023-08-14</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">计算机科学</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="补遗：CS61a"><a href="#补遗：CS61a" class="headerlink" title="补遗：CS61a"></a>补遗：CS61a</h1><p><img data-src="https://img-blog.csdnimg.cn/4c0421d86cf84b69abb1064e0a4d49a2.png" alt="请添加图片描述"></p>
+<p>通过“圣经”《SICP》了解到这门课。SCIP 读着有点困难，想通过课程的引导。但是这个课程要比书基础很多，就当对计科学习的回顾和补遗了。本笔记也会在我读完 SICP 后更新。</p>
+<p>课程地址：<a target="_blank" rel="noopener" href="https://cs61a.org/">CS 61A Fall 2022</a></p>
+<span id="more"></span>
+
+<p>参照原书目录，本课程主要讲了一下内容：<em>大概</em></p>
+<ol>
+<li><p>构造过程抽象（主要以 python 为例）</p>
+<ol>
+<li>程序设计的基本元素</li>
+<li>过程及其产生的计算</li>
+<li>用高阶函数做抽象</li>
+</ol>
+</li>
+<li><p>构造数据抽象</p>
+<ol>
+<li>（可变数据）</li>
+<li>层次性数据和闭包性质</li>
+<li>（递归对象）</li>
+</ol>
+</li>
+<li><p>模块化、对象和状态</p>
+<ol>
+<li>（着重讲了 python 的栈帧）</li>
+<li>（面向对象编程）</li>
+</ol>
+</li>
+<li><p>元语言抽象</p>
+<ol>
+<li>（python 实现 Scheme 解释器）</li>
+<li>（程序即数据）</li>
+</ol>
+</li>
+<li><p>（数据处理）</p>
+<ol>
+<li>（声明式编程 SQL）</li>
+</ol>
+</li>
+</ol>
+<p>‍</p>
+<p>以下是听课时的一些非常粗略的笔记：从第一讲到第 39 讲完。</p>
+<h2 id="笔记"><a href="#笔记" class="headerlink" title="笔记"></a>笔记</h2><h3 id="Lecture-1"><a href="#Lecture-1" class="headerlink" title="Lecture 1"></a>Lecture 1</h3><p>课程注意事项 与 为什么选择 python</p>
+<p>‍</p>
+<h3 id="Lecture-2"><a href="#Lecture-2" class="headerlink" title="Lecture 2"></a>Lecture 2</h3><p>python 的 frame 与 作用域 什么的…</p>
+<p>‍</p>
+<h3 id="Lecture-3"><a href="#Lecture-3" class="headerlink" title="Lecture 3"></a>Lecture 3</h3><p>‍</p>
+<p>进入交互模式</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -i xxx.py</span><br></pre></td></tr></table></figure>
+
+<p>doctest：</p>
+<p>参见：<a target="_blank" rel="noopener" href="http://composingprograms.com/pages/15-control.html">1.5 Control (composingprograms.com)</a> 1.5.6</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">python -m doctest -v ex.py</span><br><span class="line"></span><br><span class="line"><span class="comment"># Conditional expressions</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">absolute_value</span>(<span class="params">x</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Return the absolute value of X.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; absolute_value(-3)</span></span><br><span class="line"><span class="string">    3</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; absolute_value(0)</span></span><br><span class="line"><span class="string">    0</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; absolute_value(3)</span></span><br><span class="line"><span class="string">    3</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">if</span> x &lt; <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> -x</span><br><span class="line">    <span class="keyword">elif</span> x == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> x</span><br></pre></td></tr></table></figure>
+
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/7b5eaa3cd4f46fd5e7b9f9a32661b5cf.png" alt="image">​</p>
+<p>‍</p>
+<p>statements：</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/7308ebe2af73b93cf8f630b19e1741ea.png" alt="image">​</p>
+<p>‍</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/2eb3fdb4b7d438d61137c75506b976a0.png" alt="image">​</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/dcd26683345ba8c9674ec12ce9b5dbe6.png" alt="image">​</p>
+<p>‍</p>
+<h3 id="Lecture-4"><a href="#Lecture-4" class="headerlink" title="Lecture 4"></a>Lecture 4</h3><p><a target="_blank" rel="noopener" href="https://cs61a.org/assets/slides/04-Higher-Order_Functions_1pp.pdf">04-Higher-Order_Functions.key (cs61a.org)</a></p>
+<p>高阶函数引入</p>
+<h3 id="Lecture-5"><a href="#Lecture-5" class="headerlink" title="Lecture 5"></a>Lecture 5</h3><p><a target="_blank" rel="noopener" href="https://cs61a.org/assets/slides/05-Environments_1pp.pdf">05-Environments.key (cs61a.org)</a></p>
+<p>高阶函数的环境与帧</p>
+<p>lambda 表达式</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/e0e8035b140b7f981e7eb096b06a55a4.png" alt="image">​</p>
+<p>Function Currying （<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E6%9F%AF%E9%87%8C%E5%8C%96/10350525">柯里化_百度百科 (baidu.com)</a>）</p>
+<p>Curry: Transform a multi-argument function into a single-argument, higher-order function</p>
+<h3 id="Lecture-6"><a href="#Lecture-6" class="headerlink" title="Lecture 6"></a>Lecture 6</h3><p>Function Example: Sound</p>
+<p>很有趣的使用高阶函数的一个例子（作马里奥主题曲）</p>
+<p>‍</p>
+<h3 id="Lecture-7"><a href="#Lecture-7" class="headerlink" title="Lecture 7"></a>Lecture 7</h3><p>为何 程序控制流必须存在，而非只有函数？反例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">if_</span>(<span class="params">c, t, f</span>):</span></span><br><span class="line">    <span class="keyword">if</span> c:</span><br><span class="line">        <span class="keyword">return</span> t</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> f</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> math <span class="keyword">import</span> sqrt</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">real_sqrt</span>(<span class="params">x</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Return the real part of the square root of x.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; real_sqrt(4)</span></span><br><span class="line"><span class="string">    2.0</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; real_sqrt(-4)</span></span><br><span class="line"><span class="string">    0.0</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">if</span> x &gt; <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> sqrt(x)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0.0</span></span><br><span class="line">    <span class="comment"># if_(x &gt; 0, sqrt(x), 0.0)</span></span><br></pre></td></tr></table></figure>
+
+<p>‍</p>
+<p><em>能不能有解决方法？</em></p>
+<p>使用短路或许是一个方法</p>
+<p>‍</p>
+<p>此节其余内容是一些编程思想方法等</p>
+<p>还有大讨论 2 与其讲解</p>
+<h3 id="Lecture-8"><a href="#Lecture-8" class="headerlink" title="Lecture 8"></a>Lecture 8</h3><p>复习 与 函数装饰器</p>
+<p>‍</p>
+<p>‍</p>
+<p><em>Midterm 1</em></p>
+<hr>
+<h3 id="Lecture-9"><a href="#Lecture-9" class="headerlink" title="Lecture 9"></a>Lecture 9</h3><p><a target="_blank" rel="noopener" href="https://cs61a.org/lecture/lec09/">Recursion</a></p>
+<p>自指、递归</p>
+<p>‍</p>
+<h3 id="Lecture-10"><a href="#Lecture-10" class="headerlink" title="Lecture 10"></a>Lecture 10</h3><p><a target="_blank" rel="noopener" href="https://cs61a.org/lecture/lec10/">Tree Recursion</a></p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/8491791bb778785721775338f6e229d5.png" alt="image">​</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">i_c</span>(<span class="params">n</span>):</span></span><br><span class="line">    grow(n)</span><br><span class="line">    <span class="built_in">print</span>(n)</span><br><span class="line">    shrink(n)</span><br><span class="line">  </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">f_then_g</span>(<span class="params">f, g, n</span>):</span></span><br><span class="line">    <span class="keyword">if</span> n:</span><br><span class="line">        f(n)</span><br><span class="line">        g(n)</span><br><span class="line"></span><br><span class="line">grow   = <span class="keyword">lambda</span> n : f_then_g(grow, <span class="built_in">print</span>, n//<span class="number">10</span>)</span><br><span class="line">shrink = <span class="keyword">lambda</span> n : f_then_g(<span class="built_in">print</span> , shrink, n //<span class="number">10</span>)</span><br><span class="line"></span><br><span class="line">i_c(<span class="number">1234</span>)</span><br></pre></td></tr></table></figure>
+
+<p>‍</p>
+<h3 id="Lecture-11"><a href="#Lecture-11" class="headerlink" title="Lecture 11"></a>Lecture 11</h3><p><a target="_blank" rel="noopener" href="https://cs61a.org/lecture/lec11/">Sequences</a></p>
+<p>Lists、for、列表推导</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/10d0a70af601faaef4d90fdde0edc4d3.png" alt="image">​</p>
+<h3 id="Lecture-12"><a href="#Lecture-12" class="headerlink" title="Lecture 12"></a>Lecture 12</h3><p><a target="_blank" rel="noopener" href="https://cs61a.org/lecture/lec12/">Containers</a></p>
+<p>Box-and-Pointer Notation</p>
+<p>Slicing</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/495d434b19ec8ac3bcb99f756102ab14.png" alt="image">​</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Aggregation</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="built_in">sum</span>(&#123;<span class="number">3</span>:<span class="number">9</span>, <span class="number">5</span>:<span class="number">25</span>&#125;)</span><br><span class="line"><span class="number">8</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="built_in">sum</span>([[<span class="number">2</span>, <span class="number">3</span>], [<span class="number">4</span>]], [])</span><br><span class="line">[<span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="built_in">max</span>(<span class="built_in">range</span>(<span class="number">10</span>), key=<span class="keyword">lambda</span> x: <span class="number">7</span> - (x-<span class="number">2</span>)*(x-<span class="number">4</span>))</span><br><span class="line"><span class="number">3</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="built_in">all</span>([x &lt; <span class="number">5</span> <span class="keyword">for</span> x <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">5</span>)])</span><br><span class="line"></span><br><span class="line">perfect_square = <span class="keyword">lambda</span> x: x == <span class="built_in">round</span>(x ** <span class="number">0.5</span>) ** <span class="number">2</span></span><br><span class="line"><span class="built_in">any</span>([perfect_square(x) <span class="keyword">for</span> x <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">50</span>, <span class="number">60</span>)]) <span class="comment"># Try ,65)</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1406302">深度辨析 Python 的 eval() 与 exec() - 腾讯云开发者社区 - 腾讯云 (tencent.com)</a></p>
+</blockquote>
+<p>‍</p>
+<h3 id="Lecture-13"><a href="#Lecture-13" class="headerlink" title="Lecture 13"></a>Lecture 13</h3><p><a target="_blank" rel="noopener" href="https://cs61a.org/lecture/lec13/">Data Abstraction</a></p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/80157222f0af1186d5bad7f25c266113.png" alt="image">​</p>
+<p>数据抽象</p>
+<p><strong>用函数实现数据结构：</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Functional implementation</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rational</span>(<span class="params">n, d</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;A representation of the rational number N/D.&quot;&quot;&quot;</span></span><br><span class="line">    g = gcd(n, d)</span><br><span class="line">    n, d = n//g, d//g</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">select</span>(<span class="params">name</span>):</span></span><br><span class="line">        <span class="keyword">if</span> name == <span class="string">&#x27;n&#x27;</span>:</span><br><span class="line">            <span class="keyword">return</span> n</span><br><span class="line">        <span class="keyword">elif</span> name == <span class="string">&#x27;d&#x27;</span>:</span><br><span class="line">            <span class="keyword">return</span> d</span><br><span class="line">    <span class="keyword">return</span> select</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">numer</span>(<span class="params">x</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Return the numerator of rational number X in lowest terms and having</span></span><br><span class="line"><span class="string">    the sign of X.&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> x(<span class="string">&#x27;n&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">denom</span>(<span class="params">x</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;Return the denominator of rational number X in lowest terms and positive.&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> x(<span class="string">&#x27;d&#x27;</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="Lecture-14"><a href="#Lecture-14" class="headerlink" title="Lecture 14"></a>Lecture 14</h3><p><a target="_blank" rel="noopener" href="https://cs61a.org/lecture/lec14/">Trees</a></p>
+<p>数据结构 树 的实现</p>
+<p>‍</p>
+<h3 id="Lecture-15"><a href="#Lecture-15" class="headerlink" title="Lecture 15"></a>Lecture 15</h3><p><a target="_blank" rel="noopener" href="https://cs61a.org/lecture/lec15/">Mutability</a></p>
+<p>对象 object</p>
+<p><strong>python 的可变对象（Mutation）和不可变（immutable）对象</strong></p>
+<p>String</p>
+<p>ASCII 的设计</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/bbf21ac053af20a07f9bf4769482c33a.png" alt="image">​</p>
+<p>‍</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> unicodedata <span class="keyword">import</span> lookup, name</span><br><span class="line">name(<span class="string">&#x27;A&#x27;</span>)</span><br><span class="line">lookup(<span class="string">&#x27;SNOWMAN&#x27;</span>)</span><br><span class="line">lookup(<span class="string">&#x27;SOCCER BALL&#x27;</span>)</span><br><span class="line">lookup(<span class="string">&#x27;BABY&#x27;</span>)</span><br><span class="line">s = lookup(<span class="string">&#x27;SNOWMAN&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>关于 tuple 的发音有争议</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">tuple_demos</span>():</span></span><br><span class="line">    (<span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>)</span><br><span class="line">    <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span></span><br><span class="line">    ()</span><br><span class="line">    <span class="built_in">tuple</span>()</span><br><span class="line">    <span class="built_in">tuple</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>])</span><br><span class="line">    <span class="comment"># tuple(2)</span></span><br><span class="line">    (<span class="number">2</span>,)</span><br><span class="line">    (<span class="number">3</span>, <span class="number">4</span>) + (<span class="number">5</span>, <span class="number">6</span>)</span><br><span class="line">    (<span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>) * <span class="number">2</span></span><br><span class="line">    <span class="number">5</span> <span class="keyword">in</span> (<span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># &#123;[1]: 2&#125;</span></span><br><span class="line">    &#123;<span class="number">1</span>: [<span class="number">2</span>]&#125;</span><br><span class="line">    &#123;(<span class="number">1</span>, <span class="number">2</span>): <span class="number">3</span>&#125;</span><br><span class="line">    <span class="comment"># &#123;([1], 2): 3&#125;</span></span><br><span class="line">    &#123;<span class="built_in">tuple</span>([<span class="number">1</span>, <span class="number">2</span>]): <span class="number">3</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/32805646bf890f984c29df911fe643ff.png" alt="image">​</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Identity</span><br><span class="line">&lt;exp0&gt; <span class="keyword">is</span> &lt;exp1&gt;</span><br><span class="line">evaluates to <span class="literal">True</span> <span class="keyword">if</span> both &lt;exp0&gt; <span class="keyword">and</span> &lt;exp1&gt; evaluate to the same <span class="built_in">object</span></span><br><span class="line">Equality</span><br><span class="line">&lt;exp0&gt; == &lt;exp1&gt; </span><br><span class="line">evaluates to <span class="literal">True</span> <span class="keyword">if</span> both &lt;exp0&gt; <span class="keyword">and</span> &lt;exp1&gt; evaluate to equal values</span><br><span class="line">Identical objects are always equal values</span><br></pre></td></tr></table></figure>
+
+<p>Mutable Default Arguments are Dangerous</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/33969c2799e3ec203d90795d72dc433a.png" alt="image">​</p>
+<p>可以达到 C 语言中函数类似静态变量的作用</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">make_withdraw_list</span>(<span class="params">balance</span>):</span></span><br><span class="line">    b = [balance]</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">withdraw</span>(<span class="params">amount</span>):</span></span><br><span class="line">        <span class="keyword">if</span> amount &gt; b[<span class="number">0</span>]:</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&#x27;Insufficient funds&#x27;</span></span><br><span class="line">        b[<span class="number">0</span>] = b[<span class="number">0</span>] - amount</span><br><span class="line">        <span class="keyword">return</span> b[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">return</span> withdraw</span><br></pre></td></tr></table></figure>
+
+<p>‍</p>
+<h3 id="Lecture-16"><a href="#Lecture-16" class="headerlink" title="Lecture 16"></a>Lecture 16</h3><p><a target="_blank" rel="noopener" href="https://cs61a.org/lecture/lec16/">Syntax</a></p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/94cd7c4246d6daf50cbaa881166c8a21.png" alt="image">​</p>
+<p>‍</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Useful string methods <span class="keyword">for</span> processing the contents of a file:</span><br><span class="line">.strip() returns a string without whitespace (spaces, tabs, etc.) on the ends</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">&#x27; hello &#x27;</span>.strip()</span><br><span class="line"><span class="string">&#x27;hello&#x27;</span></span><br><span class="line">.split() returns a <span class="built_in">list</span> of strings that were separated by whitespace</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">&#x27;hi there&#x27;</span>.split()</span><br><span class="line">[<span class="string">&#x27;hi&#x27;</span>, <span class="string">&#x27;there&#x27;</span>]</span><br><span class="line">.replace(a, b) returns a string <span class="keyword">with</span> <span class="built_in">all</span> instances of string a replaced by string b</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="string">&#x27;2+2&#x27;</span>.replace(<span class="string">&#x27;+&#x27;</span>, <span class="string">&#x27; + &#x27;</span>)</span><br><span class="line"><span class="string">&#x27;2 + 2&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>用类似 lisp 的语法举例子</p>
+<p>‍</p>
+<h3 id="Lecture-17"><a href="#Lecture-17" class="headerlink" title="Lecture 17"></a>Lecture 17</h3><p><a target="_blank" rel="noopener" href="https://cs61a.org/lecture/lec17/">Iterators</a></p>
+<p>‍</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/f299a37ce53911cbc09094fe635c4fe7.png" alt="image">​</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/426bbc8958fdf886295fe3efe8227eb2.png" alt="image">​</p>
+<p>字典能在迭代中改变值，而不能改变结构</p>
+<p>‍</p>
+<p>迭代器是“一次性”的！</p>
+<p>‍</p>
+<p><code>for</code>​​ 循环与迭代器的关系（跟 <code>range</code>​ ​对象的不同）</p>
+<p>‍</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/102a9e449970178b62ed58d575f6a84f.png" alt="image">​</p>
+<p>‍</p>
+<p>lazily：懒惰执行</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/16935072c732b5df37c052d52f3c6d65.png" alt="image">​</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/14a8356e9dcf5d561770536f095e5a26.png" alt="image">​</p>
+<p>‍</p>
+<p>‍</p>
+<h3 id="Lecture-18"><a href="#Lecture-18" class="headerlink" title="Lecture 18"></a>Lecture 18</h3><p><a target="_blank" rel="noopener" href="https://cs61a.org/lecture/lec18/">Generators</a></p>
+<p>Generators and Generator Functions</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/2efaf83c5de0186730225c4f7154dabd.png" alt="image">​</p>
+<p>‍</p>
+<p><code>yield from</code>​​</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/11f2392d4e5af79fd531d99aaf20068d.png" alt="image">​</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">yield_partitions</span>(<span class="params">n, m</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;List partitions.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; for p in yield_partitions(6, 4): print(p)</span></span><br><span class="line"><span class="string">    2 + 4</span></span><br><span class="line"><span class="string">    1 + 1 + 4</span></span><br><span class="line"><span class="string">    3 + 3</span></span><br><span class="line"><span class="string">    1 + 2 + 3</span></span><br><span class="line"><span class="string">    1 + 1 + 1 + 3</span></span><br><span class="line"><span class="string">    2 + 2 + 2</span></span><br><span class="line"><span class="string">    1 + 1 + 2 + 2</span></span><br><span class="line"><span class="string">    1 + 1 + 1 + 1 + 2</span></span><br><span class="line"><span class="string">    1 + 1 + 1 + 1 + 1 + 1</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">if</span> n &gt; <span class="number">0</span> <span class="keyword">and</span> m &gt; <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">if</span> n == m:</span><br><span class="line">            <span class="keyword">yield</span> <span class="built_in">str</span>(m)</span><br><span class="line">        <span class="keyword">for</span> p <span class="keyword">in</span> yield_partitions(n-m, m):</span><br><span class="line">            <span class="keyword">yield</span> p + <span class="string">&#x27; + &#x27;</span> + <span class="built_in">str</span>(m)</span><br><span class="line">        <span class="keyword">yield</span> <span class="keyword">from</span> yield_partitions(n, m-<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+
+<p>‍</p>
+<p>‍</p>
+<h3 id="Lecture-19"><a href="#Lecture-19" class="headerlink" title="Lecture 19"></a>Lecture 19</h3><p><a target="_blank" rel="noopener" href="https://cs61a.org/lecture/lec19/">Objects</a></p>
+<p>面向对象编程</p>
+<p>‍</p>
+<p>Binding an object to a new name using assignment does not create a new object:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>c = a </span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>c <span class="keyword">is</span> a </span><br><span class="line"><span class="literal">True</span></span><br></pre></td></tr></table></figure>
+
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/42b3fe83b98fd3e99d50428bdaf557ef.png" alt="image">​</p>
+<p>‍</p>
+<h3 id="Lecture-20"><a href="#Lecture-20" class="headerlink" title="Lecture 20"></a>Lecture 20</h3><p><a target="_blank" rel="noopener" href="https://cs61a.org/lecture/lec20/">Inheritance</a></p>
+<p>类、实例、属性、方法、多继承</p>
+<p>‍</p>
+<h3 id="Lecture-21"><a href="#Lecture-21" class="headerlink" title="Lecture 21"></a>Lecture 21</h3><p><a target="_blank" rel="noopener" href="https://cs61a.org/lecture/lec21/">Representation</a></p>
+<p>string 实现</p>
+<p>String Representations<br>An object value should behave like the kind of data it is meant to represent<br>For instance, by producing a string representation of itself<br>Strings are important: they represent language and programs<br>In Python, all objects produce two string representations:<br>• The str is legible to humans<br>• The repr is legible to the Python interpreter<br>The str and repr strings are often the same, but not always</p>
+<p>The repr String for an Object</p>
+<p>The str String for an Object</p>
+<p>‍</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> fractions <span class="keyword">import</span> Fraction</span><br><span class="line">half = Fraction(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line">half</span><br><span class="line"><span class="built_in">print</span>(half)</span><br><span class="line"><span class="built_in">str</span>(half)</span><br><span class="line"><span class="built_in">repr</span>(half)</span><br><span class="line"></span><br><span class="line">s = <span class="string">&#x27;hello world&#x27;</span></span><br><span class="line"><span class="built_in">str</span>(s)</span><br><span class="line"><span class="built_in">repr</span>(s)</span><br><span class="line"><span class="string">&quot;&#x27;hello world&#x27;&quot;</span></span><br><span class="line"><span class="built_in">repr</span>(<span class="built_in">repr</span>(<span class="built_in">repr</span>(s)))</span><br><span class="line"><span class="built_in">eval</span>(<span class="built_in">eval</span>(<span class="built_in">eval</span>(<span class="built_in">repr</span>(<span class="built_in">repr</span>(<span class="built_in">repr</span>(s))))))</span><br><span class="line"><span class="comment"># Errors: eval(&#x27;hello world&#x27;)</span></span><br></pre></td></tr></table></figure>
+
+<p>String Interpolation</p>
+<p>‍</p>
+<p>注意实现细节：</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/b39364dc9ac426a424f9e516bd96dc22.png" alt="image">​</p>
+<p>‍</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Bear</span>:</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;A Bear.</span></span><br><span class="line"><span class="string">  </span></span><br><span class="line"><span class="string">  </span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; oski = Bear()</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; oski</span></span><br><span class="line"><span class="string">    Bear()</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; print(oski)</span></span><br><span class="line"><span class="string">    a bear</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; print(str(oski))</span></span><br><span class="line"><span class="string">    a bear</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; print(repr(oski))</span></span><br><span class="line"><span class="string">    Bear()</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; print(oski.__repr__())</span></span><br><span class="line"><span class="string">    oski</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; print(oski.__str__())</span></span><br><span class="line"><span class="string">    oski the bear</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; print(str_(oski))</span></span><br><span class="line"><span class="string">    a bear</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; print(repr_(oski))</span></span><br><span class="line"><span class="string">    Bear()</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        self.__repr__ = <span class="keyword">lambda</span>: <span class="string">&#x27;oski&#x27;</span> <span class="comment"># instance attribute</span></span><br><span class="line">        self.__str__ = <span class="keyword">lambda</span>: <span class="string">&#x27;oski the bear&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__repr__</span>(<span class="params">self</span>):</span> <span class="comment"># class attribute</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27;Bear()&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27;a bear&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>具体实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">repr_</span>(<span class="params">x</span>):</span></span><br><span class="line">    s = <span class="built_in">type</span>(x).__repr__(x)</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> <span class="built_in">isinstance</span>(s, <span class="built_in">str</span>):</span><br><span class="line">        <span class="keyword">raise</span> TypeError</span><br><span class="line">    <span class="keyword">return</span> s</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">str_</span>(<span class="params">x</span>):</span></span><br><span class="line">    s = <span class="built_in">type</span>(x).__str__(x)</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> <span class="built_in">isinstance</span>(s, <span class="built_in">str</span>):</span><br><span class="line">        <span class="keyword">raise</span> TypeError</span><br><span class="line">    <span class="keyword">return</span> s</span><br></pre></td></tr></table></figure>
+
+<p>接口的思想</p>
+<p><a target="_blank" rel="noopener" href="https://docs.python.org/3/reference/datamodel.html#special-method-names">3. Data model — Python 3.11.0 documentation</a></p>
+<p><a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/reference/datamodel.html#special-method-names">3. 数据模型 — Python 3.11.0 文档</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">__init__</span><br><span class="line">__repr__</span><br><span class="line">__add__</span><br><span class="line">__bool__</span><br><span class="line">__float__</span><br><span class="line">Method invoked automatically when an <span class="built_in">object</span> <span class="keyword">is</span> constructed</span><br><span class="line">Method invoked to display an <span class="built_in">object</span> <span class="keyword">as</span> a Python expression</span><br><span class="line">Method invoked to add one <span class="built_in">object</span> to another</span><br><span class="line">Method invoked to convert an <span class="built_in">object</span> to <span class="literal">True</span> <span class="keyword">or</span> <span class="literal">False</span></span><br><span class="line">Method invoked to convert an <span class="built_in">object</span> to a <span class="built_in">float</span> (real number)</span><br></pre></td></tr></table></figure>
+
+<h3 id="Lecture-22"><a href="#Lecture-22" class="headerlink" title="Lecture 22"></a>Lecture 22</h3><p><a target="_blank" rel="noopener" href="https://cs61a.org/lecture/lec22/">Composition</a></p>
+<p>实现链表、树的数据结构</p>
+<p>‍</p>
+<h3 id="Lecture-23"><a href="#Lecture-23" class="headerlink" title="Lecture 23"></a>Lecture 23</h3><p><a target="_blank" rel="noopener" href="https://cs61a.org/lecture/lec23/">Efficiency</a></p>
+<p>从斐波那契函数的树状递归引入</p>
+<p>Memoization 来提高效率</p>
+<p>（官方更好的实现： <code>@functools.lru_cache(maxsize=128, typed=False)</code>​）</p>
+<p>快速幂</p>
+<p>增长的数量级</p>
+<p>时间空间复杂度</p>
+<h3 id="Lecture-24"><a href="#Lecture-24" class="headerlink" title="Lecture 24"></a>Lecture 24</h3><p><a target="_blank" rel="noopener" href="https://cs61a.org/lecture/lec24/">Decomposition</a></p>
+<p>模块化设计</p>
+<p>‍</p>
+<h3 id="Lecture-25"><a href="#Lecture-25" class="headerlink" title="Lecture 25"></a>Lecture 25</h3><p><a target="_blank" rel="noopener" href="https://cs61a.org/lecture/lec25/">Data Examples</a></p>
+<p>数据操作的举例</p>
+<p>List 的内置操作。对帧的影响。区分哪些操作会新建列表，哪些操作不会。</p>
+<p>类的操作对帧的影响</p>
+<p>Iterables &amp; Iterators：使用内置函数与实现。一些”一行代码实现”的技巧</p>
+<h3 id="Lecture-26"><a href="#Lecture-26" class="headerlink" title="Lecture 26"></a>Lecture 26</h3><p><a target="_blank" rel="noopener" href="https://cs61a.org/lecture/lec26/">Web Apps (Optional)</a></p>
+<p>未开放</p>
+<p>‍</p>
+<h3 id="Lecture-27"><a href="#Lecture-27" class="headerlink" title="Lecture 27"></a>Lecture 27</h3><p><a target="_blank" rel="noopener" href="https://cs61a.org/lecture/lec27/">Scheme</a></p>
+<p><a target="_blank" rel="noopener" href="http://composingprograms.com/pages/32-functional-programming.html">3.2 函数式编程 (composingprograms.com)</a></p>
+<p>终于开始进入正题~~~</p>
+<p>‍</p>
+<p>“<em>可以一天内学完的语言”？！</em></p>
+<p>A combination that is not a call expression is a special form:<br>• if expression: (if <predicate> <consequent> <alternative>)<br>• and and or: (and <e1> … <en>), (or <e1> … <en>)<br>• Binding symbols: (define <symbol> <expression>)<br>• New procedures: (define (<symbol> <formal parameters>) <body>)</body></formal></symbol></expression></symbol></en></e1></en></e1></alternative></consequent></predicate></p>
+<p>SICP 中的例子：</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/c4156746436905597eaab5ab6617ece7.png" alt="image">​</p>
+<p>‍</p>
+<p>‍</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/fef082fbd632a7d4f4c778329fbcb499.png" alt="image">​</p>
+<p>python 中也可以用 lambda 实现？</p>
+<p>‍</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/7b92163429e37527b201c5b77bb0f6fe.png" alt="image">​</p>
+<p>变量作用域，其他各种语言都可以有实现；python？（使用函数，不优雅）</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/bc1ead7ca41fb3c714c694f990b5bb60.png" alt="image">​</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&gt; (define (repeat k fn)</span><br><span class="line">    (<span class="name"><span class="builtin-name">if</span></span> (<span class="name"><span class="builtin-name">&gt;</span></span> k <span class="number">0</span>)</span><br><span class="line">        (<span class="name"><span class="builtin-name">begin</span></span> (<span class="name">fn</span>) (<span class="name">repeat</span> (<span class="name"><span class="builtin-name">-</span></span> k <span class="number">1</span>) fn))</span><br><span class="line">        nil))</span><br><span class="line"></span><br><span class="line">&gt; (define (tri fn)</span><br><span class="line">    (repeat 3 (lambda () (fn) (lt 120))))</span><br><span class="line"></span><br><span class="line">&gt; (define (sier d k)</span><br><span class="line">    (<span class="name">tri</span> (<span class="name"><span class="builtin-name">lambda</span></span> ()</span><br><span class="line">           (if (= k 1) (fd d) (leg d k)))))</span><br><span class="line"></span><br><span class="line">&gt; (define (leg d k)</span><br><span class="line">    (<span class="name">sier</span> (<span class="name"><span class="builtin-name">/</span></span> d <span class="number">2</span>) (<span class="name"><span class="builtin-name">-</span></span> k <span class="number">1</span>))</span><br><span class="line">    (<span class="name">penup</span>)</span><br><span class="line">    (<span class="name">fd</span> d)</span><br><span class="line">    (pendown))</span><br></pre></td></tr></table></figure>
+
+<h3 id="Lecture-28"><a href="#Lecture-28" class="headerlink" title="Lecture 28"></a>Lecture 28</h3><p><a target="_blank" rel="noopener" href="https://cs61a.org/lecture/lec28/">Scheme Lists</a></p>
+<p>Scheme 中唯一的数据结构</p>
+<p>‍</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/313ad8dd7623fb62bf83dd95b1a55de5.png" alt="image">​</p>
+<p>‍</p>
+<p>Symbolic Programming</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/c6181e0184daaa4b3305fd0542bc0e88.png" alt="image">​</p>
+<p>‍</p>
+<p>‍</p>
+<p>Example: Even Subsets</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/bc59bda258efaca0124c4661d2823129.png" alt="image">​</p>
+<p>更简单发方法：使用 filter</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/d83dc17da00884882e3e13311fc83b99.png" alt="image">​</p>
+<p>‍</p>
+<p>‍</p>
+<p>附：#TODO#​</p>
+<figure class="highlight coq"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">(* 通过推广序对的定义，数值&#x27;列表&#x27;类型可以这样描述： “一个列表要么是空的，要么就是由一个数和另一个列表组成的序对。” *)</span></span><br><span class="line"><span class="keyword">Inductive</span> natlist : <span class="keyword">Type</span> :=</span><br><span class="line">  | <span class="type">nil</span></span><br><span class="line">  | <span class="type">cons</span> (n : nat) (l : natlist).</span><br><span class="line"><span class="comment">(* 例如，这是一个三元素列表： *)</span></span><br><span class="line"><span class="keyword">Definition</span> mylist := cons <span class="number">1</span> (cons <span class="number">2</span> (cons <span class="number">3</span> nil)).</span><br></pre></td></tr></table></figure>
+
+<h3 id="Lecture-29"><a href="#Lecture-29" class="headerlink" title="Lecture 29"></a>Lecture 29</h3><p><a target="_blank" rel="noopener" href="https://cs61a.org/lecture/lec29/">Calculator</a></p>
+<p>使用 python 做一个解释器</p>
+<p>python 异常处理</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Python exceptions are raised <span class="keyword">with</span> a <span class="keyword">raise</span> statement</span><br><span class="line"><span class="keyword">raise</span> &lt;expression&gt;</span><br><span class="line">&lt;expression&gt; must evaluate to a subclass of BaseException <span class="keyword">or</span> an instance of one</span><br><span class="line">Exceptions are constructed like <span class="built_in">any</span> other <span class="built_in">object</span>. E.g., TypeError(<span class="string">&#x27;Bad argument!&#x27;</span>)</span><br><span class="line">TypeError -- A function was passed the wrong number/<span class="built_in">type</span> of argument</span><br><span class="line">NameError -- A name wasn<span class="string">&#x27;t found</span></span><br><span class="line"><span class="string">KeyError -- A key wasn&#x27;</span>t found <span class="keyword">in</span> a dictionary</span><br><span class="line">RecursionError -- Too many recursive calls</span><br></pre></td></tr></table></figure>
+
+<p>Python exceptions are raised with a raise statement<br>raise <expression><br><expression> must evaluate to a subclass of BaseException or an instance of one<br>Exceptions are constructed like any other object. E.g., TypeError(‘Bad argument!’)</expression></expression></p>
+<p>TypeError – A function was passed the wrong number&#x2F;type of argument<br>NameError – A name wasn’t found<br>KeyError – A key wasn’t found in a dictionary<br>RecursionError – Too many recursive calls</p>
+<p>常用于不信任的输入中</p>
+<p>‍</p>
+<p>‍</p>
+<p>Parsing</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/a5ad0226f282b300085d0ad4919f7143.png" alt="image">​</p>
+<p>‍</p>
+<p>Read-Eval-Print Loop  &#x3D;&#x3D;REPL&#x3D;&#x3D;</p>
+<p>The user interface for many programming languages is an interactive interpreter</p>
+<ol>
+<li>Print a prompt</li>
+<li>Read text input from the user</li>
+<li>Parse the text input into an expression</li>
+<li>Evaluate the expression</li>
+<li>If any errors occur, report those errors, otherwise</li>
+<li>Print the value of the expression and repeat</li>
+</ol>
+<p>‍</p>
+<h3 id="Lecture-30"><a href="#Lecture-30" class="headerlink" title="Lecture 30"></a>Lecture 30</h3><p><a target="_blank" rel="noopener" href="https://cs61a.org/lecture/lec30/">Interpreters</a></p>
+<p>讲了 scheme 解释器的各部分构造，但没有讲具体实现细节</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/00c34bc5916147aa4badbb6084004497.png" alt="image">​</p>
+<p><strong>Special Forms</strong></p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/140a108570eba1c150fef39e5bf57ce4.png" alt="image">​</p>
+<p><strong>Logical Special Forms</strong></p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/ac7113bc76a804f013626b7fb580bb83.png" alt="image">​</p>
+<p><em>这里提到了分支结构导致语句不执行的情况（跟纯函数不同，参见原书）</em></p>
+<p><strong>Quotation</strong></p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/9fe397d5554757f97a1a457c2534deac.png" alt="image">​</p>
+<p>‍</p>
+<p><strong>Lambda Expressions</strong></p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/ff762062140452e6b4b22cbd6c2f6a38.png" alt="image">​</p>
+<p>A frame represents an environment by having a parent frame<br>Frames are Python instances with methods <code>lookup</code>​ and <code>define</code>​<br>In Project 4, Frames do not hold return values</p>
+<p><strong>Define Expressions</strong></p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/a1c3a8a98ff1a7e05ba57b4e21d56d21.png" alt="image">​</p>
+<p>Procedure definition is <em>shorthand ​</em>of define with a lambda expression</p>
+<p><strong>Applying User-Defined Procedures</strong></p>
+<p>To apply a user-defined procedure, create a new frame in which formal parameters are bound to argument values, whose parent is the env attribute of the procedure</p>
+<p>Evaluate the body of the procedure in the environment that starts with this new frame</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/a022b4f47f9641cee856100b898074a2.png" alt="image">​</p>
+<p>‍</p>
+<h3 id="Lecture-31"><a href="#Lecture-31" class="headerlink" title="Lecture 31"></a>Lecture 31</h3><p><a target="_blank" rel="noopener" href="https://cs61a.org/lecture/lec31/">Tail Calls</a> 尾调用</p>
+<p><strong>Dynamic Scope</strong></p>
+<p>动态作用域？</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/e3d43b104c644f5069c685d579e50a63.png" alt="image"></p>
+<p><em>python 函数中的未定义变量是默认为全局变量（定义时无论该全局变量是否存在都不会报错，也不会在 g 函数中寻找，即不会在父 frame 中寻找，直接去 global frame 寻找，而 scheme 则会）。python 好像局部作用域的概念没有其他语言强？</em></p>
+<p>‍</p>
+<p><strong>Tail Recursion</strong></p>
+<blockquote>
+<p>233</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/90274b84909437823fa352c6bf99df45.png" alt="image">​</p>
+</blockquote>
+<p><strong>Functional Programming</strong></p>
+<ul>
+<li><p>All functions are pure functions</p>
+</li>
+<li><p>No re-assignment and no mutable data types</p>
+</li>
+<li><p>Name-value bindings are permanent</p>
+</li>
+<li><p>Advantages of functional programming:</p>
+<ul>
+<li>The value of an expression is independent of the order in which sub-expressions are evaluated</li>
+<li>Sub-expressions can safely be evaluated in parallel or only on demand (lazily)</li>
+<li><strong>Referential transparency</strong>: The value of an expression does not change when we substitute one of its subexpression with the value of that subexpression</li>
+</ul>
+</li>
+</ul>
+<p>But… no <code>for/while</code>​ statements! Can we make basic iteration efficient? Yes!</p>
+<p>‍</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/e61d2b2cfe06292cc2cc5f4c6fea3a09.png" alt="image">​</p>
+<blockquote>
+<p>关于 python 的尾递归优化的一些参考：</p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/376e433214b3">Python 开启尾递归优化！- 简书 (jianshu.com)</a></p>
+</blockquote>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/f72b467cd3e02b9459a390a035ffaceb.png" alt="image">​</p>
+<p><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-cn/%E5%B0%BE%E8%B0%83%E7%94%A8">尾调用 - 维基百科，自由的百科全书 (wikipedia.org)</a></p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/9809599ed55640a3a83147c5de645414.png" alt="image">​</p>
+<p>‍</p>
+<p><strong>Map and Reduce</strong></p>
+<p>建立尾调用</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/4bdb266250b1ffa4c381ad060333f770.png" alt="image">​</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/8048d54bb88f5bb6c8e5ed353233adce.png" alt="image">​</p>
+<p>‍</p>
+<p>‍</p>
+<p><strong>General Computing Machines</strong></p>
+<p>Interpreters are General Computing Machine</p>
+<p>An interpreter can be parameterized to simulate any machine</p>
+<p>Our Scheme interpreter is a universal machine</p>
+<p>A bridge between the data objects that are manipulated by our programming language and the programming language itself</p>
+<p>Internally, it is just a set of evaluation rules</p>
+<p>解释器是通用计算机</p>
+<p>解释器可以被参数化，以模拟任何机器</p>
+<p>我们的 Scheme 解释器是一个通用机器</p>
+<p>是我们的编程语言所操作的数据对象与编程语言本身之间的桥梁</p>
+<p>内在地，它只是一套评估规则</p>
+<h3 id="Lecture-32"><a href="#Lecture-32" class="headerlink" title="Lecture 32"></a>Lecture 32</h3><p><a target="_blank" rel="noopener" href="https://cs61a.org/lecture/lec32/">Programs as Data</a> 程序作为数据</p>
+<p><em>有些内容只在 recording 中有，而在 YouTube 上的视频没有。但是 recording 外部人员听不了 QAQ ​</em></p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/fffb88b8ad9d85b9dbe0f3e9c326fc52.png" alt="image">​</p>
+<p>‍</p>
+<p><strong>Quasiquotation</strong></p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/4a9554af6e262425623b75624659a8ad.png" alt="image">​</p>
+<p><em>一种方便强大的抽象方式，其他语言能不能实现？</em>#TODO#​</p>
+<p><strong>Example: While statement</strong>​</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/0ad65f1812afa31c68de42e5bac1d59a.png" alt="image">​</p>
+<h3 id="Lecture-33"><a href="#Lecture-33" class="headerlink" title="Lecture 33"></a>Lecture 33</h3><p><a target="_blank" rel="noopener" href="https://cs61a.org/lecture/lec33/">Macros</a></p>
+<p>宏</p>
+<p><em>配合引号表达式达成更完善的抽象手段</em></p>
+<p><strong>Macros Perform Code Transformations</strong></p>
+<p>A macro is an operation performed on the source code of a program before evaluation</p>
+<p>Macros exist in many languages, but are easiest to define correctly in a language like Lisp</p>
+<p>Scheme has a<strong>​ define-macro</strong> special form that defines a source code transformation</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/7505609552dfff4c1cc234aa20304031.png" alt="image">​</p>
+<p>Evaluation procedure of a macro call expression:</p>
+<ul>
+<li>Evaluate the operator sub-expression, which evaluates to a macro</li>
+<li>Call the macro procedure on the operand expressions without evaluating them first</li>
+<li>Evaluate the expression returned from the macro procedure</li>
+</ul>
+<p><em>有点像正则序求值的概念</em></p>
+<blockquote>
+<p>正则序求值：“完全展开而后归约”的求值模型</p>
+<p>应用序求值：“先对参数求值而后应用”的求值模型</p>
+</blockquote>
+<p>‍</p>
+<p>一个应用例子：实现类似断言<code>assert</code>​的功能并输出错误</p>
+<figure class="highlight scheme"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">; Macros</span></span><br><span class="line">(<span class="name"><span class="builtin-name">define</span></span> x <span class="number">-2</span>)</span><br><span class="line">(<span class="name"><span class="builtin-name">define</span></span> (<span class="name">check</span> val) (<span class="name"><span class="builtin-name">if</span></span> val <span class="symbol">&#x27;Passed</span> <span class="symbol">&#x27;Failed</span>))</span><br><span class="line">(<span class="name">check</span> (<span class="name"><span class="builtin-name">&gt;</span></span> x <span class="number">0</span>))</span><br><span class="line">(<span class="name">define-macro</span> (<span class="name">check</span> expr) (<span class="name"><span class="builtin-name">list</span></span> <span class="symbol">&#x27;if</span> expr &#x27;<span class="symbol">&#x27;Passed</span> &#x27;<span class="symbol">&#x27;Failed</span>))</span><br><span class="line">(<span class="name">check</span> (<span class="name"><span class="builtin-name">&gt;</span></span> x <span class="number">0</span>))</span><br><span class="line">(<span class="name">define-macro</span> (<span class="name">check</span> expr) (<span class="name"><span class="builtin-name">list</span></span> <span class="symbol">&#x27;if</span> expr &#x27;<span class="symbol">&#x27;Passed</span> (<span class="name"><span class="builtin-name">list</span></span> <span class="symbol">&#x27;quote</span> (<span class="name"><span class="builtin-name">list</span></span> <span class="symbol">&#x27;Failed:</span>  expr))))</span><br><span class="line">(<span class="name">check</span> (<span class="name"><span class="builtin-name">&gt;</span></span> x <span class="number">0</span>))</span><br></pre></td></tr></table></figure>
+
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/e9ace85cb39913850c98ded5c57387dd.png" alt="image">​</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/7d8ca3f682c159d43f27a147069c844f.png" alt="image">​</p>
+<p>‍</p>
+<p><strong>For Macro</strong></p>
+<p><em>用宏实现 Scheme 里面没有的 For 语句</em></p>
+<blockquote>
+<p>lambda、list 和他们的语法糖们</p>
+</blockquote>
+<p>Define a macro that evaluates an expression for each value in a sequence</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/fa3d06cfba7008222ed151c2a20d8a5a.png" alt="image">​</p>
+<figure class="highlight scheme"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">; For</span></span><br><span class="line">(<span class="name"><span class="builtin-name">define</span></span> (<span class="name"><span class="builtin-name">map</span></span> fn vals) </span><br><span class="line">  (<span class="name"><span class="builtin-name">if</span></span> (<span class="name"><span class="builtin-name">null?</span></span> vals) </span><br><span class="line">      () </span><br><span class="line">      (<span class="name"><span class="builtin-name">cons</span></span> (<span class="name">fn</span> (<span class="name"><span class="builtin-name">car</span></span> vals)) </span><br><span class="line">            (<span class="name"><span class="builtin-name">map</span></span> fn (<span class="name"><span class="builtin-name">cdr</span></span> vals)))))</span><br><span class="line"></span><br><span class="line">(<span class="name"><span class="builtin-name">map</span></span> (<span class="name"><span class="builtin-name">lambda</span></span> (x) (<span class="name"><span class="builtin-name">*</span></span> x x)) &#x27;(<span class="number">2</span> <span class="number">3</span> <span class="number">4</span> <span class="number">5</span>))</span><br><span class="line"></span><br><span class="line">(<span class="name">define-macro</span> (<span class="name">for</span> sym vals expr)</span><br><span class="line">  (<span class="name"><span class="builtin-name">list</span></span> <span class="symbol">&#x27;map</span> (<span class="name"><span class="builtin-name">list</span></span> <span class="symbol">&#x27;lambda</span> (<span class="name"><span class="builtin-name">list</span></span> sym) expr) vals))</span><br><span class="line"></span><br><span class="line">(<span class="name">define-macro</span> (<span class="name">for</span> sym vals exprs)</span><br><span class="line">  `(map (lambda (,sym) ,@exprs) ,vals))</span><br><span class="line"></span><br><span class="line">(<span class="name">for</span> x &#x27;(<span class="number">2</span> <span class="number">3</span> <span class="number">4</span> <span class="number">5</span>) (<span class="name"><span class="builtin-name">*</span></span> x x))</span><br></pre></td></tr></table></figure>
+
+<p>‍</p>
+<p><strong>Tracing Recursive Calls</strong></p>
+<p>另一个例子：实现 <code>@trace</code>​</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">trace</span>(<span class="params">fn</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">traced</span>(<span class="params">n</span>):</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;fn.__name__&#125;</span>(<span class="subst">&#123;n&#125;</span>)&#x27;</span>) </span><br><span class="line">        <span class="keyword">return</span> fn(n)</span><br><span class="line">    <span class="keyword">return</span> traced</span><br><span class="line"><span class="meta">@trace</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fact</span>(<span class="params">n</span>):</span></span><br><span class="line">    <span class="keyword">if</span> n == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> n * fact(n - <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>fact(<span class="number">5</span>)</span><br><span class="line">fact(<span class="number">5</span>)</span><br><span class="line">fact(<span class="number">4</span>)</span><br><span class="line">fact(<span class="number">3</span>)</span><br><span class="line">fact(<span class="number">2</span>)</span><br><span class="line">fact(<span class="number">1</span>)</span><br><span class="line">fact(<span class="number">0</span>)</span><br><span class="line"><span class="number">120</span></span><br></pre></td></tr></table></figure>
+
+<p>‍</p>
+<figure class="highlight scheme"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">(<span class="name"><span class="builtin-name">define</span></span> fact (<span class="name"><span class="builtin-name">lambda</span></span> (n)</span><br><span class="line">    (<span class="name"><span class="builtin-name">if</span></span> (<span class="name"><span class="builtin-name">zero?</span></span> n) <span class="number">1</span> (<span class="name"><span class="builtin-name">*</span></span> n (<span class="name">fact</span> (<span class="name"><span class="builtin-name">-</span></span> n <span class="number">1</span>))))))</span><br><span class="line">(<span class="name"><span class="builtin-name">define</span></span> original fact)</span><br><span class="line">(<span class="name"><span class="builtin-name">define</span></span> fact (<span class="name"><span class="builtin-name">lambda</span></span> (n) </span><br><span class="line">    (<span class="name">print</span> (<span class="name"><span class="builtin-name">list</span></span> <span class="symbol">&#x27;fact</span> n)) </span><br><span class="line">    (<span class="name">original</span> n)))</span><br><span class="line"></span><br><span class="line">scm&gt; (fact 5)</span><br><span class="line">(<span class="name">fact</span> <span class="number">5</span>)</span><br><span class="line">(<span class="name">fact</span> <span class="number">4</span>)</span><br><span class="line">(<span class="name">fact</span> <span class="number">3</span>)</span><br><span class="line">(<span class="name">fact</span> <span class="number">2</span>)</span><br><span class="line">(<span class="name">fact</span> <span class="number">1</span>)</span><br><span class="line">(<span class="name">fact</span> <span class="number">0</span>)</span><br><span class="line"><span class="number">120</span></span><br><span class="line"></span><br><span class="line"><span class="comment">;; 使用宏后</span></span><br><span class="line"><span class="comment">;; E.g., (trace (fact 5))</span></span><br><span class="line">(<span class="name">define-macro</span> (<span class="name">trace</span> expr)</span><br><span class="line">  (<span class="name"><span class="builtin-name">define</span></span> operator (<span class="name"><span class="builtin-name">car</span></span> expr))</span><br><span class="line">  `(begin</span><br><span class="line">     (define original ,operator)</span><br><span class="line">     (define ,operator (lambda (n) </span><br><span class="line">			  (print (list (quote ,operator) n)) </span><br><span class="line">			  (original n)))</span><br><span class="line">     (define result ,expr)</span><br><span class="line">     (define ,operator original)</span><br><span class="line">     result))</span><br><span class="line"></span><br><span class="line">(<span class="name">fact</span> <span class="number">5</span>)</span><br><span class="line">(<span class="name">trace</span> (<span class="name">fact</span> <span class="number">5</span>))</span><br><span class="line">(<span class="name">fact</span> <span class="number">5</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>仍待优化：现在输入函数参数还只能固定为 1</p>
+<p>但相比 Python 实现的优势在于可以自由选择是否被 trace。（装饰器装饰后就永久被装饰了）</p>
+<blockquote>
+<p>cool~</p>
+</blockquote>
+<h3 id="Lecture-34"><a href="#Lecture-34" class="headerlink" title="Lecture 34"></a>Lecture 34</h3><p><a target="_blank" rel="noopener" href="https://cs61a.org/lecture/lec34/">SQL</a></p>
+<blockquote>
+<p>这里有些很好玩的：同学们都 tql</p>
+<p><a target="_blank" rel="noopener" href="https://cs61a.org/proj/scheme_contest/">Optional Contest: Scheme Art | CS 61A Fall 2022</a></p>
+<p>还有往年内容~</p>
+<p>一些有趣的摘录如下：</p>
+<p><strong>Quine</strong></p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/5bdaaa750201c421fe1d2e893ab4f80f.png">​</p>
+<p>The marvelous quine:<br>a program that prints itself.<br>A strange loop, indeed!</p>
+<p>Tokens: 1901</p>
+<p>code： <a href="ttps://code.cs61a.org/fa21/proj/scheme_gallery/entries/f8134ff2/contest.scm">ttps:&#x2F;&#x2F;code.cs61a.org&#x2F;fa21&#x2F;proj&#x2F;scheme_gallery&#x2F;entries&#x2F;f8134ff2&#x2F;contest.scm</a></p>
+<p> <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/549183520">【翻译】Quine - 自我复制的程序（上） - 知乎 (zhihu.com)</a></p>
+<p><code>exec(s:=&#39;print(&quot;exec(s:=%r)&quot;%s)&#39;)</code>​</p>
+<p><strong>fiat lux</strong></p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/af3708b68c9e63ba8b66eb8dc060670c.png">​</p>
+<p>Light rays aimlessly<br>bouncing everywhere just like<br>61A kids</p>
+<p>Tokens: 966</p>
+<p><a target="_blank" rel="noopener" href="https://inst.eecs.berkeley.edu//~cs61a/fa17/proj/scheme_gallery/entries/bf4f96ca/contest.scm">View Code</a> <a target="_blank" rel="noopener" href="https://inst.eecs.berkeley.edu//~cs61a/fa17/proj/scheme_gallery/entries/bf4f96ca/scheme_primitives.py">View Primitives</a></p>
+<p>‍</p>
+<p><strong>A Random Tree and Blossom</strong></p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/294a3229f3ca49de61a14ce31d8366f4.png">​</p>
+<p>‍</p>
+<p>Plum blossoms from the bitter cold.<br>梅花香自苦寒来。<br>Does pseudorandom &#x3D;&#x3D; random?</p>
+<p>Tokens: 271</p>
+<p><a target="_blank" rel="noopener" href="https://inst.eecs.berkeley.edu//~cs61a/fa18/proj/scheme_gallery/entries/cad41904/contest.scm">View Code</a></p>
+<p>‍</p>
+<p><strong>A Line I’m Submitting So I Can Satisfy The Urge To Complete Every Assignment（摆烂人 ;-）</strong></p>
+<p>[外链图片转存失败，源站可能有防盗链机制，建议将图片保存下来直接上传 (img-CJA2N0LL-1670951751267)(<a target="_blank" rel="noopener" href="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/net-img-artwork-20221206011130-xgyc2n4.png)]%E2%80%8B">http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/net-img-artwork-20221206011130-xgyc2n4.png)]​</a></p>
+<p>I must submit now<br>It’s an urge I can’t avoid<br>Now please forgive me</p>
+<p>Tokens: 16</p>
+<p><a target="_blank" rel="noopener" href="https://code.cs61a.org/fa22/proj/scheme_gallery/entries/ea7072ed/contest.scm">View Code</a></p>
+</blockquote>
+<p>‍</p>
+<p><strong>Databases</strong></p>
+<p><em>为什么会突然提到数据库？</em></p>
+<p>Database management systems (DBMS)</p>
+<p><strong>declarative languages</strong></p>
+<p>In <strong>declarative languages（声明式语言）</strong> such as SQL &amp; <u>Prolog</u>:</p>
+<ul>
+<li>A “program” is a description of the desired result</li>
+<li>The interpreter figures out how to generate the result</li>
+</ul>
+<p>In <strong>imperative languages（命令式语言）</strong> such as Python &amp; Scheme:</p>
+<ul>
+<li>A “program” is a description of computational processes</li>
+<li>The interpreter carries out execution&#x2F;evaluation rules</li>
+</ul>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/Prolog">Prolog - 维基百科，自由的百科全书 (wikipedia.org)</a></p>
+<p>这样看来 Prolog 确实像 SQL，是同一类语言，只不过查询的是成真赋值。</p>
+</blockquote>
+<p><strong>Arithmetic</strong></p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/c7ab37b802c31ee860e8ab43579fbd5c.png" alt="image">​</p>
+<h3 id="Lecture-35"><a href="#Lecture-35" class="headerlink" title="Lecture 35"></a>Lecture 35</h3><p><a target="_blank" rel="noopener" href="https://cs61a.org/lecture/lec35/">Tables</a></p>
+<p><strong>Joining Tables</strong></p>
+<p>表的连接（<em>得好好复习一下数据库了，先就大致听一下，不是本课程的重点</em>）</p>
+<p><strong>Aliases and Dot Expressions</strong>​</p>
+<p>别名和点表达式</p>
+<p>Two tables may share a column name; dot expressions and aliases disambiguate column values </p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> [columns] <span class="keyword">FROM</span> [<span class="keyword">table</span>] <span class="keyword">WHERE</span> [<span class="keyword">condition</span>] <span class="keyword">ORDER</span> <span class="keyword">BY</span> [<span class="keyword">order</span>];</span><br></pre></td></tr></table></figure>
+
+<p>[table] is a comma-separated list of table names with optional aliases</p>
+<p><strong>Numerical Expressions</strong></p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/6d6f347dffd8f1635d4636cbe0b7cb17.png" alt="image">​</p>
+<p><strong>String Expressions</strong></p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/28eda904cc9e18900f37f77d9629e77f.png" alt="image">​</p>
+<p>‍</p>
+<h3 id="Lecture-36"><a href="#Lecture-36" class="headerlink" title="Lecture 36"></a>Lecture 36</h3><p><a target="_blank" rel="noopener" href="https://cs61a.org/lecture/lec36/">Aggregation (Video Only)</a></p>
+<p>（聚合）继续讲 SQL</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/a3ab6c2a4b2e2a15613e9de62143d362.png" alt="image">​</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/43e53bcf918d3b275ee47ae830a6defa.png" alt="image">​</p>
+<p><strong>Groups</strong></p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/23757e08c2ae6d36a5a7851ff6d7c838.png" alt="image">​</p>
+<p><img data-src="https://img-blog.csdnimg.cn/img_convert/6250a859515c06dd7d30e67002c2fb7a.png" alt="image">​</p>
+<p>‍</p>
+<p>‍</p>
+<h3 id="Lecture-37"><a href="#Lecture-37" class="headerlink" title="Lecture 37"></a>Lecture 37</h3><p><a target="_blank" rel="noopener" href="https://cs61a.org/lecture/lec37/">Databases (Optional)</a></p>
+<p>继续数据库原理</p>
+<p>与 python 的 <code>sqlite3</code>​ 的一些对数据库的交互</p>
+<p>‍</p>
+<h3 id="Lecture-38"><a href="#Lecture-38" class="headerlink" title="Lecture 38"></a>Lecture 38</h3><p><a target="_blank" rel="noopener" href="https://cs61a.org/lecture/lec38/">Final Examples</a></p>
+<p>‍</p>
+<p><em><strong>How to Design Programs</strong></em></p>
+<p><strong>From Problem Analysis to Data Definitions ​</strong>Identify the information that must be represented and how it is represented in the chosen programming language. Formulate data definitions and illustrate them with examples.</p>
+<p><strong>Signature, Purpose Statement, Header ​</strong>State what kind of data the desired function consumes and produces. Formulate a concise answer to the question what the function computes. Define a stub that lives up to the signature.</p>
+<p><strong>Functional Examples ​</strong>Work through examples that illustrate the function’s purpose.</p>
+<p><strong>Function Template ​</strong>Translate the data definitions into an outline of the function.</p>
+<p><strong>Function Definition ​</strong>Fill in the gaps in the function template. Exploit the purpose statement and the examples.</p>
+<p><strong>Testing ​</strong>Articulate the examples as tests and ensure that the function passes all. Doing so discovers mistakes. Tests also supplement examples in that they help others read and understand the definition when the need arises—and it will arise for any serious program.</p>
+<p><strong>从问题分析到数据定义 ​</strong>确定必须表示的信息，以及如何在所选择的编程语言中表示这些信息。拟定数据定义，并举例说明。</p>
+<p><strong>签名、目的声明、标题 ​</strong>说明所需的函数会消耗和产生什么样的数据。对函数计算的问题提出一个简洁的答案。定义一个符合签名的存根。</p>
+<p><strong>功能实例 ​</strong>通过实例来说明函数的目的。</p>
+<p><strong>函数模板 ​</strong>将数据定义转化为函数的大纲。</p>
+<p><strong>函数定义 ​</strong>填补函数模板中的空白。利用目的声明和例子。</p>
+<p><strong>测试 ​</strong>将例子阐述为测试，并确保函数通过所有测试。这样做可以发现错误。测试也是对例子的补充，因为它们可以帮助其他人在需要时阅读和理解定义–任何严肃的程序都会出现这种情况。</p>
+<h3 id="Lecture-39"><a href="#Lecture-39" class="headerlink" title="Lecture 39"></a>Lecture 39</h3><p><a target="_blank" rel="noopener" href="https://cs61a.org/lecture/lec39/">Conclusion</a></p>
+<p>没有录像只有 slides 😭</p>
+<p>之后就是 RRR week（Reading, Review, and Recitation）</p>
+<p>‍</p>
+<h2 id="其他参考"><a href="#其他参考" class="headerlink" title="其他参考"></a>其他参考</h2><p>课程给出的提纲：</p>
+<p><a target="_blank" rel="noopener" href="https://cs61a.org/assets/pdfs/61a-mt1-study-guide.pdf">61a-mt1-study-guide.key (cs61a.org)</a></p>
+<p><a target="_blank" rel="noopener" href="https://cs61a.org/assets/pdfs/61a-mt2-study-guide.pdf">61a-mt2-study-guide.key (cs61a.org)</a></p>
+<p>他人的笔记与感想：</p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/456110373">最好的 CS 入门课：CS61a 学后感 - 知乎 (zhihu.com)</a></p>
+<blockquote>
+<p>分章节来说，CS61a 主要教了以下这些内容：</p>
+<ol>
+<li><p>用函数构建抽象关系</p>
+<ol>
+<li>函数与函数设计</li>
+<li>控制</li>
+<li>高级函数</li>
+<li>递归函数</li>
+</ol>
+</li>
+<li><p>用数据构建抽象关系</p>
+<ol>
+<li>数据抽象</li>
+<li>可变数据</li>
+<li>面向对象编程</li>
+</ol>
+</li>
+<li><p>解释 (interpreting) 计算机程序</p>
+<ol>
+<li>函数式编程</li>
+<li>异常</li>
+<li>解释器的开发</li>
+</ol>
+</li>
+<li><p>数据处理</p>
+<ol>
+<li>声明式编程</li>
+</ol>
+</li>
+</ol>
+</blockquote>
+<p>‍</p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      <div style="display: inline-block;">
+        <img src="/images/dogecoin.png" alt="Framist dogecoin">
+        <p>dogecoin</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Framist
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://framist.github.io/2022/12/19/%E3%80%90PL%E3%80%91/CS61a-Note/" title="CS61a-Note">https://framist.github.io/2022/12/19/【PL】/CS61a-Note/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/PL/" rel="tag"># PL</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/10/19/%E3%80%90%E6%9D%82%E8%B0%88%E3%80%91/%E7%81%AB%E6%98%9F%E5%9D%90%E6%A0%87%E7%B3%BB/" rel="prev" title="火星坐标系">
+      <i class="fa fa-chevron-left"></i> 火星坐标系
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/03/25/%E7%94%B5%E8%B5%9B%E7%BB%8F%E9%AA%8C%E5%88%86%E4%BA%AB%E8%AE%B2%E5%BA%A7/" rel="next" title="电赛经验分享讲座">
+      电赛经验分享讲座 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A1%A5%E9%81%97%EF%BC%9ACS61a"><span class="nav-number">1.</span> <span class="nav-text">补遗：CS61a</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%94%E8%AE%B0"><span class="nav-number">1.1.</span> <span class="nav-text">笔记</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Lecture-1"><span class="nav-number">1.1.1.</span> <span class="nav-text">Lecture 1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lecture-2"><span class="nav-number">1.1.2.</span> <span class="nav-text">Lecture 2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lecture-3"><span class="nav-number">1.1.3.</span> <span class="nav-text">Lecture 3</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lecture-4"><span class="nav-number">1.1.4.</span> <span class="nav-text">Lecture 4</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lecture-5"><span class="nav-number">1.1.5.</span> <span class="nav-text">Lecture 5</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lecture-6"><span class="nav-number">1.1.6.</span> <span class="nav-text">Lecture 6</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lecture-7"><span class="nav-number">1.1.7.</span> <span class="nav-text">Lecture 7</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lecture-8"><span class="nav-number">1.1.8.</span> <span class="nav-text">Lecture 8</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lecture-9"><span class="nav-number">1.1.9.</span> <span class="nav-text">Lecture 9</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lecture-10"><span class="nav-number">1.1.10.</span> <span class="nav-text">Lecture 10</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lecture-11"><span class="nav-number">1.1.11.</span> <span class="nav-text">Lecture 11</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lecture-12"><span class="nav-number">1.1.12.</span> <span class="nav-text">Lecture 12</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lecture-13"><span class="nav-number">1.1.13.</span> <span class="nav-text">Lecture 13</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lecture-14"><span class="nav-number">1.1.14.</span> <span class="nav-text">Lecture 14</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lecture-15"><span class="nav-number">1.1.15.</span> <span class="nav-text">Lecture 15</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lecture-16"><span class="nav-number">1.1.16.</span> <span class="nav-text">Lecture 16</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lecture-17"><span class="nav-number">1.1.17.</span> <span class="nav-text">Lecture 17</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lecture-18"><span class="nav-number">1.1.18.</span> <span class="nav-text">Lecture 18</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lecture-19"><span class="nav-number">1.1.19.</span> <span class="nav-text">Lecture 19</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lecture-20"><span class="nav-number">1.1.20.</span> <span class="nav-text">Lecture 20</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lecture-21"><span class="nav-number">1.1.21.</span> <span class="nav-text">Lecture 21</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lecture-22"><span class="nav-number">1.1.22.</span> <span class="nav-text">Lecture 22</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lecture-23"><span class="nav-number">1.1.23.</span> <span class="nav-text">Lecture 23</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lecture-24"><span class="nav-number">1.1.24.</span> <span class="nav-text">Lecture 24</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lecture-25"><span class="nav-number">1.1.25.</span> <span class="nav-text">Lecture 25</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lecture-26"><span class="nav-number">1.1.26.</span> <span class="nav-text">Lecture 26</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lecture-27"><span class="nav-number">1.1.27.</span> <span class="nav-text">Lecture 27</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lecture-28"><span class="nav-number">1.1.28.</span> <span class="nav-text">Lecture 28</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lecture-29"><span class="nav-number">1.1.29.</span> <span class="nav-text">Lecture 29</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lecture-30"><span class="nav-number">1.1.30.</span> <span class="nav-text">Lecture 30</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lecture-31"><span class="nav-number">1.1.31.</span> <span class="nav-text">Lecture 31</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lecture-32"><span class="nav-number">1.1.32.</span> <span class="nav-text">Lecture 32</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lecture-33"><span class="nav-number">1.1.33.</span> <span class="nav-text">Lecture 33</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lecture-34"><span class="nav-number">1.1.34.</span> <span class="nav-text">Lecture 34</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lecture-35"><span class="nav-number">1.1.35.</span> <span class="nav-text">Lecture 35</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lecture-36"><span class="nav-number">1.1.36.</span> <span class="nav-text">Lecture 36</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lecture-37"><span class="nav-number">1.1.37.</span> <span class="nav-text">Lecture 37</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lecture-38"><span class="nav-number">1.1.38.</span> <span class="nav-text">Lecture 38</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lecture-39"><span class="nav-number">1.1.39.</span> <span class="nav-text">Lecture 39</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E5%8F%82%E8%80%83"><span class="nav-number">1.2.</span> <span class="nav-text">其他参考</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Framist</p>
+  <div class="site-description" itemprop="description">框架主义者的小窝</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">79</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/framist" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;framist" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:framist@163.com" title="E-Mail → mailto:framist@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/weixin_47102975" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_47102975" rel="noopener" target="_blank"><i class="fas fa-angle-right fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://framist.top/" title="http:&#x2F;&#x2F;framist.top&#x2F;" rel="noopener" target="_blank">个人主页</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://framist.github.io/2020/10/11/%E6%88%91%E8%BA%AB%E8%BE%B9%E7%9A%84CS%E5%A4%A7%E4%BD%AC%E4%BB%AC/" title="https:&#x2F;&#x2F;framist.github.io&#x2F;2020&#x2F;10&#x2F;11&#x2F;%E6%88%91%E8%BA%AB%E8%BE%B9%E7%9A%84CS%E5%A4%A7%E4%BD%AC%E4%BB%AC&#x2F;">我身边的大佬们</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yuexiavqiufeng.github.io/" title="https:&#x2F;&#x2F;yuexiavqiufeng.github.io&#x2F;" rel="noopener" target="_blank">yuexiavqiufeng</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://github.com/framist" title="https:&#x2F;&#x2F;github.com&#x2F;framist" rel="noopener" target="_blank">广告位招租</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">浙ICP备2022002862号-1 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-at"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Framist</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div><script>
+    let body = document.getElementsByTagName('body')[0];
+    body.addEventListener('click', (e) => {
+        let contentArr = ['欧拉~','ˋ( ° ▽、° ) ','RGB!','_(:з」∠)_','哼','?','¿框架?','QAQ',':3','<3','疯掉了',
+                            'whoami',
+                            'whoareU',
+                            'NULL',
+                            'None',
+                            ' ',
+                            '代价是什么呢？',
+                            '...',
+                            'Big Brother is Watching You',
+                            '喵~', '嗷~', '呜~', '哞~', '咩~', '咕~', '嘎~', '嘤~',
+                            '你看到了。',
+                            '¿爱情障眼法?','¿物种认同障碍?',
+                            '微润欧美，小润终南山，中润润与市，大润中南海',
+                            'init param:<br/>1LTKvNaux7CjrNHJ09C0y87Eo7/Rrbu3zfm4tKOsus7Ksbb41rmjv9a5zqrWucv51rmjrLTLzsTT1rrOtOajvw==',
+                            '这里没有时间的意义',
+                            '嘿嘿嘿，好想被随机异或哦，<br/>嘿嘿嘿，嘿嘿嘿，异或我的异或',
+                            '记忆赋予时间的意义，而不是时间赋予记忆的意义',
+                            '放弃 P ∨ ¬P 吧！',
+                            '抽象是普适性的代价 —— 3b1b',
+                            '得易见平凡，仿照上例显然',
+                            '留作习题答案略，读者自证不难',
+                            '反之亦然同理，推论自然成立',
+                            '略去过程 Q . E . D ，由上可知证毕'];
+        let randomNum = function (n) {
+            return Math.floor(Math.random() * n)
+        }
+        let span = document.createElement('span');
+        span.innerHTML = `${contentArr[randomNum(contentArr.length)]}`;
+        span.style.color = `rgb(${randomNum(256)},${randomNum(256)},${randomNum(256)})`;
+        span.style.position = 'absolute';
+        span.style.top = `${e.pageY}px`;
+        span.style.left = `${e.pageX}px`;
+        span.style.transition = 'all 1s ease';
+        span.style.zIndex = 20000;
+        body.appendChild(span)
+        setTimeout(()=>{
+            span.style.top = span.offsetTop - 25 + 'px';
+            span.style.opacity = 0;
+            setTimeout(()=>{span.remove()},1000)
+        },700)
+    })
+</script>
+
+
+<div style="width: 100px; height: 100px; margin: 0 auto;">
+<script type="text/javascript" id="clstr_globe" src="//clustrmaps.com/globe.js?d=gRWtX21uVt_tIdj_T64nMvo4FK1UrTWME23CVLOzNCg"></script>
+</div>
+<!--
+<script type="text/javascript" 
+color="255,255,255" 
+pointColor='64,184,209' 
+opacity='1' 
+zIndex="-1" 
+count="233" 
+src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js">
+</script>
+-->
+
+
+        
+<div class="busuanzi-count">
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script data-pjax>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '267a9d4a89b9b72b2229',
+      clientSecret: '2dba1f14d21da707ed6c4497fecc05d6178b4fa3',
+      repo        : 'blog-comment',
+      owner       : 'framist',
+      admin       : ['framist'],
+      id          : 'e91c4de0c6af079c9156cd63e5301a62',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+    </div>
+</body>
+</html>

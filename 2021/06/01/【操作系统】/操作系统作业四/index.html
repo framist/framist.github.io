@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Noto Serif SC:300,300italic,400,400italic,700,700italic|Source Code Pro:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-big-counter.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"framist.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Operating System Concepts Exercises 4Threads  操作系统作业4  网上学习Linux中的信号（signal）机制 4.2, 4.4, 4.7, 4.8, 4.9, 4.14, 4.15, 4.16, 4.17 4.21  每题最后一个引用块是老师提供的参考答案">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【操作系统概念-作业4】Threads">
+<meta property="og:url" content="https://framist.github.io/2021/06/01/%E3%80%90%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%91/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%9B%9B/index.html">
+<meta property="og:site_name" content="Framist&#39;s Little House">
+<meta property="og:description" content="Operating System Concepts Exercises 4Threads  操作系统作业4  网上学习Linux中的信号（signal）机制 4.2, 4.4, 4.7, 4.8, 4.9, 4.14, 4.15, 4.16, 4.17 4.21  每题最后一个引用块是老师提供的参考答案">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://framist.github.io/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%9B%9B/image-20210701012014413.png">
+<meta property="article:published_time" content="2021-06-01T03:42:50.962Z">
+<meta property="article:modified_time" content="2022-10-05T08:36:05.351Z">
+<meta property="article:author" content="Framist">
+<meta property="article:tag" content="学习">
+<meta property="article:tag" content="操作系统">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://framist.github.io/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%9B%9B/image-20210701012014413.png">
+
+<link rel="canonical" href="https://framist.github.io/2021/06/01/%E3%80%90%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%91/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%9B%9B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【操作系统概念-作业4】Threads | Framist's Little House</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Framist's Little House</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">◇ 自顶而下 - 面向未来 ◇</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://framist.github.io/2021/06/01/%E3%80%90%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%91/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%9B%9B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Framist">
+      <meta itemprop="description" content="框架主义者的小窝">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Framist's Little House">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【操作系统概念-作业4】Threads
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-06-01 11:42:50" itemprop="dateCreated datePublished" datetime="2021-06-01T11:42:50+08:00">2021-06-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-10-05 16:36:05" itemprop="dateModified" datetime="2022-10-05T16:36:05+08:00">2022-10-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">计算机科学</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E8%AF%BE%E4%B8%9A%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">课业学习</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E8%AF%BE%E4%B8%9A%E5%AD%A6%E4%B9%A0/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index"><span itemprop="name">操作系统</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Operating-System-Concepts-Exercises-4"><a href="#Operating-System-Concepts-Exercises-4" class="headerlink" title="Operating System Concepts Exercises 4"></a><em>Operating System Concepts</em> Exercises 4</h1><center>Threads</center>
+
+<p>操作系统作业4</p>
+<ul>
+<li>网上学习Linux中的信号（signal）机制</li>
+<li>4.2, 4.4,</li>
+<li>4.7, 4.8, 4.9, 4.14, 4.15, 4.16, 4.17</li>
+<li>4.21</li>
+</ul>
+<p><em>每题最后一个引用块是老师提供的参考答案</em></p>
+<span id="more"></span>
+
+<h2 id="网上学习Linux中的信号（signal）机制"><a href="#网上学习Linux中的信号（signal）机制" class="headerlink" title="网上学习Linux中的信号（signal）机制"></a>网上学习Linux中的信号（signal）机制</h2><p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/f445bfeea40a">Linux 信号（signal） - 简书 (jianshu.com)</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/subo_peng/p/5325326.html">Linux信号（signal) 机制分析 - 苏博 - 博客园 (cnblogs.com)</a></p>
+<p>……</p>
+<h2 id="Practice-Exercises"><a href="#Practice-Exercises" class="headerlink" title="Practice Exercises"></a>Practice Exercises</h2><p>4.2, 4.4</p>
+<h3 id="4-2-What-are-two-differences-between-user-level-threads-and-kernel-level-threads-Under-what-circumstances-is-one-type-better-than-the-other"><a href="#4-2-What-are-two-differences-between-user-level-threads-and-kernel-level-threads-Under-what-circumstances-is-one-type-better-than-the-other" class="headerlink" title="4.2  What are two differences between user-level threads and kernel-level threads? Under what circumstances is one type better than the other?"></a>4.2  What are two differences between user-level threads and kernel-level threads? Under what circumstances is one type better than the other?</h3><h4 id="What-are-two-differences-between-user-level-threads-and-kernel-level-threads"><a href="#What-are-two-differences-between-user-level-threads-and-kernel-level-threads" class="headerlink" title="What are two differences between user-level threads and kernel-level threads?"></a>What are two differences between user-level threads and kernel-level threads?</h4><p>用户级线程和内核级线程之间的两个区别是什么？ </p>
+<p><strong>答：</strong></p>
+<table>
+<thead>
+<tr>
+<th>User-level threads</th>
+<th>Kernel-level threads</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>The existence of user-level threads is unknown to the kernel.</td>
+<td>The existence of the kernel-level threads is known to the kernel.</td>
+</tr>
+<tr>
+<td>User-level threads are managed without kernel support.</td>
+<td>Kernel-level threads are managed by the operating system.</td>
+</tr>
+<tr>
+<td>user-level threads are faster to create than are kernel-level threads.</td>
+<td>Kernel-level threads are user-level threads.</td>
+</tr>
+<tr>
+<td>User-level threads are scheduled by the thread library.</td>
+<td>Kernel-level threads are scheduled by the kernel.</td>
+</tr>
+</tbody></table>
+<h4 id="Under-what-circumstances-is-one-type-better-than-the-other"><a href="#Under-what-circumstances-is-one-type-better-than-the-other" class="headerlink" title="Under what circumstances is one type better than the other?"></a>Under what circumstances is one type better than the other?</h4><p>在哪种情况下哪种类型比另一种更好？</p>
+<p><strong>答：</strong></p>
+<blockquote>
+<ul>
+<li><strong>Circumstances where kernel-level threads are better than user-level threads:</strong></li>
+</ul>
+<p><em>If the kernel is single-threaded</em>, then kernel-level threads are better than user-level threads, because any user-level thread performing a blocking system call will cause the entire process to block, even if other threads are available to run within the application.</p>
+<p><em>针对内核是单线程</em>的情况，内核线程优于用户线程。因为任何执行阻塞系统调用的用户线程都会导致整个进程阻塞，即使应用程序中可以运行其他线程。</p>
+<p>For example a process P1 has 2 kernel level threads and process P2 has 2 user-level threads. If one thread in P1 gets blocked, its second thread is not affected. But in case of P2 if one thread is blocked (say for I&#x2F;O), the whole process P2 along with the 2nd thread gets blocked.</p>
+<p>例如，有两个进程a和b。进程a有2个内核线程，而进程b有2个用户线程。如果a中的一个线程被阻塞，它的第二个线程不会受到影响。但是对于b，如果一个线程被阻塞(比如I&#x2F;O)，整个进程b和第二个线程就会被阻塞。</p>
+<p><em>In a multiprocessor environment</em>, the kernel-level threads are better than user-level threads, because kernel-level threads can run on different processors simultaneously while user-level threads of a process will run on one processor only even if multiple processors are available.</p>
+<p><em>针对多处理器环境</em>，内核线程优于用户线程，因为内核线程可以在不同的处理器上同时运行，而即使有多个处理器可用，进程的用户线程也只能在一个处理器上运行。 </p>
+<ul>
+<li><strong>Circumstances where user-level threads are better than kernel-level threads:</strong></li>
+</ul>
+<p>If the kernel is time shared, then user-level threads are better than kernel-level threads, because in time shared systems context switching takes place frequently. Context switching between kernel level threads has high overhead, almost the same as a process whereas context switching between user-level threads has almost no overhead as compared to kernel level threads.</p>
+<p>对于时间共享型的内核，用户线程优于内核线程，因为共享系统上下文切换经常发生。内核线程之间的上下文切换具有很高的开销，几乎与进程相同，而与内核线程相比，用户线程之间的上下文切换几乎没有开销。</p>
+</blockquote>
+<blockquote>
+<p><strong>Answer:</strong></p>
+<p>User-level threads are threads that the OS Kernel is not aware of. They exist entirely within a process, and are scheduled to run within that process’s time slice (managed by the threading library itself). User-level threads are much faster to switch between, as there is no context switch. User-level threads can’t be ran in parallel on the different CPUs.</p>
+<p>用户级线程是操作系统内核所不知道的线程。它们完全存在于一个进程中，并被安排在该进程的时间片中运行（由线程库本身管理）。用户级线程的切换速度更快，因为没有上下文切换。用户级线程不能在不同的CPU上并行运行。</p>
+<p>The OS kernel is aware of kernel-level threads. Kernel threads are scheduled by the OS’s scheduling algorithm, and each thread can be granted its own time slice. Kernel-level threads can be ran in parallel on the different CPUs.</p>
+<p>操作系统内核知道内核级线程。内核线程由操作系统的调度算法来安排，每个线程都可以被授予自己的时间片。内核级线程可以在不同的CPU上并行运行。</p>
+<p>Many systems implement threading differently: </p>
+<p>A many-to-one threading model maps many user threads directly to one kernel thread, the kernel thread can be thought of as the main process.</p>
+<p>A one-to-one threading model maps each user thread directly to one kernel thread, this model allows parallel processing on the multiprocessor systems.</p>
+<p>许多系统以不同方式实现线程。<br>多对一线程模型将许多用户线程直接映射到一个内核线程，内核线程可以被认为是主进程。<br>一对一线程模型将每个用户线程直接映射到一个内核线程，这种模型允许在多处理器系统上进行并行处理。</p>
+</blockquote>
+<h3 id="4-4-What-resources-are-used-when-a-thread-is-created-How-do-they-differ-from-those-used-when-a-process-is-created"><a href="#4-4-What-resources-are-used-when-a-thread-is-created-How-do-they-differ-from-those-used-when-a-process-is-created" class="headerlink" title="4.4 What resources are used when a thread is created? How do they differ from those used when a process is created?"></a>4.4 What resources are used when a thread is created? How do they differ from those used when a process is created?</h3><h4 id="What-resources-are-used-when-a-thread-is-created"><a href="#What-resources-are-used-when-a-thread-is-created" class="headerlink" title="What resources are used when a thread is created?"></a>What resources are used when a thread is created?</h4><p>创建线程时会使用哪些资源？ </p>
+<p><strong>答：</strong></p>
+<ol>
+<li>Code section</li>
+<li>Data section</li>
+<li>Other operation system resources such as open files and signals with other threads belonging to the same process whereas each and every process has separate code section, data section and operating system resources.</li>
+</ol>
+<h4 id="How-do-they-differ-from-those-used-when-a-process-is-created"><a href="#How-do-they-differ-from-those-used-when-a-process-is-created" class="headerlink" title="How do they differ from those used when a process is created?"></a>How do they differ from those used when a process is created?</h4><p>它们与创建进程时使用的那些有何不同？</p>
+<p><strong>答：</strong></p>
+<p>A thread is a basic unit of CPU utilization, also known as light weight process. So, creating either a user or kernel thread involves allocating a small data structure to hold a thread ID, a program counter, a register set, stack and priority, whereas creating a process involves allocating the large data structure called as PCB(Process Control Block) which includes a memory map, list of open files, and environment variables. Allocating and managing the memory map is typically the most time-consuming activity.</p>
+<blockquote>
+<p><strong>Answer:</strong></p>
+<p>Creating either a user or kernel thread involves allocating a small data structure (TCB, thread control block) to hold a register set, stack, state and priority. Because a thread is smaller than a process, thread creation typically uses fewer resources than process creation, and is more efficient.</p>
+<p>创建一个用户或内核线程需要分配一个小的数据结构（TCB，线程控制块）来保存一个寄存器集、堆栈、状态和优先级。因为线程比进程小，所以创建线程通常比创建进程使用更少的资源，而且效率更高。</p>
+<p>Creating a process requires allocating a process control block (PCB), a rather large data structure. The PCB includes a memory map, list of open files, and environment variables. Allocating and managing the memory map is typically the most time-consuming activity. </p>
+<p>创建一个进程需要分配一个进程控制块（PCB），一个相当大的数据结构。PCB包括一个内存地图、打开的文件列表和环境变量。分配和管理内存图通常是最耗时的活动。</p>
+</blockquote>
+<h2 id="Exercises"><a href="#Exercises" class="headerlink" title="Exercises"></a>Exercises</h2><p>4.7, 4.8, 4.9, 4.14, 4.15, 4.16, 4.17</p>
+<h3 id="4-7-Under-what-circumstances-does-a-multithreaded-solution-using-multiple-kernel-threads-provide-better-performance-than-a-single-threaded-solution-on-a-single-processor-system"><a href="#4-7-Under-what-circumstances-does-a-multithreaded-solution-using-multiple-kernel-threads-provide-better-performance-than-a-single-threaded-solution-on-a-single-processor-system" class="headerlink" title="4.7 Under what circumstances does a multithreaded solution using multiple kernel threads provide better performance than a single-threaded solution on a single-processor system?"></a>4.7 Under what circumstances does a multithreaded solution using multiple kernel threads provide better performance than a single-threaded solution on a single-processor system?</h3><p><strong>答：</strong></p>
+<p>执行一些高并发式的任务</p>
+<blockquote>
+<p><strong>Answer:</strong></p>
+<p>When a kernel thread suffers a page fault, another kernel thread can be switched in to use the interleaving time in a useful manner. </p>
+<p>当一个内核线程遭遇页面故障时，另一个内核线程可以被切换进来，以有用的方式使用交错时间。</p>
+<p>A single-threaded process, on the other hand, will not be capable of performing useful work when a page fault takes place. Therefore, in scenarios where a program might suffer from frequent page faults or has to wait for other system events, a multithreaded solution would perform better even on a single-processor system.<br>另一方面，一个单线程的进程，在发生页面故障时，将无法执行有用的工作。因此，在程序可能频繁发生页面故障或必须等待其他系统事件的情况下，即使在单处理器系统上，多线程的解决方案也会表现得更好。</p>
+</blockquote>
+<h3 id="4-8-Which-of-the-following-components-of-program-state-are-shared-across-threads-in-a-multithreaded-process"><a href="#4-8-Which-of-the-following-components-of-program-state-are-shared-across-threads-in-a-multithreaded-process" class="headerlink" title="4.8 Which of the following components of program state are shared across threads in a multithreaded process?"></a>4.8 Which of the following components of program state are shared across threads in a multithreaded process?</h3><p>多线程进程中的线程之间共享以下哪些程序状态组件？</p>
+<p><strong>答：</strong></p>
+<ul>
+<li><input disabled type="checkbox"> a. Register values </li>
+<li><input checked disabled type="checkbox"> b. Heap memory </li>
+<li><input checked disabled type="checkbox"> c. Global variables </li>
+<li><input disabled type="checkbox"> d. Stack memory</li>
+</ul>
+<blockquote>
+<p><strong>Answer:</strong></p>
+<p>The threads of a multithreaded process share heap memory and global variables. Each thread has its separate set of register values and a separate stack.</p>
+<p>一个多线程进程的线程共享堆内存和全局变量。每个线程都有其独立的寄存器值和独立的栈。</p>
+</blockquote>
+<h3 id="4-9-Can-a-multithreaded-solution-using-multiple-user-level-threads-achieve-better-performance-on-a-multiprocessor-system-than-on-a-single-processor-system-Explain"><a href="#4-9-Can-a-multithreaded-solution-using-multiple-user-level-threads-achieve-better-performance-on-a-multiprocessor-system-than-on-a-single-processor-system-Explain" class="headerlink" title="4.9 Can a multithreaded solution using multiple user-level threads achieve better performance on a multiprocessor system than on a single-processor system? Explain"></a>4.9 Can a multithreaded solution using multiple user-level threads achieve better performance on a multiprocessor system than on a single-processor system? Explain</h3><p><strong>答：</strong></p>
+<p>No.</p>
+<blockquote>
+<p>A multithreaded system comprising of multiple user-level threads cannot make use of the different processors in a multiprocessor system simultaneously. <em>The operating system sees only a single process and will not schedule the different threads of the process on separate processors.</em> Consequently, there is no performance benefit associated with executing multiple user-level threads on a multiprocessor system.</p>
+<p>一个由多个用户级线程组成的多线程系统不能同时利用多处理器系统中的不同处理器。<em>操作系统只看到一个单一的进程，不会将进程的不同线程安排在不同的处理器上</em>。因此，在多处理器系统上执行多个用户级线程没有任何性能优势。</p>
+</blockquote>
+<h3 id="4-14"><a href="#4-14" class="headerlink" title="4.14"></a>4.14</h3><p>A system with two dual-core processors has four processors available for scheduling. A CPU-intensive application is running on this system. All input is performed at program start-up, when a single file must be opened. Similarly, all output is performed just before the program terminates, when the program results must be written to a single file. Between startup and termination, the program is entirely CPU-bound. Your task is to improve the performance of this application by multithreading it. The application runs on a system that uses the one-to-one threading model (each user thread maps to a kernel thread).</p>
+<p>一个有两个双核处理器的系统有四个处理器可供调度。一个CPU密集型的应用程序正在这个系统上运行。所有的输入都是在程序启动时进行的，此时必须打开一个文件。同样，所有的输出都是在程序终止前进行的，此时程序的结果必须被写入一个文件。在启动和终止之间，程序是完全受CPU控制的。你的任务是通过多线程来提高这个程序的性能。该程序运行在一个使用一对一线程模型的系统上（每个用户线程映射到一个内核线程）。</p>
+<h4 id="How-many-threads-will-you-create-to-perform-the-input-and-output-Explain"><a href="#How-many-threads-will-you-create-to-perform-the-input-and-output-Explain" class="headerlink" title="How many threads will you create to perform the input and output? Explain."></a>How many threads will you create to perform the input and output? Explain.</h4><p><strong>答：</strong></p>
+<p>1 threads, 1 threads.</p>
+<blockquote>
+<p>It only makes sense to create as many threads as there are blocking system calls, as the threads will be spent blocking. Creating additional threads provides no benefit. Thus, it makes sense to create a single thread for input and a single thread for output.</p>
+<p>创建的线程数量与阻塞的系统调用一样多才有意义，因为这些线程将被用于阻塞。创建额外的线程不会带来任何好处。因此，为输入创建一个线程，为输出创建一个线程是有意义的。</p>
+</blockquote>
+<h4 id="How-many-threads-will-you-create-for-the-CPU-intensive-portion-of-the-application-Explain"><a href="#How-many-threads-will-you-create-for-the-CPU-intensive-portion-of-the-application-Explain" class="headerlink" title="How many threads will you create for the CPU-intensive portion of the application? Explain."></a>How many threads will you create for the CPU-intensive portion of the application? Explain.</h4><p><strong>答：</strong></p>
+<p>4 threads.</p>
+<p><strong>Explain:</strong></p>
+<p>Threads count depends upon the priority and requirements of the application. So only thread is enough for this kind of application and this thread is going to handle both input and output operation.</p>
+<ul>
+<li>It is a concurrency approach. Here, it only makes sense to create as many threads as there are blocking system calls, as the threads will be spent blocking.</li>
+<li>It doesn’t provides any benefits to create an additional threads.</li>
+<li>Thus, only a signal thread creation makes sense for input and a single thread for output.</li>
+<li>Four threads are created to perform the CPU-intensive portion of the application. It is because, there should be as many threads as there are processing cores.</li>
+<li>It would be the waste of processing resources to use fewer threads.</li>
+<li>Also any number greater than four would be unable to run.</li>
+</ul>
+<blockquote>
+<p>Four. There should be as many threads as there are processing cores. Fewer would be a waste of processing resources, and any number &gt; 4 would be unable to run.</p>
+<p>四。有多少个线程就应该有多少个处理核心。更少的会浪费处理资源，任何&gt;4的数量都会无法运行。</p>
+</blockquote>
+<h3 id="4-15-Consider-the-following-code-segment"><a href="#4-15-Consider-the-following-code-segment" class="headerlink" title="4.15 Consider the following code segment:"></a>4.15 Consider the following code segment:</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pid_t</span> pid;</span><br><span class="line">pid = fork();</span><br><span class="line"><span class="keyword">if</span> (pid == <span class="number">0</span>) &#123; <span class="comment">/* child process */</span></span><br><span class="line">    fork();</span><br><span class="line">    <span class="function">thread <span class="title">create</span><span class="params">( . . .)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line">fork();</span><br></pre></td></tr></table></figure>
+
+<h4 id="a-How-many-unique-processes-are-created"><a href="#a-How-many-unique-processes-are-created" class="headerlink" title="a. How many unique processes are created?"></a>a. How many unique processes are created?</h4><p><strong>答：</strong></p>
+<ul>
+<li>The statement <code>pid = fork()</code>; before the if statement creates one process. The parent process say p creates this process. Let it be p1.</li>
+<li>The statement fork(); in the if statement creates one process. The parent process p creates this process. Let it be p2.</li>
+<li>After the if statement, parent process p, process p1 and process p2 will execute fork(); creating three new processes.<ul>
+<li>One process is created by parent process p.</li>
+<li>One process is created by process p1.</li>
+<li>One process is created by process p2.</li>
+</ul>
+</li>
+</ul>
+<p>Hence, <strong>5 unique processes</strong> (p1, p2, p3, p4, p5) will be created. If the parent process is also considered, then 6 unique processes (p, p1, p2, p3, p4, p1, p5) will be created.</p>
+<h4 id="b-How-many-unique-threads-are-created"><a href="#b-How-many-unique-threads-are-created" class="headerlink" title="b. How many unique threads are created?"></a>b. How many unique threads are created?</h4><p><strong>答：</strong></p>
+<ul>
+<li>Thread creation is done in if block. Only child process p1 is executed in the if block. Therefore, process p1 will be created one thread.</li>
+<li>In the if block one process p2 is created using fork(). Therefore, process p2 will also create a thread.</li>
+</ul>
+<p>Hence, <strong>2 unique threads</strong> will be created.</p>
+<blockquote>
+<p><strong>Answer:</strong></p>
+<p>a) 6 processes </p>
+<p>b) 2 threads</p>
+<p><img data-src="/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%9B%9B/image-20210701012014413.png" alt="image-20210701012014413"></p>
+</blockquote>
+<h3 id="4-16"><a href="#4-16" class="headerlink" title="4.16*"></a>4.16*</h3><p>As described in Section 4.7.2, Linux does not distinguish between processes and threads. Instead, Linux treats both in the same way, allowing a task to be more akin to a process or a thread depending on the set of flags passed to the <code>clone()</code> system call. However, other operating systems, such as Windows, treat processes and threads differently. Typically, such systems use a notation in which the data structure for a process contains pointers to the separate threads belonging to the process. Contrast these two approaches for modeling processes and threads within the kernel.</p>
+<p>**(不要求)**如第4.7.2节所述，Linux不区分进程和线程。 取而代之的是，Linux以相同的方式对待两者，从而使任务更类似于进程或线程，具体取决于传递给<code>clone()</code>系统调用的标志集。 但是，其他操作系统（例如Windows）对进程和线程的处理方式也有所不同。 通常，此类系统使用一种表示法，其中进程的数据结构包含指向属于该进程的单独线程的指针。</p>
+<p>对比这两种在内核中对进程和线程进行建模的方法。</p>
+<p>Linux operating systems consider both threads and processes as tasks; it cannot distinguish between them. In contrast, windows operating system threads and processes differently.<br>This approach has pros and cons while modeling threads and processes inside the kernel.</p>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>Linux consider this as similar, so codes belong to operating system can be cut down easily.</li>
+<li>Scheduler present in the Linux operating systems do not need special code to test threads coupled with each processes.</li>
+<li>It considers different threads and processes as a single task during the time of scheduling.</li>
+</ul>
+<p><strong>Cons:</strong></p>
+<ul>
+<li><p>This ability makes it harder for the Linux operating system to inflict process-wide resource limitations directly.</p>
+</li>
+<li><p>Extra steps are needed to recognize the each processes belong to appropriate threads and complexity in performing relevant tasks.</p>
+</li>
+</ul>
+<blockquote>
+<p><strong>Answer:</strong></p>
+<p>In systems where processes and threads are considered as similar entities, some of the operating system code could be simplified. A scheduler, for instance, can consider the different processes and threads on an equal footing without requiring special code to examine the threads associated with a process during every scheduling step. However, this uniformity could make it harder to impose process-wide resource constraints in a direct manner. Instead, some extra complexity is required to identify which threads correspond to which process and perform the relevant accounting tasks.</p>
+</blockquote>
+<h3 id="4-17-The-program-shown-in-Figure-4-16-uses-the-Pthreads-API-What-would-be-the-output-from-the-program-at-LINE-C-and-LINE-P"><a href="#4-17-The-program-shown-in-Figure-4-16-uses-the-Pthreads-API-What-would-be-the-output-from-the-program-at-LINE-C-and-LINE-P" class="headerlink" title="4.17 The program shown in Figure 4.16 uses the Pthreads API. What would be the output from the program at LINE C and LINE P?"></a>4.17 The program shown in Figure 4.16 uses the Pthreads API. What would be the output from the program at <code>LINE C</code> and <code>LINE P</code>?</h3><p>Figure 4.16:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pthread.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;types.h&gt;</span></span></span><br><span class="line"><span class="keyword">int</span> value = <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">runner</span><span class="params">(<span class="keyword">void</span> *param)</span></span>; <span class="comment">/* the thread */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span> </span>&#123;</span><br><span class="line">	<span class="keyword">pid_t</span> pid;</span><br><span class="line">	<span class="keyword">pthread_t</span> tid;</span><br><span class="line">	<span class="keyword">pthread_attr_t</span> attr;</span><br><span class="line">	pid = fork();</span><br><span class="line">	<span class="keyword">if</span> (pid == <span class="number">0</span>) &#123; <span class="comment">/* child process */</span></span><br><span class="line">		pthread_attr_init(&amp;attr);</span><br><span class="line">		pthread_create(&amp;tid, &amp;attr, runner, <span class="literal">NULL</span>);</span><br><span class="line">		pthread_join(tid, <span class="literal">NULL</span>);</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;CHILD: value = %d&quot;</span>, value); <span class="comment">/* LINE C */</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (pid &gt; <span class="number">0</span>) &#123; <span class="comment">/* parent process */</span></span><br><span class="line">		wait(<span class="literal">NULL</span>);</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;PARENT: value = %d&quot;</span>, value); <span class="comment">/* LINE P */</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">runner</span><span class="params">(<span class="keyword">void</span> *param)</span> </span>&#123;</span><br><span class="line">	value = <span class="number">5</span>;</span><br><span class="line">	pthread_exit(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>The output of <code>LINE C</code> in the program:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CHILD: value &#x3D; 5</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>The child process in the thread is forked by parent process and child process each have its own memory space.</li>
+<li>After forking, the parent process waits for the completion of child process.</li>
+<li>New thread is created for child process and the runner() function is called which set the value of the global vairlable to 5.</li>
+<li>Thus, after execution of this line, the value displayed will be 5.</li>
+</ul>
+<p>The output of <code>LINE P</code> in the program:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PARENT: value &#x3D; 0</span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li>After completing the child process, the value of the global variable present in parent process remains 0.</li>
+<li>Thus, after execution of this line, the value displayed will be 0.</li>
+</ul>
+<blockquote>
+<p><strong>Answer:</strong></p>
+<p>LINE C,  5</p>
+<p>LINE P,  0</p>
+</blockquote>
+<h2 id="Programming-Problems"><a href="#Programming-Problems" class="headerlink" title="Programming Problems"></a>Programming Problems</h2><h3 id="4-21"><a href="#4-21" class="headerlink" title="4.21"></a>4.21</h3><p>Write a multithreaded program that calculates various statistical values for a list of numbers. This program will be passed a series of numbers on the command line and will then create three separate worker threads. One thread will determine the average of the numbers, the second will determine the maximum value, and the third will determine the minimum value. For example, suppose your program is passed the integers:</p>
+<p>编写一个多线程程序，为一串数字计算各种统计值。这个程序将在命令行上传递一系列的数字，然后创建三个独立的工作线程。一个线程将确定这些数字的平均值，第二个线程将确定最大值，第三个线程将确定最小值。例如，假设你的程序被传递了整数:</p>
+<p><code>90 81 78 95 79 72 85</code></p>
+<p>The program will report:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">The average value is 82 </span><br><span class="line">The minimum value is 72 </span><br><span class="line">The maximum value is 95</span><br></pre></td></tr></table></figure>
+
+<p>The variables representing the average, minimum, and maximum values will be stored globally. The worker threads will set these values, and the parent thread will output the values once the workers have exited. (We could obviously expand this program by creating additional threads that determine other statistical values, such as median and standard deviation.)</p>
+<p>代表平均值、最小值和最大值的变量将被全局存储。工人线程将设置这些值，一旦工人退出，父线程将输出这些值。显然，我们可以通过创建额外的线程来扩展这个程序，以确定其他统计值，如中位数和标准差）。</p>
+<blockquote>
+<p><strong>Answer:</strong></p>
+<p>和上机题（p199 Project2）类似，可以不做。</p>
+</blockquote>
+<hr>
+<p><strong>注：</strong></p>
+<p>翻译：deepl</p>
+<p>参考资料：</p>
+<p>[1] <a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_37205708/article/details/86518889">操作系统学习笔记（三） —线程_雲的博客-CSDN博客</a></p>
+<p>[2] <a target="_blank" rel="noopener" href="https://github.com/Criviere/os">Criviere&#x2F;os (github.com)</a></p>
+<p>[3] Operating System Concepts – 9th Edition 及其答案</p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      <div style="display: inline-block;">
+        <img src="/images/dogecoin.png" alt="Framist dogecoin">
+        <p>dogecoin</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Framist
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://framist.github.io/2021/06/01/%E3%80%90%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%91/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%9B%9B/" title="【操作系统概念-作业4】Threads">https://framist.github.io/2021/06/01/【操作系统】/操作系统作业四/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%AD%A6%E4%B9%A0/" rel="tag"># 学习</a>
+              <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag"># 操作系统</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/06/01/%E3%80%90%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%91/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%B8%89/" rel="prev" title="【操作系统概念-作业3】Operating-System Structures">
+      <i class="fa fa-chevron-left"></i> 【操作系统概念-作业3】Operating-System Structures
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/06/01/%E3%80%90%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%91/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%BA%94/" rel="next" title="【操作系统概念-作业5】Process Synchronization">
+      【操作系统概念-作业5】Process Synchronization <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Operating-System-Concepts-Exercises-4"><span class="nav-number">1.</span> <span class="nav-text">Operating System Concepts Exercises 4</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E4%B8%8A%E5%AD%A6%E4%B9%A0Linux%E4%B8%AD%E7%9A%84%E4%BF%A1%E5%8F%B7%EF%BC%88signal%EF%BC%89%E6%9C%BA%E5%88%B6"><span class="nav-number">1.1.</span> <span class="nav-text">网上学习Linux中的信号（signal）机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Practice-Exercises"><span class="nav-number">1.2.</span> <span class="nav-text">Practice Exercises</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-What-are-two-differences-between-user-level-threads-and-kernel-level-threads-Under-what-circumstances-is-one-type-better-than-the-other"><span class="nav-number">1.2.1.</span> <span class="nav-text">4.2  What are two differences between user-level threads and kernel-level threads? Under what circumstances is one type better than the other?</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#What-are-two-differences-between-user-level-threads-and-kernel-level-threads"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">What are two differences between user-level threads and kernel-level threads?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Under-what-circumstances-is-one-type-better-than-the-other"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">Under what circumstances is one type better than the other?</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-What-resources-are-used-when-a-thread-is-created-How-do-they-differ-from-those-used-when-a-process-is-created"><span class="nav-number">1.2.2.</span> <span class="nav-text">4.4 What resources are used when a thread is created? How do they differ from those used when a process is created?</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#What-resources-are-used-when-a-thread-is-created"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">What resources are used when a thread is created?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#How-do-they-differ-from-those-used-when-a-process-is-created"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">How do they differ from those used when a process is created?</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Exercises"><span class="nav-number">1.3.</span> <span class="nav-text">Exercises</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-7-Under-what-circumstances-does-a-multithreaded-solution-using-multiple-kernel-threads-provide-better-performance-than-a-single-threaded-solution-on-a-single-processor-system"><span class="nav-number">1.3.1.</span> <span class="nav-text">4.7 Under what circumstances does a multithreaded solution using multiple kernel threads provide better performance than a single-threaded solution on a single-processor system?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-8-Which-of-the-following-components-of-program-state-are-shared-across-threads-in-a-multithreaded-process"><span class="nav-number">1.3.2.</span> <span class="nav-text">4.8 Which of the following components of program state are shared across threads in a multithreaded process?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-9-Can-a-multithreaded-solution-using-multiple-user-level-threads-achieve-better-performance-on-a-multiprocessor-system-than-on-a-single-processor-system-Explain"><span class="nav-number">1.3.3.</span> <span class="nav-text">4.9 Can a multithreaded solution using multiple user-level threads achieve better performance on a multiprocessor system than on a single-processor system? Explain</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-14"><span class="nav-number">1.3.4.</span> <span class="nav-text">4.14</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#How-many-threads-will-you-create-to-perform-the-input-and-output-Explain"><span class="nav-number">1.3.4.1.</span> <span class="nav-text">How many threads will you create to perform the input and output? Explain.</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#How-many-threads-will-you-create-for-the-CPU-intensive-portion-of-the-application-Explain"><span class="nav-number">1.3.4.2.</span> <span class="nav-text">How many threads will you create for the CPU-intensive portion of the application? Explain.</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-15-Consider-the-following-code-segment"><span class="nav-number">1.3.5.</span> <span class="nav-text">4.15 Consider the following code segment:</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#a-How-many-unique-processes-are-created"><span class="nav-number">1.3.5.1.</span> <span class="nav-text">a. How many unique processes are created?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#b-How-many-unique-threads-are-created"><span class="nav-number">1.3.5.2.</span> <span class="nav-text">b. How many unique threads are created?</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-16"><span class="nav-number">1.3.6.</span> <span class="nav-text">4.16*</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-17-The-program-shown-in-Figure-4-16-uses-the-Pthreads-API-What-would-be-the-output-from-the-program-at-LINE-C-and-LINE-P"><span class="nav-number">1.3.7.</span> <span class="nav-text">4.17 The program shown in Figure 4.16 uses the Pthreads API. What would be the output from the program at LINE C and LINE P?</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Programming-Problems"><span class="nav-number">1.4.</span> <span class="nav-text">Programming Problems</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-21"><span class="nav-number">1.4.1.</span> <span class="nav-text">4.21</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Framist</p>
+  <div class="site-description" itemprop="description">框架主义者的小窝</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">79</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/framist" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;framist" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:framist@163.com" title="E-Mail → mailto:framist@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/weixin_47102975" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_47102975" rel="noopener" target="_blank"><i class="fas fa-angle-right fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://framist.top/" title="http:&#x2F;&#x2F;framist.top&#x2F;" rel="noopener" target="_blank">个人主页</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://framist.github.io/2020/10/11/%E6%88%91%E8%BA%AB%E8%BE%B9%E7%9A%84CS%E5%A4%A7%E4%BD%AC%E4%BB%AC/" title="https:&#x2F;&#x2F;framist.github.io&#x2F;2020&#x2F;10&#x2F;11&#x2F;%E6%88%91%E8%BA%AB%E8%BE%B9%E7%9A%84CS%E5%A4%A7%E4%BD%AC%E4%BB%AC&#x2F;">我身边的大佬们</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yuexiavqiufeng.github.io/" title="https:&#x2F;&#x2F;yuexiavqiufeng.github.io&#x2F;" rel="noopener" target="_blank">yuexiavqiufeng</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://github.com/framist" title="https:&#x2F;&#x2F;github.com&#x2F;framist" rel="noopener" target="_blank">广告位招租</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">浙ICP备2022002862号-1 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-at"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Framist</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div><script>
+    let body = document.getElementsByTagName('body')[0];
+    body.addEventListener('click', (e) => {
+        let contentArr = ['欧拉~','ˋ( ° ▽、° ) ','RGB!','_(:з」∠)_','哼','?','¿框架?','QAQ',':3','<3','疯掉了',
+                            'whoami',
+                            'whoareU',
+                            'NULL',
+                            'None',
+                            ' ',
+                            '代价是什么呢？',
+                            '...',
+                            'Big Brother is Watching You',
+                            '喵~', '嗷~', '呜~', '哞~', '咩~', '咕~', '嘎~', '嘤~',
+                            '你看到了。',
+                            '¿爱情障眼法?','¿物种认同障碍?',
+                            '微润欧美，小润终南山，中润润与市，大润中南海',
+                            'init param:<br/>1LTKvNaux7CjrNHJ09C0y87Eo7/Rrbu3zfm4tKOsus7Ksbb41rmjv9a5zqrWucv51rmjrLTLzsTT1rrOtOajvw==',
+                            '这里没有时间的意义',
+                            '嘿嘿嘿，好想被随机异或哦，<br/>嘿嘿嘿，嘿嘿嘿，异或我的异或',
+                            '记忆赋予时间的意义，而不是时间赋予记忆的意义',
+                            '放弃 P ∨ ¬P 吧！',
+                            '抽象是普适性的代价 —— 3b1b',
+                            '得易见平凡，仿照上例显然',
+                            '留作习题答案略，读者自证不难',
+                            '反之亦然同理，推论自然成立',
+                            '略去过程 Q . E . D ，由上可知证毕'];
+        let randomNum = function (n) {
+            return Math.floor(Math.random() * n)
+        }
+        let span = document.createElement('span');
+        span.innerHTML = `${contentArr[randomNum(contentArr.length)]}`;
+        span.style.color = `rgb(${randomNum(256)},${randomNum(256)},${randomNum(256)})`;
+        span.style.position = 'absolute';
+        span.style.top = `${e.pageY}px`;
+        span.style.left = `${e.pageX}px`;
+        span.style.transition = 'all 1s ease';
+        span.style.zIndex = 20000;
+        body.appendChild(span)
+        setTimeout(()=>{
+            span.style.top = span.offsetTop - 25 + 'px';
+            span.style.opacity = 0;
+            setTimeout(()=>{span.remove()},1000)
+        },700)
+    })
+</script>
+
+
+<div style="width: 100px; height: 100px; margin: 0 auto;">
+<script type="text/javascript" id="clstr_globe" src="//clustrmaps.com/globe.js?d=gRWtX21uVt_tIdj_T64nMvo4FK1UrTWME23CVLOzNCg"></script>
+</div>
+<!--
+<script type="text/javascript" 
+color="255,255,255" 
+pointColor='64,184,209' 
+opacity='1' 
+zIndex="-1" 
+count="233" 
+src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js">
+</script>
+-->
+
+
+        
+<div class="busuanzi-count">
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script data-pjax>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '267a9d4a89b9b72b2229',
+      clientSecret: '2dba1f14d21da707ed6c4497fecc05d6178b4fa3',
+      repo        : 'blog-comment',
+      owner       : 'framist',
+      admin       : ['framist'],
+      id          : '296325605bc988c83472c7f484d810a5',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+    </div>
+</body>
+</html>

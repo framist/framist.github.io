@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Noto Serif SC:300,300italic,400,400italic,700,700italic|Source Code Pro:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-big-counter.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"framist.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Operating System Concepts Exercises 5Process Synchronization   操作系统作业5  课后学习面向对象编程概念（类、对象、继承、多态） 5.4 5.5 5.10 5.11 5.15 5.17 5.18 5.20 5.23 5.28">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【操作系统概念-作业5】Process Synchronization">
+<meta property="og:url" content="https://framist.github.io/2021/06/01/%E3%80%90%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%91/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%BA%94/index.html">
+<meta property="og:site_name" content="Framist&#39;s Little House">
+<meta property="og:description" content="Operating System Concepts Exercises 5Process Synchronization   操作系统作业5  课后学习面向对象编程概念（类、对象、继承、多态） 5.4 5.5 5.10 5.11 5.15 5.17 5.18 5.20 5.23 5.28">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://framist.github.io/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%BA%94/clip_image002.jpg">
+<meta property="article:published_time" content="2021-06-01T03:42:55.482Z">
+<meta property="article:modified_time" content="2022-10-05T08:36:11.923Z">
+<meta property="article:author" content="Framist">
+<meta property="article:tag" content="学习">
+<meta property="article:tag" content="操作系统">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://framist.github.io/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%BA%94/clip_image002.jpg">
+
+<link rel="canonical" href="https://framist.github.io/2021/06/01/%E3%80%90%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%91/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%BA%94/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【操作系统概念-作业5】Process Synchronization | Framist's Little House</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Framist's Little House</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">◇ 自顶而下 - 面向未来 ◇</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://framist.github.io/2021/06/01/%E3%80%90%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%91/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%BA%94/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Framist">
+      <meta itemprop="description" content="框架主义者的小窝">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Framist's Little House">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【操作系统概念-作业5】Process Synchronization
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-06-01 11:42:55" itemprop="dateCreated datePublished" datetime="2021-06-01T11:42:55+08:00">2021-06-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-10-05 16:36:11" itemprop="dateModified" datetime="2022-10-05T16:36:11+08:00">2022-10-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">计算机科学</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E8%AF%BE%E4%B8%9A%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">课业学习</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E8%AF%BE%E4%B8%9A%E5%AD%A6%E4%B9%A0/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index"><span itemprop="name">操作系统</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Operating-System-Concepts-Exercises-5"><a href="#Operating-System-Concepts-Exercises-5" class="headerlink" title="Operating System Concepts Exercises 5"></a><em>Operating System Concepts</em> Exercises 5</h1><center>Process Synchronization</center>
+
+
+<p>操作系统作业5</p>
+<ul>
+<li>课后学习面向对象编程概念（类、对象、继承、多态）</li>
+<li>5.4 5.5</li>
+<li>5.10 5.11 5.15 5.17 5.18 5.20 5.23 5.28</li>
+</ul>
+<span id="more"></span>
+
+<p><em>每题最后一个引用块是老师提供的参考答案</em></p>
+<h2 id="课后学习面向对象编程概念（类、对象、继承、多态）"><a href="#课后学习面向对象编程概念（类、对象、继承、多态）" class="headerlink" title="课后学习面向对象编程概念（类、对象、继承、多态）"></a>课后学习面向对象编程概念（类、对象、继承、多态）</h2><p>已学习</p>
+<h2 id="Practice-Exercises"><a href="#Practice-Exercises" class="headerlink" title="Practice Exercises"></a>Practice Exercises</h2><p>5.4 5.5</p>
+<h3 id="5-4-Explain-why-spinlocks-are-not-appropriate-for-single-processor-systems-yet-are-often-used-in-multiprocessor-systems"><a href="#5-4-Explain-why-spinlocks-are-not-appropriate-for-single-processor-systems-yet-are-often-used-in-multiprocessor-systems" class="headerlink" title="5.4 Explain why spinlocks are not appropriate for single-processor systems yet are often used in multiprocessor systems."></a>5.4 Explain why spinlocks are not appropriate for single-processor systems yet are often used in multiprocessor systems.</h3><p>说明为什么自旋锁不适用于单处理器系统，但是经常在多处理器系统中使用。</p>
+<p><strong>答：</strong></p>
+<blockquote>
+<p>在单处理器系统中，使用自旋锁会造成其他进程忙等待（任何其他试图进入临界区的进程都必须在其进入代码中连续地循环），这样就浪费了CPU时钟。而对于多处理器系统，当一个进程在一个处理器自旋时，另一个进程可以在另一处理器上在其临界区内执行，且使用自旋锁，进程在等待锁时还在运行，不用进行上下文切换。</p>
+</blockquote>
+<p>Reference:<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_37205708/article/details/86548631?spm=1001.2014.3001.5501">操作系统学习笔记（五）—进程同步_雲的博客-CSDN博客</a></p>
+<blockquote>
+<p><strong>Answer:</strong></p>
+<p>On a single-processor system, the thread holding a lock cannot be running while another thread is testing the lock, because only one thread&#x2F;process can be running at a time. Therefore the thread will continue to spin and waste CPU cycles until its time slice end. That is why threads on a single-processer system should always sleep rather than spin, if they encounter a lock that is held.</p>
+<p>On a multiprocessor system, multiple threads (the thread holding a lock, and the thread testing the lock) can actually be running at the same time. Therefore, it is appropriate for a thread waiting for lock to go into a spin wait, because the lock could be released while it is waiting.</p>
+<p>在一个单处理器系统中，当另一个线程在测试锁的时候，持有锁的线程不能运行，因为一次只能有一个线程&#x2F;进程在运行。因此，该线程将继续旋转并浪费CPU周期，直到其时间片结束。这就是为什么在单处理器系统上的线程，如果遇到一个被持有的锁，应该总是睡觉而不是旋转。</p>
+<p>在多处理器系统中，多个线程（持有锁的线程和测试锁的线程）实际上可以在同一时间运行。因此，等待锁的线程进入自旋等待是合适的，因为锁可能在它等待时被释放。</p>
+</blockquote>
+<h3 id="5-5-Show-that-if-the-wait-and-signal-semaphore-operations-are-not-executed-atomically-then-mutual-exclusion-may-be-violated"><a href="#5-5-Show-that-if-the-wait-and-signal-semaphore-operations-are-not-executed-atomically-then-mutual-exclusion-may-be-violated" class="headerlink" title="5.5 Show that, if the wait() and signal() semaphore operations are not executed atomically, then mutual exclusion may be violated."></a>5.5 Show that, if the <code>wait()</code> and <code>signal()</code> semaphore operations are not executed atomically, then mutual exclusion may be violated.</h3><p>证明如果<code>wait()</code>和<code>signal()</code>信号操作不是原子执行的，那么可能会违反互斥。</p>
+<p>证明：</p>
+<p> The definition of <code>wait()</code> is as follows:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">wait(S) &#123;</span><br><span class="line">    <span class="keyword">while</span>(S &lt;= <span class="number">0</span>)</span><br><span class="line">        ; <span class="comment">//busy wait</span></span><br><span class="line">    S--;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>The definition of <code>signal()</code> is as follows:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">signal(S) &#123;</span><br><span class="line">	S++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果非原子执行，那么可能会发生以下情况：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//S==1</span></span><br><span class="line">wait1(S) &#123;</span><br><span class="line">    <span class="keyword">while</span>(S &lt;= <span class="number">0</span>)</span><br><span class="line">        ; <span class="comment">//busy wait</span></span><br><span class="line">    wait2(S) &#123;</span><br><span class="line">        <span class="keyword">while</span>(S &lt;= <span class="number">0</span>)</span><br><span class="line">            ; <span class="comment">//busy wait</span></span><br><span class="line">        S--;</span><br><span class="line">    &#125;</span><br><span class="line">    S--;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>1和2都同步运行了，违反互斥。</p>
+<blockquote>
+<p><strong>Answer:</strong></p>
+<p><img data-src="/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%BA%94/clip_image002.jpg" alt="img"></p>
+<p><em>A wait operation atomically decrements the value associated with a semaphore.</em> If two wait operations are executed on a semaphore when its value is 1, and if the two operations are not performed atomically, then it is possible that both operations might proceed to decrement the semaphore value, thereby violating mutual exclusion.</p>
+<p><em>一个等待操作会以原子方式递减与信号灯相关的值</em>。如果当一个信号灯的值为1时，在其上执行两个等待操作，并且这两个操作不是原子执行的，那么这两个操作就有可能继续递减信号灯的值，从而违反了互斥原则。</p>
+</blockquote>
+<h2 id="Exercises"><a href="#Exercises" class="headerlink" title="Exercises"></a>Exercises</h2><p>5.10 5.11 5.15 5.17 5.18 5.20 5.23 5.28</p>
+<h3 id="5-10-Explain-why-implementing-synchronization-primitives-by-disabling-interrupts-is-not-appropriate-in-a-single-processor-system-if-the-synchronization-primitives-are-to-be-used-in-user-level-programs"><a href="#5-10-Explain-why-implementing-synchronization-primitives-by-disabling-interrupts-is-not-appropriate-in-a-single-processor-system-if-the-synchronization-primitives-are-to-be-used-in-user-level-programs" class="headerlink" title="5.10 Explain why implementing synchronization primitives by disabling interrupts is not appropriate in a single-processor system if the synchronization primitives are to be used in user-level programs."></a>5.10 Explain why implementing synchronization primitives by disabling interrupts is not appropriate in a single-processor system if the synchronization primitives are to be used in user-level programs.</h3><p>如果同步原语要用于用户级程序，请解释为什么在单处理器系统中通过禁用中断来实现同步原语是不合适的。</p>
+<p><strong>答：</strong></p>
+<blockquote>
+<p>Implementing synchronization primitives by disabling interrupt is not appropriate because it reduces the flexibility of the system.</p>
+<p>Synchronization primitives will make a program at user level to be able to switch interupts, thereby disabling the timer interrupt. Once a program at user-level has the ability to disable interrupts it also disables context switching which is not recommended for a program at that level.</p>
+<p>Once the context switching is disabled, the program can now run on the processor without allowing other programs to execute, which is bad considering the fact that it is to be used in a single-processor system because single processor systems contain only one process, and only one program can run at a time.</p>
+</blockquote>
+<p>Reference: <a target="_blank" rel="noopener" href="https://brainly.com/question/15293990">Explain why implementing synchronization primitives by disabling interrupts is not appropriate in a - Brainly.com</a></p>
+<blockquote>
+<p><strong>Answer:</strong></p>
+<p>If a user-level program is given the ability to disable interrupts, then it can disable the timer interrupt and prevent context switching from taking place, thereby allowing it to use the processor without letting other processes to execute.</p>
+<p>如果一个用户级程序被赋予禁用中断的能力，那么它可以禁用定时器中断，防止上下文切换，从而允许它使用处理器而不让其他进程执行。</p>
+</blockquote>
+<h3 id="5-11-Explain-why-interrupts-are-not-appropriate-for-implementing-synchronization-primitives-in-multiprocessor-system"><a href="#5-11-Explain-why-interrupts-are-not-appropriate-for-implementing-synchronization-primitives-in-multiprocessor-system" class="headerlink" title="5.11 Explain why interrupts are not appropriate for implementing synchronization primitives in multiprocessor system."></a>5.11 Explain why interrupts are not appropriate for implementing synchronization primitives in multiprocessor system.</h3><p>解释为什么中断不适合在多处理器系统中实现同步原语。</p>
+<p>答：多处理器之间的中断静止会很耗时，因为消息要传递到所有处理器。</p>
+<blockquote>
+<p><strong>Answer:</strong></p>
+<p>Depends on how interrupts are implemented, but regardless of how, it is a poor choice of techniques.</p>
+<p>Case 1 – interrupts are disabled for ONE processor only – result is that threads running on other processors could ignore the synchronization primitive and access the shared data.</p>
+<p>Case 2 – interrupts are disabled for ALL processors – this means task dispatching, handling I&#x2F;O completion, etc. is also disabled on ALL processors, so threads running on all CPUs can grind to a halt.</p>
+<p>这取决于中断是如何实现的，但无论如何，这都是一种糟糕的技术选择。</p>
+<p>情况1 – 中断只对一个处理器禁用 – 其结果是，在其他处理器上运行的线程可以忽略同步原语并访问共享数据。</p>
+<p>情况2 – 中断在所有处理器上被禁用 – 这意味着任务调度、处理I&#x2F;O完成等也在所有处理器上被禁用，因此在所有CPU上运行的线程都可能陷入停顿。</p>
+</blockquote>
+<h3 id="5-15-Consider-how-to-implement-a-mutex-lock-using-an-atomic-hardware-instruction-Assume-that-the-following-structure-defining-the-mutex-lock-is-available"><a href="#5-15-Consider-how-to-implement-a-mutex-lock-using-an-atomic-hardware-instruction-Assume-that-the-following-structure-defining-the-mutex-lock-is-available" class="headerlink" title="5.15 Consider how to implement a mutex lock using an atomic hardware instruction. Assume that the following structure defining the mutex lock is available:"></a>5.15 Consider how to implement a mutex lock using an atomic hardware instruction. Assume that the following structure defining the mutex lock is available:</h3><p>考虑如何使用原子硬件指令实现互斥锁。 假设以下定义互斥锁的结构可用：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> available;</span><br><span class="line">&#125; lock;</span><br></pre></td></tr></table></figure>
+
+<p><code>(available == 0)</code> indicates that the lock is available, and a value of 1 indicates that the lock is unavailable. Using this struct, illustrate how the following functions can be implemented using the <code>test_and_set()</code> and <code>compare_and_swap()</code> instructions:</p>
+<p><code>(available == 0)</code>表示该锁是可用的，值为1表示该锁不可用。使用这个结构，说明如何使用<code>test_and_set()</code>和<code>compare_and_swap()</code>指令实现以下函数:</p>
+<ul>
+<li><code>void acquire(lock *mutex)</code></li>
+<li><code>void release(lock *mutex)</code></li>
+</ul>
+<p>Be sure to include any initialization that may be necessary. 请确保包括任何可能需要的初始化。</p>
+<p>答：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">acquire</span><span class="params">(lock *mutex)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(test_and_set(&amp;(mutex-&gt;available)))</span><br><span class="line">        ;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">release</span><span class="params">(lock *mutex)</span> </span>&#123;</span><br><span class="line">    mutex-&gt;available = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">acquire</span><span class="params">(lock *mutex)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(compare_and_swap(mutex-&gt;available,<span class="number">0</span>,<span class="number">1</span>))</span><br><span class="line">        ;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">release</span><span class="params">(lock *mutex)</span> </span>&#123;</span><br><span class="line">    mutex-&gt;available = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<blockquote>
+<p><strong>Answer:</strong></p>
+<p>Test and Set :</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span> <span class="keyword">int</span> available; &#125; lock;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">(lock *mutex)</span> </span>&#123;</span><br><span class="line">	<span class="comment">// available=0 -&gt; lock is available, available=1 -&gt; lock is unavailable</span></span><br><span class="line">	mutex-&gt;available = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">acquire</span><span class="params">(lock *mutex)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">while</span> (test_and_set(&amp;(mutex-&gt;available))) <span class="comment">// TEST the available</span></span><br><span class="line">		; <span class="comment">// spin-wait (do nothing)</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">release</span><span class="params">(lock *mutex)</span> </span>&#123;</span><br><span class="line">	mutex-&gt;available = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<h3 id="5-17"><a href="#5-17" class="headerlink" title="5.17"></a>5.17</h3><p>Assume that a system has multiple processing cores. For each of the following scenarios, describe which is a better locking mechanism — a spinlock or a mutex lock where waiting processes sleep while waiting for the lock to become available:</p>
+<p>假设一个系统有多个处理核心。对于以下每一种情况，请描述哪一种是更好的锁定机制——自旋锁或互斥锁，在自旋锁中，等待的进程在等待锁可用时进行睡眠。</p>
+<ul>
+<li>The lock is to be held for a short duration. 锁要保持很短的时间。</li>
+<li>The lock is to be held for a long duration. 锁定要保持较长的时间。</li>
+<li>A thread may be put to sleep while holding the lock. 一个线程在持有锁的时候可能会进入睡眠状态。</li>
+</ul>
+<p><strong>答：</strong></p>
+<blockquote>
+<p><strong>Answer:</strong></p>
+<p>(1) If the lock is to be held for a short duration, it makes more sense to use a spinlock as it may in fact be faster than using a mutex lock which requires suspending - and awakening - the waiting process.</p>
+<p>(2) If it is to be held for a long duration, a mutex lock is preferable as this allows the processing core to schedule another process while the locked process waits.</p>
+<p>(3) If the thread may be put to sleep while holding the lock, a mutex lock is definitely preferable as you wouldn’t want the waiting process to be spinning while waiting for the other process to wake up.</p>
+<p>(1) 如果锁要保持很短的时间，使用自旋锁更有意义，因为事实上它可能比使用互斥锁更快，因为互斥锁需要暂停-和唤醒-等待的进程。</p>
+<p>(2) 如果要保持较长的时间，最好使用互斥锁，因为这允许处理核心在被锁进程等待时安排另一个进程。</p>
+<p>(3) 如果线程在持有锁的时候可能会进入睡眠状态，那么互斥锁肯定是最好的，因为你不希望等待的进程在等待另一个进程醒来的时候还在旋转。</p>
+</blockquote>
+<h3 id="5-18-Assume-that-a-context-switch-takes-T-time-Suggest-an-upper-bound-in-terms-of-T-for-holding-a-spinlock-If-the-spinlock-is-held-for-any-longer-a-mutex-lock-where-waiting-threads-are-put-to-sleep-is-a-better-alternative"><a href="#5-18-Assume-that-a-context-switch-takes-T-time-Suggest-an-upper-bound-in-terms-of-T-for-holding-a-spinlock-If-the-spinlock-is-held-for-any-longer-a-mutex-lock-where-waiting-threads-are-put-to-sleep-is-a-better-alternative" class="headerlink" title="5.18 Assume that a context switch takes T time. Suggest an upper bound (in terms of T) for holding a spinlock. If the spinlock is held for any longer, a mutex lock (where waiting threads are put to sleep) is a better alternative."></a>5.18 Assume that a context switch takes T time. Suggest an upper bound (in terms of T) for holding a spinlock. If the spinlock is held for any longer, a mutex lock (where waiting threads are put to sleep) is a better alternative.</h3><p>假设一个上下文切换需要T时间。建议一个持有自旋锁的上限（以T为单位）。如果自旋锁保持的时间再长一些，那么突变锁（等待的线程会进入睡眠状态）是一个更好的选择。</p>
+<p><strong>答：</strong></p>
+<blockquote>
+<p><strong>Answer:</strong></p>
+<p>The maximum time that can be tolerable in terms of time t will be &lt;2xT Thus exceeding the maximum time, a mutex lock will be used instead of spin lock where the threads that are in wait mode are switched to sleep mode</p>
+<p>就时间t而言，可以容忍的最大时间将是&lt;2xT 因此，超过最大时间，将使用互斥锁而不是自旋锁，处于等待模式的线程被切换到睡眠模式。</p>
+</blockquote>
+<p>&#x3D;&#x3D;?&#x3D;&#x3D;</p>
+<h3 id="5-20-Consider-the-code-example-for-allocating-and-releasing-processes-shown-in-Figure-5-23"><a href="#5-20-Consider-the-code-example-for-allocating-and-releasing-processes-shown-in-Figure-5-23" class="headerlink" title="5.20 Consider the code example for allocating and releasing processes shown in Figure 5.23."></a>5.20 Consider the code example for allocating and releasing processes shown in Figure 5.23.</h3><center>Figure 5.23 Allocating and releasing processes.</center>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAX_PROCESSES 255</span></span><br><span class="line"><span class="keyword">int</span> number_of_processes = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* the implementation of fork() calls this function */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">allocate_process</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> new_pid;</span><br><span class="line">    <span class="keyword">if</span> (number_of_processes == MAX_PROCESSES)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">/* allocate necessary process resources */</span></span><br><span class="line">        ++number_of_processes;</span><br><span class="line">        <span class="keyword">return</span> new_pid;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* the implementation of exit() calls this function */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">release_process</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">/* release process resources */</span></span><br><span class="line">    --number_of_processes;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="a-Identify-the-race-condition-s"><a href="#a-Identify-the-race-condition-s" class="headerlink" title="a. Identify the race condition(s)."></a>a. Identify the race condition(s).</h4><p>识别竞争条件。</p>
+<p><strong>答：</strong></p>
+<p><code>number_of_processes</code>可能产生竞争</p>
+<h4 id="b-Assume-you-have-a-mutex-lock-named-mutex-with-the-operations-acquire-and-release-Indicate-where-the-locking-needs-to-be-placed-to-prevent-the-race-condition-s"><a href="#b-Assume-you-have-a-mutex-lock-named-mutex-with-the-operations-acquire-and-release-Indicate-where-the-locking-needs-to-be-placed-to-prevent-the-race-condition-s" class="headerlink" title="b. Assume you have a mutex lock named mutex with the operations acquire() and release(). Indicate where the locking needs to be placed to prevent the race condition(s)."></a>b. Assume you have a mutex lock named mutex with the operations <code>acquire()</code> and <code>release()</code>. Indicate where the locking needs to be placed to prevent the race condition(s).</h4><p>假设你有一个名为mutex的互斥锁，操作是<code>acquire()</code>和<code>release()</code>。指示需要将锁定放置在何处以防止出现竞争条件。</p>
+<p><strong>答：</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAX_PROCESSES 255</span></span><br><span class="line"><span class="keyword">int</span> number_of_processes = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* the implementation of fork() calls this function */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">allocate_process</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> new_pid;</span><br><span class="line">    <span class="keyword">if</span> (number_of_processes == MAX_PROCESSES)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">/* allocate necessary process resources */</span></span><br><span class="line">        acquire();</span><br><span class="line">        ++number_of_processes;</span><br><span class="line">        release();</span><br><span class="line">        <span class="keyword">return</span> new_pid;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* the implementation of exit() calls this function */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">release_process</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">/* release process resources */</span></span><br><span class="line">    acquire();</span><br><span class="line">    --number_of_processes;</span><br><span class="line">    release();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="c-Could-we-replace-the-integer-variable"><a href="#c-Could-we-replace-the-integer-variable" class="headerlink" title="c. Could we replace the integer variable"></a>c. Could we replace the integer variable</h4><p><code>int number_of_processes = 0</code></p>
+<p>with the atomic integer</p>
+<p><code>atomic_t number_of_processes = 0</code></p>
+<p>to prevent the race condition(s)</p>
+<p><strong>答：</strong></p>
+<blockquote>
+<p>对于Java中的运算操作，例如自增或自减，若没有进行额外的同步操作，在多线程环境下就是线程不安全的。num++解析为num&#x3D;num+1，明显，这个操作不具备原子性，多线程并发共享这个变量时必然会出现问题。[1]</p>
+</blockquote>
+<p>可见，使用atomic integer仍然不足以解决竞争问题。</p>
+<blockquote>
+<p><strong>Answer:</strong></p>
+<p>a. There is a race condition on the variable number of processes.</p>
+<p>b. A call to acquire() must be placed upon entering each function and a call to release() immediately before exiting each function.</p>
+<p>c. No, it would not help. The reason is because the race occurs in the allocate process() function where number of processes is first tested in the if statement, yet is updated afterwards, based upon the value of the test. It is possible that number of processes &#x3D; 254 at the time of the test, yet because of the race condition, is set to 255 by another thread before it is incremented yet again.</p>
+<p>a. 进程的可变数量上存在一个竞赛条件。</p>
+<p>b. 在进入每个函数时必须调用<code>acquisition()</code>，在退出每个函数前必须立即调用<code>release()</code>。</p>
+<p>c. 不，这没有帮助。原因是竞赛发生在<code>allocate process()</code>函数中，其中进程数首先在if语句中被测试，但之后又根据测试值被更新。有可能在测试时进程数&#x3D;254，但由于竞赛条件，在再次递增前被另一个线程设置为255。</p>
+</blockquote>
+<h3 id="5-23-Show-how-to-implement-the-wait-and-signal-semaphore-operations-in-multiprocessor-environments-using-the-test-and-set-instruction-The-solution-should-exhibit-minimal-busy-waiting"><a href="#5-23-Show-how-to-implement-the-wait-and-signal-semaphore-operations-in-multiprocessor-environments-using-the-test-and-set-instruction-The-solution-should-exhibit-minimal-busy-waiting" class="headerlink" title="5.23 Show how to implement the wait() and signal() semaphore operations in multiprocessor environments using the test_and_set() instruction. The solution should exhibit minimal busy waiting."></a>5.23 Show how to implement the <code>wait()</code> and <code>signal()</code> semaphore operations in multiprocessor environments using the <code>test_and_set()</code> instruction. The solution should exhibit minimal busy waiting.</h3><p>展示如何在多处理器环境中使用<code>test_and_set()</code>指令实现<code>wait()</code>和<code>signal()</code>信号操作。该方案应表现出最小的繁忙等待。</p>
+<p>答：</p>
+<blockquote>
+<p><strong>Answer:</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> guard = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">int</span> semaphore value = <span class="number">0</span>;</span><br><span class="line">wait() &#123;</span><br><span class="line"> <span class="keyword">while</span> (TestAndSet(&amp;guard) == <span class="number">1</span>)</span><br><span class="line">     ;</span><br><span class="line"> <span class="keyword">if</span> (semaphore value == <span class="number">0</span>)&#123;</span><br><span class="line">     atomically add process to a <span class="built_in">queue</span> of processes</span><br><span class="line">     waiting <span class="keyword">for</span> the semaphore <span class="keyword">and</span> <span class="built_in">set</span> guard to <span class="number">0</span>;</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="keyword">else</span></span><br><span class="line"> &#123;</span><br><span class="line">     semaphore value--;</span><br><span class="line">     guard = <span class="number">0</span>;</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br><span class="line">signal() &#123;</span><br><span class="line"> <span class="keyword">while</span> (TestAndSet(&amp;guard) == <span class="number">1</span>)</span><br><span class="line">     ;</span><br><span class="line"> <span class="keyword">if</span> (semaphore value == <span class="number">0</span> &amp;&amp; there is a process on the wait <span class="built_in">queue</span>)</span><br><span class="line">     wake up the first process in the <span class="built_in">queue</span> of waiting processes</span><br><span class="line"> <span class="keyword">else</span></span><br><span class="line">     semaphore value++;</span><br><span class="line"> guard = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>另一种答案：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> guard = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line"> <span class="keyword">int</span> value;</span><br><span class="line"> <span class="class"><span class="keyword">struct</span> <span class="title">process</span> *<span class="title">list</span>;</span></span><br><span class="line">&#125; semaphore;</span><br><span class="line"></span><br><span class="line">Semaphore s;</span><br><span class="line"></span><br><span class="line">wait(s) &#123;</span><br><span class="line"> <span class="keyword">while</span> (TestAndSet(&amp;guard) == <span class="number">1</span>)</span><br><span class="line">     ;</span><br><span class="line"> s.value--;</span><br><span class="line"></span><br><span class="line"> <span class="keyword">if</span> (s.value &lt; <span class="number">0</span>)&#123;</span><br><span class="line">     atomically add process to a <span class="built_in">queue</span> of processes</span><br><span class="line">     guard = <span class="number">0</span>;</span><br><span class="line">     waiting <span class="keyword">for</span> the semaphore;</span><br><span class="line"> &#125;</span><br><span class="line"> guard = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">signal(s) &#123;</span><br><span class="line"> <span class="keyword">while</span> (TestAndSet(&amp;guard) == <span class="number">1</span>)</span><br><span class="line">     ;</span><br><span class="line"> s.value++</span><br><span class="line">     <span class="keyword">if</span> (s.value &lt;= <span class="number">0</span>)</span><br><span class="line">         remove <span class="keyword">and</span> wake up the first process in the <span class="built_in">queue</span> of waiting processes</span><br><span class="line">     guard = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<h3 id="5-28-Discuss-the-tradeoff-between-fairness-and-throughput-of-operations-in-the-readers–writers-problem-Propose-a-method-for-solving-the-readers–writers-problem-without-causing-starvation"><a href="#5-28-Discuss-the-tradeoff-between-fairness-and-throughput-of-operations-in-the-readers–writers-problem-Propose-a-method-for-solving-the-readers–writers-problem-without-causing-starvation" class="headerlink" title="5.28 Discuss the tradeoff between fairness and throughput of operations in the readers–writers problem. Propose a method for solving the readers–writers problem without causing starvation."></a>5.28 Discuss the tradeoff between fairness and throughput of operations in the readers–writers problem. Propose a method for solving the readers–writers problem without causing starvation.</h3><p>讨论读者-写者问题中操作的公平性和吞吐量之间的权衡。提出一种解决读者-写作者问题的方法，而不造成饥饿。</p>
+<p><strong>答：</strong></p>
+<blockquote>
+<p><strong>Answer:</strong></p>
+<p>Throughput in the readers-writers problem is increased by favoring multiple readers as opposed to allowing a single writer to exclusively access the shared values. On the other hand, favoring readers could result in starvation for writers. </p>
+<p>相对于允许单个写作者专门访问共享值而言，偏向于多个读者，可以提高读者-写作者问题的吞吐量。另一方面，偏爱读者可能会导致写手的饥饿。</p>
+<p>When a reader arrives and notices that another reader is accessing the database, then it would enter the critical section only if there are no waiting writers. </p>
+<p>当一个读者来到这里并注意到另一个读者正在访问 数据库，那么只有当没有等待的写手时，它才会进入关键部分。</p>
+<p>The starvation in the readers&#x2F;writers problem could be avoided by keeping timestamps associated with waiting processes. When a writer is finished with its task, it would wake up the process that has been waiting for the longest duration. </p>
+<p>读者&#x2F;写作者问题中的饥饿现象可以通过保留与等待进程相关的时间戳来避免。当一个写手完成其任务时，它将唤醒等待时间最长的进程。</p>
+</blockquote>
+<hr>
+<p><strong>注：</strong></p>
+<p>参考资料：</p>
+<p>[1] <a target="_blank" rel="noopener" href="https://blog.csdn.net/fanrenxiang/article/details/80623884">原子操作类AtomicInteger详解_分享传递价值-CSDN博客_atomicinteger</a></p>
+<p>[2] Operating System Concepts – 9th Edition 及其答案</p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      <div style="display: inline-block;">
+        <img src="/images/dogecoin.png" alt="Framist dogecoin">
+        <p>dogecoin</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Framist
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://framist.github.io/2021/06/01/%E3%80%90%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%91/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%BA%94/" title="【操作系统概念-作业5】Process Synchronization">https://framist.github.io/2021/06/01/【操作系统】/操作系统作业五/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%AD%A6%E4%B9%A0/" rel="tag"># 学习</a>
+              <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag"># 操作系统</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/06/01/%E3%80%90%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%91/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%9B%9B/" rel="prev" title="【操作系统概念-作业4】Threads">
+      <i class="fa fa-chevron-left"></i> 【操作系统概念-作业4】Threads
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/06/02/%E3%80%90PL%E3%80%91/%E3%80%90Python%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%E3%80%91%E4%B8%8A%E6%9C%BA%E4%BD%9C%E4%B8%9A/" rel="next" title="【Python程序设计】上机作业 - 人类高质量代码">
+      【Python程序设计】上机作业 - 人类高质量代码 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Operating-System-Concepts-Exercises-5"><span class="nav-number">1.</span> <span class="nav-text">Operating System Concepts Exercises 5</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%BE%E5%90%8E%E5%AD%A6%E4%B9%A0%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%BC%96%E7%A8%8B%E6%A6%82%E5%BF%B5%EF%BC%88%E7%B1%BB%E3%80%81%E5%AF%B9%E8%B1%A1%E3%80%81%E7%BB%A7%E6%89%BF%E3%80%81%E5%A4%9A%E6%80%81%EF%BC%89"><span class="nav-number">1.1.</span> <span class="nav-text">课后学习面向对象编程概念（类、对象、继承、多态）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Practice-Exercises"><span class="nav-number">1.2.</span> <span class="nav-text">Practice Exercises</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-4-Explain-why-spinlocks-are-not-appropriate-for-single-processor-systems-yet-are-often-used-in-multiprocessor-systems"><span class="nav-number">1.2.1.</span> <span class="nav-text">5.4 Explain why spinlocks are not appropriate for single-processor systems yet are often used in multiprocessor systems.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-5-Show-that-if-the-wait-and-signal-semaphore-operations-are-not-executed-atomically-then-mutual-exclusion-may-be-violated"><span class="nav-number">1.2.2.</span> <span class="nav-text">5.5 Show that, if the wait() and signal() semaphore operations are not executed atomically, then mutual exclusion may be violated.</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Exercises"><span class="nav-number">1.3.</span> <span class="nav-text">Exercises</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-10-Explain-why-implementing-synchronization-primitives-by-disabling-interrupts-is-not-appropriate-in-a-single-processor-system-if-the-synchronization-primitives-are-to-be-used-in-user-level-programs"><span class="nav-number">1.3.1.</span> <span class="nav-text">5.10 Explain why implementing synchronization primitives by disabling interrupts is not appropriate in a single-processor system if the synchronization primitives are to be used in user-level programs.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-11-Explain-why-interrupts-are-not-appropriate-for-implementing-synchronization-primitives-in-multiprocessor-system"><span class="nav-number">1.3.2.</span> <span class="nav-text">5.11 Explain why interrupts are not appropriate for implementing synchronization primitives in multiprocessor system.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-15-Consider-how-to-implement-a-mutex-lock-using-an-atomic-hardware-instruction-Assume-that-the-following-structure-defining-the-mutex-lock-is-available"><span class="nav-number">1.3.3.</span> <span class="nav-text">5.15 Consider how to implement a mutex lock using an atomic hardware instruction. Assume that the following structure defining the mutex lock is available:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-17"><span class="nav-number">1.3.4.</span> <span class="nav-text">5.17</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-18-Assume-that-a-context-switch-takes-T-time-Suggest-an-upper-bound-in-terms-of-T-for-holding-a-spinlock-If-the-spinlock-is-held-for-any-longer-a-mutex-lock-where-waiting-threads-are-put-to-sleep-is-a-better-alternative"><span class="nav-number">1.3.5.</span> <span class="nav-text">5.18 Assume that a context switch takes T time. Suggest an upper bound (in terms of T) for holding a spinlock. If the spinlock is held for any longer, a mutex lock (where waiting threads are put to sleep) is a better alternative.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-20-Consider-the-code-example-for-allocating-and-releasing-processes-shown-in-Figure-5-23"><span class="nav-number">1.3.6.</span> <span class="nav-text">5.20 Consider the code example for allocating and releasing processes shown in Figure 5.23.</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#a-Identify-the-race-condition-s"><span class="nav-number">1.3.6.1.</span> <span class="nav-text">a. Identify the race condition(s).</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#b-Assume-you-have-a-mutex-lock-named-mutex-with-the-operations-acquire-and-release-Indicate-where-the-locking-needs-to-be-placed-to-prevent-the-race-condition-s"><span class="nav-number">1.3.6.2.</span> <span class="nav-text">b. Assume you have a mutex lock named mutex with the operations acquire() and release(). Indicate where the locking needs to be placed to prevent the race condition(s).</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#c-Could-we-replace-the-integer-variable"><span class="nav-number">1.3.6.3.</span> <span class="nav-text">c. Could we replace the integer variable</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-23-Show-how-to-implement-the-wait-and-signal-semaphore-operations-in-multiprocessor-environments-using-the-test-and-set-instruction-The-solution-should-exhibit-minimal-busy-waiting"><span class="nav-number">1.3.7.</span> <span class="nav-text">5.23 Show how to implement the wait() and signal() semaphore operations in multiprocessor environments using the test_and_set() instruction. The solution should exhibit minimal busy waiting.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-28-Discuss-the-tradeoff-between-fairness-and-throughput-of-operations-in-the-readers%E2%80%93writers-problem-Propose-a-method-for-solving-the-readers%E2%80%93writers-problem-without-causing-starvation"><span class="nav-number">1.3.8.</span> <span class="nav-text">5.28 Discuss the tradeoff between fairness and throughput of operations in the readers–writers problem. Propose a method for solving the readers–writers problem without causing starvation.</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Framist</p>
+  <div class="site-description" itemprop="description">框架主义者的小窝</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">79</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/framist" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;framist" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:framist@163.com" title="E-Mail → mailto:framist@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/weixin_47102975" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_47102975" rel="noopener" target="_blank"><i class="fas fa-angle-right fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://framist.top/" title="http:&#x2F;&#x2F;framist.top&#x2F;" rel="noopener" target="_blank">个人主页</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://framist.github.io/2020/10/11/%E6%88%91%E8%BA%AB%E8%BE%B9%E7%9A%84CS%E5%A4%A7%E4%BD%AC%E4%BB%AC/" title="https:&#x2F;&#x2F;framist.github.io&#x2F;2020&#x2F;10&#x2F;11&#x2F;%E6%88%91%E8%BA%AB%E8%BE%B9%E7%9A%84CS%E5%A4%A7%E4%BD%AC%E4%BB%AC&#x2F;">我身边的大佬们</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yuexiavqiufeng.github.io/" title="https:&#x2F;&#x2F;yuexiavqiufeng.github.io&#x2F;" rel="noopener" target="_blank">yuexiavqiufeng</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://github.com/framist" title="https:&#x2F;&#x2F;github.com&#x2F;framist" rel="noopener" target="_blank">广告位招租</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">浙ICP备2022002862号-1 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-at"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Framist</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div><script>
+    let body = document.getElementsByTagName('body')[0];
+    body.addEventListener('click', (e) => {
+        let contentArr = ['欧拉~','ˋ( ° ▽、° ) ','RGB!','_(:з」∠)_','哼','?','¿框架?','QAQ',':3','<3','疯掉了',
+                            'whoami',
+                            'whoareU',
+                            'NULL',
+                            'None',
+                            ' ',
+                            '代价是什么呢？',
+                            '...',
+                            'Big Brother is Watching You',
+                            '喵~', '嗷~', '呜~', '哞~', '咩~', '咕~', '嘎~', '嘤~',
+                            '你看到了。',
+                            '¿爱情障眼法?','¿物种认同障碍?',
+                            '微润欧美，小润终南山，中润润与市，大润中南海',
+                            'init param:<br/>1LTKvNaux7CjrNHJ09C0y87Eo7/Rrbu3zfm4tKOsus7Ksbb41rmjv9a5zqrWucv51rmjrLTLzsTT1rrOtOajvw==',
+                            '这里没有时间的意义',
+                            '嘿嘿嘿，好想被随机异或哦，<br/>嘿嘿嘿，嘿嘿嘿，异或我的异或',
+                            '记忆赋予时间的意义，而不是时间赋予记忆的意义',
+                            '放弃 P ∨ ¬P 吧！',
+                            '抽象是普适性的代价 —— 3b1b',
+                            '得易见平凡，仿照上例显然',
+                            '留作习题答案略，读者自证不难',
+                            '反之亦然同理，推论自然成立',
+                            '略去过程 Q . E . D ，由上可知证毕'];
+        let randomNum = function (n) {
+            return Math.floor(Math.random() * n)
+        }
+        let span = document.createElement('span');
+        span.innerHTML = `${contentArr[randomNum(contentArr.length)]}`;
+        span.style.color = `rgb(${randomNum(256)},${randomNum(256)},${randomNum(256)})`;
+        span.style.position = 'absolute';
+        span.style.top = `${e.pageY}px`;
+        span.style.left = `${e.pageX}px`;
+        span.style.transition = 'all 1s ease';
+        span.style.zIndex = 20000;
+        body.appendChild(span)
+        setTimeout(()=>{
+            span.style.top = span.offsetTop - 25 + 'px';
+            span.style.opacity = 0;
+            setTimeout(()=>{span.remove()},1000)
+        },700)
+    })
+</script>
+
+
+<div style="width: 100px; height: 100px; margin: 0 auto;">
+<script type="text/javascript" id="clstr_globe" src="//clustrmaps.com/globe.js?d=gRWtX21uVt_tIdj_T64nMvo4FK1UrTWME23CVLOzNCg"></script>
+</div>
+<!--
+<script type="text/javascript" 
+color="255,255,255" 
+pointColor='64,184,209' 
+opacity='1' 
+zIndex="-1" 
+count="233" 
+src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js">
+</script>
+-->
+
+
+        
+<div class="busuanzi-count">
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script data-pjax>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '267a9d4a89b9b72b2229',
+      clientSecret: '2dba1f14d21da707ed6c4497fecc05d6178b4fa3',
+      repo        : 'blog-comment',
+      owner       : 'framist',
+      admin       : ['framist'],
+      id          : 'd620f049629a9d40f860608b97c48ffe',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+    </div>
+</body>
+</html>
