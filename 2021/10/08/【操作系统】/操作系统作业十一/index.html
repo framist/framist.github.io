@@ -23,15 +23,15 @@
     var CONFIG = {"hostname":"framist.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="Operating System Concepts Exercises 11File-System Interface  操作系统作业11  11.2, 11.3, 11.5, 11.10, 11.11, 11.12  每题最后一个引用块是老师提供的参考答案">
+  <meta name="description" content="Operating System Concepts Exercises 11File-System Interface  操作系统作业 11  11.2, 11.3, 11.5, 11.10, 11.11, 11.12  每题最后一个引用块是老师提供的参考答案">
 <meta property="og:type" content="article">
-<meta property="og:title" content="【操作系统概念-作业11】File-System Interface">
+<meta property="og:title" content="【操作系统概念 - 作业 11】File-System Interface">
 <meta property="og:url" content="https://framist.github.io/2021/10/08/%E3%80%90%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%91/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%8D%81%E4%B8%80/index.html">
 <meta property="og:site_name" content="Framist&#39;s Little House">
-<meta property="og:description" content="Operating System Concepts Exercises 11File-System Interface  操作系统作业11  11.2, 11.3, 11.5, 11.10, 11.11, 11.12  每题最后一个引用块是老师提供的参考答案">
+<meta property="og:description" content="Operating System Concepts Exercises 11File-System Interface  操作系统作业 11  11.2, 11.3, 11.5, 11.10, 11.11, 11.12  每题最后一个引用块是老师提供的参考答案">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-10-08T11:52:39.975Z">
-<meta property="article:modified_time" content="2022-10-05T08:36:00.996Z">
+<meta property="article:modified_time" content="2023-08-15T13:53:27.898Z">
 <meta property="article:author" content="Framist">
 <meta property="article:tag" content="学习">
 <meta property="article:tag" content="操作系统">
@@ -50,7 +50,7 @@
   };
 </script>
 
-  <title>【操作系统概念-作业11】File-System Interface | Framist's Little House</title>
+  <title>【操作系统概念 - 作业 11】File-System Interface | Framist's Little House</title>
   
 
 
@@ -184,7 +184,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          【操作系统概念-作业11】File-System Interface
+          【操作系统概念 - 作业 11】File-System Interface
         </h1>
 
         <div class="post-meta">
@@ -201,7 +201,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-10-05 16:36:00" itemprop="dateModified" datetime="2022-10-05T16:36:00+08:00">2022-10-05</time>
+                <time title="修改时间：2023-08-15 21:53:27" itemprop="dateModified" datetime="2023-08-15T21:53:27+08:00">2023-08-15</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -241,7 +241,7 @@
       
         <h1 id="Operating-System-Concepts-Exercises-11"><a href="#Operating-System-Concepts-Exercises-11" class="headerlink" title="Operating System Concepts Exercises 11"></a><em>Operating System Concepts</em> Exercises 11</h1><center>File-System Interface</center>
 
-<p>操作系统作业11</p>
+<p>操作系统作业 11</p>
 <ul>
 <li>11.2, 11.3, 11.5, 11.10, 11.11, 11.12</li>
 </ul>
@@ -259,7 +259,7 @@
 <p>The method that is “better” depends on the needs of the processes on the system, and the demands the users place on the operating system. </p>
 <p>If a system runs mostly database applications, it may be more efficient for the operating system to implement a database-type file and provide operations, rather than making each program implement the same thing (possibly in different ways).</p>
 <p>For general- purpose systems it may be better to only implement basic file types to keep the operating system size smaller and allow maximum freedom to the processes on the system.</p>
-<p>一些系统允许根据文件的类型进行不同的文件操作（例如，一个ascii文件可以作为一个流来读，而一个数据库文件可以通过一个索引来读一个块）。<br>其他系统则把对文件数据的这种解释留给进程，并且不提供访问数据的帮助。<br>哪种方法 “更好”，取决于系统中进程的需求，以及用户对操作系统的要求。<br>如果一个系统主要运行数据库应用程序，操作系统实现数据库类型的文件并提供操作可能更有效，而不是让每个程序实现同样的东西（可能以不同的方式）。<br>对于通用系统来说，只实现基本的文件类型可能更好，这样可以使操作系统的规模更小，并允许系统中的进程获得最大的自由。</p>
+<p>一些系统允许根据文件的类型进行不同的文件操作（例如，一个 ascii 文件可以作为一个流来读，而一个数据库文件可以通过一个索引来读一个块）。<br>其他系统则把对文件数据的这种解释留给进程，并且不提供访问数据的帮助。<br>哪种方法 “更好”，取决于系统中进程的需求，以及用户对操作系统的要求。<br>如果一个系统主要运行数据库应用程序，操作系统实现数据库类型的文件并提供操作可能更有效，而不是让每个程序实现同样的东西（可能以不同的方式）。<br>对于通用系统来说，只实现基本的文件类型可能更好，这样可以使操作系统的规模更小，并允许系统中的进程获得最大的自由。</p>
 </blockquote>
 <h3 id="11-3-Similarly-some-systems-support-many-types-of-structures-for-a-file’s-data-while-others-simply-support-a-stream-of-bytes-What-are-the-advantages-and-disadvantages-of-each-approach"><a href="#11-3-Similarly-some-systems-support-many-types-of-structures-for-a-file’s-data-while-others-simply-support-a-stream-of-bytes-What-are-the-advantages-and-disadvantages-of-each-approach" class="headerlink" title="11.3 Similarly, some systems support many types of structures for a file’s data, while others simply support a stream of bytes. What are the advantages and disadvantages of each approach?"></a>11.3 Similarly, some systems support many types of structures for a file’s data, while others simply support a stream of bytes. What are the advantages and disadvantages of each approach?</h3><p>同样，有些系统支持许多类型的文件数据结构，而另一些系统只是支持字节流。每种方法的优势和劣势是什么？</p>
 <p><strong>答：</strong></p>
@@ -267,7 +267,7 @@
 <p>An advantage of having the system support different file structures is that the support comes from the system; individual applications are not required to provide the support. In addition, if the system provides the support for different file structures, it can implement the support presumably more efficiently than an application.</p>
 <p>The disadvantage of having the system provide support for defined file types is that it increases the size of the system. In addition, applications that may require different file types other than what is provided by the system may not be able to run on such systems.</p>
 <p>An alternative strategy is for the operating system to define no support for file structures and instead treat all files as a series of bytes. This is the approach taken by UNIX systems. The advantage of this approach is that it simplifies the operating system support for file systems, as the system no longer has to provide the structure for different file types. Furthermore, it allows applications to define file structures, thereby alleviating the situation where a system may not provide a file definition required for a specific application.</p>
-<p>让系统支持不同的文件结构的一个好处是，这种支持来自于系统；不需要个别应用程序提供支持。此外，如果系统提供对不同文件结构的支持，它可以比应用程序更有效地实现支持。<br>让系统为定义的文件类型提供支持的缺点是，它增加了系统的大小。此外，可能需要不同的文件类型而不是系统提供的文件类型的应用程序可能无法在这种系统上运行。<br>另一种策略是操作系统不定义对文件结构的支持，而是将所有文件视为一系列的字节。这就是UNIX系统所采取的方法。这种方法的优点是，它简化了操作系统对文件系统的支持，因为系统不再需要为不同的文件类型提供结构。此外，它允许应用程序定义文件结构，从而缓解了系统可能不提供特定应用程序所需的文件定义的情况。</p>
+<p>让系统支持不同的文件结构的一个好处是，这种支持来自于系统；不需要个别应用程序提供支持。此外，如果系统提供对不同文件结构的支持，它可以比应用程序更有效地实现支持。<br>让系统为定义的文件类型提供支持的缺点是，它增加了系统的大小。此外，可能需要不同的文件类型而不是系统提供的文件类型的应用程序可能无法在这种系统上运行。<br>另一种策略是操作系统不定义对文件结构的支持，而是将所有文件视为一系列的字节。这就是 UNIX 系统所采取的方法。这种方法的优点是，它简化了操作系统对文件系统的支持，因为系统不再需要为不同的文件类型提供结构。此外，它允许应用程序定义文件结构，从而缓解了系统可能不提供特定应用程序所需的文件定义的情况。</p>
 </blockquote>
 <h3 id="11-5-Explain-the-purpose-of-the-open-and-close-operations"><a href="#11-5-Explain-the-purpose-of-the-open-and-close-operations" class="headerlink" title="11.5 Explain the purpose of the open() and close() operations."></a>11.5 Explain the purpose of the <code>open()</code> and <code>close()</code> operations.</h3><p>解释<code>open()</code>和<code>close()</code>操作的目的。</p>
 <p><strong>答：</strong></p>
@@ -275,10 +275,10 @@
 <blockquote>
 <p>Purpose of open( ) operation: The purpose of open( ) operation is open an active file. For this purpose the operating system maintain an open-file table, it contains information about the all open files. The open() operation can perform three task: fist take the file name, search the entire directory, and finally copy the directory entry into the open-file table. The open( ) operation can also validate the access modes. They are read only, write only, read&#x2F;write, and so on. When the request mode is acceptable, then the file is opened for the process.</p>
 <p>Purpose of close ( ) operation: The purpose of close() operation is when the process completes its operation on an open file then the close() operation performed. The close() operation decreases the open count, which could be associated with each file to indicate how many processes have the file open. When open count reaches the zero, the file is no longer in use, and the file entry is removed from the open-file table.</p>
-<p>open( )操作的目的。open( )操作的目的是打开一个活动文件。为此，操作系统维护一个开放文件表，它包含所有开放文件的信息。open()操作可以执行三个任务：取文件名，搜索整个目录，最后将目录条目复制到open-file表中。open()操作还可以验证访问模式。它们是只读、只写、读&#x2F;写，等等。当请求模式可以接受时，那么该文件就被打开，供进程使用。</p>
-<p>close（）操作的目的。close()操作的目的是当进程完成了对一个开放文件的操作后，执行close()操作。close()操作减少了开放计数，它可以与每个文件相关联，以表明有多少进程打开了该文件。当打开次数达到零时，该文件就不再被使用，该文件条目就会从打开文件表中删除。</p>
+<p>open( ) 操作的目的。open( ) 操作的目的是打开一个活动文件。为此，操作系统维护一个开放文件表，它包含所有开放文件的信息。open() 操作可以执行三个任务：取文件名，搜索整个目录，最后将目录条目复制到 open-file 表中。open() 操作还可以验证访问模式。它们是只读、只写、读&#x2F;写，等等。当请求模式可以接受时，那么该文件就被打开，供进程使用。</p>
+<p>close（）操作的目的。close() 操作的目的是当进程完成了对一个开放文件的操作后，执行 close() 操作。close() 操作减少了开放计数，它可以与每个文件相关联，以表明有多少进程打开了该文件。当打开次数达到零时，该文件就不再被使用，该文件条目就会从打开文件表中删除。</p>
 </blockquote>
-<h3 id="11-10-The-open-file-table-is-used-to-maintain-information-about-files-that-are-currently-open-Should-the-operating-system-maintain-a-separate-table-for-each-user-or-maintain-just-one-table-that-contains-references-to-files-that-are-currently-being-accessed-by-all-users-If-the-same-file-is-being-accessed-by-two-different-programs-or-users-should-there-be-separate-entries-in-the-open-file-table-Explain"><a href="#11-10-The-open-file-table-is-used-to-maintain-information-about-files-that-are-currently-open-Should-the-operating-system-maintain-a-separate-table-for-each-user-or-maintain-just-one-table-that-contains-references-to-files-that-are-currently-being-accessed-by-all-users-If-the-same-file-is-being-accessed-by-two-different-programs-or-users-should-there-be-separate-entries-in-the-open-file-table-Explain" class="headerlink" title="11.10 The open-file table is used to maintain information about files that are currently open. Should the operating system maintain a separate table for each user or maintain just one table that contains references to files that are currently being accessed by all users? If the same file is being accessed by two different programs or users, should there be separate entries in the open-file table? Explain."></a>11.10 The open-file table is used to maintain information about files that are currently open. Should the operating system maintain a separate table for each user or maintain just one table that contains references to files that are currently being accessed by all users? If the same file is being accessed by two different programs or users, should there be separate entries in the open-file table? Explain.</h3><p>open-file表是用来维护当前打开的文件信息的。操作系统应该为每个用户维护一个单独的表，还是只维护一个包含所有用户当前正在访问的文件的表？如果同一个文件被两个不同的程序或用户访问，在开放文件表中是否应该有单独的条目？解释一下。</p>
+<h3 id="11-10-The-open-file-table-is-used-to-maintain-information-about-files-that-are-currently-open-Should-the-operating-system-maintain-a-separate-table-for-each-user-or-maintain-just-one-table-that-contains-references-to-files-that-are-currently-being-accessed-by-all-users-If-the-same-file-is-being-accessed-by-two-different-programs-or-users-should-there-be-separate-entries-in-the-open-file-table-Explain"><a href="#11-10-The-open-file-table-is-used-to-maintain-information-about-files-that-are-currently-open-Should-the-operating-system-maintain-a-separate-table-for-each-user-or-maintain-just-one-table-that-contains-references-to-files-that-are-currently-being-accessed-by-all-users-If-the-same-file-is-being-accessed-by-two-different-programs-or-users-should-there-be-separate-entries-in-the-open-file-table-Explain" class="headerlink" title="11.10 The open-file table is used to maintain information about files that are currently open. Should the operating system maintain a separate table for each user or maintain just one table that contains references to files that are currently being accessed by all users? If the same file is being accessed by two different programs or users, should there be separate entries in the open-file table? Explain."></a>11.10 The open-file table is used to maintain information about files that are currently open. Should the operating system maintain a separate table for each user or maintain just one table that contains references to files that are currently being accessed by all users? If the same file is being accessed by two different programs or users, should there be separate entries in the open-file table? Explain.</h3><p>open-file 表是用来维护当前打开的文件信息的。操作系统应该为每个用户维护一个单独的表，还是只维护一个包含所有用户当前正在访问的文件的表？如果同一个文件被两个不同的程序或用户访问，在开放文件表中是否应该有单独的条目？解释一下。</p>
 <p><strong>答：</strong></p>
 <blockquote>
 <p>By keeping a central open-file table, the operating system can perform the following operation that would be infeasible otherwise. Consider a file that is currently being accessed by one or more processes. If the file is deleted, then it should not be removed from the disk until all processes accessing the file have closed it. This check can be performed only if there is centralized accounting of number of processes accessing the file. </p>
@@ -291,7 +291,7 @@
 <p>Advisory Locking is a cooperative locking scheme where the participating processes need to follow&#x2F;obey a locking protocol. As long as the processes follow the locking protocol&#x2F;API and respect its return values, the underlying API takes care that file locking semantics work correctly. In other words, this is not an enforced locking scheme.</p>
 <p>Mandatory Locking does not need any type of cooperation between processes. The OS guarantees the blocking&#x2F;failure of system calls of a process that attempts to do any concurrent modification to a file which is already locked by another process.</p>
 <p>In such situations, the mandatory locks would limit the flexibility in how files could be accessed and might also increase the overheads associated with accessing files.</p>
-<p>咨询式锁定是一种合作式锁定方案，参与的进程需要遵循&#x2F;遵守锁定协议。只要进程遵循锁定协议&#x2F;API并尊重其返回值，底层API就能保证文件锁定语义的正常工作。换句话说，这不是一个强制的锁定方案。<br>强制锁定不需要进程之间的任何类型的合作。操作系统保证对试图对已经被另一个进程锁定的文件进行任何并发修改的进程的系统调用的阻塞&#x2F;失败。</p>
+<p>咨询式锁定是一种合作式锁定方案，参与的进程需要遵循&#x2F;遵守锁定协议。只要进程遵循锁定协议&#x2F;API 并尊重其返回值，底层 API 就能保证文件锁定语义的正常工作。换句话说，这不是一个强制的锁定方案。<br>强制锁定不需要进程之间的任何类型的合作。操作系统保证对试图对已经被另一个进程锁定的文件进行任何并发修改的进程的系统调用的阻塞&#x2F;失败。</p>
 <p>在这种情况下，强制锁将限制对文件的访问方式的灵活性，也可能增加与访问文件相关的开销。</p>
 </blockquote>
 <h3 id="11-12-Provide-examples-of-applications-that-typically-access-files-according-to-the-following-methods"><a href="#11-12-Provide-examples-of-applications-that-typically-access-files-according-to-the-following-methods" class="headerlink" title="11.12 Provide examples of applications that typically access files according to the following methods:"></a>11.12 Provide examples of applications that typically access files according to the following methods:</h3><p>提供通常按照以下方法访问文件的应用程序的例子。</p>
@@ -342,7 +342,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://framist.github.io/2021/10/08/%E3%80%90%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%91/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%8D%81%E4%B8%80/" title="【操作系统概念-作业11】File-System Interface">https://framist.github.io/2021/10/08/【操作系统】/操作系统作业十一/</a>
+    <a href="https://framist.github.io/2021/10/08/%E3%80%90%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%91/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%8D%81%E4%B8%80/" title="【操作系统概念 - 作业 11】File-System Interface">https://framist.github.io/2021/10/08/【操作系统】/操作系统作业十一/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -363,12 +363,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/10/08/%E3%80%90%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%91/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%8D%81/" rel="prev" title="【操作系统概念-作业10】Mass-Storage Systems">
-      <i class="fa fa-chevron-left"></i> 【操作系统概念-作业10】Mass-Storage Systems
+    <a href="/2021/10/08/%E3%80%90%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%91/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%8D%81/" rel="prev" title="【操作系统概念 - 作业 10】Mass-Storage Systems">
+      <i class="fa fa-chevron-left"></i> 【操作系统概念 - 作业 10】Mass-Storage Systems
     </a></div>
       <div class="post-nav-item">
-    <a href="/2021/10/08/%E3%80%90%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%91/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%8D%81%E4%B8%89/" rel="next" title="【操作系统概念-作业13】I/O Systems">
-      【操作系统概念-作业13】I/O Systems <i class="fa fa-chevron-right"></i>
+    <a href="/2021/10/08/%E3%80%90%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%91/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%8D%81%E4%B8%89/" rel="next" title="【操作系统概念 - 作业 13】I/O Systems">
+      【操作系统概念 - 作业 13】I/O Systems <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>

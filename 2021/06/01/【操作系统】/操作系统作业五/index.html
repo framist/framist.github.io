@@ -23,16 +23,16 @@
     var CONFIG = {"hostname":"framist.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="Operating System Concepts Exercises 5Process Synchronization   操作系统作业5  课后学习面向对象编程概念（类、对象、继承、多态） 5.4 5.5 5.10 5.11 5.15 5.17 5.18 5.20 5.23 5.28">
+  <meta name="description" content="Operating System Concepts Exercises 5Process Synchronization   操作系统作业 5  课后学习面向对象编程概念（类、对象、继承、多态） 5.4 5.5 5.10 5.11 5.15 5.17 5.18 5.20 5.23 5.28">
 <meta property="og:type" content="article">
-<meta property="og:title" content="【操作系统概念-作业5】Process Synchronization">
+<meta property="og:title" content="【操作系统概念 - 作业 5】Process Synchronization">
 <meta property="og:url" content="https://framist.github.io/2021/06/01/%E3%80%90%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%91/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%BA%94/index.html">
 <meta property="og:site_name" content="Framist&#39;s Little House">
-<meta property="og:description" content="Operating System Concepts Exercises 5Process Synchronization   操作系统作业5  课后学习面向对象编程概念（类、对象、继承、多态） 5.4 5.5 5.10 5.11 5.15 5.17 5.18 5.20 5.23 5.28">
+<meta property="og:description" content="Operating System Concepts Exercises 5Process Synchronization   操作系统作业 5  课后学习面向对象编程概念（类、对象、继承、多态） 5.4 5.5 5.10 5.11 5.15 5.17 5.18 5.20 5.23 5.28">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2023/08/15/20230815203832.jpg">
 <meta property="article:published_time" content="2021-06-01T03:42:55.482Z">
-<meta property="article:modified_time" content="2023-08-15T12:38:34.750Z">
+<meta property="article:modified_time" content="2023-08-15T13:53:30.252Z">
 <meta property="article:author" content="Framist">
 <meta property="article:tag" content="学习">
 <meta property="article:tag" content="操作系统">
@@ -52,7 +52,7 @@
   };
 </script>
 
-  <title>【操作系统概念-作业5】Process Synchronization | Framist's Little House</title>
+  <title>【操作系统概念 - 作业 5】Process Synchronization | Framist's Little House</title>
   
 
 
@@ -186,7 +186,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          【操作系统概念-作业5】Process Synchronization
+          【操作系统概念 - 作业 5】Process Synchronization
         </h1>
 
         <div class="post-meta">
@@ -203,7 +203,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-08-15 20:38:34" itemprop="dateModified" datetime="2023-08-15T20:38:34+08:00">2023-08-15</time>
+                <time title="修改时间：2023-08-15 21:53:30" itemprop="dateModified" datetime="2023-08-15T21:53:30+08:00">2023-08-15</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -244,7 +244,7 @@
         <h1 id="Operating-System-Concepts-Exercises-5"><a href="#Operating-System-Concepts-Exercises-5" class="headerlink" title="Operating System Concepts Exercises 5"></a><em>Operating System Concepts</em> Exercises 5</h1><center>Process Synchronization</center>
 
 
-<p>操作系统作业5</p>
+<p>操作系统作业 5</p>
 <ul>
 <li>课后学习面向对象编程概念（类、对象、继承、多态）</li>
 <li>5.4 5.5</li>
@@ -258,14 +258,14 @@
 <h3 id="5-4-Explain-why-spinlocks-are-not-appropriate-for-single-processor-systems-yet-are-often-used-in-multiprocessor-systems"><a href="#5-4-Explain-why-spinlocks-are-not-appropriate-for-single-processor-systems-yet-are-often-used-in-multiprocessor-systems" class="headerlink" title="5.4 Explain why spinlocks are not appropriate for single-processor systems yet are often used in multiprocessor systems."></a>5.4 Explain why spinlocks are not appropriate for single-processor systems yet are often used in multiprocessor systems.</h3><p>说明为什么自旋锁不适用于单处理器系统，但是经常在多处理器系统中使用。</p>
 <p><strong>答：</strong></p>
 <blockquote>
-<p>在单处理器系统中，使用自旋锁会造成其他进程忙等待（任何其他试图进入临界区的进程都必须在其进入代码中连续地循环），这样就浪费了CPU时钟。而对于多处理器系统，当一个进程在一个处理器自旋时，另一个进程可以在另一处理器上在其临界区内执行，且使用自旋锁，进程在等待锁时还在运行，不用进行上下文切换。</p>
+<p>在单处理器系统中，使用自旋锁会造成其他进程忙等待（任何其他试图进入临界区的进程都必须在其进入代码中连续地循环），这样就浪费了 CPU 时钟。而对于多处理器系统，当一个进程在一个处理器自旋时，另一个进程可以在另一处理器上在其临界区内执行，且使用自旋锁，进程在等待锁时还在运行，不用进行上下文切换。</p>
 </blockquote>
-<p>Reference:<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_37205708/article/details/86548631?spm=1001.2014.3001.5501">操作系统学习笔记（五）—进程同步_雲的博客-CSDN博客</a></p>
+<p>Reference:<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_37205708/article/details/86548631?spm=1001.2014.3001.5501">操作系统学习笔记（五）—进程同步_雲的博客-CSDN 博客</a></p>
 <blockquote>
 <p><strong>Answer:</strong></p>
 <p>On a single-processor system, the thread holding a lock cannot be running while another thread is testing the lock, because only one thread&#x2F;process can be running at a time. Therefore the thread will continue to spin and waste CPU cycles until its time slice end. That is why threads on a single-processer system should always sleep rather than spin, if they encounter a lock that is held.</p>
 <p>On a multiprocessor system, multiple threads (the thread holding a lock, and the thread testing the lock) can actually be running at the same time. Therefore, it is appropriate for a thread waiting for lock to go into a spin wait, because the lock could be released while it is waiting.</p>
-<p>在一个单处理器系统中，当另一个线程在测试锁的时候，持有锁的线程不能运行，因为一次只能有一个线程&#x2F;进程在运行。因此，该线程将继续旋转并浪费CPU周期，直到其时间片结束。这就是为什么在单处理器系统上的线程，如果遇到一个被持有的锁，应该总是睡觉而不是旋转。</p>
+<p>在一个单处理器系统中，当另一个线程在测试锁的时候，持有锁的线程不能运行，因为一次只能有一个线程&#x2F;进程在运行。因此，该线程将继续旋转并浪费 CPU 周期，直到其时间片结束。这就是为什么在单处理器系统上的线程，如果遇到一个被持有的锁，应该总是睡觉而不是旋转。</p>
 <p>在多处理器系统中，多个线程（持有锁的线程和测试锁的线程）实际上可以在同一时间运行。因此，等待锁的线程进入自旋等待是合适的，因为锁可能在它等待时被释放。</p>
 </blockquote>
 <h3 id="5-5-Show-that-if-the-wait-and-signal-semaphore-operations-are-not-executed-atomically-then-mutual-exclusion-may-be-violated"><a href="#5-5-Show-that-if-the-wait-and-signal-semaphore-operations-are-not-executed-atomically-then-mutual-exclusion-may-be-violated" class="headerlink" title="5.5 Show that, if the wait() and signal() semaphore operations are not executed atomically, then mutual exclusion may be violated."></a>5.5 Show that, if the <code>wait()</code> and <code>signal()</code> semaphore operations are not executed atomically, then mutual exclusion may be violated.</h3><p>证明如果<code>wait()</code>和<code>signal()</code>信号操作不是原子执行的，那么可能会违反互斥。</p>
@@ -279,12 +279,12 @@
 <p>如果非原子执行，那么可能会发生以下情况：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//S==1</span></span><br><span class="line">wait1(S) &#123;</span><br><span class="line">    <span class="keyword">while</span>(S &lt;= <span class="number">0</span>)</span><br><span class="line">        ; <span class="comment">//busy wait</span></span><br><span class="line">    wait2(S) &#123;</span><br><span class="line">        <span class="keyword">while</span>(S &lt;= <span class="number">0</span>)</span><br><span class="line">            ; <span class="comment">//busy wait</span></span><br><span class="line">        S--;</span><br><span class="line">    &#125;</span><br><span class="line">    S--;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-<p>1和2都同步运行了，违反互斥。</p>
+<p>1 和 2 都同步运行了，违反互斥。</p>
 <blockquote>
 <p><strong>Answer:</strong></p>
 <p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2023/08/15/20230815203832.jpg" alt="img"></p>
 <p><em>A wait operation atomically decrements the value associated with a semaphore.</em> If two wait operations are executed on a semaphore when its value is 1, and if the two operations are not performed atomically, then it is possible that both operations might proceed to decrement the semaphore value, thereby violating mutual exclusion.</p>
-<p><em>一个等待操作会以原子方式递减与信号灯相关的值</em>。如果当一个信号灯的值为1时，在其上执行两个等待操作，并且这两个操作不是原子执行的，那么这两个操作就有可能继续递减信号灯的值，从而违反了互斥原则。</p>
+<p><em>一个等待操作会以原子方式递减与信号灯相关的值</em>。如果当一个信号灯的值为 1 时，在其上执行两个等待操作，并且这两个操作不是原子执行的，那么这两个操作就有可能继续递减信号灯的值，从而违反了互斥原则。</p>
 </blockquote>
 <h2 id="Exercises"><a href="#Exercises" class="headerlink" title="Exercises"></a>Exercises</h2><p>5.10 5.11 5.15 5.17 5.18 5.20 5.23 5.28</p>
 <h3 id="5-10-Explain-why-implementing-synchronization-primitives-by-disabling-interrupts-is-not-appropriate-in-a-single-processor-system-if-the-synchronization-primitives-are-to-be-used-in-user-level-programs"><a href="#5-10-Explain-why-implementing-synchronization-primitives-by-disabling-interrupts-is-not-appropriate-in-a-single-processor-system-if-the-synchronization-primitives-are-to-be-used-in-user-level-programs" class="headerlink" title="5.10 Explain why implementing synchronization primitives by disabling interrupts is not appropriate in a single-processor system if the synchronization primitives are to be used in user-level programs."></a>5.10 Explain why implementing synchronization primitives by disabling interrupts is not appropriate in a single-processor system if the synchronization primitives are to be used in user-level programs.</h3><p>如果同步原语要用于用户级程序，请解释为什么在单处理器系统中通过禁用中断来实现同步原语是不合适的。</p>
@@ -308,14 +308,14 @@
 <p>Case 1 – interrupts are disabled for ONE processor only – result is that threads running on other processors could ignore the synchronization primitive and access the shared data.</p>
 <p>Case 2 – interrupts are disabled for ALL processors – this means task dispatching, handling I&#x2F;O completion, etc. is also disabled on ALL processors, so threads running on all CPUs can grind to a halt.</p>
 <p>这取决于中断是如何实现的，但无论如何，这都是一种糟糕的技术选择。</p>
-<p>情况1 – 中断只对一个处理器禁用 – 其结果是，在其他处理器上运行的线程可以忽略同步原语并访问共享数据。</p>
-<p>情况2 – 中断在所有处理器上被禁用 – 这意味着任务调度、处理I&#x2F;O完成等也在所有处理器上被禁用，因此在所有CPU上运行的线程都可能陷入停顿。</p>
+<p>情况 1 – 中断只对一个处理器禁用 – 其结果是，在其他处理器上运行的线程可以忽略同步原语并访问共享数据。</p>
+<p>情况 2 – 中断在所有处理器上被禁用 – 这意味着任务调度、处理 I&#x2F;O 完成等也在所有处理器上被禁用，因此在所有 CPU 上运行的线程都可能陷入停顿。</p>
 </blockquote>
-<h3 id="5-15-Consider-how-to-implement-a-mutex-lock-using-an-atomic-hardware-instruction-Assume-that-the-following-structure-defining-the-mutex-lock-is-available"><a href="#5-15-Consider-how-to-implement-a-mutex-lock-using-an-atomic-hardware-instruction-Assume-that-the-following-structure-defining-the-mutex-lock-is-available" class="headerlink" title="5.15 Consider how to implement a mutex lock using an atomic hardware instruction. Assume that the following structure defining the mutex lock is available:"></a>5.15 Consider how to implement a mutex lock using an atomic hardware instruction. Assume that the following structure defining the mutex lock is available:</h3><p>考虑如何使用原子硬件指令实现互斥锁。 假设以下定义互斥锁的结构可用：</p>
+<h3 id="5-15-Consider-how-to-implement-a-mutex-lock-using-an-atomic-hardware-instruction-Assume-that-the-following-structure-defining-the-mutex-lock-is-available"><a href="#5-15-Consider-how-to-implement-a-mutex-lock-using-an-atomic-hardware-instruction-Assume-that-the-following-structure-defining-the-mutex-lock-is-available" class="headerlink" title="5.15 Consider how to implement a mutex lock using an atomic hardware instruction. Assume that the following structure defining the mutex lock is available:"></a>5.15 Consider how to implement a mutex lock using an atomic hardware instruction. Assume that the following structure defining the mutex lock is available:</h3><p>考虑如何使用原子硬件指令实现互斥锁。假设以下定义互斥锁的结构可用：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> available;</span><br><span class="line">&#125; lock;</span><br></pre></td></tr></table></figure>
 
 <p><code>(available == 0)</code> indicates that the lock is available, and a value of 1 indicates that the lock is unavailable. Using this struct, illustrate how the following functions can be implemented using the <code>test_and_set()</code> and <code>compare_and_swap()</code> instructions:</p>
-<p><code>(available == 0)</code>表示该锁是可用的，值为1表示该锁不可用。使用这个结构，说明如何使用<code>test_and_set()</code>和<code>compare_and_swap()</code>指令实现以下函数:</p>
+<p><code>(available == 0)</code>表示该锁是可用的，值为 1 表示该锁不可用。使用这个结构，说明如何使用<code>test_and_set()</code>和<code>compare_and_swap()</code>指令实现以下函数：</p>
 <ul>
 <li><code>void acquire(lock *mutex)</code></li>
 <li><code>void release(lock *mutex)</code></li>
@@ -348,16 +348,16 @@
 <p>(1) If the lock is to be held for a short duration, it makes more sense to use a spinlock as it may in fact be faster than using a mutex lock which requires suspending - and awakening - the waiting process.</p>
 <p>(2) If it is to be held for a long duration, a mutex lock is preferable as this allows the processing core to schedule another process while the locked process waits.</p>
 <p>(3) If the thread may be put to sleep while holding the lock, a mutex lock is definitely preferable as you wouldn’t want the waiting process to be spinning while waiting for the other process to wake up.</p>
-<p>(1) 如果锁要保持很短的时间，使用自旋锁更有意义，因为事实上它可能比使用互斥锁更快，因为互斥锁需要暂停-和唤醒-等待的进程。</p>
+<p>(1) 如果锁要保持很短的时间，使用自旋锁更有意义，因为事实上它可能比使用互斥锁更快，因为互斥锁需要暂停 - 和唤醒 - 等待的进程。</p>
 <p>(2) 如果要保持较长的时间，最好使用互斥锁，因为这允许处理核心在被锁进程等待时安排另一个进程。</p>
 <p>(3) 如果线程在持有锁的时候可能会进入睡眠状态，那么互斥锁肯定是最好的，因为你不希望等待的进程在等待另一个进程醒来的时候还在旋转。</p>
 </blockquote>
-<h3 id="5-18-Assume-that-a-context-switch-takes-T-time-Suggest-an-upper-bound-in-terms-of-T-for-holding-a-spinlock-If-the-spinlock-is-held-for-any-longer-a-mutex-lock-where-waiting-threads-are-put-to-sleep-is-a-better-alternative"><a href="#5-18-Assume-that-a-context-switch-takes-T-time-Suggest-an-upper-bound-in-terms-of-T-for-holding-a-spinlock-If-the-spinlock-is-held-for-any-longer-a-mutex-lock-where-waiting-threads-are-put-to-sleep-is-a-better-alternative" class="headerlink" title="5.18 Assume that a context switch takes T time. Suggest an upper bound (in terms of T) for holding a spinlock. If the spinlock is held for any longer, a mutex lock (where waiting threads are put to sleep) is a better alternative."></a>5.18 Assume that a context switch takes T time. Suggest an upper bound (in terms of T) for holding a spinlock. If the spinlock is held for any longer, a mutex lock (where waiting threads are put to sleep) is a better alternative.</h3><p>假设一个上下文切换需要T时间。建议一个持有自旋锁的上限（以T为单位）。如果自旋锁保持的时间再长一些，那么突变锁（等待的线程会进入睡眠状态）是一个更好的选择。</p>
+<h3 id="5-18-Assume-that-a-context-switch-takes-T-time-Suggest-an-upper-bound-in-terms-of-T-for-holding-a-spinlock-If-the-spinlock-is-held-for-any-longer-a-mutex-lock-where-waiting-threads-are-put-to-sleep-is-a-better-alternative"><a href="#5-18-Assume-that-a-context-switch-takes-T-time-Suggest-an-upper-bound-in-terms-of-T-for-holding-a-spinlock-If-the-spinlock-is-held-for-any-longer-a-mutex-lock-where-waiting-threads-are-put-to-sleep-is-a-better-alternative" class="headerlink" title="5.18 Assume that a context switch takes T time. Suggest an upper bound (in terms of T) for holding a spinlock. If the spinlock is held for any longer, a mutex lock (where waiting threads are put to sleep) is a better alternative."></a>5.18 Assume that a context switch takes T time. Suggest an upper bound (in terms of T) for holding a spinlock. If the spinlock is held for any longer, a mutex lock (where waiting threads are put to sleep) is a better alternative.</h3><p>假设一个上下文切换需要 T 时间。建议一个持有自旋锁的上限（以 T 为单位）。如果自旋锁保持的时间再长一些，那么突变锁（等待的线程会进入睡眠状态）是一个更好的选择。</p>
 <p><strong>答：</strong></p>
 <blockquote>
 <p><strong>Answer:</strong></p>
 <p>The maximum time that can be tolerable in terms of time t will be &lt;2xT Thus exceeding the maximum time, a mutex lock will be used instead of spin lock where the threads that are in wait mode are switched to sleep mode</p>
-<p>就时间t而言，可以容忍的最大时间将是&lt;2xT 因此，超过最大时间，将使用互斥锁而不是自旋锁，处于等待模式的线程被切换到睡眠模式。</p>
+<p>就时间 t 而言，可以容忍的最大时间将是&lt;2xT 因此，超过最大时间，将使用互斥锁而不是自旋锁，处于等待模式的线程被切换到睡眠模式。</p>
 </blockquote>
 <p>&#x3D;&#x3D;?&#x3D;&#x3D;</p>
 <h3 id="5-20-Consider-the-code-example-for-allocating-and-releasing-processes-shown-in-Figure-5-23"><a href="#5-20-Consider-the-code-example-for-allocating-and-releasing-processes-shown-in-Figure-5-23" class="headerlink" title="5.20 Consider the code example for allocating and releasing processes shown in Figure 5.23."></a>5.20 Consider the code example for allocating and releasing processes shown in Figure 5.23.</h3><center>Figure 5.23 Allocating and releasing processes.</center>
@@ -369,7 +369,7 @@
 <h4 id="a-Identify-the-race-condition-s"><a href="#a-Identify-the-race-condition-s" class="headerlink" title="a. Identify the race condition(s)."></a>a. Identify the race condition(s).</h4><p>识别竞争条件。</p>
 <p><strong>答：</strong></p>
 <p><code>number_of_processes</code>可能产生竞争</p>
-<h4 id="b-Assume-you-have-a-mutex-lock-named-mutex-with-the-operations-acquire-and-release-Indicate-where-the-locking-needs-to-be-placed-to-prevent-the-race-condition-s"><a href="#b-Assume-you-have-a-mutex-lock-named-mutex-with-the-operations-acquire-and-release-Indicate-where-the-locking-needs-to-be-placed-to-prevent-the-race-condition-s" class="headerlink" title="b. Assume you have a mutex lock named mutex with the operations acquire() and release(). Indicate where the locking needs to be placed to prevent the race condition(s)."></a>b. Assume you have a mutex lock named mutex with the operations <code>acquire()</code> and <code>release()</code>. Indicate where the locking needs to be placed to prevent the race condition(s).</h4><p>假设你有一个名为mutex的互斥锁，操作是<code>acquire()</code>和<code>release()</code>。指示需要将锁定放置在何处以防止出现竞争条件。</p>
+<h4 id="b-Assume-you-have-a-mutex-lock-named-mutex-with-the-operations-acquire-and-release-Indicate-where-the-locking-needs-to-be-placed-to-prevent-the-race-condition-s"><a href="#b-Assume-you-have-a-mutex-lock-named-mutex-with-the-operations-acquire-and-release-Indicate-where-the-locking-needs-to-be-placed-to-prevent-the-race-condition-s" class="headerlink" title="b. Assume you have a mutex lock named mutex with the operations acquire() and release(). Indicate where the locking needs to be placed to prevent the race condition(s)."></a>b. Assume you have a mutex lock named mutex with the operations <code>acquire()</code> and <code>release()</code>. Indicate where the locking needs to be placed to prevent the race condition(s).</h4><p>假设你有一个名为 mutex 的互斥锁，操作是<code>acquire()</code>和<code>release()</code>。指示需要将锁定放置在何处以防止出现竞争条件。</p>
 <p><strong>答：</strong></p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAX_PROCESSES 255</span></span><br><span class="line"><span class="keyword">int</span> number_of_processes = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* the implementation of fork() calls this function */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">allocate_process</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> new_pid;</span><br><span class="line">    <span class="keyword">if</span> (number_of_processes == MAX_PROCESSES)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">/* allocate necessary process resources */</span></span><br><span class="line">        acquire();</span><br><span class="line">        ++number_of_processes;</span><br><span class="line">        release();</span><br><span class="line">        <span class="keyword">return</span> new_pid;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* the implementation of exit() calls this function */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">release_process</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">/* release process resources */</span></span><br><span class="line">    acquire();</span><br><span class="line">    --number_of_processes;</span><br><span class="line">    release();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -379,9 +379,9 @@
 <p>to prevent the race condition(s)</p>
 <p><strong>答：</strong></p>
 <blockquote>
-<p>对于Java中的运算操作，例如自增或自减，若没有进行额外的同步操作，在多线程环境下就是线程不安全的。num++解析为num&#x3D;num+1，明显，这个操作不具备原子性，多线程并发共享这个变量时必然会出现问题。[1]</p>
+<p>对于 Java 中的运算操作，例如自增或自减，若没有进行额外的同步操作，在多线程环境下就是线程不安全的。num++解析为 num&#x3D;num+1，明显，这个操作不具备原子性，多线程并发共享这个变量时必然会出现问题。[1]</p>
 </blockquote>
-<p>可见，使用atomic integer仍然不足以解决竞争问题。</p>
+<p>可见，使用 atomic integer 仍然不足以解决竞争问题。</p>
 <blockquote>
 <p><strong>Answer:</strong></p>
 <p>a. There is a race condition on the variable number of processes.</p>
@@ -389,7 +389,7 @@
 <p>c. No, it would not help. The reason is because the race occurs in the allocate process() function where number of processes is first tested in the if statement, yet is updated afterwards, based upon the value of the test. It is possible that number of processes &#x3D; 254 at the time of the test, yet because of the race condition, is set to 255 by another thread before it is incremented yet again.</p>
 <p>a. 进程的可变数量上存在一个竞赛条件。</p>
 <p>b. 在进入每个函数时必须调用<code>acquisition()</code>，在退出每个函数前必须立即调用<code>release()</code>。</p>
-<p>c. 不，这没有帮助。原因是竞赛发生在<code>allocate process()</code>函数中，其中进程数首先在if语句中被测试，但之后又根据测试值被更新。有可能在测试时进程数&#x3D;254，但由于竞赛条件，在再次递增前被另一个线程设置为255。</p>
+<p>c. 不，这没有帮助。原因是竞赛发生在<code>allocate process()</code>函数中，其中进程数首先在 if 语句中被测试，但之后又根据测试值被更新。有可能在测试时进程数&#x3D;254，但由于竞赛条件，在再次递增前被另一个线程设置为 255。</p>
 </blockquote>
 <h3 id="5-23-Show-how-to-implement-the-wait-and-signal-semaphore-operations-in-multiprocessor-environments-using-the-test-and-set-instruction-The-solution-should-exhibit-minimal-busy-waiting"><a href="#5-23-Show-how-to-implement-the-wait-and-signal-semaphore-operations-in-multiprocessor-environments-using-the-test-and-set-instruction-The-solution-should-exhibit-minimal-busy-waiting" class="headerlink" title="5.23 Show how to implement the wait() and signal() semaphore operations in multiprocessor environments using the test_and_set() instruction. The solution should exhibit minimal busy waiting."></a>5.23 Show how to implement the <code>wait()</code> and <code>signal()</code> semaphore operations in multiprocessor environments using the <code>test_and_set()</code> instruction. The solution should exhibit minimal busy waiting.</h3><p>展示如何在多处理器环境中使用<code>test_and_set()</code>指令实现<code>wait()</code>和<code>signal()</code>信号操作。该方案应表现出最小的繁忙等待。</p>
 <p>答：</p>
@@ -402,12 +402,12 @@
 <p>另一种答案：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> guard = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line"> <span class="keyword">int</span> value;</span><br><span class="line"> <span class="class"><span class="keyword">struct</span> <span class="title">process</span> *<span class="title">list</span>;</span></span><br><span class="line">&#125; semaphore;</span><br><span class="line"></span><br><span class="line">Semaphore s;</span><br><span class="line"></span><br><span class="line">wait(s) &#123;</span><br><span class="line"> <span class="keyword">while</span> (TestAndSet(&amp;guard) == <span class="number">1</span>)</span><br><span class="line">     ;</span><br><span class="line"> s.value--;</span><br><span class="line"></span><br><span class="line"> <span class="keyword">if</span> (s.value &lt; <span class="number">0</span>)&#123;</span><br><span class="line">     atomically add process to a <span class="built_in">queue</span> of processes</span><br><span class="line">     guard = <span class="number">0</span>;</span><br><span class="line">     waiting <span class="keyword">for</span> the semaphore;</span><br><span class="line"> &#125;</span><br><span class="line"> guard = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">signal(s) &#123;</span><br><span class="line"> <span class="keyword">while</span> (TestAndSet(&amp;guard) == <span class="number">1</span>)</span><br><span class="line">     ;</span><br><span class="line"> s.value++</span><br><span class="line">     <span class="keyword">if</span> (s.value &lt;= <span class="number">0</span>)</span><br><span class="line">         remove <span class="keyword">and</span> wake up the first process in the <span class="built_in">queue</span> of waiting processes</span><br><span class="line">     guard = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </blockquote>
-<h3 id="5-28-Discuss-the-tradeoff-between-fairness-and-throughput-of-operations-in-the-readers–writers-problem-Propose-a-method-for-solving-the-readers–writers-problem-without-causing-starvation"><a href="#5-28-Discuss-the-tradeoff-between-fairness-and-throughput-of-operations-in-the-readers–writers-problem-Propose-a-method-for-solving-the-readers–writers-problem-without-causing-starvation" class="headerlink" title="5.28 Discuss the tradeoff between fairness and throughput of operations in the readers–writers problem. Propose a method for solving the readers–writers problem without causing starvation."></a>5.28 Discuss the tradeoff between fairness and throughput of operations in the readers–writers problem. Propose a method for solving the readers–writers problem without causing starvation.</h3><p>讨论读者-写者问题中操作的公平性和吞吐量之间的权衡。提出一种解决读者-写作者问题的方法，而不造成饥饿。</p>
+<h3 id="5-28-Discuss-the-tradeoff-between-fairness-and-throughput-of-operations-in-the-readers–writers-problem-Propose-a-method-for-solving-the-readers–writers-problem-without-causing-starvation"><a href="#5-28-Discuss-the-tradeoff-between-fairness-and-throughput-of-operations-in-the-readers–writers-problem-Propose-a-method-for-solving-the-readers–writers-problem-without-causing-starvation" class="headerlink" title="5.28 Discuss the tradeoff between fairness and throughput of operations in the readers–writers problem. Propose a method for solving the readers–writers problem without causing starvation."></a>5.28 Discuss the tradeoff between fairness and throughput of operations in the readers–writers problem. Propose a method for solving the readers–writers problem without causing starvation.</h3><p>讨论读者 - 写者问题中操作的公平性和吞吐量之间的权衡。提出一种解决读者 - 写作者问题的方法，而不造成饥饿。</p>
 <p><strong>答：</strong></p>
 <blockquote>
 <p><strong>Answer:</strong></p>
 <p>Throughput in the readers-writers problem is increased by favoring multiple readers as opposed to allowing a single writer to exclusively access the shared values. On the other hand, favoring readers could result in starvation for writers. </p>
-<p>相对于允许单个写作者专门访问共享值而言，偏向于多个读者，可以提高读者-写作者问题的吞吐量。另一方面，偏爱读者可能会导致写手的饥饿。</p>
+<p>相对于允许单个写作者专门访问共享值而言，偏向于多个读者，可以提高读者 - 写作者问题的吞吐量。另一方面，偏爱读者可能会导致写手的饥饿。</p>
 <p>When a reader arrives and notices that another reader is accessing the database, then it would enter the critical section only if there are no waiting writers. </p>
 <p>当一个读者来到这里并注意到另一个读者正在访问 数据库，那么只有当没有等待的写手时，它才会进入关键部分。</p>
 <p>The starvation in the readers&#x2F;writers problem could be avoided by keeping timestamps associated with waiting processes. When a writer is finished with its task, it would wake up the process that has been waiting for the longest duration. </p>
@@ -416,7 +416,7 @@
 <hr>
 <p><strong>注：</strong></p>
 <p>参考资料：</p>
-<p>[1] <a target="_blank" rel="noopener" href="https://blog.csdn.net/fanrenxiang/article/details/80623884">原子操作类AtomicInteger详解_分享传递价值-CSDN博客_atomicinteger</a></p>
+<p>[1] <a target="_blank" rel="noopener" href="https://blog.csdn.net/fanrenxiang/article/details/80623884">原子操作类 AtomicInteger 详解_分享传递价值-CSDN 博客_atomicinteger</a></p>
 <p>[2] Operating System Concepts – 9th Edition 及其答案</p>
 
     </div>
@@ -447,7 +447,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://framist.github.io/2021/06/01/%E3%80%90%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%91/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%BA%94/" title="【操作系统概念-作业5】Process Synchronization">https://framist.github.io/2021/06/01/【操作系统】/操作系统作业五/</a>
+    <a href="https://framist.github.io/2021/06/01/%E3%80%90%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%91/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%BA%94/" title="【操作系统概念 - 作业 5】Process Synchronization">https://framist.github.io/2021/06/01/【操作系统】/操作系统作业五/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -468,8 +468,8 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/06/01/%E3%80%90%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%91/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%9B%9B/" rel="prev" title="【操作系统概念-作业4】Threads">
-      <i class="fa fa-chevron-left"></i> 【操作系统概念-作业4】Threads
+    <a href="/2021/06/01/%E3%80%90%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%91/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%9B%9B/" rel="prev" title="【操作系统概念 - 作业 4】Threads">
+      <i class="fa fa-chevron-left"></i> 【操作系统概念 - 作业 4】Threads
     </a></div>
       <div class="post-nav-item">
     <a href="/2021/06/02/%E3%80%90PL%E3%80%91/%E3%80%90Python%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%E3%80%91%E4%B8%8A%E6%9C%BA%E4%BD%9C%E4%B8%9A/" rel="next" title="【Python程序设计】上机作业 - 人类高质量代码">
