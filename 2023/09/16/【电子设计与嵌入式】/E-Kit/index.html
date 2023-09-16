@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Noto Serif SC:300,300italic,400,400italic,700,700italic|Source Code Pro:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-big-counter.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"framist.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="E-kit һ�廯���ӹ����� - GitHub   E-kitE-kit һ�廯���ӹ����䣬STM32 ʵ�֣�ʾ���� + ���������� + ��Ƶ��������…">
+<meta property="og:type" content="article">
+<meta property="og:title" content="E-kit һ�廯���ӹ�����">
+<meta property="og:url" content="https://framist.github.io/2023/09/16/%E3%80%90%E7%94%B5%E5%AD%90%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%B5%8C%E5%85%A5%E5%BC%8F%E3%80%91/E-Kit/index.html">
+<meta property="og:site_name" content="Framist&#39;s Little House">
+<meta property="og:description" content="E-kit һ�廯���ӹ����� - GitHub   E-kitE-kit һ�廯���ӹ����䣬STM32 ʵ�֣�ʾ���� + ���������� + ��Ƶ��������…">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/d55968dc172e4a79b4f0d025684d1379.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/d637541d1ea249efa4502b8dce0df959.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/113bdb48dff84122ad64f01953cfee5b.jpeg">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/c3d37b5ebb644c9f822eb975f6853a54.jpeg">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/3a03fc0093164db0b59afedc603e5df2.jpeg">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/c6832d38817c49749d5bb77012bbc3bd.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/cc21b1111e664df996a3bc002bfcd1f0.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/113bdb48dff84122ad64f01953cfee5b.jpeg">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/c3d37b5ebb644c9f822eb975f6853a54.jpeg">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/3a03fc0093164db0b59afedc603e5df2.jpeg">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/d55968dc172e4a79b4f0d025684d1379.png">
+<meta property="article:published_time" content="2023-09-16T14:24:00.000Z">
+<meta property="article:modified_time" content="2023-09-16T14:26:44.473Z">
+<meta property="article:author" content="Framist">
+<meta property="article:tag" content="stm32">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/d55968dc172e4a79b4f0d025684d1379.png">
+
+<link rel="canonical" href="https://framist.github.io/2023/09/16/%E3%80%90%E7%94%B5%E5%AD%90%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%B5%8C%E5%85%A5%E5%BC%8F%E3%80%91/E-Kit/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>E-kit һ�廯���ӹ����� | Framist's Little House</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Framist's Little House</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">◇ 自顶而下 - 面向未来 ◇</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://framist.github.io/2023/09/16/%E3%80%90%E7%94%B5%E5%AD%90%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%B5%8C%E5%85%A5%E5%BC%8F%E3%80%91/E-Kit/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Framist">
+      <meta itemprop="description" content="框架主义者的小窝">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Framist's Little House">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          E-kit һ�廯���ӹ�����
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-09-16 22:24:00 / 修改时间：22:26:44" itemprop="dateCreated datePublished" datetime="2023-09-16T22:24:00+08:00">2023-09-16</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%C7%B6%EF%BF%BD%EF%BF%BD%CA%BD/" itemprop="url" rel="index"><span itemprop="name">���������Ƕ��ʽ</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <div align="center">
+  <img width="100" heigth="100" data-src="https://img-blog.csdnimg.cn/d55968dc172e4a79b4f0d025684d1379.png"><br>
+  <!-- https://github.com/framist/E-kit -->
+  <a target="_blank" rel="noopener" href="https://github.com/framist/E-kit"><i>E-kit һ�廯���ӹ����� - GitHub<i></i></i></a>
+</div>
+
+<h1 id="E-kit"><a href="#E-kit" class="headerlink" title="E-kit"></a>E-kit</h1><p>E-kit һ�廯���ӹ����䣬STM32 ʵ�֣�ʾ���� + ���������� + ��Ƶ��������…</p>
+<p><img data-src="https://img-blog.csdnimg.cn/d637541d1ea249efa4502b8dce0df959.png" alt="������ͼƬ����"></p>
+<span id="more"></span>
+
+<p><img data-src="https://img-blog.csdnimg.cn/113bdb48dff84122ad64f01953cfee5b.jpeg" alt="������ͼƬ����"></p>
+<p><img data-src="https://img-blog.csdnimg.cn/c3d37b5ebb644c9f822eb975f6853a54.jpeg" alt="������ͼƬ����"></p>
+<p><img data-src="https://img-blog.csdnimg.cn/3a03fc0093164db0b59afedc603e5df2.jpeg" alt="������ͼƬ����"></p>
+<p><em>Ŀǰ����Ŀ�ѹ鵵</em></p>
+<p><em>ע�⣺���̲��� GB2312 ����</em></p>
+<h2 id="��������"><a href="#��������" class="headerlink" title="��������"></a>��������</h2><ul>
+<li>STM32F103 (ͣ���ڽϾɵİ汾��ֹͣ���£���֧�����¹���)<ul>
+<li><input checked disabled type="checkbox"> ����ʾ����ʵ�֣����������жϣ�Ƶ�ʲ��������ֵ������ռ�ձȲ�����</li>
+<li><input checked disabled type="checkbox"> ����Ƶ�����Ҳ����</li>
+<li><input checked disabled type="checkbox"> �ര��֧��</li>
+<li><input checked disabled type="checkbox"> ����ʽ Log</li>
+</ul>
+</li>
+<li>STM32F407<ul>
+<li><input checked disabled type="checkbox"> ����ʾ����ʵ�֣����������жϣ�Ƶ�ʲ��������ֵ������ռ�ձȲ�����</li>
+<li><input checked disabled type="checkbox"> ����Ƶ�����Ҳ����</li>
+<li><input checked disabled type="checkbox"> �ര��֧��</li>
+<li><input checked disabled type="checkbox"> ����ʽ Log</li>
+<li><input checked disabled type="checkbox"> ��Ƶ��������ֲ</li>
+<li><input disabled type="checkbox"> ��λ��ͨѶ�ع�</li>
+<li><input checked disabled type="checkbox"> �����źŷ�����</li>
+<li><input disabled type="checkbox"> ʾ��������ģʽ</li>
+<li><input disabled type="checkbox"> ��ع���</li>
+</ul>
+</li>
+</ul>
+<h1 id="����j�"><a href="#����j�" class="headerlink" title="����ĵ�"></a>����ĵ�</h1><h2 id="һ������ԭ��"><a href="#һ������ԭ��" class="headerlink" title="һ������ԭ��"></a>һ������ԭ��</h2><h3 id="1-��������"><a href="#1-��������" class="headerlink" title="1. ��������"></a>1. ��������</h3><p>���� HAL ��֧�ֵ� C ���Գ���ʵ�֣�ͨ���޲���ϵͳ����ʽֱ�������� ARM �ܹ� STM32F407 ��Ƭ���ϡ�ͨ�� ARM Cortex M4 ����֧�ֵ�Ӳ�� FPU��DSP ָ�������� FSMC�����������ߵ�����Ч�ʡ����ݴ���Ч���Լ����ߵ���ʾ�ٶȡ�</p>
+<p>��������ͨ����ʼ�� + ��ѭ���Ľ����GUI �����ص���Ӧ��ģʽ���ȶ��Ժá���ʾ�������� STemWin ͼ�ο�ʵ�֣���֧�ֵ������������Լ���ֲ��ͼ�ο���� HAL ��Ŀ�ܹ��̿�Դ��<a target="_blank" rel="noopener" href="https://github.com/framist/STemWinForHAL">framist&#x2F;STemWinForHAL: ��ֲ emWin �� HAL ���ϡ�������ԭ����Ŀ�ṹ�� (github.com)</a>��</p>
+<p>��Ŀ�����ѿ�Դ�� <a target="_blank" rel="noopener" href="https://github.com/framist/E-kit">framist&#x2F;E-kit: E-kit һ�廯���ӹ����� (github.com)</a></p>
+<p>����ʹ�õ��İ漶�ӿڣ�</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">TFTLCD &lt;--����--&gt; TFTLCD(&gt;&#x3D;3.5&#39;)</span><br><span class="line"></span><br><span class="line">VREF  &lt;-����ñ-- 3.3V</span><br><span class="line"></span><br><span class="line">PA5  &lt;-------- adc ����</span><br><span class="line"></span><br><span class="line">PA4  --------&gt; dac ���</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-1-ʾ��������"><a href="#1-1-ʾ��������" class="headerlink" title="1.1 ʾ��������"></a>1.1 ʾ��������</h4><p>ͨ��ͨ�ö�ʱ�� TIM5 ��ʱ�жϣ����� ADC ����׼��ʱ����ȡ����</p>
+<p>���� DSP ���е� FFT �㷨�ó�Ƶ�ʣ���Ϊ����������ǰ��ο���΢�ַ������б��Ƿ�Ϊ���������ַ��жϲ��κͲ�ռ�ձȣ�ͬʱ����ʵʱ�����źŵķ��ֵ��ƫ�õ�ѹ�ȵȡ� </p>
+<p>ʾ�����������Զ����̡�ͨ����ǰ����Ĳ���Ƶ���Զ����� ADC �Ĳ������ڣ�����Ӧ�����Ƶ�ʷ�Χ</p>
+<h4 id="1-2-�zy���������"><a href="#1-2-�zy���������" class="headerlink" title="1.2 �źŷ���������"></a>1.2 �źŷ���������</h4><p>ʹ�� DMA �ķ������ڴ��еĲ����������δ��ݵ� DAC ��������������ʱ�� TIM6 ���� DMA ���ٶ�������������ε�Ƶ�ʡ�</p>
+<p>ͨ���������Ʋ��Ρ����ֵ��ƫ�õ�ѹ��ռ�ձȡ�</p>
+<p>DAC ��� 0~3.3V �ĵ�ƽ�ź��پ�����Χ��·��ת���õ� -5V �� +5V ��Χ���źŲ����������</p>
+<h4 id="1-3-��Z�����Dz���"><a href="#1-3-��Z�����Dz���" class="headerlink" title="1.3 ��Ƶ�����ǲ���"></a>1.3 ��Ƶ�����ǲ���</h4><p>�Ƚ���������źŵķ��ֵ���Լ���ó��˲��������棬</p>
+<p>ͨ��ɨƵ�ķ�ʽ�����������Ի��Ƴ�δ֪�˲����ķ�Ƶ�������ߡ�</p>
+<p>ͨ����Ƶ�������߿����б���˲��������ͣ�Ŀǰ���Զ��б����¼������͵��˲�����</p>
+<p>0����ͨ HPF 1����ͨ LPF 2����ͨ BPF 3������ BRF </p>
+<h2 id="����������������"><a href="#����������������" class="headerlink" title="����������������"></a>����������������</h2><h3 id="1-��������-1"><a href="#1-��������-1" class="headerlink" title="1.   ��������"></a>1.   ��������</h3><h4 id="1-1-����������"><a href="#1-1-����������" class="headerlink" title="1.1   ����������"></a>1.1   ����������</h4><p>��������Ҫʵ�� init �� main loop��</p>
+<h4 id="1-2-��L����"><a href="#1-2-��L����" class="headerlink" title="1.2   ��Ļ����"></a>1.2   ��Ļ����</h4><p>��Ļ���� 3.5’ TFTLCD ����ʾ��������Ϊ���������봥����֧����д�ʡ�</p>
+<p>1.2.1 ��ʼ��</p>
+<p> <img data-src="https://img-blog.csdnimg.cn/c6832d38817c49749d5bb77012bbc3bd.png" alt="������ͼƬ����"></p>
+<p>������һ�������ڿ�� mainFramewin�����ڴ˴��ڿ����ͨ�� Multipage ����С���������ҳѡ���ÿҳ�ֱ����һ�����ڡ�</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">hItem = WM_GetDialogItem(pMsg-&gt;hWin, ID_MULTIPAGE_0);</span><br><span class="line">MULTIPAGE_AddEmptyPage(hItem, <span class="number">0</span>, <span class="string">&quot; oscilloscope &quot;</span>);</span><br><span class="line">MULTIPAGE_AddEmptyPage(hItem, <span class="number">0</span>, <span class="string">&quot; signal generator &quot;</span>);</span><br><span class="line">MULTIPAGE_AddEmptyPage(hItem, <span class="number">0</span>, <span class="string">&quot; A-F characteristics &quot;</span>);</span><br><span class="line">MULTIPAGE_AddEmptyPage(hItem, <span class="number">0</span>, <span class="string">&quot; Logs &quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="function">WM_HWIN <span class="title">CreateoscilloscopeFramewin</span><span class="params">(<span class="keyword">void</span>)</span></span>;</span><br><span class="line">hWin_oscilloscopeFramewin = CreateoscilloscopeFramewin(); </span><br><span class="line">MULTIPAGE_AttachWindow(hItem,<span class="number">0</span>,hWin_oscilloscopeFramewin);</span><br><span class="line"></span><br><span class="line"><span class="function">WM_HWIN <span class="title">CreateSingalWindow</span><span class="params">(<span class="keyword">void</span>)</span></span>;</span><br><span class="line">hWin_SingalWindow = CreateSingalWindow();</span><br><span class="line">MULTIPAGE_AttachWindow(hItem,<span class="number">1</span>,hWin_SingalWindow);</span><br><span class="line"></span><br><span class="line"><span class="function">WM_HWIN <span class="title">CreateAFCFramewin</span><span class="params">(<span class="keyword">void</span>)</span></span>;</span><br><span class="line">hWin_AFCFramewin = CreateAFCFramewin();</span><br><span class="line">MULTIPAGE_AttachWindow(hItem,<span class="number">2</span>,hWin_AFCFramewin);</span><br><span class="line"></span><br><span class="line"><span class="function">WM_HWIN <span class="title">CreateLogWindow</span><span class="params">(<span class="keyword">void</span>)</span></span>;</span><br><span class="line">hWin_LogFramewin = CreateLogWindow();</span><br><span class="line">MULTIPAGE_AttachWindow(hItem,<span class="number">3</span>,hWin_LogFramewin);</span><br><span class="line"></span><br><span class="line">MULTIPAGE_SelectPage(hItem,<span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+
+
+<p>1.2.2 ͼ�ν���</p>
+<p>�����ֱܷ���� 4 ���Ӵ��ڣ����ֱܷ���ʾ���������η���������Ƶ���Բ����ǡ�ϵͳ��־�Ĵ��ڣ�</p>
+<p>��־����ֻ��һ�������־���ı���</p>
+<h4 id="1-3-�zZ�ȡ�봦������"><a href="#1-3-�zZ�ȡ�봦������" class="headerlink" title="1.3 �źŻ�ȡ�봦������"></a>1.3 �źŻ�ȡ�봦������</h4><p>1.3.1 ADC ��ȡ����</p>
+<p>1.3.2 FFT ��������</p>
+<blockquote>
+<p>STM32F4 ���� Cortex-M4 �ںˣ���� Cortex-M3 ϵ�г�������Ӳ�� FPU ��Ԫ���������źŴ������滹������ DSP ָ���֧�����絥���ڳ˼�ָ�MAC�����Ż��ĵ�ָ�������ָ�SIMD�������������ȶ��������źŴ���ָ������ Cortex-M3��Cortex-M4 �������źŴ� ����������õ��˴���������Cortex-M4 ִ�����е� DSP ָ��������ڵ���������ɣ��� Cortex-M3 ��Ҫ���ָ��Ͷ�����ڲ������ͬ���Ĺ��ܡ�</p>
+</blockquote>
+<p>��Ҫ����</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">arm_cfft_radix4_f32</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">const</span> arm_cfft_radix4_instance_f32 * S,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">float32_t</span> * pSrc)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">arm_cmplx_mag_f32</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">float32_t</span> * pSrc,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">float32_t</span> * pDst,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">uint32_t</span> numSamples)</span></span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>��� FFT ���㡣������Ҫ����������Ŀǰ�����Ƽ�ʹ�ã�</p>
+<p>��Ҫ����ṹ���£�</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">float</span> <span class="title">wave_frequency_calculate</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">//��ʼ�� scfft �ṹ�壬�趨 FFT ��ز���</span></span><br><span class="line">    arm_cfft_radix4_instance_f32 scfft;</span><br><span class="line">    arm_cfft_radix4_init_f32(&amp;scfft,FFT_LENGTH,<span class="number">0</span>,<span class="number">1</span>); <span class="comment">// TODO ��֪�����ϰ�λȡ����ԭ��</span></span><br><span class="line">    <span class="comment">//FFT ���㣨�� 4��</span></span><br><span class="line">    arm_cfft_radix4_f32(&amp;scfft,fft_inputbuf);	</span><br><span class="line">    <span class="comment">//��������������ģ�÷�ֵ </span></span><br><span class="line">    arm_cmplx_mag_f32(fft_inputbuf,fft_outputbuf,FFT_LENGTH);	</span><br><span class="line"></span><br><span class="line">    <span class="keyword">uint32_t</span> Max_Val = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">2</span>; i &lt; FFT_LENGTH / <span class="number">2</span>; i++)&#123;</span><br><span class="line">        <span class="keyword">if</span> (fft_outputbuf[i] &gt; Max_Val)&#123;</span><br><span class="line">            Max_Val = fft_outputbuf[i];</span><br><span class="line">            frequency_max_position = i;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    sample_psc = <span class="number">0</span>;</span><br><span class="line">    sample_arr = TIM5-&gt;ARR;</span><br><span class="line">    sample_frequency = <span class="number">84000000.0f</span> / (<span class="keyword">float</span>)((sample_arr + <span class="number">1</span>) * (sample_psc + <span class="number">1</span>)) / (<span class="keyword">float</span>)k;</span><br><span class="line">    wave_frequency = (<span class="keyword">float</span>)frequency_max_position * sample_frequency / FFT_LENGTH;</span><br><span class="line">    <span class="keyword">return</span> wave_frequency;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>1.3.3 �ź���ʾ</p>
+<p>1.3.3.1 ʱ���ε���ʾ</p>
+<p>һ�β�����������ˢ����Ļ��ʾ����</p>
+<p>1.3.3.2 ��Ƶ���Ե���ʾ</p>
+<p>�ɲ�ȡ������ʾ�Ͷ�����ʾ</p>
+<h4 id="1-4-�zwĲ������������"><a href="#1-4-�zwĲ������������" class="headerlink" title="1.4 �źŵĲ������������"></a>1.4 �źŵĲ������������</h4><p>1.4.1 DAC �����ź�</p>
+<p>DAC+TIM6+DMA �������� cube-MX �������ɡ�</p>
+<p>1.4.1.1 DAC �ĳ�ʼ��</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">hdma_dac1.Instance = DMA1_Stream5;</span><br><span class="line">hdma_dac1.Init.Channel = DMA_CHANNEL_7;</span><br><span class="line">hdma_dac1.Init.Direction = DMA_MEMORY_TO_PERIPH;</span><br><span class="line">hdma_dac1.Init.PeriphInc = DMA_PINC_DISABLE;</span><br><span class="line">hdma_dac1.Init.MemInc = DMA_MINC_ENABLE;</span><br><span class="line">hdma_dac1.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;</span><br><span class="line">hdma_dac1.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;</span><br><span class="line">hdma_dac1.Init.Mode = DMA_CIRCULAR;</span><br><span class="line">hdma_dac1.Init.Priority = DMA_PRIORITY_HIGH;</span><br><span class="line">hdma_dac1.Init.FIFOMode = DMA_FIFOMODE_DISABLE;</span><br></pre></td></tr></table></figure>
+
+<p>1.4.1.2 DMA ��������</p>
+ <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* DMA controller clock enable */</span></span><br><span class="line">__HAL_RCC_DMA1_CLK_ENABLE();</span><br><span class="line"></span><br><span class="line"><span class="comment">/* DMA interrupt init */</span></span><br><span class="line"><span class="comment">/* DMA1_Stream5_IRQn interrupt configuration */</span></span><br><span class="line">HAL_NVIC_SetPriority(DMA1_Stream5_IRQn, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">HAL_NVIC_EnableIRQ(DMA1_Stream5_IRQn);</span><br></pre></td></tr></table></figure>
+
+<p>1.4.1.3 TIM6 �ṩ�ж�Դ</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">htim6.Instance = TIM6;</span><br><span class="line">htim6.Init.Prescaler = <span class="number">0</span>;</span><br><span class="line">htim6.Init.CounterMode = TIM_COUNTERMODE_UP;</span><br><span class="line">htim6.Init.Period = <span class="number">9999</span>;</span><br></pre></td></tr></table></figure>
+
+<p>1.4.1.4 ��ͬ���εĲ���</p>
+<p>���ƴ����ö�������Լ������������Է�����������</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">Wave_Form</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">  Wave_Form_NA,     </span><br><span class="line">  Wave_Form_SIN,      <span class="comment">//���Ҳ�  ~~~~</span></span><br><span class="line">  Wave_Form_TRI,      <span class="comment">//���ǲ�  VVVV</span></span><br><span class="line">  Wave_Form_SQU,      <span class="comment">//����    _||_</span></span><br><span class="line">  Wave_Form_SAW_1,    <span class="comment">//��ݲ� 1 /|/|  </span></span><br><span class="line">  Wave_Form_SAW_2,    <span class="comment">//��ݲ� 2 |\|\|  </span></span><br><span class="line">  Wave_Form_RAD,      <span class="comment">//�벨    ????</span></span><br><span class="line">  Wave_Form_DC        <span class="comment">//ֱ��    ----</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * @brief Wave_Output_Config</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> * @param Output_Wave_Form ���ͣ�enum Wave_Form </span></span><br><span class="line"><span class="comment"> * @param f ��λ Hz</span></span><br><span class="line"><span class="comment"> * @param Vpp  ��λ V</span></span><br><span class="line"><span class="comment"> * @param offset  ��λ V</span></span><br><span class="line"><span class="comment"> * @param duty ��λ %</span></span><br><span class="line"><span class="comment"> * @return int </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Wave_Output_Config</span><span class="params">(<span class="keyword">enum</span> Wave_Form Output_Wave_Form, <span class="keyword">float</span> f, <span class="keyword">float</span> Vpp, <span class="keyword">float</span> offset, <span class="keyword">int</span> duty)</span></span></span><br></pre></td></tr></table></figure>
+
+
+<p>1.4.2 ��λ����������</p>
+<p>1.4.2.1 ���ߴ���ģ��</p>
+<p>������������͸����</p>
+<p>1.4.2.2 ��λ������</p>
+<p>���������豸������ͨ�������Ĵ����źŽ��գ������ֻ����Եȡ�</p>
+<h3 id="2-Ӳ������"><a href="#2-Ӳ������" class="headerlink" title="2. Ӳ������"></a>2. Ӳ������</h3><p>�ο���Χ��·���</p>
+<p>from <a target="_blank" rel="noopener" href="https://github.com/yuexiavqiufeng">yuexiavqiufeng</a></p>
+<p><img data-src="https://img-blog.csdnimg.cn/cc21b1111e664df996a3bc002bfcd1f0.png" alt="������ͼƬ����"></p>
+<h2 id="����ʵ��������Ӧ��"><a href="#����ʵ��������Ӧ��" class="headerlink" title="����ʵ��������Ӧ��"></a>����ʵ��������Ӧ��</h2><h3 id="1-����˵��"><a href="#1-����˵��" class="headerlink" title="1. ����˵��"></a>1. ����˵��</h3><p>��ת�õ�ǰ������ʾ��Ļ������ֱ������Ļ��ֱ�Ӵ������Ը��ֲ����������ã��Ա߷ֱ����źŵ����������˿ڡ���װ�õĺ���� USB ��Դ�ӿں�ָʾ�ơ�</p>
+<h3 id="2-ʾ��������"><a href="#2-ʾ��������" class="headerlink" title="2. ʾ��������"></a>2. ʾ��������</h3><p><img data-src="https://img-blog.csdnimg.cn/113bdb48dff84122ad64f01953cfee5b.jpeg" alt="������ͼƬ����"></p>
+<p>���źž�������˿ڽ��������Ժ󼴿�����Ļ�ϵõ��䲨�Σ������䲨�ν���ʶ�������жϡ�ͬʱ��ʾ������ֵ��Ƶ�ʣ�������Զ��ж�Ϊ�������Զ�����ռ�ձȣ������ֶ����<code>DR Measure</code>��ťҲ�����Զ�����ռ�ձȡ�</p>
+<p>���ڲ�����ʾ�����Զ���ˮƽ�����Ⱥʹ�ֱ�����Ƚ��е��ڣ�Ҳ���Ե��<code>Stop/Run</code>���в��ζ��ᡣ</p>
+<h3 id="3-�zy���������"><a href="#3-�zy���������" class="headerlink" title="3. �źŷ���������"></a>3. �źŷ���������</h3><p><img data-src="https://img-blog.csdnimg.cn/c3d37b5ebb644c9f822eb975f6853a54.jpeg" alt="������ͼƬ����"></p>
+<p><strong>�������ѡ��</strong></p>
+<p>����ѡ�������</p>
+<ul>
+<li>OFF,      ������ DAC �������</li>
+<li>SIN,      ���Ҳ�  <code>~~~~</code></li>
+<li>TRI,      ���ǲ�  <code>VVVV</code></li>
+<li>SQU,      ����    <code>_||_</code></li>
+<li>SAW_1,    ��ݲ� 1 <code>/|/|</code>  </li>
+<li>SAW_2,    ��ݲ� 2 <code>|\|\|</code>  </li>
+<li>RAD,      �벨    <code>????</code></li>
+<li>DC,       ֱ��    <code>----</code></li>
+</ul>
+<p><strong>�ݾ�����ѡ��</strong></p>
+<p>������ʾ��������Ľݾ����ƿ���Ըı�Ĳ�����</p>
+<p><strong>������β������ã�</strong></p>
+<p>���ҿ��Է���ʵʱ�ظı� ռ�ձȡ����ֵ��ƫ�õ�ѹ��ռ�ձȣ��������Ƿ�������</p>
+<p><strong>�����������ã�</strong></p>
+<p>����΢����ť�Ĳ�����С</p>
+<p><strong>�����ť��</strong></p>
+<p>���ٿ����Ƿ������Ҳ��ͨ�������ť����ɫ�жϵ�ǰ�Ƿ��������</p>
+<h3 id="4-��Z�����n���"><a href="#4-��Z�����n���" class="headerlink" title="4. ��Ƶ�����ǹ���"></a>4. ��Ƶ�����ǹ���</h3><p><img data-src="https://img-blog.csdnimg.cn/3a03fc0093164db0b59afedc603e5df2.jpeg" alt="������ͼƬ����"></p>
+<p>ѡ�� <code>single measurement</code> �ɲ����˲����ڵ���Ƶ���µ����档</p>
+<p>ѡ�� <code>auto measurement</code> ��ɨƵ���Զ����в�����������Ƴ��˲����ķ�Ƶ��������</p>
+<p>��ѡ <code>Log coordinate</code> ��ѡ������Զ�����ʽ���Ʒ�Ƶ��������</p>
+<h3 id="5-��λ�����书��"><a href="#5-��λ�����书��" class="headerlink" title="5. ��λ�����书��"></a>5. ��λ�����书��</h3><p>��ʾ��������ѡ�� IOT ��ѡ�򣬿ɿ�����λ�����书�ܣ��ϴ���ǰ��Ļ��ʾ�Ĳ��Σ�������Ļˢ��ͬ����</p>
+<h2 id="�g���������ָ�����"><a href="#�g���������ָ�����" class="headerlink" title="�ġ���������ָ�����"></a>�ġ���������ָ�����</h2><h3 id="2-ʾ����"><a href="#2-ʾ����" class="headerlink" title="2.ʾ����"></a>2.ʾ����</h3><p>2.1 Ƶ�ʷ�Χ��������</p>
+<p>Ƶ�ʷ�Χ��50Hz����100kHZ</p>
+<p>Ƶ�ʾ��ȣ�1Hz</p>
+<p>Ƶ����</p>
+<p>2.2 ��ֵ��Χ��������</p>
+<p>��ֵ��Χ��-5V����+5V</p>
+<p>��ֵ���ȣ�10mV</p>
+<p>��ֵ��</p>
+<p>2.3 ˮƽ�����ȡ���ֱ������</p>
+<p>ˮƽ�����ȷ�Χ��1us&#x2F;div~1000us&#x2F;div �ɵ�</p>
+<p>��ֱ�����ȷ�Χ��50mV&#x2F;div~500mV&#x2F;div �ɵ�</p>
+<p>��ֱ���ȣ�2.4mV</p>
+<p>ˮƽ���ȣ�5us</p>
+<h3 id="3-�zy���������-1"><a href="#3-�zy���������-1" class="headerlink" title="3.�źŷ���������"></a>3.�źŷ���������</h3><p>3.1 Ƶ�ʷ�Χ��������</p>
+<p>Ƶ�ʷ�Χ��20Hz����50kHZ</p>
+<p>Ƶ�ʾ��ȣ�1Hz</p>
+<p>Ƶ����</p>
+<p>3.2 ��ֵ��Χ��������</p>
+<p>��ֵ��Χ��-5V����+5V</p>
+<p>��ֵ���ȣ�1mV</p>
+<p>��ֵ��</p>
+<p>3.3 �ɲ����Ĳ�������</p>
+<p>���������ǲ������Ҳ�����ݲ���ֱ��������</p>
+<h3 id="4-��Z�����n���-1"><a href="#4-��Z�����n���-1" class="headerlink" title="4.��Ƶ�����ǹ���"></a>4.��Ƶ�����ǹ���</h3><h3 id="5-��λ�����书��-1"><a href="#5-��λ�����书��-1" class="headerlink" title="5.��λ�����书��"></a>5.��λ�����书��</h3><hr>
+<p><img data-src="https://img-blog.csdnimg.cn/d55968dc172e4a79b4f0d025684d1379.png" alt="������ͼƬ����"></p>
+<p><a target="_blank" rel="noopener" href="https://craft.framist.top/">��ܿƹ�</a> | ����Ϊ���޵���������һ�㻨��?</p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      <div style="display: inline-block;">
+        <img src="/images/dogecoin.png" alt="Framist dogecoin">
+        <p>dogecoin</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Framist
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://framist.github.io/2023/09/16/%E3%80%90%E7%94%B5%E5%AD%90%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%B5%8C%E5%85%A5%E5%BC%8F%E3%80%91/E-Kit/" title="E-kit һ�廯���ӹ�����">https://framist.github.io/2023/09/16/【电子设计与嵌入式】/E-Kit/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/stm32/" rel="tag"># stm32</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/08/15/%E3%80%90%E6%9D%82%E8%B0%88%E3%80%91/%E7%89%A9%E7%A7%8D%E8%AE%A4%E5%90%8C%E9%9A%9C%E7%A2%8D/" rel="prev" title="物种认同障碍">
+      <i class="fa fa-chevron-left"></i> 物种认同障碍
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#E-kit"><span class="nav-number">1.</span> <span class="nav-text">E-kit</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD"><span class="nav-number">1.1.</span> <span class="nav-text">��������</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BDj%EF%BF%BD"><span class="nav-number">2.</span> <span class="nav-text">����ĵ�</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%D2%BB%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%D4%AD%EF%BF%BD%EF%BF%BD"><span class="nav-number">2.1.</span> <span class="nav-text">һ������ԭ��</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD"><span class="nav-number">2.1.1.</span> <span class="nav-text">1. ��������</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%CA%BE%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD"><span class="nav-number">2.1.1.1.</span> <span class="nav-text">1.1 ʾ��������</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-%EF%BF%BDzy%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD"><span class="nav-number">2.1.1.2.</span> <span class="nav-text">1.2 �źŷ���������</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-%EF%BF%BD%EF%BF%BDZ%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BDDz%EF%BF%BD%EF%BF%BD%EF%BF%BD"><span class="nav-number">2.1.1.3.</span> <span class="nav-text">1.3 ��Ƶ�����ǲ���</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD"><span class="nav-number">2.2.</span> <span class="nav-text">����������������</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD-1"><span class="nav-number">2.2.1.</span> <span class="nav-text">1.   ��������</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD"><span class="nav-number">2.2.1.1.</span> <span class="nav-text">1.1   ����������</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-%EF%BF%BD%EF%BF%BDL%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD"><span class="nav-number">2.2.1.2.</span> <span class="nav-text">1.2   ��Ļ����</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-%EF%BF%BDzZ%EF%BF%BD%C8%A1%EF%BF%BD%EB%B4%A6%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD"><span class="nav-number">2.2.1.3.</span> <span class="nav-text">1.3 �źŻ�ȡ�봦������</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-%EF%BF%BDzw%C4%B2%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD"><span class="nav-number">2.2.1.4.</span> <span class="nav-text">1.4 �źŵĲ������������</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%D3%B2%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD"><span class="nav-number">2.2.2.</span> <span class="nav-text">2. Ӳ������</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%CA%B5%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%D3%A6%EF%BF%BD%EF%BF%BD"><span class="nav-number">2.3.</span> <span class="nav-text">����ʵ��������Ӧ��</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%CB%B5%EF%BF%BD%EF%BF%BD"><span class="nav-number">2.3.1.</span> <span class="nav-text">1. ����˵��</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%CA%BE%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD"><span class="nav-number">2.3.2.</span> <span class="nav-text">2. ʾ��������</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%EF%BF%BDzy%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD"><span class="nav-number">2.3.3.</span> <span class="nav-text">3. �źŷ���������</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%EF%BF%BD%EF%BF%BDZ%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BDn%EF%BF%BD%EF%BF%BD%EF%BF%BD"><span class="nav-number">2.3.4.</span> <span class="nav-text">4. ��Ƶ�����ǹ���</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%EF%BF%BD%EF%BF%BD%CE%BB%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%E4%B9%A6%EF%BF%BD%EF%BF%BD"><span class="nav-number">2.3.5.</span> <span class="nav-text">5. ��λ�����书��</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EF%BF%BDg%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%D6%B8%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD"><span class="nav-number">2.4.</span> <span class="nav-text">�ġ���������ָ�����</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%CA%BE%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD"><span class="nav-number">2.4.1.</span> <span class="nav-text">2.ʾ����</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%EF%BF%BDzy%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD-1"><span class="nav-number">2.4.2.</span> <span class="nav-text">3.�źŷ���������</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%EF%BF%BD%EF%BF%BDZ%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BDn%EF%BF%BD%EF%BF%BD%EF%BF%BD-1"><span class="nav-number">2.4.3.</span> <span class="nav-text">4.��Ƶ�����ǹ���</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%EF%BF%BD%EF%BF%BD%CE%BB%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%E4%B9%A6%EF%BF%BD%EF%BF%BD-1"><span class="nav-number">2.4.4.</span> <span class="nav-text">5.��λ�����书��</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Framist</p>
+  <div class="site-description" itemprop="description">框架主义者的小窝</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">80</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/framist" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;framist" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:framist@163.com" title="E-Mail → mailto:framist@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/weixin_47102975" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_47102975" rel="noopener" target="_blank"><i class="fas fa-angle-right fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://framist.top/" title="http:&#x2F;&#x2F;framist.top&#x2F;" rel="noopener" target="_blank">个人主页</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://framist.github.io/2020/10/11/%E6%88%91%E8%BA%AB%E8%BE%B9%E7%9A%84CS%E5%A4%A7%E4%BD%AC%E4%BB%AC/" title="https:&#x2F;&#x2F;framist.github.io&#x2F;2020&#x2F;10&#x2F;11&#x2F;%E6%88%91%E8%BA%AB%E8%BE%B9%E7%9A%84CS%E5%A4%A7%E4%BD%AC%E4%BB%AC&#x2F;">我身边的大佬们</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yuexiavqiufeng.github.io/" title="https:&#x2F;&#x2F;yuexiavqiufeng.github.io&#x2F;" rel="noopener" target="_blank">yuexiavqiufeng</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://github.com/framist" title="https:&#x2F;&#x2F;github.com&#x2F;framist" rel="noopener" target="_blank">广告位招租</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">浙ICP备2022002862号-1 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-at"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Framist</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div><script>
+    let body = document.getElementsByTagName('body')[0];
+    body.addEventListener('click', (e) => {
+        let contentArr = ['欧拉~','ˋ( ° ▽、° ) ','RGB!','_(:з」∠)_','哼','?','¿框架?','QAQ',':3','<3','疯掉了',
+                            'whoami',
+                            'whoareU',
+                            'NULL',
+                            'None',
+                            ' ',
+                            '代价是什么呢？',
+                            '...',
+                            'Big Brother is Watching You',
+                            '喵~', '嗷~', '呜~', '哞~', '咩~', '咕~', '嘎~', '嘤~',
+                            '你看到了。',
+                            '¿爱情障眼法?','¿物种认同障碍?',
+                            '微润欧美，小润终南山，中润润与市，大润中南海',
+                            'init param:<br/>1LTKvNaux7CjrNHJ09C0y87Eo7/Rrbu3zfm4tKOsus7Ksbb41rmjv9a5zqrWucv51rmjrLTLzsTT1rrOtOajvw==',
+                            '这里没有时间的意义',
+                            '嘿嘿嘿，好想被随机异或哦，<br/>嘿嘿嘿，嘿嘿嘿，异或我的异或',
+                            '记忆赋予时间的意义，而不是时间赋予记忆的意义',
+                            '放弃 P ∨ ¬P 吧！',
+                            '抽象是普适性的代价 —— 3b1b',
+                            '得易见平凡，仿照上例显然',
+                            '留作习题答案略，读者自证不难',
+                            '反之亦然同理，推论自然成立',
+                            '略去过程 Q . E . D ，由上可知证毕'];
+        let randomNum = function (n) {
+            return Math.floor(Math.random() * n)
+        }
+        let span = document.createElement('span');
+        span.innerHTML = `${contentArr[randomNum(contentArr.length)]}`;
+        span.style.color = `rgb(${randomNum(256)},${randomNum(256)},${randomNum(256)})`;
+        span.style.position = 'absolute';
+        span.style.top = `${e.pageY}px`;
+        span.style.left = `${e.pageX}px`;
+        span.style.transition = 'all 1s ease';
+        span.style.zIndex = 20000;
+        body.appendChild(span)
+        setTimeout(()=>{
+            span.style.top = span.offsetTop - 25 + 'px';
+            span.style.opacity = 0;
+            setTimeout(()=>{span.remove()},1000)
+        },700)
+    })
+</script>
+
+
+<div style="width: 100px; height: 100px; margin: 0 auto;">
+<script type="text/javascript" id="clstr_globe" src="//clustrmaps.com/globe.js?d=gRWtX21uVt_tIdj_T64nMvo4FK1UrTWME23CVLOzNCg"></script>
+</div>
+<!--
+<script type="text/javascript" 
+color="255,255,255" 
+pointColor='64,184,209' 
+opacity='1' 
+zIndex="-1" 
+count="233" 
+src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js">
+</script>
+-->
+
+
+        
+<div class="busuanzi-count">
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script data-pjax>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '267a9d4a89b9b72b2229',
+      clientSecret: '2dba1f14d21da707ed6c4497fecc05d6178b4fa3',
+      repo        : 'blog-comment',
+      owner       : 'framist',
+      admin       : ['framist'],
+      id          : '85debdcd33d8c4b671f23fc3047a3d0a',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+    </div>
+</body>
+</html>
