@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Noto Serif SC:300,300italic,400,400italic,700,700italic|Source Code Pro:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-big-counter.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"framist.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="RSA 大礼包摘要本题内容是首届（2016）全国高校密码数学挑战赛的赛题三——RSA 加密体质破解。 利用多种针对 RSA 的攻击，和针对随机数发生器的攻击，如 RSA 共模攻击、pollard、低加密指数法、因数碰撞法、Fermat 攻击等，尽可能多得在所截获的数据中，挖掘出明文和参数。 题目描述有人制作了一个 RSA 加解密软件（这个加密软件估计有些地方不规范，导致了被攻击的可能）。已知该软件">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【现代密码学】大作业">
+<meta property="og:url" content="https://framist.github.io/1970/%E3%80%90%E8%B5%9B%E5%8D%9A%E5%AE%89%E5%85%A8%E3%80%91/%E3%80%90%E7%8E%B0%E4%BB%A3%E5%AF%86%E7%A0%81%E5%AD%A6%E3%80%91%E5%A4%A7%E4%BD%9C%E4%B8%9A/index.html">
+<meta property="og:site_name" content="Framist&#39;s Little House">
+<meta property="og:description" content="RSA 大礼包摘要本题内容是首届（2016）全国高校密码数学挑战赛的赛题三——RSA 加密体质破解。 利用多种针对 RSA 的攻击，和针对随机数发生器的攻击，如 RSA 共模攻击、pollard、低加密指数法、因数碰撞法、Fermat 攻击等，尽可能多得在所截获的数据中，挖掘出明文和参数。 题目描述有人制作了一个 RSA 加解密软件（这个加密软件估计有些地方不规范，导致了被攻击的可能）。已知该软件">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="1970-01-01T00:00:00.000Z">
+<meta property="article:modified_time" content="2023-09-22T06:43:40.376Z">
+<meta property="article:author" content="Framist">
+<meta property="article:tag" content="crypto">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://framist.github.io/1970/%E3%80%90%E8%B5%9B%E5%8D%9A%E5%AE%89%E5%85%A8%E3%80%91/%E3%80%90%E7%8E%B0%E4%BB%A3%E5%AF%86%E7%A0%81%E5%AD%A6%E3%80%91%E5%A4%A7%E4%BD%9C%E4%B8%9A/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【现代密码学】大作业 | Framist's Little House</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Framist's Little House</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">◇ 自顶而下 - 面向未来 ◇</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://framist.github.io/1970/%E3%80%90%E8%B5%9B%E5%8D%9A%E5%AE%89%E5%85%A8%E3%80%91/%E3%80%90%E7%8E%B0%E4%BB%A3%E5%AF%86%E7%A0%81%E5%AD%A6%E3%80%91%E5%A4%A7%E4%BD%9C%E4%B8%9A/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Framist">
+      <meta itemprop="description" content="框架主义者的小窝">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Framist's Little House">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【现代密码学】大作业
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：1970-01-01 08:00:00" itemprop="dateCreated datePublished" datetime="1970-01-01T08:00:00+08:00">1970-01-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-09-22 14:43:40" itemprop="dateModified" datetime="2023-09-22T14:43:40+08:00">2023-09-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">计算机科学</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E8%AF%BE%E4%B8%9A%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">课业学习</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="RSA-大礼包"><a href="#RSA-大礼包" class="headerlink" title="RSA 大礼包"></a>RSA 大礼包</h1><h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>本题内容是首届（2016）全国高校密码数学挑战赛的赛题三——RSA 加密体质破解。</p>
+<p>利用多种针对 RSA 的攻击，和针对随机数发生器的攻击，如 RSA 共模攻击、pollard、低加密指数法、因数碰撞法、Fermat 攻击等，尽可能多得在所截获的数据中，挖掘出明文和参数。</p>
+<h2 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h2><p>有人制作了一个 RSA 加解密软件（这个加密软件估计有些地方不规范，导致了被攻击的可能）。已知该软件发送某个明文的所有参数和加密过程的全部数据（有已知明密文攻击，还能知道加密的中间数据）。Alice 使用该软件发送了一个通关密语，且所有加密数据已经被截获，运用 RSA 相关攻击手段，仅从加密数据恢复该通关密语及 RSA 体制参数。</p>
+<span id="more"></span>
+
+<h2 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h2><h3 id="公共模数攻击：frame-0、4"><a href="#公共模数攻击：frame-0、4" class="headerlink" title="公共模数攻击：frame 0、4"></a>公共模数攻击：frame 0、4</h3><h4 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h4><p>RSA 加密中的四个参数 ${d,p,q,\phi(N)}$ 是同等重要的，任何一个参数泄露都会给其余三个的安全性带来威胁。但是，如果在 RSA 加密中使用相同的模数，那么有可能在不知道四个参数知识的情况下，攻击得到 RSA 加解密体制参数。 </p>
+<p>模数一样，待加密的明文一样，公钥互素</p>
+<ul>
+<li>Alice: $(n_1,e_1,m_1)$, Bob: $(n_2,e_2,m_2)$</li>
+<li>$n_1 &#x3D; n_2$</li>
+<li>$m_1 &#x3D; m_2$</li>
+<li>$gcd(e_1,e_2) &#x3D; 1$</li>
+</ul>
+<p>则可以轻松地恢复 $m$<br>$$<br>存在 (s,t) \quad s.t.\ e_1s+e_2t&#x3D;gcd(e_1,e_2)&#x3D;1 \<br>c_1^s \cdot c_2^t \equiv (m^{e_1})^s \cdot (m^{e_2})^t \equiv m^{e_1s+e_2t} \equiv m \pmod n<br>$$</p>
+<h4 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> Crypto.Util.number <span class="keyword">import</span> inverse</span><br><span class="line"><span class="keyword">from</span> gmpy2 <span class="keyword">import</span> gcdext</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">common_modulus</span>(<span class="params">e1, e2, n, c1, c2</span>):</span></span><br><span class="line">    <span class="comment"># 调用扩展的欧几里得算法函数</span></span><br><span class="line">    g, s, t = gcdext(e1, e2)</span><br><span class="line">    <span class="comment"># 求模反元素</span></span><br><span class="line">    <span class="keyword">if</span> s &lt; <span class="number">0</span>:</span><br><span class="line">        s = -s</span><br><span class="line">        c1 = inverse(c1,n)</span><br><span class="line">    <span class="keyword">if</span> t &lt; <span class="number">0</span>:</span><br><span class="line">        t = -t</span><br><span class="line">        c2 = inverse(c2,n)</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">pow</span>(c1,s,n)*<span class="built_in">pow</span>(c2,t,n)%n</span><br></pre></td></tr></table></figure>
+
+<h4 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">b&#39;\x98vT2\x10\xab\xcd\xef\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00My secre&#39;</span><br><span class="line">My secre</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="公共模数攻与因数碰撞法-frame-0-4；1、18"><a href="#公共模数攻与因数碰撞法-frame-0-4；1、18" class="headerlink" title="公共模数攻与因数碰撞法 frame 0,4；1、18"></a>公共模数攻与因数碰撞法 frame 0,4；1、18</h3><h4 id="原理-1"><a href="#原理-1" class="headerlink" title="原理"></a>原理</h4><p>当系统中不同的消息共用一个模数 N，只有 e 和 d 不同，系统将是危险的，此时，攻击者可能无需分解 N 就能够恢复明文。</p>
+<p><strong>前提条件</strong></p>
+<ul>
+<li>$gcd(n1,n2)!&#x3D;1$</li>
+<li>$n_1 \neq n_2$</li>
+</ul>
+<p><strong>攻击原理</strong><br>$$<br>最大公因数获取其中一个大素数：p &#x3D; gcd(n1,n2) \<br>n 除 p 获取另一个大素数：q_i &#x3D; n_i \div p \quad (i&#x3D;1 \ or \ 2) \<br>phi_i(n) &#x3D; (q_i-1)(p-1) \<br>d_i &#x3D; inverse(e_i,n_i) \<br>m_i \equiv c_i^{d_i} \pmod n_i<br>$$</p>
+<h4 id="步骤-1"><a href="#步骤-1" class="headerlink" title="步骤"></a>步骤</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">same_factor</span>():</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;因数碰撞法&#x27;</span>)</span><br><span class="line">    plaintext = []</span><br><span class="line">    index = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">21</span>):</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(i + <span class="number">1</span>, <span class="number">21</span>):</span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">int</span>(ns[i], <span class="number">16</span>) == <span class="built_in">int</span>(ns[j], <span class="number">16</span>):</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            prime = gmpy2.gcd(<span class="built_in">int</span>(ns[i], <span class="number">16</span>), <span class="built_in">int</span>(ns[j], <span class="number">16</span>))</span><br><span class="line">            <span class="keyword">if</span> prime != <span class="number">1</span>:</span><br><span class="line">                index.append(i)</span><br><span class="line">                index.append(j)</span><br><span class="line">                p_of_frame = prime</span><br><span class="line">    q_of_frame1 = <span class="built_in">int</span>(ns[index[<span class="number">0</span>]], <span class="number">16</span>) // p_of_frame</span><br><span class="line">    q_of_frame18 = <span class="built_in">int</span>(ns[index[<span class="number">1</span>]], <span class="number">16</span>) // p_of_frame</span><br><span class="line"> </span><br><span class="line">    phi_of_frame1 = (p_of_frame - <span class="number">1</span>) * (q_of_frame1 - <span class="number">1</span>)</span><br><span class="line">    phi_of_frame18 = (p_of_frame - <span class="number">1</span>) * (q_of_frame18 - <span class="number">1</span>)</span><br><span class="line"> </span><br><span class="line">    d_of_frame1 = gmpy2.invert(<span class="built_in">int</span>(es[index[<span class="number">0</span>]], <span class="number">16</span>), phi_of_frame1)</span><br><span class="line">    d_of_frame18 = gmpy2.invert(<span class="built_in">int</span>(es[index[<span class="number">1</span>]], <span class="number">16</span>), phi_of_frame18)</span><br><span class="line"> </span><br><span class="line">    plaintext_of_frame1 = gmpy2.powmod(<span class="built_in">int</span>(cs[index[<span class="number">0</span>]], <span class="number">16</span>), d_of_frame1, <span class="built_in">int</span>(ns[index[<span class="number">0</span>]], <span class="number">16</span>))</span><br><span class="line">    plaintext_of_frame18 = gmpy2.powmod(<span class="built_in">int</span>(cs[index[<span class="number">1</span>]], <span class="number">16</span>), d_of_frame18, <span class="built_in">int</span>(ns[index[<span class="number">1</span>]], <span class="number">16</span>))</span><br><span class="line"> </span><br><span class="line">    final_plain_of_frame1 = binascii.a2b_hex(<span class="built_in">hex</span>(plaintext_of_frame1)[-<span class="number">16</span>:]).decode(<span class="string">&#x27;ascii&#x27;</span>)</span><br><span class="line">    final_plain_of_frame18 = binascii.a2b_hex(<span class="built_in">hex</span>(plaintext_of_frame18)[-<span class="number">16</span>:]).decode(<span class="string">&#x27;ascii&#x27;</span>)</span><br><span class="line">    </span><br><span class="line">	<span class="built_in">print</span>(<span class="string">&#x27;Frame&#x27;</span>, index[<span class="number">0</span>], <span class="string">&#x27;:&#x27;</span>, final_plain_of_frame1, sep=<span class="string">&#x27;&#x27;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;Frame&#x27;</span>, index[<span class="number">1</span>], <span class="string">&#x27;:&#x27;</span>, final_plain_of_frame18, sep=<span class="string">&#x27;&#x27;</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h4 id="结果-1"><a href="#结果-1" class="headerlink" title="结果"></a>结果</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Frame 1 </span><br><span class="line">b&#39;\x98vT2\x10\xab\xcd\xef\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00. Imagin&#39;</span><br><span class="line">Frame 18</span><br><span class="line">b&#39;\x98vT2\x10\xab\xcd\xef\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00m A to B&#39;</span><br></pre></td></tr></table></figure>
+
+<h3 id="费马-Fermat-分解法：frame-10"><a href="#费马-Fermat-分解法：frame-10" class="headerlink" title="费马 (Fermat) 分解法：frame 10"></a>费马 (Fermat) 分解法：frame 10</h3><h4 id="原理-2"><a href="#原理-2" class="headerlink" title="原理"></a>原理</h4><p>为了降低模数 N 被试除法攻破的可能性，算法设计者通常选择具有相同比特大小的参数 p 和 q，然而，如果 p 和 q 太过接近，就可以利用费马分解法找到它们。  </p>
+<p>费马分解法基于如下思想：设 $N&#x3D;p q$, 其中 $p \leq q$ 都是奇数，然后令 $x&#x3D;\frac{1}{2}(p+q)$, $y&#x3D;\frac{1}{2}(q-p)$, 可以找到 $N&#x3D;x^{2}-y^{2}&#x3D;(x+y)(x-y)$ 或 $y^{2}&#x3D;x^{2}-N$ 。</p>
+<p><strong>定理</strong> 设 $N&#x3D;p q$, 其中 $p&gt;q$ 且 $\Delta&#x3D;p-q$, 则当 $\Delta&lt;N^{\frac{1}{4}}$ 时，费马分解法可 以有效地分解 $N$ 。</p>
+<h4 id="步骤-2"><a href="#步骤-2" class="headerlink" title="步骤"></a>步骤</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> gmpy2 <span class="keyword">import</span> iroot</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Fermat_factorization</span>(<span class="params">num</span>):</span></span><br><span class="line">    x,flag_x = iroot(num,<span class="number">2</span>)</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">pow</span>(x,<span class="number">2</span>)&lt;num:</span><br><span class="line">        x+=<span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        temp = <span class="built_in">pow</span>(x,<span class="number">2</span>) - num</span><br><span class="line">        y,flag_y = iroot(temp,<span class="number">2</span>)</span><br><span class="line">        <span class="keyword">if</span> flag_y:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        x+=<span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">int</span>((x+y)),<span class="built_in">int</span>((x-y))</span><br></pre></td></tr></table></figure>
+
+<h4 id="结果-2"><a href="#结果-2" class="headerlink" title="结果"></a>结果</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">frame 10</span><br><span class="line">b&#39;\x98vT2\x10\xab\xcd\xef\x00\x00\x00\x08\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00will get&#39;</span><br><span class="line">will get</span><br></pre></td></tr></table></figure>
+
+<h3 id="Pollard’s-p-1-分解法：frame-2-6-19"><a href="#Pollard’s-p-1-分解法：frame-2-6-19" class="headerlink" title="Pollard’s p-1 分解法：frame 2,6,19"></a>Pollard’s p-1 分解法：frame 2,6,19</h3><h4 id="原理-3"><a href="#原理-3" class="headerlink" title="原理"></a>原理</h4><p>RSA 加密算法中，素数 $p$ 和 $q$ 应该满足：$p \pm 1$ 和 $q \pm 1$ 至少有一个素因子大于 $10^{20}$, 否则，要分解的整数 $N$ 有一个素因数 $p$, 且 $(p-1)$ 有小的素因数时就可以 利用 Pollard $p-1$ 分解法有效分解模数 $N$, 从而得到 $p$ 。</p>
+<p>设 $N&#x3D;p q$, 其中 $p、q$ 为两个不同素数。选取一个整数 $k$ 使其满足 $(p-1) \mid k !$, 根据欧拉定理，对任意与 $p$ 互素的整数 $g$ 可以得到 $g^{p-1} \equiv 1(\bmod p)$, 因此，有 $g^{k !} \equiv 1(\bmod p)$, 即：$p \mid g^{k !}-1$; 又由于 $p \mid n$, 因此 $p \mid\left(\left(g^{k !} \bmod n\right)-1\right)$ 。但是，如何 选取 $k$ 是该算法中的关键问题，如果 $k$ 选取太小，则可能不满足关系 $p-1 \mid k !$; 如 果 $k$ 选取太大 (比如令 $k&#x3D;p-1$ ), 算法执行的复杂度就会急剧加大。因此，在执 行算法前，先对可能满足关系 $p-1 \mid k !$ 的 $k$ 进行猜测，并根据计算能力进行设定。</p>
+<p><strong>算法</strong></p>
+<ul>
+<li><p>设置$ a &#x3D; 2$(或者其他方便的数字)</p>
+</li>
+<li><p>循环$j &#x3D; 2,3,\cdots B$</p>
+<blockquote>
+<p>若$p_1,p_2,\cdots,p_n$这些素数是随机在小 s 于 B 的数中选的，那么最大的素数大概率要大于 0.8B</p>
+<p>因此在$j&lt;0.8B$之前不计算 gcd，可以节省时间</p>
+</blockquote>
+<ul>
+<li>令$a \equiv a^j \pmod n$</li>
+<li>计算$d &#x3D; gcd(a-1,n)$</li>
+<li>如果$1&lt;d&lt;n$, 则返回$d$</li>
+</ul>
+</li>
+</ul>
+<h4 id="步骤-3"><a href="#步骤-3" class="headerlink" title="步骤"></a>步骤</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">from Crypto.Util.number import GCD</span><br><span class="line">def pollard_p_1(n,B):</span><br><span class="line">    a &#x3D; 2</span><br><span class="line">    false_range &#x3D; int(0.8*B)</span><br><span class="line">    for j in range(2,false_range):</span><br><span class="line">        a &#x3D; pow(a, j, n)</span><br><span class="line"></span><br><span class="line">    d &#x3D; 0</span><br><span class="line">    for j in range(false_range,B+1):</span><br><span class="line">        a &#x3D; pow(a, j, n)</span><br><span class="line">        d &#x3D; GCD(a-1, n)</span><br><span class="line">        if 1&lt;d&lt;n:</span><br><span class="line">            return d</span><br></pre></td></tr></table></figure>
+
+<h4 id="结果-3"><a href="#结果-3" class="headerlink" title="结果"></a>结果</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">frame 2</span><br><span class="line">b&#39;\x98vT2\x10\xab\xcd\xef\x00\x00\x00\x06\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00 That is&#39;</span><br><span class="line"></span><br><span class="line">frame 6</span><br><span class="line">b&#39;\x98vT2\x10\xab\xcd\xef\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00 &quot;Logic &#39;</span><br><span class="line"></span><br><span class="line">frame 19</span><br><span class="line">b&#39;\x98vT2\x10\xab\xcd\xef\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00instein.&#39;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="低加密指数攻击：frame-7-11-15-3-8-12-16-20"><a href="#低加密指数攻击：frame-7-11-15-3-8-12-16-20" class="headerlink" title="低加密指数攻击：frame 7,11,15; 3,8,12,16,20"></a>低加密指数攻击：frame 7,11,15; 3,8,12,16,20</h3><h4 id="原理-4"><a href="#原理-4" class="headerlink" title="原理"></a>原理</h4><p>在设计算法时为了加速计算，常常使用较小的加密指数 e，但是这种做法存在很大的安全隐患。如果相同的消息使用同样的加密指数加密后发送给不同的接收者，则该明文消息可以被非常有效的恢复。该攻击方法基于著名的中国剩余定理。 </p>
+<p><strong>中国剩余定理</strong></p>
+<p>选取了相同的加密指数 e（这里取 e&#x3D;3），对相同的明文 m 进行了加密并进行了消息的传递，那么有：<br>$$<br>c_1 \equiv m^3 \pmod {n_1} \<br>c_2 \equiv m^3 \pmod {n_2} \<br>c_3 \equiv m^3 \pmod {n_3} \<br>$$<br>对上述等式运用中国剩余定理，在 e&#x3D;3 时，可以得到：<br>$$<br>N &#x3D; n_1\cdot n_2\cdot n_3 \<br>c_x \equiv m^3 \pmod N<br>$$<br>通过对 $c_x$ 进行三次开方就可以求得明文</p>
+<h4 id="步骤-4"><a href="#步骤-4" class="headerlink" title="步骤"></a>步骤</h4><h4 id="结果-4"><a href="#结果-4" class="headerlink" title="结果"></a>结果</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">- 7</span><br><span class="line">b&#39;\x98vT2\x10\xab\xcd\xef\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00amous sa&#39;</span><br><span class="line">- 11</span><br><span class="line">b&#39;\x98vT2\x10\xab\xcd\xef\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00ying of &#39;</span><br><span class="line">- 15</span><br><span class="line">b&#39;\x98vT2\x10\xab\xcd\xef\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00Albert E&#39;</span><br><span class="line"></span><br><span class="line">b&#39;\x98vT2\x10\xab\xcd\xef\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00t is a f&#39;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h3 id="语义猜测：frame-2-3-4-9-12-13-14-15"><a href="#语义猜测：frame-2-3-4-9-12-13-14-15" class="headerlink" title="语义猜测：frame 2,3,4,9,12,13,14,15"></a>语义猜测：frame 2,3,4,9,12,13,14,15</h3><p>根据已知的明文便可通过猜测 + 穷举的方法恢复出剩余的明文：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">My secret is a famous saying of Albert Einstein. That is &quot;Logic will get you from A to B. Imagination will take you everywhere.&quot;  </span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>对 RSA 加密算法的原理、应用与破译有了更深入的了解和认识；学习了 RSA 有关的数论知识；加深了对信息安全的认识。</p>
+<h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><p><strong>备注</strong></p>
+<p>因为时间所限制，有些内容未认真完成。如后续有更新，将会发布在前文的博客链接中。</p>
+<p><strong>参考文献</strong></p>
+<p>RSA 加密体制破译报告——双河安团队答题卷  </p>
+<p><a target="_blank" rel="noopener" href="https://ctf-wiki.org/">CTF Wiki (ctf-wiki.org)</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_31408919/article/details/104917729">RSA 共模攻击_reforever 的博客-CSDN 博客_rsa 共模攻击</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_46395886/article/details/114434642">因子分解算法——Pollard 的 p-1 方法_国科大网安二班的博客-CSDN 博客</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/cdcq__/article/details/122370634?spm=1001.2014.3001.5502">密码学实验报告_cdcq__的博客-CSDN 博客</a></p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      <div style="display: inline-block;">
+        <img src="/images/dogecoin.png" alt="Framist dogecoin">
+        <p>dogecoin</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Framist
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://framist.github.io/1970/%E3%80%90%E8%B5%9B%E5%8D%9A%E5%AE%89%E5%85%A8%E3%80%91/%E3%80%90%E7%8E%B0%E4%BB%A3%E5%AF%86%E7%A0%81%E5%AD%A6%E3%80%91%E5%A4%A7%E4%BD%9C%E4%B8%9A/" title="【现代密码学】大作业">https://framist.github.io/1970/【赛博安全】/【现代密码学】大作业/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/crypto/" rel="tag"># crypto</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/1970/%E3%80%90%E8%B5%9B%E5%8D%9A%E5%AE%89%E5%85%A8%E3%80%91/%E3%80%90%E4%BF%A1%E6%81%AF%E4%B8%8E%E5%86%85%E5%AE%B9%E5%AE%89%E5%85%A8%E3%80%91%E5%AE%9E%E9%AA%8C%E4%B8%80%EF%BC%9A%E5%AF%B9%E6%8A%97%E6%A0%B7%E6%9C%AC%E6%94%BB%E5%87%BB%E5%AE%9E%E9%AA%8C/" rel="prev" title="对抗性样本攻击实验：FGSM">
+      <i class="fa fa-chevron-left"></i> 对抗性样本攻击实验：FGSM
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/1970/%E3%80%90%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%8E%9F%E7%90%86%E3%80%91/%E3%80%90%E8%AE%A1%E7%BD%91%E5%A4%A7%E4%BD%9C%E4%B8%9A%E3%80%91%E9%80%89%E6%8B%A9%E9%87%8D%E5%8F%91%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/" rel="next" title="【计网作业】选择重发 ARQ 算法模拟">
+      【计网作业】选择重发 ARQ 算法模拟 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#RSA-%E5%A4%A7%E7%A4%BC%E5%8C%85"><span class="nav-number">1.</span> <span class="nav-text">RSA 大礼包</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%91%98%E8%A6%81"><span class="nav-number">1.1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.2.</span> <span class="nav-text">题目描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%87%E7%A8%8B"><span class="nav-number">1.3.</span> <span class="nav-text">过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%AC%E5%85%B1%E6%A8%A1%E6%95%B0%E6%94%BB%E5%87%BB%EF%BC%9Aframe-0%E3%80%814"><span class="nav-number">1.3.1.</span> <span class="nav-text">公共模数攻击：frame 0、4</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8E%9F%E7%90%86"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AD%A5%E9%AA%A4"><span class="nav-number">1.3.1.2.</span> <span class="nav-text">步骤</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%93%E6%9E%9C"><span class="nav-number">1.3.1.3.</span> <span class="nav-text">结果</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%AC%E5%85%B1%E6%A8%A1%E6%95%B0%E6%94%BB%E4%B8%8E%E5%9B%A0%E6%95%B0%E7%A2%B0%E6%92%9E%E6%B3%95-frame-0-4%EF%BC%9B1%E3%80%8118"><span class="nav-number">1.3.2.</span> <span class="nav-text">公共模数攻与因数碰撞法 frame 0,4；1、18</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8E%9F%E7%90%86-1"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AD%A5%E9%AA%A4-1"><span class="nav-number">1.3.2.2.</span> <span class="nav-text">步骤</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%93%E6%9E%9C-1"><span class="nav-number">1.3.2.3.</span> <span class="nav-text">结果</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B4%B9%E9%A9%AC-Fermat-%E5%88%86%E8%A7%A3%E6%B3%95%EF%BC%9Aframe-10"><span class="nav-number">1.3.3.</span> <span class="nav-text">费马 (Fermat) 分解法：frame 10</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8E%9F%E7%90%86-2"><span class="nav-number">1.3.3.1.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AD%A5%E9%AA%A4-2"><span class="nav-number">1.3.3.2.</span> <span class="nav-text">步骤</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%93%E6%9E%9C-2"><span class="nav-number">1.3.3.3.</span> <span class="nav-text">结果</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pollard%E2%80%99s-p-1-%E5%88%86%E8%A7%A3%E6%B3%95%EF%BC%9Aframe-2-6-19"><span class="nav-number">1.3.4.</span> <span class="nav-text">Pollard’s p-1 分解法：frame 2,6,19</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8E%9F%E7%90%86-3"><span class="nav-number">1.3.4.1.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AD%A5%E9%AA%A4-3"><span class="nav-number">1.3.4.2.</span> <span class="nav-text">步骤</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%93%E6%9E%9C-3"><span class="nav-number">1.3.4.3.</span> <span class="nav-text">结果</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%8E%E5%8A%A0%E5%AF%86%E6%8C%87%E6%95%B0%E6%94%BB%E5%87%BB%EF%BC%9Aframe-7-11-15-3-8-12-16-20"><span class="nav-number">1.3.5.</span> <span class="nav-text">低加密指数攻击：frame 7,11,15; 3,8,12,16,20</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8E%9F%E7%90%86-4"><span class="nav-number">1.3.5.1.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AD%A5%E9%AA%A4-4"><span class="nav-number">1.3.5.2.</span> <span class="nav-text">步骤</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%93%E6%9E%9C-4"><span class="nav-number">1.3.5.3.</span> <span class="nav-text">结果</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%AD%E4%B9%89%E7%8C%9C%E6%B5%8B%EF%BC%9Aframe-2-3-4-9-12-13-14-15"><span class="nav-number">1.3.6.</span> <span class="nav-text">语义猜测：frame 2,3,4,9,12,13,14,15</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.4.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%84%E5%BD%95"><span class="nav-number">1.5.</span> <span class="nav-text">附录</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Framist</p>
+  <div class="site-description" itemprop="description">框架主义者的小窝</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">73</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/framist" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;framist" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:framist@163.com" title="E-Mail → mailto:framist@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/weixin_47102975" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_47102975" rel="noopener" target="_blank"><i class="fas fa-angle-right fa-fw"></i>CSDN</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/kuang-jia-zhu-yi-zhe" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;kuang-jia-zhu-yi-zhe" rel="noopener" target="_blank"><i class="fas fa-angle-right fa-fw"></i>知乎</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://framist.top/" title="http:&#x2F;&#x2F;framist.top&#x2F;" rel="noopener" target="_blank">个人主页</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://craft.framist.top/" title="https:&#x2F;&#x2F;craft.framist.top&#x2F;" rel="noopener" target="_blank">框架科工</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://framist.github.io/2020/10/11/%E6%88%91%E8%BA%AB%E8%BE%B9%E7%9A%84CS%E5%A4%A7%E4%BD%AC%E4%BB%AC/" title="https:&#x2F;&#x2F;framist.github.io&#x2F;2020&#x2F;10&#x2F;11&#x2F;%E6%88%91%E8%BA%AB%E8%BE%B9%E7%9A%84CS%E5%A4%A7%E4%BD%AC%E4%BB%AC&#x2F;">我身边的大佬们</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yuexiavqiufeng.github.io/" title="https:&#x2F;&#x2F;yuexiavqiufeng.github.io&#x2F;" rel="noopener" target="_blank">yuexiavqiufeng</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">浙 ICP 备 2022002862 号 -1 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-at"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Framist</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div><script>
+    let body = document.getElementsByTagName('body')[0];
+    body.addEventListener('click', (e) => {
+        let contentArr = ['欧拉~','ˋ( ° ▽、° ) ','RGB!','_(:з」∠)_','哼','?','¿框架?','QAQ',':3','<3','疯掉了',
+                            'whoami',
+                            'whoareU',
+                            'NULL',
+                            'None',
+                            ' ',
+                            '代价是什么呢？',
+                            '...',
+                            'Big Brother is Watching You',
+                            '喵~', '嗷~', '呜~', '哞~', '咩~', '咕~', '嘎~', '嘤~',
+                            '你看到了。',
+                            '¿爱情障眼法?','¿物种认同障碍?',
+                            '微润欧美，小润终南山，中润润与市，大润中南海',
+                            'init param:<br/>1LTKvNaux7CjrNHJ09C0y87Eo7/Rrbu3zfm4tKOsus7Ksbb41rmjv9a5zqrWucv51rmjrLTLzsTT1rrOtOajvw==',
+                            '这里没有时间的意义',
+                            '嘿嘿嘿，好想被随机异或哦，<br/>嘿嘿嘿，嘿嘿嘿，异或我的异或',
+                            '记忆赋予时间的意义，而不是时间赋予记忆的意义',
+                            '放弃 P ∨ ¬P 吧！',
+                            '抽象是普适性的代价 —— 3b1b',
+                            '得易见平凡，仿照上例显然',
+                            '留作习题答案略，读者自证不难',
+                            '反之亦然同理，推论自然成立',
+                            '略去过程 Q . E . D ，由上可知证毕'];
+        let randomNum = function (n) {
+            return Math.floor(Math.random() * n)
+        }
+        let span = document.createElement('span');
+        span.innerHTML = `${contentArr[randomNum(contentArr.length)]}`;
+        span.style.color = `rgb(${randomNum(256)},${randomNum(256)},${randomNum(256)})`;
+        span.style.position = 'absolute';
+        span.style.top = `${e.pageY}px`;
+        span.style.left = `${e.pageX}px`;
+        span.style.transition = 'all 1s ease';
+        span.style.zIndex = 20000;
+        body.appendChild(span)
+        setTimeout(()=>{
+            span.style.top = span.offsetTop - 25 + 'px';
+            span.style.opacity = 0;
+            setTimeout(()=>{span.remove()},1000)
+        },700)
+    })
+</script>
+
+
+<div style="width: 100px; height: 100px; margin: 0 auto;">
+<script type="text/javascript" id="clstr_globe" src="//clustrmaps.com/globe.js?d=gRWtX21uVt_tIdj_T64nMvo4FK1UrTWME23CVLOzNCg"></script>
+</div>
+<!--
+<script type="text/javascript" 
+color="255,255,255" 
+pointColor='64,184,209' 
+opacity='1' 
+zIndex="-1" 
+count="233" 
+src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js">
+</script>
+-->
+
+
+        
+<div class="busuanzi-count">
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script data-pjax>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '267a9d4a89b9b72b2229',
+      clientSecret: '2dba1f14d21da707ed6c4497fecc05d6178b4fa3',
+      repo        : 'blog-comment',
+      owner       : 'framist',
+      admin       : ['framist'],
+      id          : '31ac424bfc799ec538292fdb210d2521',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+    </div>
+</body>
+</html>

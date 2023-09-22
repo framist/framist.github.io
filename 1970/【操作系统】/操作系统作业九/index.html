@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Noto Serif SC:300,300italic,400,400italic,700,700italic|Source Code Pro:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-big-counter.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"framist.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Operating System Concepts Exercises 9Virtual Memory  操作系统作业 9  9.1, 9.3, 9.4, 9.5, 9.7, 9.8 9.15, 9.18, 9.21, 9.22, 9.32, 9.34  每题最后一个引用块是老师提供的参考答案">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【操作系统概念 - 作业 9】Virtual Memory">
+<meta property="og:url" content="https://framist.github.io/1970/%E3%80%90%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%91/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%B9%9D/index.html">
+<meta property="og:site_name" content="Framist&#39;s Little House">
+<meta property="og:description" content="Operating System Concepts Exercises 9Virtual Memory  操作系统作业 9  9.1, 9.3, 9.4, 9.5, 9.7, 9.8 9.15, 9.18, 9.21, 9.22, 9.32, 9.34  每题最后一个引用块是老师提供的参考答案">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2023/08/15/20230815203909.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2023/08/15/20230815203909-1.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2023/08/15/20230815203909-2.png">
+<meta property="article:published_time" content="1970-01-01T00:00:00.000Z">
+<meta property="article:modified_time" content="2023-08-15T13:53:15.890Z">
+<meta property="article:author" content="Framist">
+<meta property="article:tag" content="学习">
+<meta property="article:tag" content="操作系统">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2023/08/15/20230815203909.png">
+
+<link rel="canonical" href="https://framist.github.io/1970/%E3%80%90%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%91/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%B9%9D/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【操作系统概念 - 作业 9】Virtual Memory | Framist's Little House</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Framist's Little House</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">◇ 自顶而下 - 面向未来 ◇</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://framist.github.io/1970/%E3%80%90%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%91/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%B9%9D/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Framist">
+      <meta itemprop="description" content="框架主义者的小窝">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Framist's Little House">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【操作系统概念 - 作业 9】Virtual Memory
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：1970-01-01 08:00:00" itemprop="dateCreated datePublished" datetime="1970-01-01T08:00:00+08:00">1970-01-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-08-15 21:53:15" itemprop="dateModified" datetime="2023-08-15T21:53:15+08:00">2023-08-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">计算机科学</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E8%AF%BE%E4%B8%9A%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">课业学习</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E8%AF%BE%E4%B8%9A%E5%AD%A6%E4%B9%A0/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index"><span itemprop="name">操作系统</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Operating-System-Concepts-Exercises-9"><a href="#Operating-System-Concepts-Exercises-9" class="headerlink" title="Operating System Concepts Exercises 9"></a><em>Operating System Concepts</em> Exercises 9</h1><center>Virtual Memory</center>
+
+<p>操作系统作业 9</p>
+<ul>
+<li>9.1, 9.3, 9.4, 9.5, 9.7, 9.8</li>
+<li>9.15, 9.18, 9.21, 9.22, 9.32, 9.34</li>
+</ul>
+<p><em>每题最后一个引用块是老师提供的参考答案</em></p>
+<span id="more"></span>
+
+<h2 id="Practice-Exercises"><a href="#Practice-Exercises" class="headerlink" title="Practice Exercises"></a>Practice Exercises</h2><p>9.1, 9.3, 9.4, 9.5, 9.7, 9.8</p>
+<h3 id="9-1-Under-what-circumstances-do-page-faults-occur-Describe-the-actions-taken-by-the-operating-system-when-a-page-fault-occurs"><a href="#9-1-Under-what-circumstances-do-page-faults-occur-Describe-the-actions-taken-by-the-operating-system-when-a-page-fault-occurs" class="headerlink" title="9.1 Under what circumstances do page faults occur? Describe the actions taken by the operating system when a page fault occurs."></a>9.1 Under what circumstances do page faults occur? Describe the actions taken by the operating system when a page fault occurs.</h3><p>在什么情况下会发生页面故障？描述一下当发生页面故障时，操作系统采取的行动。</p>
+<p><strong>答：</strong> </p>
+<p>发生缺页错误时。</p>
+<p>操作系统进行调页。</p>
+<blockquote>
+<p>A page fault occurs whenever a process tries to access a page which is marked as invalid in the page table entry for that page. </p>
+<p>A page fault generates an interrupt which invokes the operating system code in privileged mode. The OS then examines some internal table (usually kept with the process control block for this process) to determine if the page is on disk. If the page is on disk (i.e. it really is a valid memory reference) the operating system then allocates a free frame, starts the disk I&#x2F;O to read the desired page into the newly allocated frame, and <strong>starts the next process</strong>.</p>
+<p>When the disk I&#x2F;O is finished, the internal table kept with the process and page table are updated to indicate that the page is now in memory. The instruction that was interrupted by the illegal address trap is restarted. The process can now access the page as though it had always been in memory.</p>
+<p>当一个进程试图访问一个在页表条目中被标记为无效的页时，就会发生页故障。</p>
+<p>页面故障会产生一个中断，在特权模式下调用操作系统的代码。然后操作系统检查一些内部表（通常与该进程的进程控制块一起保存）以确定该页是否在磁盘上。如果该页在磁盘上（即它确实是一个有效的内存引用），操作系统就会分配一个空闲的帧，启动磁盘 I&#x2F;O，将所需的页读入新分配的帧，并<strong>启动下一个进程</strong>。</p>
+<p>当磁盘I&#x2F;O完成后，与进程和页表一起保存的内部表被更新，以表明该页现在在内存中。被非法地址陷阱打断的指令被重新启动。该进程现在可以访问该页，就像它一直在内存中一样。</p>
+</blockquote>
+<h3 id="9-3-Consider-the-page-table-shown-in-Figure-9-30-for-a-system-with-12-bit-virtual-and-physical-addresses-and-with-256-byte-pages-The-list-of-free-page-frames-is-D-E-F-that-is-D-is-at-the-head-of-the-list-E-is-second-and-F-is-last"><a href="#9-3-Consider-the-page-table-shown-in-Figure-9-30-for-a-system-with-12-bit-virtual-and-physical-addresses-and-with-256-byte-pages-The-list-of-free-page-frames-is-D-E-F-that-is-D-is-at-the-head-of-the-list-E-is-second-and-F-is-last" class="headerlink" title="9.3 Consider the page table shown in Figure 9.30 for a system with 12-bit virtual and physical addresses and with 256-byte pages. The list of free page frames is D, E, F (that is, D is at the head of the list, E is second, and F is last)."></a>9.3 Consider the page table shown in Figure 9.30 for a system with 12-bit virtual and physical addresses and with 256-byte pages. The list of free page frames is D, E, F (that is, D is at the head of the list, E is second, and F is last).</h3><p>考虑图 9.30 所示的页表，该系统有 12 位的虚拟和物理地址，有 256 字节的页。空闲页框的列表是 D，E，F（也就是说，D 在列表的头，E 在第二，F 在最后）。</p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2023/08/15/20230815203909.png" alt="image-20210616125026470"></p>
+<center>Figure 9.30 Page table for Exercise 9.3.</center>
+
+<p>Convert the following virtual addresses to their equivalent physical addresses in hexadecimal. All numbers are given in hexadecimal. (A dash for a page frame indicates that the page is not in memory.)</p>
+<p>将下列虚拟地址转换为十六进制的对应物理地址。所有的数字都以十六进制给出。(一个页框的破折号表示该页不在内存中)。</p>
+<h4 id="9EF"><a href="#9EF" class="headerlink" title="9EF"></a>9EF</h4><p>9EF -&gt; 0EF </p>
+<h4 id="111"><a href="#111" class="headerlink" title="111"></a>111</h4><p>111 -&gt; 211</p>
+<h4 id="700"><a href="#700" class="headerlink" title="700"></a>700</h4><p>700 -&gt; D00</p>
+<h4 id="0FF"><a href="#0FF" class="headerlink" title="0FF"></a>0FF</h4><p>0FF -&gt; EFF</p>
+<blockquote>
+<p>When page fault occurs, OS load the desired page into a frame assigned from the list of free page frames.</p>
+<p>当页面故障发生时，操作系统将所需的页面加载到从空闲页面框架列表中指定的框架中。</p>
+</blockquote>
+<h3 id="9-4-Consider-the-following-page-replacement-algorithms-Rank-these-algorithms-on-a-five-point-scale-from-“bad”-to-“perfect”-according-to-their-page-fault-rate-Separate-those-algorithms-that-suffer-from-Belady’s-anomaly-from-those-that-do-not"><a href="#9-4-Consider-the-following-page-replacement-algorithms-Rank-these-algorithms-on-a-five-point-scale-from-“bad”-to-“perfect”-according-to-their-page-fault-rate-Separate-those-algorithms-that-suffer-from-Belady’s-anomaly-from-those-that-do-not" class="headerlink" title="9.4 Consider the following page-replacement algorithms. Rank these algorithms on a five-point scale from “bad” to “perfect” according to their page-fault rate. Separate those algorithms that suffer from Belady’s anomaly from those that do not."></a>9.4 Consider the following page-replacement algorithms. Rank these algorithms on a five-point scale from “bad” to “perfect” according to their page-fault rate. Separate those algorithms that suffer from Belady’s anomaly from those that do not.</h3><p>考虑以下的页面替换算法。根据这些算法的页面错误率，在从 “糟糕 “到 “完美 “的五级评分中对其进行排名。把那些受到贝拉迪异常现象影响的算法和那些没有受到影响的算法分开。</p>
+<h4 id="a-LRU-replacement-最近最久未使用置换算法（LRU）"><a href="#a-LRU-replacement-最近最久未使用置换算法（LRU）" class="headerlink" title="a. LRU replacement 最近最久未使用置换算法（LRU）"></a>a. LRU replacement 最近最久未使用置换算法（LRU）</h4><p>:star::star::star::star:</p>
+<p>not suffer from Belady’s anomaly</p>
+<h4 id="b-FIFO-replacement-先进先出置换算法（FIFO）"><a href="#b-FIFO-replacement-先进先出置换算法（FIFO）" class="headerlink" title="b. FIFO replacement 先进先出置换算法（FIFO）"></a>b. FIFO replacement 先进先出置换算法（FIFO）</h4><p>:star:</p>
+<p>suffer from Belady’s anomaly</p>
+<h4 id="c-Optimal-replacement-最佳置换算法（OPT）"><a href="#c-Optimal-replacement-最佳置换算法（OPT）" class="headerlink" title="c. Optimal replacement 最佳置换算法（OPT）"></a>c. Optimal replacement 最佳置换算法（OPT）</h4><p>:star::star::star::star::star:</p>
+<p>not suffer from Belady’s anomaly</p>
+<h4 id="d-Second-chance-replacement"><a href="#d-Second-chance-replacement" class="headerlink" title="d. Second-chance replacement"></a>d. Second-chance replacement</h4><p>:star::star::star:</p>
+<p>not suffer from Belady’s anomaly</p>
+<h3 id="9-5-Discuss-the-hardware-support-required-to-support-demand-paging"><a href="#9-5-Discuss-the-hardware-support-required-to-support-demand-paging" class="headerlink" title="9.5 Discuss the hardware support required to support demand paging."></a>9.5 Discuss the hardware support required to support demand paging.</h3><p>讨论支持请求调页所需的硬件支持。</p>
+<p><strong>答：</strong> </p>
+<blockquote>
+<p>For every memory-access operation, the page table needs to be consulted to check whether the corresponding page is resident in memory or not, and determine whether a page fault is triggered. These checks have to be performed in hardware (<strong>MMU</strong>). A TLB could serve as a cache and improve the performance of the lookup operation.</p>
+<p>对于每个内存访问操作，都需要查询页表，以检查相应的页是否驻留在内存中，并确定是否触发了页故障。这些检查必须在硬件（<strong>MMU</strong>）中进行。一个 TLB 可以作为一个缓存，并提高查询操作的性能。</p>
+</blockquote>
+<h3 id="9-7-Consider-the-two-dimensional-array-A"><a href="#9-7-Consider-the-two-dimensional-array-A" class="headerlink" title="9.7 Consider the two-dimensional array A:"></a>9.7 Consider the two-dimensional array A:</h3><p>考虑二维数组 A：</p>
+<p><code>int A[][] = new int[100][100];</code></p>
+<p>where <code>A[0][0]</code> is at location 200 in a paged memory system with pages of size 200. A small process that manipulates the matrix resides in page 0 (locations 0 to 199). Thus, every instruction fetch will be from page 0. For three page frames, how many page faults are generated by the following array-initialization loops? Use LRU replacement, and assume that page frame 1 contains the process and the other two are initially empty.</p>
+<p>其中<code>A[0][0]</code>在一个页大小为 200 的分页内存系统中位于位置 200。一个操作矩阵的小进程驻扎在第 0 页（位置 0 到 199）。因此，每条指令的获取都来自于第 0 页。对于三个页框，下面的数组初始化循环会产生多少个页面错误？使用 LRU 替换，并假设第 1 页包含进程，其他两个最初是空的。</p>
+<p><strong>答：</strong> </p>
+<blockquote>
+<p>In this system, each page holds 50 integers (integer has a size of 4 bytes) and thus one row of A needs 2 pages and entire A needs 2 *100 &#x3D; 200 pages.</p>
+<p>在这个系统中，每页可以容纳 50 个整数（整数的大小为 4 字节），因此 A 的一行需要 2 页，整个 A 需要 2*100&#x3D;200 页。</p>
+</blockquote>
+<h4 id="a"><a href="#a" class="headerlink" title="a."></a>a.</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">100</span>; j++)</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">100</span>; i++)</span><br><span class="line">		A[i][j] = <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+
+<p><strong>答：</strong> </p>
+<blockquote>
+<p>In this case, the array A is accessed row by row and thus each row generates 2 page faults as the first reference to a page always generates a page fault. Using LRU, it will generate 200 page faults.</p>
+<p>在这种情况下，数组 A 被逐行访问，因此每行产生 2 个页面故障，因为对一个页面的第一次引用总是产生一个页面故障。使用 LRU，它将产生 200 个页面故障。</p>
+</blockquote>
+<h4 id="b"><a href="#b" class="headerlink" title="b."></a>b.</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">100</span>; i++)</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="number">100</span>; j++)</span><br><span class="line">    	A[i][j] = <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+
+<p><strong>答：</strong> </p>
+<blockquote>
+<p>In this case, the array A is accessed column by column and thus the process references 100 pages in each outside loop (I), which is the working set of the program. But we only have 2 frames, and thus each array reference will generate a page fault. Using LRU, it will generate 100 * 100 &#x3D; 10,000 page faults.</p>
+<p> 在这种情况下，数组 A 被逐列访问，因此进程在每个外部循环（I）中引用了 100 个页面，这就是程序的工作集。但是我们只有 2 个框架，因此每个数组引用将产生一个页面故障。使用 LRU，它将产生 100*100&#x3D;10,000 个页面故障。</p>
+</blockquote>
+<blockquote>
+<p>This example shows that a well-written program can be much faster than a program is not carefully written.</p>
+<p>这个例子表明，一个写得好的程序可以比一个不仔细写的程序快得多。</p>
+</blockquote>
+<h3 id="9-8-Consider-the-following-page-reference-string"><a href="#9-8-Consider-the-following-page-reference-string" class="headerlink" title="9.8 Consider the following page reference string:"></a>9.8 Consider the following page reference string:</h3><p><code>1, 2, 3, 4, 2, 1, 5, 6, 2, 1, 2, 3, 7, 6, 3, 2, 1, 2, 3, 6.</code></p>
+<p>How many page faults would occur for the following replacement algorithms, assuming one, two, three, four, five, six, and seven frames? Remember that all frames are initially empty, so your first unique pages will cost one fault each.</p>
+<p>假设有一个、两个、三个、四个、五个、六个和七个 frames，下列替换算法会发生多少个页面故障？记住，所有的 frames 最初都是空的，所以你的第一个独特的页面将花费每个故障。</p>
+<ul>
+<li>LRU replacement</li>
+<li>FIFO replacement</li>
+<li>Optimal replacement</li>
+</ul>
+<p><strong>答：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Number of frames		LRU			FIFO			Optimal</span><br><span class="line">1						20			20				20</span><br><span class="line">2						18			18				15</span><br><span class="line">3						15			16				11</span><br><span class="line">4						10			14				8</span><br><span class="line">5						8			10				7</span><br><span class="line">6						7			10				7</span><br><span class="line">7						7			7				7</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+<h2 id="Exercises"><a href="#Exercises" class="headerlink" title="Exercises"></a>Exercises</h2><p>9.15, 9.18, 9.21, 9.22, 9.32, 9.34</p>
+<h3 id="9-15-A-simplified-view-of-thread-states-is-Ready-Running-andBlocked-where-a-thread-is-either-ready-and-waiting-to-be-scheduled-is-running-on-the-processor-or-is-blocked-for-example-waiting-for-I-x2F-O-This-is-illustrated-in-Figure-9-31-Assuming-a-thread-is-in-the-Running-state-answer-the-following-questions-and-explain-your-answer"><a href="#9-15-A-simplified-view-of-thread-states-is-Ready-Running-andBlocked-where-a-thread-is-either-ready-and-waiting-to-be-scheduled-is-running-on-the-processor-or-is-blocked-for-example-waiting-for-I-x2F-O-This-is-illustrated-in-Figure-9-31-Assuming-a-thread-is-in-the-Running-state-answer-the-following-questions-and-explain-your-answer" class="headerlink" title="9.15 A simplified view of thread states is Ready, Running, andBlocked, where a thread is either ready and waiting to be scheduled, is running on the processor, or is blocked (for example, waiting for I&#x2F;O). This is illustrated in Figure 9.31. Assuming a thread is in the Running state, answer the following questions, and explain your answer:"></a>9.15 A simplified view of thread states is Ready, Running, andBlocked, where a thread is either ready and waiting to be scheduled, is running on the processor, or is blocked (for example, waiting for I&#x2F;O). This is illustrated in Figure 9.31. Assuming a thread is in the Running state, answer the following questions, and explain your answer:</h3><p>线程状态的简化视图是就绪、运行和阻塞，其中线程要么就绪并等待被调度，要么在处理器上运行，要么被阻塞（例如，等待 I&#x2F;O）。这在图 9.31 中得到了说明。假设一个线程处于运行状态，请回答下列问题，并解释你的答案。</p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2023/08/15/20230815203909-1.png" alt="image-20210618151815957"></p>
+<h4 id="a-Will-the-thread-change-state-if-it-incurs-a-page-fault-If-so-to-what-state-will-it-change"><a href="#a-Will-the-thread-change-state-if-it-incurs-a-page-fault-If-so-to-what-state-will-it-change" class="headerlink" title="a. Will the thread change state if it incurs a page fault? If so, to what state will it change?"></a>a. Will the thread change state if it incurs a page fault? If so, to what state will it change?</h4><p>a. 如果线程发生了页面故障，它是否会改变状态？如果是的话，它将改变到什么状态？</p>
+<p><strong>答：</strong></p>
+<blockquote>
+<p>Yes, a tread changes from the Running state to the Blocked state when a page fault occurs. When a page fault occurs, the process starts to wait for I&#x2F;O operation to finish. </p>
+<p>The OS checks whether the page is really invalid or just on disk, finds a free memory frame, schedules a disk access to load the page into t the frame, updates the page table with the new logical-physical mapping when disk I&#x2F;O is completed, updates the valid bit of that entry, and eventually restarts the process by change its state from Blocked to Ready.</p>
+<p>是的，当一个页面故障发生时，一个 tread 从运行状态变为阻塞状态。当一个页面故障发生时，进程开始等待 I&#x2F;O 操作的完成。<br>操作系统检查该页是否真的无效或只是在磁盘上，找到一个空闲的内存帧，安排一次磁盘访问将该页加载到该帧中，当磁盘 I&#x2F;O 完成后用新的逻辑 - 物理映射更新页表，更新该条目的有效位，并最终重新启动进程，将其状态从阻塞状态变为就绪状态。</p>
+</blockquote>
+<h4 id="b-Will-the-thread-change-state-if-it-generates-a-TLBmiss-that-is-resolved-in-the-page-table-If-so-to-what-state-will-it-change"><a href="#b-Will-the-thread-change-state-if-it-generates-a-TLBmiss-that-is-resolved-in-the-page-table-If-so-to-what-state-will-it-change" class="headerlink" title="b. Will the thread change state if it generates a TLBmiss that is resolved in the page table? If so, to what state will it change?"></a>b. Will the thread change state if it generates a TLBmiss that is resolved in the page table? If so, to what state will it change?</h4><p>b. 如果线程产生了一个在页表中被解决的 TLBmiss，它是否会改变状态？如果是的话，它将改变到什么状态？</p>
+<p><strong>答：</strong></p>
+<blockquote>
+<p>Not necessarily. If a page table entry is not found in the TLB (TLB miss), the page number is used to index and process the page table. If the page is already in main memory, then TLB is updated to include the new page entry, while the process execution continues since there is no I&#x2F;O operation needed. If the page is not in the main memory, a page fault is generated. In this case, the process needs to change to the Blocked state and wait for I&#x2F;O to access the disk. This is the same procedure as in the first question.</p>
+<p>不一定。如果在 TLB 中没有找到一个页表项（TLB 缺失），页号被用来索引和处理页表。如果该页已经在主内存中，那么 TLB 被更新以包括新的页条目，同时由于不需要 I&#x2F;O 操作，进程继续执行。如果该页不在主存中，就会产生一个页故障。在这种情况下，进程需要改变为阻塞状态，等待 I&#x2F;O 访问磁盘。这与第一个问题中的程序相同。</p>
+</blockquote>
+<h4 id="c-Will-the-thread-change-state-if-an-address-reference-is-resolved-in-the-page-table-If-so-to-what-state-will-it-change"><a href="#c-Will-the-thread-change-state-if-an-address-reference-is-resolved-in-the-page-table-If-so-to-what-state-will-it-change" class="headerlink" title="c. Will the thread change state if an address reference is resolved in the page table? If so, to what state will it change?"></a>c. Will the thread change state if an address reference is resolved in the page table? If so, to what state will it change?</h4><p>c. 如果一个地址引用在页表中被解决，线程是否会改变状态？如果是的话，它将会改变到什么状态？</p>
+<p><strong>答：</strong></p>
+<blockquote>
+<p>No, because no I&#x2F;O operation is needed is the address reference is resolved in the page table, which indicates the page needed is loaded in the main memory already.</p>
+<p>不，因为不需要 I&#x2F;O 操作，因为地址引用在页表中被解决了，这表明需要的页已经加载在主存中。</p>
+</blockquote>
+<h3 id="9-18-A-certain-computer-provides-its-users-with-a-virtual-memory-space-of-2-32-bytes-The-computer-has-2-22-bytes-of-physical-memory-The-virtual-memory-is-implemented-by-paging-and-the-page-size-is-4-096-bytes-A-user-process-generates-the-virtual-address-11123456-Explain-how-the-system-establishes-the-corresponding-physical-location-Distinguish-between-software-and-hardware-operations"><a href="#9-18-A-certain-computer-provides-its-users-with-a-virtual-memory-space-of-2-32-bytes-The-computer-has-2-22-bytes-of-physical-memory-The-virtual-memory-is-implemented-by-paging-and-the-page-size-is-4-096-bytes-A-user-process-generates-the-virtual-address-11123456-Explain-how-the-system-establishes-the-corresponding-physical-location-Distinguish-between-software-and-hardware-operations" class="headerlink" title="9.18 A certain computer provides its users with a virtual memory space of $2^{32}$ bytes. The computer has $2^{22}$ bytes of physical memory. The virtual memory is implemented by paging, and the page size is 4,096 bytes. A user process generates the virtual address 11123456. Explain how the system establishes the corresponding physical location. Distinguish between software and hardware operations."></a>9.18 A certain computer provides its users with a virtual memory space of $2^{32}$ bytes. The computer has $2^{22}$ bytes of physical memory. The virtual memory is implemented by paging, and the page size is 4,096 bytes. A user process generates the virtual address 11123456. Explain how the system establishes the corresponding physical location. Distinguish between software and hardware operations.</h3><p>某台计算机为其用户提供了一个$2^{32}$字节的虚拟内存空间。该计算机有$2^{22}$字节的物理内存。虚拟内存是通过分页实现的，分页大小为 4,096 字节。一个用户进程产生了虚拟地址 11123456。解释一下系统如何建立相应的物理位置。区分软件和硬件的操作。</p>
+<p><strong>答：</strong></p>
+<blockquote>
+<p>The virtual address in binary form is</p>
+<p>0001 0001 0001 0010 0011 0100 0101 0110</p>
+<p>Since the page size is 2^12, the page table size is 2^20. Therefore the low order 12 bits 0100 0101 0110 are used as the displacement into the page, while the remaining 20 bits 0001 0001 0001 0010 0011 are used as the displacement in the page table. The offset bits are then concatenated to the resulting physical page number (from the page table), to form the final address.</p>
+<p>由于页面大小为 2^12，所以页表大小为 2^20。因此，低阶的 12 位 0100 0101 0110 被用作进入页面的位移，而剩下的 20 位 0001 0001 0001 0010 0011 被用作页表的位移。然后将偏移位与产生的物理页号（来自页表）相连接，形成最终地址。</p>
+</blockquote>
+<h3 id="9-21-Consider-the-following-page-reference-string"><a href="#9-21-Consider-the-following-page-reference-string" class="headerlink" title="9.21 Consider the following page reference string:"></a>9.21 Consider the following page reference string:</h3><p><code>7, 2, 3, 1, 2, 5, 3, 4, 6, 7, 7, 1, 0, 5, 4, 6, 2, 3, 0 , 1.</code></p>
+<p>Assuming demand paging with three frames, how many page faults would occur for the following replacement algorithms?</p>
+<p>假设有三个框架的需求分页，对于下面的替换算法，会出现多少个页面故障？</p>
+<h4 id="LRU-replacement"><a href="#LRU-replacement" class="headerlink" title="LRU replacement"></a>LRU replacement</h4><p><strong>答：</strong> 18</p>
+<h4 id="FIFO-replacement"><a href="#FIFO-replacement" class="headerlink" title="FIFO replacement"></a>FIFO replacement</h4><p><strong>答：</strong> 17</p>
+<h4 id="Optimal-replacement"><a href="#Optimal-replacement" class="headerlink" title="Optimal replacement"></a>Optimal replacement</h4><p><strong>答：</strong> 13</p>
+<h3 id="9-22-The-page-table-shown-in-Figure-9-32-is-for-a-system-with-16-bit-virtual-and-physical-addresses-and-with-4-096-byte-pages-The-reference-bit-is-set-to-1-when-the-page-has-been-referenced-Periodically-a-thread-zeroes-out-all-values-of-the-reference-bit-A-dash-for-a-page-frame-indicates-the-page-is-not-in-memory-The-page-replacement-algorithm-is-localized-LRU-and-all-numbers-are-provided-in-decimal"><a href="#9-22-The-page-table-shown-in-Figure-9-32-is-for-a-system-with-16-bit-virtual-and-physical-addresses-and-with-4-096-byte-pages-The-reference-bit-is-set-to-1-when-the-page-has-been-referenced-Periodically-a-thread-zeroes-out-all-values-of-the-reference-bit-A-dash-for-a-page-frame-indicates-the-page-is-not-in-memory-The-page-replacement-algorithm-is-localized-LRU-and-all-numbers-are-provided-in-decimal" class="headerlink" title="9.22 The page table shown in Figure 9.32 is for a system with 16-bit virtual and physical addresses and with 4,096-byte pages. The reference bit is set to 1 when the page has been referenced. Periodically, a thread zeroes out all values of the reference bit. A dash for a page frame indicates the page is not in memory. The page-replacement algorithm is localized LRU, and all numbers are provided in decimal."></a>9.22 The page table shown in Figure 9.32 is for a system with 16-bit virtual and physical addresses and with 4,096-byte pages. The reference bit is set to 1 when the page has been referenced. Periodically, a thread zeroes out all values of the reference bit. A dash for a page frame indicates the page is not in memory. The page-replacement algorithm is localized LRU, and all numbers are provided in decimal.</h3><p>图 9.32 所示的页表是针对一个具有 16 位虚拟和物理地址的系统和 4,096 字节的页。当页面被引用时，参考位被设置为 1。定期地，一个线程会将参考位的所有值清零。一个页框的破折号表示该页不在内存中。页面替换算法是本地化的 LRU，所有数字都以十进制提供。</p>
+<h4 id="a-Convert-the-following-virtual-addresses-in-hexadecimal-to-the-equivalent-physical-addresses-You-may-provide-answers-in-either"><a href="#a-Convert-the-following-virtual-addresses-in-hexadecimal-to-the-equivalent-physical-addresses-You-may-provide-answers-in-either" class="headerlink" title="a. Convert the following virtual addresses (in hexadecimal) to the equivalent physical addresses. You may provide answers in either"></a>a. Convert the following virtual addresses (in hexadecimal) to the equivalent physical addresses. You may provide answers in either</h4><p>将下列虚拟地址（十六进制）转换成相应的物理地址。你可以用以下两种方式提供答案</p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2023/08/15/20230815203909-2.png" alt="image-20210616125759526"></p>
+<center>Figure 9.32 Page table for Exercise 9.22.</center>
+
+<p>hexadecimal or decimal. Also set the reference bit for the appropriate entry in the page table.</p>
+<p>十六进制或十进制。同时为页表中的适当条目设置参考位。</p>
+<ul>
+<li><code>0xE12C</code></li>
+<li><code>0x3A9D</code></li>
+<li><code>0xA9D9</code></li>
+<li><code>0x7001</code></li>
+<li><code>0xACA1</code></li>
+</ul>
+<p><strong>答：</strong></p>
+<ul>
+<li><code>0xE12C</code> -&gt; <code>0x312C</code></li>
+<li><code>0x3A9D</code> -&gt; <code>0xAA9D</code></li>
+<li><code>0xA9D9</code> -&gt; <code>0x59D9</code></li>
+<li><code>0x7001</code> -&gt; <code>0xF001</code></li>
+<li><code>0xACA1</code> -&gt; <code>0x5CA1</code></li>
+</ul>
+<h4 id="b-Using-the-above-addresses-as-a-guide-provide-an-example-of-a-logical-address-in-hexadecimal-that-results-in-a-page-fault"><a href="#b-Using-the-above-addresses-as-a-guide-provide-an-example-of-a-logical-address-in-hexadecimal-that-results-in-a-page-fault" class="headerlink" title="b. Using the above addresses as a guide, provide an example of a logical address (in hexadecimal) that results in a page fault."></a>b. Using the above addresses as a guide, provide an example of a logical address (in hexadecimal) that results in a page fault.</h4><p>以上述地址为指导，提供一个导致页面故障的逻辑地址（十六进制）的例子。</p>
+<p><strong>答：</strong></p>
+<p><code>0x4...</code></p>
+<h4 id="c-From-what-set-of-page-frames-will-the-LRU-page-replacement-algorithm-choose-in-resolving-a-page-fault"><a href="#c-From-what-set-of-page-frames-will-the-LRU-page-replacement-algorithm-choose-in-resolving-a-page-fault" class="headerlink" title="c. From what set of page frames will the LRU page-replacement algorithm choose in resolving a page fault?"></a>c. From what set of page frames will the LRU page-replacement algorithm choose in resolving a page fault?</h4><p>在解决一个页面故障时，LRU 页面替换算法将从哪一组页面框架中选择？</p>
+<p><strong>答：</strong></p>
+<p>{9,1,14,13,8,0,4,2}</p>
+<h3 id="9-32-What-is-the-cause-of-thrashing-How-does-the-system-detect-thrashing-Once-it-detects-thrashing-what-can-the-system-do-to-eliminate-this-problem"><a href="#9-32-What-is-the-cause-of-thrashing-How-does-the-system-detect-thrashing-Once-it-detects-thrashing-what-can-the-system-do-to-eliminate-this-problem" class="headerlink" title="9.32 What is the cause of thrashing? How does the system detect thrashing? Once it detects thrashing, what can the system do to eliminate this problem?"></a>9.32 What is the cause of thrashing? How does the system detect thrashing? Once it detects thrashing, what can the system do to eliminate this problem?</h3><p>系统抖动的原因是什么？系统是如何检测系统抖动的？一旦检测到系统抖动，系统可以做什么来消除这个问题？</p>
+<p><strong>答：</strong> </p>
+<p>抖动是因为调用系统与 CPU 调度程序某些功能的冲突造成。</p>
+<blockquote>
+<p>The operating system monitors CPU utilization. If CPU utilization is too low, we increase the degree of multiprogramming by introducing a new process to the system. A global page-replacement algorithm is used; it replaces pages without regard to the process to which they belong. Now suppose that a process enters a new phase in its execution and needs more frames. It starts faulting and taking frames away from other processes. These processes need those pages, however, and so they also fault, taking frames from other processes. These faulting processes must use the paging device to swap pages in and out. As they queue up for the paging device, the ready queue empties. As processes wait for the paging device, CPU utilization decreases. The CPU scheduler sees the decreasing CPU utilization and increases the degree of multiprogramming as a result. The new process tries to get started by taking frames from running processes, causing more page faults and a longer queue for the paging device. As a result, CPU utilization drops even further, and the CPU scheduler tries to increase the degree of multiprogramming even more. Thrashing has occurred, and system throughput plunges. The pagefault rate increases tremendously. As a result, the effective memory-access time increases. No work is getting done, because the processes are spending all their time paging.</p>
+<p>————教材 P426</p>
+</blockquote>
+<blockquote>
+<p>Thrashing is caused by under allocation of the minimum number of pages required by a process, forcing it to continuously page fault. The system can detect thrashing by evaluating the level of CPU utilization as compared to the level of multiprogramming. It can be eliminated by reducing the level of multiprogramming.</p>
+<p>抖动是由于进程所需的最小页数分配不足而造成的，迫使它不断出现页面故障。系统可以通过评估 CPU 的利用率与多程序化水平的比较来检测阻塞。它可以通过减少多程序的水平来消除。</p>
+</blockquote>
+<h3 id="9-34-Consider-the-parameter-△-used-to-define-the-working-set-window-in-the-working-set-model-When-△-is-set-to-a-small-value-what-is-the-effect-on-the-page-fault-frequency-and-the-number-of-active-nonsuspended-processes-currently-executing-in-the-system-What-is-the-effect-when-△-is-set-to-a-very-high-value"><a href="#9-34-Consider-the-parameter-△-used-to-define-the-working-set-window-in-the-working-set-model-When-△-is-set-to-a-small-value-what-is-the-effect-on-the-page-fault-frequency-and-the-number-of-active-nonsuspended-processes-currently-executing-in-the-system-What-is-the-effect-when-△-is-set-to-a-very-high-value" class="headerlink" title="9.34 Consider the parameter △ used to define the working-set window in the working-set model. When △ is set to a small value, what is the effect on the page-fault frequency and the number of active (nonsuspended) processes currently executing in the system? What is the effect when △ is set to a very high value?"></a>9.34 Consider the parameter △ used to define the working-set window in the working-set model. When △ is set to a small value, what is the effect on the page-fault frequency and the number of active (nonsuspended) processes currently executing in the system? What is the effect when △ is set to a very high value?</h3><p>考虑用于定义工作集模型中工作集窗口的参数△。当△被设置为一个小值时，对页面故障频率和当前在系统中执行的活动（非暂停）进程的数量有什么影响？当△被设置为一个非常高的值时，会有什么影响？</p>
+<p><strong>答：</strong></p>
+<blockquote>
+<p>When set to a smaller value, it is possible to underestimate the set of resident pages of a process, allowing a process to be arranged, even if all the pages it needs are not hosted. This can result in a large number of page errors. </p>
+<p>When set to a larger value, overestimating the resident set of a process may prevent many processes from being scheduled, even though the pages they need reside. However, once a process is scheduled, it is not possible to generate a page fault when overestimating the resident set</p>
+<p>当设置为一个较小的值时，有可能低估一个进程的驻留页集，允许一个进程被安排，即使它所需要的所有页面没有被托管。这可能导致大量的页面错误。<br>当设置为一个较大的值时，高估一个进程的驻留集可能会阻止许多进程被安排，即使它们需要的页面驻留了。然而，一旦一个进程被调度，当高估驻留集时，就不可能产生一个页面错误</p>
+</blockquote>
+<hr>
+<p><strong>注：</strong></p>
+<p>翻译：deepl</p>
+<p>参考资料：</p>
+<p>[1] Operating System Concepts – 9th Edition 与 其参考答案</p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      <div style="display: inline-block;">
+        <img src="/images/dogecoin.png" alt="Framist dogecoin">
+        <p>dogecoin</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Framist
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://framist.github.io/1970/%E3%80%90%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%91/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%B9%9D/" title="【操作系统概念 - 作业 9】Virtual Memory">https://framist.github.io/1970/【操作系统】/操作系统作业九/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%AD%A6%E4%B9%A0/" rel="tag"># 学习</a>
+              <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag"># 操作系统</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/1970/%E3%80%90%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%91/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E5%85%AB/" rel="prev" title="【操作系统概念 - 作业 8】Main Memory">
+      <i class="fa fa-chevron-left"></i> 【操作系统概念 - 作业 8】Main Memory
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/1970/%E3%80%90%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%91/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%BD%9C%E4%B8%9A%E4%BA%8C/" rel="next" title="【操作系统概念 - 作业 2】Operating-System Structures">
+      【操作系统概念 - 作业 2】Operating-System Structures <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Operating-System-Concepts-Exercises-9"><span class="nav-number">1.</span> <span class="nav-text">Operating System Concepts Exercises 9</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Practice-Exercises"><span class="nav-number">1.1.</span> <span class="nav-text">Practice Exercises</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#9-1-Under-what-circumstances-do-page-faults-occur-Describe-the-actions-taken-by-the-operating-system-when-a-page-fault-occurs"><span class="nav-number">1.1.1.</span> <span class="nav-text">9.1 Under what circumstances do page faults occur? Describe the actions taken by the operating system when a page fault occurs.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-3-Consider-the-page-table-shown-in-Figure-9-30-for-a-system-with-12-bit-virtual-and-physical-addresses-and-with-256-byte-pages-The-list-of-free-page-frames-is-D-E-F-that-is-D-is-at-the-head-of-the-list-E-is-second-and-F-is-last"><span class="nav-number">1.1.2.</span> <span class="nav-text">9.3 Consider the page table shown in Figure 9.30 for a system with 12-bit virtual and physical addresses and with 256-byte pages. The list of free page frames is D, E, F (that is, D is at the head of the list, E is second, and F is last).</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#9EF"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">9EF</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#111"><span class="nav-number">1.1.2.2.</span> <span class="nav-text">111</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#700"><span class="nav-number">1.1.2.3.</span> <span class="nav-text">700</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0FF"><span class="nav-number">1.1.2.4.</span> <span class="nav-text">0FF</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-4-Consider-the-following-page-replacement-algorithms-Rank-these-algorithms-on-a-five-point-scale-from-%E2%80%9Cbad%E2%80%9D-to-%E2%80%9Cperfect%E2%80%9D-according-to-their-page-fault-rate-Separate-those-algorithms-that-suffer-from-Belady%E2%80%99s-anomaly-from-those-that-do-not"><span class="nav-number">1.1.3.</span> <span class="nav-text">9.4 Consider the following page-replacement algorithms. Rank these algorithms on a five-point scale from “bad” to “perfect” according to their page-fault rate. Separate those algorithms that suffer from Belady’s anomaly from those that do not.</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#a-LRU-replacement-%E6%9C%80%E8%BF%91%E6%9C%80%E4%B9%85%E6%9C%AA%E4%BD%BF%E7%94%A8%E7%BD%AE%E6%8D%A2%E7%AE%97%E6%B3%95%EF%BC%88LRU%EF%BC%89"><span class="nav-number">1.1.3.1.</span> <span class="nav-text">a. LRU replacement 最近最久未使用置换算法（LRU）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#b-FIFO-replacement-%E5%85%88%E8%BF%9B%E5%85%88%E5%87%BA%E7%BD%AE%E6%8D%A2%E7%AE%97%E6%B3%95%EF%BC%88FIFO%EF%BC%89"><span class="nav-number">1.1.3.2.</span> <span class="nav-text">b. FIFO replacement 先进先出置换算法（FIFO）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#c-Optimal-replacement-%E6%9C%80%E4%BD%B3%E7%BD%AE%E6%8D%A2%E7%AE%97%E6%B3%95%EF%BC%88OPT%EF%BC%89"><span class="nav-number">1.1.3.3.</span> <span class="nav-text">c. Optimal replacement 最佳置换算法（OPT）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#d-Second-chance-replacement"><span class="nav-number">1.1.3.4.</span> <span class="nav-text">d. Second-chance replacement</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-5-Discuss-the-hardware-support-required-to-support-demand-paging"><span class="nav-number">1.1.4.</span> <span class="nav-text">9.5 Discuss the hardware support required to support demand paging.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-7-Consider-the-two-dimensional-array-A"><span class="nav-number">1.1.5.</span> <span class="nav-text">9.7 Consider the two-dimensional array A:</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#a"><span class="nav-number">1.1.5.1.</span> <span class="nav-text">a.</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#b"><span class="nav-number">1.1.5.2.</span> <span class="nav-text">b.</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-8-Consider-the-following-page-reference-string"><span class="nav-number">1.1.6.</span> <span class="nav-text">9.8 Consider the following page reference string:</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Exercises"><span class="nav-number">1.2.</span> <span class="nav-text">Exercises</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#9-15-A-simplified-view-of-thread-states-is-Ready-Running-andBlocked-where-a-thread-is-either-ready-and-waiting-to-be-scheduled-is-running-on-the-processor-or-is-blocked-for-example-waiting-for-I-x2F-O-This-is-illustrated-in-Figure-9-31-Assuming-a-thread-is-in-the-Running-state-answer-the-following-questions-and-explain-your-answer"><span class="nav-number">1.2.1.</span> <span class="nav-text">9.15 A simplified view of thread states is Ready, Running, andBlocked, where a thread is either ready and waiting to be scheduled, is running on the processor, or is blocked (for example, waiting for I&#x2F;O). This is illustrated in Figure 9.31. Assuming a thread is in the Running state, answer the following questions, and explain your answer:</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#a-Will-the-thread-change-state-if-it-incurs-a-page-fault-If-so-to-what-state-will-it-change"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">a. Will the thread change state if it incurs a page fault? If so, to what state will it change?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#b-Will-the-thread-change-state-if-it-generates-a-TLBmiss-that-is-resolved-in-the-page-table-If-so-to-what-state-will-it-change"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">b. Will the thread change state if it generates a TLBmiss that is resolved in the page table? If so, to what state will it change?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#c-Will-the-thread-change-state-if-an-address-reference-is-resolved-in-the-page-table-If-so-to-what-state-will-it-change"><span class="nav-number">1.2.1.3.</span> <span class="nav-text">c. Will the thread change state if an address reference is resolved in the page table? If so, to what state will it change?</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-18-A-certain-computer-provides-its-users-with-a-virtual-memory-space-of-2-32-bytes-The-computer-has-2-22-bytes-of-physical-memory-The-virtual-memory-is-implemented-by-paging-and-the-page-size-is-4-096-bytes-A-user-process-generates-the-virtual-address-11123456-Explain-how-the-system-establishes-the-corresponding-physical-location-Distinguish-between-software-and-hardware-operations"><span class="nav-number">1.2.2.</span> <span class="nav-text">9.18 A certain computer provides its users with a virtual memory space of $2^{32}$ bytes. The computer has $2^{22}$ bytes of physical memory. The virtual memory is implemented by paging, and the page size is 4,096 bytes. A user process generates the virtual address 11123456. Explain how the system establishes the corresponding physical location. Distinguish between software and hardware operations.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-21-Consider-the-following-page-reference-string"><span class="nav-number">1.2.3.</span> <span class="nav-text">9.21 Consider the following page reference string:</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#LRU-replacement"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">LRU replacement</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#FIFO-replacement"><span class="nav-number">1.2.3.2.</span> <span class="nav-text">FIFO replacement</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Optimal-replacement"><span class="nav-number">1.2.3.3.</span> <span class="nav-text">Optimal replacement</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-22-The-page-table-shown-in-Figure-9-32-is-for-a-system-with-16-bit-virtual-and-physical-addresses-and-with-4-096-byte-pages-The-reference-bit-is-set-to-1-when-the-page-has-been-referenced-Periodically-a-thread-zeroes-out-all-values-of-the-reference-bit-A-dash-for-a-page-frame-indicates-the-page-is-not-in-memory-The-page-replacement-algorithm-is-localized-LRU-and-all-numbers-are-provided-in-decimal"><span class="nav-number">1.2.4.</span> <span class="nav-text">9.22 The page table shown in Figure 9.32 is for a system with 16-bit virtual and physical addresses and with 4,096-byte pages. The reference bit is set to 1 when the page has been referenced. Periodically, a thread zeroes out all values of the reference bit. A dash for a page frame indicates the page is not in memory. The page-replacement algorithm is localized LRU, and all numbers are provided in decimal.</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#a-Convert-the-following-virtual-addresses-in-hexadecimal-to-the-equivalent-physical-addresses-You-may-provide-answers-in-either"><span class="nav-number">1.2.4.1.</span> <span class="nav-text">a. Convert the following virtual addresses (in hexadecimal) to the equivalent physical addresses. You may provide answers in either</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#b-Using-the-above-addresses-as-a-guide-provide-an-example-of-a-logical-address-in-hexadecimal-that-results-in-a-page-fault"><span class="nav-number">1.2.4.2.</span> <span class="nav-text">b. Using the above addresses as a guide, provide an example of a logical address (in hexadecimal) that results in a page fault.</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#c-From-what-set-of-page-frames-will-the-LRU-page-replacement-algorithm-choose-in-resolving-a-page-fault"><span class="nav-number">1.2.4.3.</span> <span class="nav-text">c. From what set of page frames will the LRU page-replacement algorithm choose in resolving a page fault?</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-32-What-is-the-cause-of-thrashing-How-does-the-system-detect-thrashing-Once-it-detects-thrashing-what-can-the-system-do-to-eliminate-this-problem"><span class="nav-number">1.2.5.</span> <span class="nav-text">9.32 What is the cause of thrashing? How does the system detect thrashing? Once it detects thrashing, what can the system do to eliminate this problem?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-34-Consider-the-parameter-%E2%96%B3-used-to-define-the-working-set-window-in-the-working-set-model-When-%E2%96%B3-is-set-to-a-small-value-what-is-the-effect-on-the-page-fault-frequency-and-the-number-of-active-nonsuspended-processes-currently-executing-in-the-system-What-is-the-effect-when-%E2%96%B3-is-set-to-a-very-high-value"><span class="nav-number">1.2.6.</span> <span class="nav-text">9.34 Consider the parameter △ used to define the working-set window in the working-set model. When △ is set to a small value, what is the effect on the page-fault frequency and the number of active (nonsuspended) processes currently executing in the system? What is the effect when △ is set to a very high value?</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Framist</p>
+  <div class="site-description" itemprop="description">框架主义者的小窝</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">73</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/framist" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;framist" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:framist@163.com" title="E-Mail → mailto:framist@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/weixin_47102975" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_47102975" rel="noopener" target="_blank"><i class="fas fa-angle-right fa-fw"></i>CSDN</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/kuang-jia-zhu-yi-zhe" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;kuang-jia-zhu-yi-zhe" rel="noopener" target="_blank"><i class="fas fa-angle-right fa-fw"></i>知乎</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://framist.top/" title="http:&#x2F;&#x2F;framist.top&#x2F;" rel="noopener" target="_blank">个人主页</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://craft.framist.top/" title="https:&#x2F;&#x2F;craft.framist.top&#x2F;" rel="noopener" target="_blank">框架科工</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://framist.github.io/2020/10/11/%E6%88%91%E8%BA%AB%E8%BE%B9%E7%9A%84CS%E5%A4%A7%E4%BD%AC%E4%BB%AC/" title="https:&#x2F;&#x2F;framist.github.io&#x2F;2020&#x2F;10&#x2F;11&#x2F;%E6%88%91%E8%BA%AB%E8%BE%B9%E7%9A%84CS%E5%A4%A7%E4%BD%AC%E4%BB%AC&#x2F;">我身边的大佬们</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yuexiavqiufeng.github.io/" title="https:&#x2F;&#x2F;yuexiavqiufeng.github.io&#x2F;" rel="noopener" target="_blank">yuexiavqiufeng</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">浙 ICP 备 2022002862 号 -1 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-at"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Framist</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div><script>
+    let body = document.getElementsByTagName('body')[0];
+    body.addEventListener('click', (e) => {
+        let contentArr = ['欧拉~','ˋ( ° ▽、° ) ','RGB!','_(:з」∠)_','哼','?','¿框架?','QAQ',':3','<3','疯掉了',
+                            'whoami',
+                            'whoareU',
+                            'NULL',
+                            'None',
+                            ' ',
+                            '代价是什么呢？',
+                            '...',
+                            'Big Brother is Watching You',
+                            '喵~', '嗷~', '呜~', '哞~', '咩~', '咕~', '嘎~', '嘤~',
+                            '你看到了。',
+                            '¿爱情障眼法?','¿物种认同障碍?',
+                            '微润欧美，小润终南山，中润润与市，大润中南海',
+                            'init param:<br/>1LTKvNaux7CjrNHJ09C0y87Eo7/Rrbu3zfm4tKOsus7Ksbb41rmjv9a5zqrWucv51rmjrLTLzsTT1rrOtOajvw==',
+                            '这里没有时间的意义',
+                            '嘿嘿嘿，好想被随机异或哦，<br/>嘿嘿嘿，嘿嘿嘿，异或我的异或',
+                            '记忆赋予时间的意义，而不是时间赋予记忆的意义',
+                            '放弃 P ∨ ¬P 吧！',
+                            '抽象是普适性的代价 —— 3b1b',
+                            '得易见平凡，仿照上例显然',
+                            '留作习题答案略，读者自证不难',
+                            '反之亦然同理，推论自然成立',
+                            '略去过程 Q . E . D ，由上可知证毕'];
+        let randomNum = function (n) {
+            return Math.floor(Math.random() * n)
+        }
+        let span = document.createElement('span');
+        span.innerHTML = `${contentArr[randomNum(contentArr.length)]}`;
+        span.style.color = `rgb(${randomNum(256)},${randomNum(256)},${randomNum(256)})`;
+        span.style.position = 'absolute';
+        span.style.top = `${e.pageY}px`;
+        span.style.left = `${e.pageX}px`;
+        span.style.transition = 'all 1s ease';
+        span.style.zIndex = 20000;
+        body.appendChild(span)
+        setTimeout(()=>{
+            span.style.top = span.offsetTop - 25 + 'px';
+            span.style.opacity = 0;
+            setTimeout(()=>{span.remove()},1000)
+        },700)
+    })
+</script>
+
+
+<div style="width: 100px; height: 100px; margin: 0 auto;">
+<script type="text/javascript" id="clstr_globe" src="//clustrmaps.com/globe.js?d=gRWtX21uVt_tIdj_T64nMvo4FK1UrTWME23CVLOzNCg"></script>
+</div>
+<!--
+<script type="text/javascript" 
+color="255,255,255" 
+pointColor='64,184,209' 
+opacity='1' 
+zIndex="-1" 
+count="233" 
+src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js">
+</script>
+-->
+
+
+        
+<div class="busuanzi-count">
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script data-pjax>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '267a9d4a89b9b72b2229',
+      clientSecret: '2dba1f14d21da707ed6c4497fecc05d6178b4fa3',
+      repo        : 'blog-comment',
+      owner       : 'framist',
+      admin       : ['framist'],
+      id          : 'f43dbdc92d9b7bc7bf18d36a290c26e8',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+    </div>
+</body>
+</html>
