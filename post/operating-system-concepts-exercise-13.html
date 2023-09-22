@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Noto Serif SC:300,300italic,400,400italic,700,700italic|Source Code Pro:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-big-counter.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"framist.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Operating System Concepts Exercises 13I&#x2F;O Systems  操作系统作业 13  13.3, 13.4, 13.5 13.8, 13.9, 13.11, 13.12, 13.14  每题最后一个引用块是老师提供的参考答案">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【操作系统概念 - 作业 13】I&#x2F;O Systems">
+<meta property="og:url" content="https://framist.github.io/post/operating-system-concepts-exercise-13.html">
+<meta property="og:site_name" content="Framist&#39;s Little House">
+<meta property="og:description" content="Operating System Concepts Exercises 13I&#x2F;O Systems  操作系统作业 13  13.3, 13.4, 13.5 13.8, 13.9, 13.11, 13.12, 13.14  每题最后一个引用块是老师提供的参考答案">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-10-07T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-09-22T07:39:03.041Z">
+<meta property="article:author" content="Framist">
+<meta property="article:tag" content="学习">
+<meta property="article:tag" content="操作系统">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://framist.github.io/post/operating-system-concepts-exercise-13.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【操作系统概念 - 作业 13】I/O Systems | Framist's Little House</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Framist's Little House</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">◇ 自顶而下 - 面向未来 ◇</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://framist.github.io/post/operating-system-concepts-exercise-13.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Framist">
+      <meta itemprop="description" content="框架主义者的小窝">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Framist's Little House">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【操作系统概念 - 作业 13】I/O Systems
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-10-08 00:00:00" itemprop="dateCreated datePublished" datetime="2021-10-08T00:00:00+08:00">2021-10-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-09-22 15:39:03" itemprop="dateModified" datetime="2023-09-22T15:39:03+08:00">2023-09-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">计算机科学</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E8%AF%BE%E4%B8%9A%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">课业学习</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E8%AF%BE%E4%B8%9A%E5%AD%A6%E4%B9%A0/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index"><span itemprop="name">操作系统</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Operating-System-Concepts-Exercises-13"><a href="#Operating-System-Concepts-Exercises-13" class="headerlink" title="Operating System Concepts Exercises 13"></a><em>Operating System Concepts</em> Exercises 13</h1><center>I/O Systems</center>
+
+<p>操作系统作业 13</p>
+<ul>
+<li>13.3, 13.4, 13.5</li>
+<li>13.8, 13.9, 13.11, 13.12, 13.14</li>
+</ul>
+<p><em>每题最后一个引用块是老师提供的参考答案</em></p>
+<span id="more"></span>
+
+<h2 id="Practice-Exercises"><a href="#Practice-Exercises" class="headerlink" title="Practice Exercises"></a>Practice Exercises</h2><p>13.3, 13.4, 13.5</p>
+<h3 id="13-3-Why-might-a-system-use-interrupt-driven-I-x2F-O-to-manage-a-single-serial-port-and-polling-I-x2F-O-to-manage-a-front-end-processor-such-as-a-terminal-concentrator"><a href="#13-3-Why-might-a-system-use-interrupt-driven-I-x2F-O-to-manage-a-single-serial-port-and-polling-I-x2F-O-to-manage-a-front-end-processor-such-as-a-terminal-concentrator" class="headerlink" title="13.3 Why might a system use interrupt-driven I/O to manage a single serial port and polling I/O to manage a front-end processor, such as a terminal concentrator?"></a>13.3 Why might a system use interrupt-driven I/O to manage a single serial port and polling I/O to manage a front-end processor, such as a terminal concentrator?</h3><p>为什么一个系统可能使用中断驱动的 I/O 来管理一个单一的串行端口，而使用轮询 I/O 来管理一个前端处理器，如终端集中器？</p>
+<p><strong>答：</strong></p>
+<p>因事制宜。</p>
+<blockquote>
+<p><em>Polling can be more efficient than interrupt-driven I/O. This is the case when the I/O is frequent and of short duration.</em> Even though a single serial port will perform I/O relatively infrequently and should thus use interrupts, a collection of serial ports such as those in a terminal concentrator can produce a lot of short I/O operations, and interrupting for each one could create a heavy load on the system. A well-timed polling loop could alleviate that load without wasting many resources through looping with no I/O needed.</p>
+<p><em>轮询可能比中断驱动的 I/O 更有效。当 I/O 频繁且持续时间较短时，就会出现这种情况</em>。即使一个单一的串口会相对不频繁地执行 I/O，因此应该使用中断，但一个串口的集合，如终端集中器中的串口，会产生大量的短时 I/O 操作，为每个串口进行中断会给系统带来沉重的负担。一个适时的轮询循环可以减轻这种负载，而不需要在没有 I/O 的情况下通过循环浪费很多资源。</p>
+</blockquote>
+<h3 id="13-4-Polling-for-an-I-x2F-O-completion-can-waste-a-large-number-of-CPU-cycles-if-the-processor-iterates-a-busy-waiting-loop-many-times-before-the-I-x2F-O-completes-But-if-the-I-x2F-O-device-is-ready-for-service-polling-can-be-much-more-efficient-than-is-catching-and-dispatching-an-interrupt-Describe-a-hybrid-strategy-that-combines-polling-sleeping-and-interrupts-for-I-x2F-O-device-service-For-each-of-these-three-strategies-pure-polling-pure-interrupts-hybrid-describe-a-computing-environment-in-which-that-strategy-is-more-efficient-than-is-either-of-the-others"><a href="#13-4-Polling-for-an-I-x2F-O-completion-can-waste-a-large-number-of-CPU-cycles-if-the-processor-iterates-a-busy-waiting-loop-many-times-before-the-I-x2F-O-completes-But-if-the-I-x2F-O-device-is-ready-for-service-polling-can-be-much-more-efficient-than-is-catching-and-dispatching-an-interrupt-Describe-a-hybrid-strategy-that-combines-polling-sleeping-and-interrupts-for-I-x2F-O-device-service-For-each-of-these-three-strategies-pure-polling-pure-interrupts-hybrid-describe-a-computing-environment-in-which-that-strategy-is-more-efficient-than-is-either-of-the-others" class="headerlink" title="13.4 Polling for an I/O completion can waste a large number of CPU cycles if the processor iterates a busy-waiting loop many times before the I/O completes. But if the I/O device is ready for service, polling can be much more efficient than is catching and dispatching an interrupt. Describe a hybrid strategy that combines polling, sleeping, and interrupts for I/O device service. For each of these three strategies (pure polling, pure interrupts, hybrid), describe a computing environment in which that strategy is more efficient than is either of the others."></a>13.4 Polling for an I/O completion can waste a large number of CPU cycles if the processor iterates a busy-waiting loop many times before the I/O completes. But if the I/O device is ready for service, polling can be much more efficient than is catching and dispatching an interrupt. Describe a hybrid strategy that combines polling, sleeping, and interrupts for I/O device service. For each of these three strategies (pure polling, pure interrupts, hybrid), describe a computing environment in which that strategy is more efficient than is either of the others.</h3><p>如果处理器在 I/O 完成之前多次迭代一个忙于等待的循环，轮询 I/O 的完成可能会浪费大量的 CPU 周期。但是如果 I/O 设备已经准备好了，轮询的效率要比捕捉和分配中断的效率高得多。描述一种混合策略，结合轮询、休眠和中断为 I/O 设备服务。对于这三种策略中的每一种（纯轮询、纯中断、混合），描述一种计算环境，在这种环境中，该策略比其他任何一种都更有效率。</p>
+<p><strong>答：</strong></p>
+<blockquote>
+<p>A hybrid approach could switch between polling and interrupts depending on the length of the I/O operation wait. For example, we could poll and loop N times, and if the device is still busy at N+1, we could set an interrupt and sleep. This approach would avoid long busy-waiting cycles. This method would be best for very long or very short busy times. It would be inefficient it the I/O completes at N+T (where T is a small number of cycles) due to the overhead of polling plus setting up and catching interrupts.</p>
+<p>Pure polling is best with very short wait times. </p>
+<p>Interrupts are best with known long wait times.</p>
+<p>一个混合的方法可以根据 I/O 操作等待的长度在轮询和中断之间切换。例如，我们可以轮询并循环 N 次，如果设备在 N+1 时仍然很忙，我们可以设置一个中断并睡眠。这种方法可以避免长时间的忙碌等待周期。这种方法最适合于非常长或非常短的忙碌时间。如果 I/O 在 N+T 时完成（其中 T 是一个小的周期数），由于轮询加上设置和捕捉中断的开销，它的效率会很低。<br>纯粹的轮询在很短的等待时间内是最好的。<br>中断在已知的长等待时间下是最好的。</p>
+</blockquote>
+<h3 id="13-5-How-does-DMA-increase-system-concurrency-How-does-it-complicate-hardware-design"><a href="#13-5-How-does-DMA-increase-system-concurrency-How-does-it-complicate-hardware-design" class="headerlink" title="13.5 How does DMA increase system concurrency? How does it complicate hardware design?"></a>13.5 How does DMA increase system concurrency? How does it complicate hardware design?</h3><p>DMA 是如何提高系统并发性的？它是如何使硬件设计复杂化的？</p>
+<p><strong>答：</strong></p>
+<p>通过直接内存存取；窃取总线周期。</p>
+<blockquote>
+<p>DMA increases system concurrency by allowing the CPU to perform tasks while the DMA system transfers data via the system and memory buses. Hardware design is complicated because the DMA controller must be integrated into the system, and the system must allow the DMA controller to be a bus master. Cycle stealing may also be necessary to allow the CPU and DMA controller to share use of the memory bus.</p>
+<p>DMA 通过允许 CPU 执行任务，同时 DMA 系统通过系统和内存总线传输数据来增加系统并发性。硬件设计很复杂，因为 DMA 控制器必须被集成到系统中，而且系统必须允许 DMA 控制器成为总线主站。为了让 CPU 和 DMA 控制器共享内存总线的使用，可能还需要进行周期窃取。</p>
+</blockquote>
+<h2 id="Exercises"><a href="#Exercises" class="headerlink" title="Exercises"></a>Exercises</h2><p>13.8, 13.9, 13.11, 13.12, 13.14</p>
+<h3 id="13-8-When-multiple-interrupts-from-different-devices-appear-at-about-the-same-time-a-priority-scheme-could-be-used-to-determine-the-order-in-which-the-interrupts-would-be-serviced-Discuss-what-issues-need-to-be-considered-in-assigning-priorities-to-different-interrupts"><a href="#13-8-When-multiple-interrupts-from-different-devices-appear-at-about-the-same-time-a-priority-scheme-could-be-used-to-determine-the-order-in-which-the-interrupts-would-be-serviced-Discuss-what-issues-need-to-be-considered-in-assigning-priorities-to-different-interrupts" class="headerlink" title="13.8 When multiple interrupts from different devices appear at about the same time, a priority scheme could be used to determine the order in which the interrupts would be serviced. Discuss what issues need to be considered in assigning priorities to different interrupts."></a>13.8 When multiple interrupts from different devices appear at about the same time, a priority scheme could be used to determine the order in which the interrupts would be serviced. Discuss what issues need to be considered in assigning priorities to different interrupts.</h3><p>当来自不同设备的多个中断大约在同一时间出现时，可以用一个优先级方案来确定中断的服务顺序。讨论在给不同的中断分配优先级时需要考虑哪些问题。</p>
+<p><strong>答：</strong></p>
+<p>需要考虑各种各样的问题。</p>
+<blockquote>
+<p>A number of issues need to be considered in order to determine the priority scheme. </p>
+<ul>
+<li><p>Interrupts raised by devices should be given higher priority than traps generated by the user program; a device interrupt can therefore interrupt code used for handling system calls.</p>
+</li>
+<li><p>Second, interrupts that control devices might be given higher priority than interrupts that simply perform tasks such as copying data served up a device to user/kernel buffers, since such tasks can always be delayed. </p>
+</li>
+<li><p>Third, devices that have real-time constraints on when its data is handled should be given higher priority than other devices. </p>
+</li>
+<li><p>Also, devices that do not have any form of buffering for its data would have to be assigned higher priority since the data could be available only for a short period of time.</p>
+</li>
+</ul>
+<p> 为了确定优先级方案，需要考虑一些问题。</p>
+<ul>
+<li><p>由设备引发的中断应该比由用户程序产生的陷阱有更高的优先权；因此，设备中断可以中断用于处理系统调用的代码。</p>
+</li>
+<li><p>第二，控制设备的中断可能被赋予更高的优先级，而不是简单的执行任务的中断，例如将设备上的数据复制到用户 / 内核缓冲区，因为这样的任务总是可以被延迟。</p>
+</li>
+<li><p>第三，对于那些对其数据处理时间有实时限制的设备，应该比其他设备有更高的优先权。</p>
+</li>
+<li><p>另外，没有任何形式的数据缓冲的设备将不得不被分配更高的优先级，因为数据可能只在短时间内可用。</p>
+</li>
+</ul>
+</blockquote>
+<h3 id="13-9-What-are-the-advantages-and-disadvantages-of-supporting-memory-mapped-I-x2F-O-to-device-control-registers"><a href="#13-9-What-are-the-advantages-and-disadvantages-of-supporting-memory-mapped-I-x2F-O-to-device-control-registers" class="headerlink" title="13.9 What are the advantages and disadvantages of supporting memory-mapped I/O to device control registers?"></a>13.9 What are the advantages and disadvantages of supporting memory-mapped I/O to device control registers?</h3><p>支持内存映射的 I/O 到设备控制寄存器的优缺点是什么？</p>
+<p><strong>答：</strong></p>
+<blockquote>
+<p>The advantage of supporting memory-mapped I/O to device control registers is that it eliminates the need for special I/O instructions from the instruction set and therefore also does not require the enforcement of protection rules that prevent user programs from executing these I/O instructions. </p>
+<p>The disadvantage is that the resulting flexibility needs to be handled with care; <em>the memory translation units need to ensure that the memory addresses associated with the device control registers are not accessible by user programs in order to ensure protection.</em></p>
+<p>支持设备控制寄存器的内存映射 I/O 的优点是，它不需要指令集中的特殊 I/O 指令，因此也不需要执行保护规则，防止用户程序执行这些 I/O 指令。</p>
+<p>缺点是需要谨慎处理由此产生的灵活性；<em>内存转换单元需要确保与设备控制寄存器相关的内存地址不被用户程序访问，以确保保护。</em></p>
+</blockquote>
+<h3 id="13-11-In-most-multi-programmed-systems-user-programs-access-memory-through-virtual-addresses-while-the-operating-system-uses-raw-physical-addresses-to-access-memory-What-are-the-implications-of-this-design-for-the-initiation-of-I-x2F-O-operations-by-the-user-program-and-their-execution-by-the-operating-system"><a href="#13-11-In-most-multi-programmed-systems-user-programs-access-memory-through-virtual-addresses-while-the-operating-system-uses-raw-physical-addresses-to-access-memory-What-are-the-implications-of-this-design-for-the-initiation-of-I-x2F-O-operations-by-the-user-program-and-their-execution-by-the-operating-system" class="headerlink" title="13.11 In most multi-programmed systems, user programs access memory through virtual addresses, while the operating system uses raw physical addresses to access memory. What are the implications of this design for the initiation of I/O operations by the user program and their execution by the operating system?"></a>13.11 In most multi-programmed systems, user programs access memory through virtual addresses, while the operating system uses raw physical addresses to access memory. What are the implications of this design for the initiation of I/O operations by the user program and their execution by the operating system?</h3><p>在大多数多程序系统中，用户程序通过虚拟地址访问内存，而操作系统使用原始物理地址来访问内存。这种设计对用户程序启动 I/O 操作和操作系统执行这些操作有什么影响？</p>
+<p><strong>答：</strong></p>
+<blockquote>
+<p>The user program typically specifies a buffer for data to be transmitted to or from a device. This buffer exists in user space and is specified by a virtual address. The kernel needs to issue the I/O operation and needs to copy data between the user buffer and its own kernel buffer before or after the I/O operation. In order to access the user buffer, the kernel needs to translate the virtual address provided by the user program to the corresponding physical address within the context of the user program’s virtual address space. This translation is typically performed in software and therefore incurs overhead. </p>
+<p>Also, if the user buffer is not currently present in physical memory, the corresponding page(s) need to obtained from the swap space. This operation might require careful handling and might delay the data copy operation.</p>
+<p>用户程序通常指定一个缓冲区，用于向设备传输或从设备传输数据。这个缓冲区存在于用户空间，由一个虚拟地址指定。内核需要发出 I/O 操作，并需要在 I/O 操作之前或之后在用户缓冲区和它自己的内核缓冲区之间复制数据。为了访问用户缓冲区，内核需要将用户程序提供的虚拟地址转换为用户程序的虚拟地址空间内的相应物理地址。这种转换通常是在软件中进行的，因此会产生开销。<br>另外，如果用户缓冲区目前不在物理内存中，则需要从交换空间中获得相应的页面。这个操作可能需要仔细处理，并可能延迟数据复制的操作。</p>
+</blockquote>
+<h3 id="13-12-What-are-the-various-kinds-of-performance-overhead-associated-with-servicing-an-interrupt"><a href="#13-12-What-are-the-various-kinds-of-performance-overhead-associated-with-servicing-an-interrupt" class="headerlink" title="13.12 What are the various kinds of performance overhead associated with servicing an interrupt?"></a>13.12 What are the various kinds of performance overhead associated with servicing an interrupt?</h3><p>与服务中断有关的各种性能开销是什么？</p>
+<p><strong>答：</strong></p>
+<p>上下文切换的开销；流水线重启的开销。</p>
+<blockquote>
+<p>When an interrupt occurs the currently executing process is interrupted and its state is stored in the appropriate process control block. The interrupt service routine is then dispatched in order to deal with the interrupt. On completion of handling of the interrupt, the state of the process is restored and the process is resumed. Therefore, the performance overheads include <strong>the cost of saving and restoring process state and the cost of flushing the instruction pipeline and restoring the instructions into the pipeline when the process is restarted.</strong></p>
+<p>当一个中断发生时，当前执行的进程被中断，其状态被存储在适当的进程控制块中。然后，中断服务例程被分派，以处理中断。在完成对中断的处理后，进程的状态被恢复，进程被恢复。因此，性能开销包括<strong>保存和恢复进程状态的费用，以及冲洗指令流水线和在进程重新启动时将指令恢复到流水线的费用</strong>。</p>
+</blockquote>
+<h3 id="13-14-Typically-at-the-completion-of-a-device-I-x2F-O-a-single-interrupt-is-raised-and-appropriately-handled-by-the-host-processor-In-certain-settings-however-the-code-that-is-to-be-executed-at-the-completion-of-the-I-x2F-O-can-be-broken-into-two-separate-pieces-The-first-piece-executes-immediately-after-the-I-x2F-O-completes-and-schedules-a-second-interrupt-for-the-remaining-piece-of-code-to-be-executed-at-a-later-time-What-is-the-purpose-of-using-this-strategy-in-the-design-of-interrupt-handlers"><a href="#13-14-Typically-at-the-completion-of-a-device-I-x2F-O-a-single-interrupt-is-raised-and-appropriately-handled-by-the-host-processor-In-certain-settings-however-the-code-that-is-to-be-executed-at-the-completion-of-the-I-x2F-O-can-be-broken-into-two-separate-pieces-The-first-piece-executes-immediately-after-the-I-x2F-O-completes-and-schedules-a-second-interrupt-for-the-remaining-piece-of-code-to-be-executed-at-a-later-time-What-is-the-purpose-of-using-this-strategy-in-the-design-of-interrupt-handlers" class="headerlink" title="13.14 Typically, at the completion of a device I/O, a single interrupt is raised and appropriately handled by the host processor. In certain settings, however, the code that is to be executed at the completion of the I/O can be broken into two separate pieces. The first piece executes immediately after the I/O completes and schedules a second interrupt for the remaining piece of code to be executed at a later time. What is the purpose of using this strategy in the design of interrupt handlers?"></a>13.14 Typically, at the completion of a device I/O, a single interrupt is raised and appropriately handled by the host processor. In certain settings, however, the code that is to be executed at the completion of the I/O can be broken into two separate pieces. The first piece executes immediately after the I/O completes and schedules a second interrupt for the remaining piece of code to be executed at a later time. What is the purpose of using this strategy in the design of interrupt handlers?</h3><p>通常情况下，在设备 I/O 完成时，会引发一个中断，并由主机处理器适当处理。然而，在某些情况下，在 I/O 完成时要执行的代码可以分成两个独立的部分。第一块在 I/O 完成后立即执行，并为剩余的代码片断安排第二个中断，在以后的时间执行。在中断处理程序的设计中使用这种策略的目的是什么？</p>
+<p><strong>答：</strong></p>
+<p>区分优先级获得更佳的处理方案。</p>
+<blockquote>
+<p>The purpose of this strategy is to ensure that <em>the most critical aspect of the interrupt handling code is performed first and the less critical portions of the code are delayed for the future</em>. For instance, when a device finishes an I/O operation, the device-control operations corresponding to declaring the device as no longer being busy are more important in order to issue future operations. However, the task of copying the data provided by the device to the appropriate user or kernel memory regions can be delayed for a future point when the CPU is idle. In such a scenario, a lower-priority interrupt handler is used to perform the copy operation.</p>
+<p>这种策略的目的是确保<em>中断处理代码中最关键的部分首先被执行，而代码中不太关键的部分被推迟到未来</em>。例如，当一个设备完成一个 I/O 操作时，为了发出未来的操作，与宣布设备不再繁忙相对应的设备控制操作就比较重要。然而，将设备提供的数据复制到适当的用户或内核内存区域的任务可以推迟到未来 CPU 空闲时进行。在这种情况下，一个低优先级的中断处理程序被用来执行复制操作。</p>
+</blockquote>
+<hr>
+<p><strong>注：</strong></p>
+<p>翻译：deepl</p>
+<p>参考资料：</p>
+<p>[1] Operating System Concepts – 9th Edition 及其答案</p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      <div style="display: inline-block;">
+        <img src="/images/dogecoin.png" alt="Framist dogecoin">
+        <p>dogecoin</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Framist
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://framist.github.io/post/operating-system-concepts-exercise-13.html" title="【操作系统概念 - 作业 13】I&#x2F;O Systems">https://framist.github.io/post/operating-system-concepts-exercise-13.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%AD%A6%E4%B9%A0/" rel="tag"># 学习</a>
+              <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag"># 操作系统</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/post/operating-system-concepts-exercise-12.html" rel="prev" title="【操作系统概念 - 作业 12】File-System Implementation">
+      <i class="fa fa-chevron-left"></i> 【操作系统概念 - 作业 12】File-System Implementation
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/post/operating-system-concepts-exercise-11.html" rel="next" title="【操作系统概念 - 作业 11】File-System Interface">
+      【操作系统概念 - 作业 11】File-System Interface <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Operating-System-Concepts-Exercises-13"><span class="nav-number">1.</span> <span class="nav-text">Operating System Concepts Exercises 13</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Practice-Exercises"><span class="nav-number">1.1.</span> <span class="nav-text">Practice Exercises</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#13-3-Why-might-a-system-use-interrupt-driven-I-x2F-O-to-manage-a-single-serial-port-and-polling-I-x2F-O-to-manage-a-front-end-processor-such-as-a-terminal-concentrator"><span class="nav-number">1.1.1.</span> <span class="nav-text">13.3 Why might a system use interrupt-driven I&#x2F;O to manage a single serial port and polling I&#x2F;O to manage a front-end processor, such as a terminal concentrator?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#13-4-Polling-for-an-I-x2F-O-completion-can-waste-a-large-number-of-CPU-cycles-if-the-processor-iterates-a-busy-waiting-loop-many-times-before-the-I-x2F-O-completes-But-if-the-I-x2F-O-device-is-ready-for-service-polling-can-be-much-more-efficient-than-is-catching-and-dispatching-an-interrupt-Describe-a-hybrid-strategy-that-combines-polling-sleeping-and-interrupts-for-I-x2F-O-device-service-For-each-of-these-three-strategies-pure-polling-pure-interrupts-hybrid-describe-a-computing-environment-in-which-that-strategy-is-more-efficient-than-is-either-of-the-others"><span class="nav-number">1.1.2.</span> <span class="nav-text">13.4 Polling for an I&#x2F;O completion can waste a large number of CPU cycles if the processor iterates a busy-waiting loop many times before the I&#x2F;O completes. But if the I&#x2F;O device is ready for service, polling can be much more efficient than is catching and dispatching an interrupt. Describe a hybrid strategy that combines polling, sleeping, and interrupts for I&#x2F;O device service. For each of these three strategies (pure polling, pure interrupts, hybrid), describe a computing environment in which that strategy is more efficient than is either of the others.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#13-5-How-does-DMA-increase-system-concurrency-How-does-it-complicate-hardware-design"><span class="nav-number">1.1.3.</span> <span class="nav-text">13.5 How does DMA increase system concurrency? How does it complicate hardware design?</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Exercises"><span class="nav-number">1.2.</span> <span class="nav-text">Exercises</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#13-8-When-multiple-interrupts-from-different-devices-appear-at-about-the-same-time-a-priority-scheme-could-be-used-to-determine-the-order-in-which-the-interrupts-would-be-serviced-Discuss-what-issues-need-to-be-considered-in-assigning-priorities-to-different-interrupts"><span class="nav-number">1.2.1.</span> <span class="nav-text">13.8 When multiple interrupts from different devices appear at about the same time, a priority scheme could be used to determine the order in which the interrupts would be serviced. Discuss what issues need to be considered in assigning priorities to different interrupts.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#13-9-What-are-the-advantages-and-disadvantages-of-supporting-memory-mapped-I-x2F-O-to-device-control-registers"><span class="nav-number">1.2.2.</span> <span class="nav-text">13.9 What are the advantages and disadvantages of supporting memory-mapped I&#x2F;O to device control registers?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#13-11-In-most-multi-programmed-systems-user-programs-access-memory-through-virtual-addresses-while-the-operating-system-uses-raw-physical-addresses-to-access-memory-What-are-the-implications-of-this-design-for-the-initiation-of-I-x2F-O-operations-by-the-user-program-and-their-execution-by-the-operating-system"><span class="nav-number">1.2.3.</span> <span class="nav-text">13.11 In most multi-programmed systems, user programs access memory through virtual addresses, while the operating system uses raw physical addresses to access memory. What are the implications of this design for the initiation of I&#x2F;O operations by the user program and their execution by the operating system?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#13-12-What-are-the-various-kinds-of-performance-overhead-associated-with-servicing-an-interrupt"><span class="nav-number">1.2.4.</span> <span class="nav-text">13.12 What are the various kinds of performance overhead associated with servicing an interrupt?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#13-14-Typically-at-the-completion-of-a-device-I-x2F-O-a-single-interrupt-is-raised-and-appropriately-handled-by-the-host-processor-In-certain-settings-however-the-code-that-is-to-be-executed-at-the-completion-of-the-I-x2F-O-can-be-broken-into-two-separate-pieces-The-first-piece-executes-immediately-after-the-I-x2F-O-completes-and-schedules-a-second-interrupt-for-the-remaining-piece-of-code-to-be-executed-at-a-later-time-What-is-the-purpose-of-using-this-strategy-in-the-design-of-interrupt-handlers"><span class="nav-number">1.2.5.</span> <span class="nav-text">13.14 Typically, at the completion of a device I&#x2F;O, a single interrupt is raised and appropriately handled by the host processor. In certain settings, however, the code that is to be executed at the completion of the I&#x2F;O can be broken into two separate pieces. The first piece executes immediately after the I&#x2F;O completes and schedules a second interrupt for the remaining piece of code to be executed at a later time. What is the purpose of using this strategy in the design of interrupt handlers?</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Framist</p>
+  <div class="site-description" itemprop="description">框架主义者的小窝</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">73</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/framist" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;framist" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:framist@163.com" title="E-Mail → mailto:framist@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/weixin_47102975" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_47102975" rel="noopener" target="_blank"><i class="fas fa-angle-right fa-fw"></i>CSDN</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/kuang-jia-zhu-yi-zhe" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;kuang-jia-zhu-yi-zhe" rel="noopener" target="_blank"><i class="fas fa-angle-right fa-fw"></i>知乎</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://framist.top/" title="http:&#x2F;&#x2F;framist.top&#x2F;" rel="noopener" target="_blank">个人主页</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://craft.framist.top/" title="https:&#x2F;&#x2F;craft.framist.top&#x2F;" rel="noopener" target="_blank">框架科工</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://framist.github.io/2020/10/11/%E6%88%91%E8%BA%AB%E8%BE%B9%E7%9A%84CS%E5%A4%A7%E4%BD%AC%E4%BB%AC/" title="https:&#x2F;&#x2F;framist.github.io&#x2F;2020&#x2F;10&#x2F;11&#x2F;%E6%88%91%E8%BA%AB%E8%BE%B9%E7%9A%84CS%E5%A4%A7%E4%BD%AC%E4%BB%AC&#x2F;">我身边的大佬们</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yuexiavqiufeng.github.io/" title="https:&#x2F;&#x2F;yuexiavqiufeng.github.io&#x2F;" rel="noopener" target="_blank">yuexiavqiufeng</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">浙 ICP 备 2022002862 号 -1 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-at"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Framist</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div><script>
+    let body = document.getElementsByTagName('body')[0];
+    body.addEventListener('click', (e) => {
+        let contentArr = ['欧拉~','ˋ( ° ▽、° ) ','RGB!','_(:з」∠)_','哼','?','¿框架?','QAQ',':3','<3','疯掉了',
+                            'whoami',
+                            'whoareU',
+                            'NULL',
+                            'None',
+                            ' ',
+                            '代价是什么呢？',
+                            '...',
+                            'Big Brother is Watching You',
+                            '喵~', '嗷~', '呜~', '哞~', '咩~', '咕~', '嘎~', '嘤~',
+                            '你看到了。',
+                            '¿爱情障眼法?','¿物种认同障碍?',
+                            '微润欧美，小润终南山，中润润与市，大润中南海',
+                            'init param:<br/>1LTKvNaux7CjrNHJ09C0y87Eo7/Rrbu3zfm4tKOsus7Ksbb41rmjv9a5zqrWucv51rmjrLTLzsTT1rrOtOajvw==',
+                            '这里没有时间的意义',
+                            '嘿嘿嘿，好想被随机异或哦，<br/>嘿嘿嘿，嘿嘿嘿，异或我的异或',
+                            '记忆赋予时间的意义，而不是时间赋予记忆的意义',
+                            '放弃 P ∨ ¬P 吧！',
+                            '抽象是普适性的代价 —— 3b1b',
+                            '得易见平凡，仿照上例显然',
+                            '留作习题答案略，读者自证不难',
+                            '反之亦然同理，推论自然成立',
+                            '略去过程 Q . E . D ，由上可知证毕'];
+        let randomNum = function (n) {
+            return Math.floor(Math.random() * n)
+        }
+        let span = document.createElement('span');
+        span.innerHTML = `${contentArr[randomNum(contentArr.length)]}`;
+        span.style.color = `rgb(${randomNum(256)},${randomNum(256)},${randomNum(256)})`;
+        span.style.position = 'absolute';
+        span.style.top = `${e.pageY}px`;
+        span.style.left = `${e.pageX}px`;
+        span.style.transition = 'all 1s ease';
+        span.style.zIndex = 20000;
+        body.appendChild(span)
+        setTimeout(()=>{
+            span.style.top = span.offsetTop - 25 + 'px';
+            span.style.opacity = 0;
+            setTimeout(()=>{span.remove()},1000)
+        },700)
+    })
+</script>
+
+
+<div style="width: 100px; height: 100px; margin: 0 auto;">
+<script type="text/javascript" id="clstr_globe" src="//clustrmaps.com/globe.js?d=gRWtX21uVt_tIdj_T64nMvo4FK1UrTWME23CVLOzNCg"></script>
+</div>
+<!--
+<script type="text/javascript" 
+color="255,255,255" 
+pointColor='64,184,209' 
+opacity='1' 
+zIndex="-1" 
+count="233" 
+src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js">
+</script>
+-->
+
+
+        
+<div class="busuanzi-count">
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script data-pjax>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '267a9d4a89b9b72b2229',
+      clientSecret: '2dba1f14d21da707ed6c4497fecc05d6178b4fa3',
+      repo        : 'blog-comment',
+      owner       : 'framist',
+      admin       : ['framist'],
+      id          : 'f1379e9c2ef75e2a52fbd67821fb5a8c',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+    </div>
+</body>
+</html>

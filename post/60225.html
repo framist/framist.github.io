@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Noto Serif SC:300,300italic,400,400italic,700,700italic|Source Code Pro:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-big-counter.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"framist.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="软件与系统安全 - AFL 模糊测试实验 对 Coreutils 软件集合使用 AFL 进行模糊测试，撰写测试报告 在报告中详述：  （1）自己的整个实验过程（附必要截图）。  （2）第 “三、1（2）” 步骤的两种输入种子构造方法，对于 fuzzing 结果的影响（是否有影响？如果有，对最终获得的路径数量、路径数增长的速度等方面的具体影响）。  （3）第 “三、1” 基于编译插桩的 fuzzin">
+<meta property="og:type" content="article">
+<meta property="og:title" content="软件与系统安全 作业 - AFL 模糊测试实验">
+<meta property="og:url" content="https://framist.github.io/post/60225.html">
+<meta property="og:site_name" content="Framist&#39;s Little House">
+<meta property="og:description" content="软件与系统安全 - AFL 模糊测试实验 对 Coreutils 软件集合使用 AFL 进行模糊测试，撰写测试报告 在报告中详述：  （1）自己的整个实验过程（附必要截图）。  （2）第 “三、1（2）” 步骤的两种输入种子构造方法，对于 fuzzing 结果的影响（是否有影响？如果有，对最终获得的路径数量、路径数增长的速度等方面的具体影响）。  （3）第 “三、1” 基于编译插桩的 fuzzin">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-10b711cc70208930f7b5e82c0919c982.png">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-6ee1a096bb91fef327ea4f6c3cbe49a5.png">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-85dcacc94fa813e3973829d812ba2c78.png">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-9924f1d1d9f2889e83b6d2c26b36fa68.png">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-cb546ed4ed95ed9181e6cd02b2e0a992.png">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-c3921794c8531f3144330d38b582eb6d.png">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-9d6a939a0ff888895d92a9f851eab5a9.png">
+<meta property="article:published_time" content="2022-08-15T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-09-22T07:42:48.081Z">
+<meta property="article:author" content="Framist">
+<meta property="article:tag" content="二进制">
+<meta property="article:tag" content="软件与系统安全">
+<meta property="article:tag" content="模糊测试">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pic4.zhimg.com/80/v2-10b711cc70208930f7b5e82c0919c982.png">
+
+<link rel="canonical" href="https://framist.github.io/post/60225.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>软件与系统安全 作业 - AFL 模糊测试实验 | Framist's Little House</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Framist's Little House</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">◇ 自顶而下 - 面向未来 ◇</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://framist.github.io/post/60225.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Framist">
+      <meta itemprop="description" content="框架主义者的小窝">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Framist's Little House">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          软件与系统安全 作业 - AFL 模糊测试实验
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-08-16 00:00:00" itemprop="dateCreated datePublished" datetime="2022-08-16T00:00:00+08:00">2022-08-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-09-22 15:42:48" itemprop="dateModified" datetime="2023-09-22T15:42:48+08:00">2023-09-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">计算机科学</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">网络安全</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/%E4%BA%8C%E8%BF%9B%E5%88%B6/" itemprop="url" rel="index"><span itemprop="name">二进制</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="软件与系统安全-AFL-模糊测试实验"><a href="#软件与系统安全-AFL-模糊测试实验" class="headerlink" title="软件与系统安全 - AFL 模糊测试实验"></a>软件与系统安全 - AFL 模糊测试实验</h1><blockquote>
+<p>对 Coreutils 软件集合使用 AFL 进行模糊测试，撰写测试报告</p>
+<p>在报告中详述： </p>
+<p>（1）自己的整个实验过程（附必要截图）。 </p>
+<p>（2）第 “三、1（2）” 步骤的两种输入种子构造方法，对于 fuzzing 结果的影响（是否有影响？如果有，对最终获得的路径数量、路径数增长的速度等方面的具体影响）。 </p>
+<p>（3）第 “三、1” 基于编译插桩的 fuzzing 与第 “三、2” 的基于 Qemu 动态插桩的 fuzzing，从基本原理和实验效果两方面的差异。</p>
+</blockquote>
+<span id="more"></span>
+
+<p>[TOC]</p>
+<h2 id="一、实验环境"><a href="#一、实验环境" class="headerlink" title="一、实验环境"></a>一、实验环境</h2><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">OS: Ubuntu 20.04 focal</span><br><span class="line">Kernel: x86_64 Linux 5.4.0-110-generic</span><br><span class="line">Shell: zsh 5.8</span><br><span class="line">CPU: Intel Core i5-9300H @ 8x 4.1GHz [67.0°C]</span><br><span class="line">GPU: NVIDIA GeForce GTX 1050</span><br><span class="line">RAM: 5155MiB / 15789MiB</span><br></pre></td></tr></tbody></table></figure>
+
+
+<h2 id="二、实验准备"><a href="#二、实验准备" class="headerlink" title="二、实验准备"></a>二、实验准备</h2><h3 id="下载并安装-AFL"><a href="#下载并安装-AFL" class="headerlink" title="下载并安装 AFL"></a>下载并安装 AFL</h3><p>下载地址：<a target="_blank" rel="noopener" href="https://github.com/google/AFL">https://github.com/google/AFL</a> </p>
+<p>1）按照默认提供的安装方法进行安装，安装完成后 <code>afl-gcc</code> 和 <code>afl-fuzz</code> 均可正常使用。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/google/AFL.git </span><br><span class="line">cd AFL</span><br><span class="line">make # 编译 AFL</span><br><span class="line">sudo make install # 在系统中安装 AFL</span><br></pre></td></tr></tbody></table></figure>
+
+<p>验证 <code>afl-gcc</code> 和 <code>afl-fuzz</code> 均可正常使用：</p>
+<p><img data-src="https://pic4.zhimg.com/80/v2-10b711cc70208930f7b5e82c0919c982.png" alt="Image"></p>
+<p>2）进入 qemu_mode 目录，使用 build_qemu_support.sh 脚本构建 FL-Qemu。</p>
+<p>（可能需安装 libtool,  libtool-bin 等依赖）。如 AFL-Qemu 安装存在问题，可预先安装 qemu</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install libini-config-dev libtool-bin automake bison libglib2.0-dev qemu -y </span><br><span class="line">cd qemu_mode</span><br><span class="line">./build_qemu_support.sh # 注意需要Python2 环境</span><br></pre></td></tr></tbody></table></figure>
+
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">/home/hxn/桌面/AFL_studio/AFL/qemu_mode/qemu-2.10.0/linux-user/syscall.c:261:16: error: static declaration of ‘gettid’ follows non-static declaration</span><br><span class="line">  261 | _syscall0(int, gettid)</span><br><span class="line">      |                ^~~~~~</span><br><span class="line">/home/hxn/桌面/AFL_studio/AFL/qemu_mode/qemu-2.10.0/linux-user/syscall.c:191:13: note: in definition of macro ‘_syscall0’</span><br><span class="line">  191 | static type name (void)   \</span><br><span class="line">      |             ^~~~</span><br><span class="line">In file included from /usr/include/unistd.h:1170,</span><br><span class="line">                 from /home/hxn/桌面/AFL_studio/AFL/qemu_mode/qemu-2.10.0/include/qemu/osdep.h:75,</span><br><span class="line">                 from /home/hxn/桌面/AFL_studio/AFL/qemu_mode/qemu-2.10.0/linux-user/syscall.c:20:</span><br><span class="line">/usr/include/x86_64-linux-gnu/bits/unistd_ext.h:34:16: note: previous declaration of ‘gettid’ was here</span><br><span class="line">   34 | extern __pid_t gettid (void) __THROW;</span><br><span class="line">      |                ^~~~~~</span><br><span class="line">/home/hxn/桌面/AFL_studio/AFL/qemu_mode/qemu-2.10.0/linux-user/ioctls.h:173:9: error: ‘SIOCGSTAMP’ undeclared here (not in a function); did you mean ‘SIOCSRARP’?</span><br><span class="line">  173 |   IOCTL(SIOCGSTAMP, IOC_R, MK_PTR(MK_STRUCT(STRUCT_timeval)))</span><br><span class="line">      |         ^~~~~~~~~~</span><br><span class="line">/home/hxn/桌面/AFL_studio/AFL/qemu_mode/qemu-2.10.0/linux-user/syscall.c:5597:23: note: in definition of macro ‘IOCTL’</span><br><span class="line"> 5597 |     { TARGET_ ## cmd, cmd, #cmd, access, 0, {  __VA_ARGS__ } },</span><br><span class="line">      |                       ^~~</span><br><span class="line">/home/hxn/桌面/AFL_studio/AFL/qemu_mode/qemu-2.10.0/linux-user/ioctls.h:174:9: error: ‘SIOCGSTAMPNS’ undeclared here (not in a function); did you mean ‘SIOCGSTAMP_OLD’?</span><br><span class="line">  174 |   IOCTL(SIOCGSTAMPNS, IOC_R, MK_PTR(MK_STRUCT(STRUCT_timespec)))</span><br><span class="line">      |         ^~~~~~~~~~~~</span><br><span class="line">/home/hxn/桌面/AFL_studio/AFL/qemu_mode/qemu-2.10.0/linux-user/syscall.c:5597:23: note: in definition of macro ‘IOCTL’</span><br><span class="line"> 5597 |     { TARGET_ ## cmd, cmd, #cmd, access, 0, {  __VA_ARGS__ } },</span><br><span class="line">      |                       ^~~</span><br><span class="line">make[1]: *** [/home/hxn/桌面/AFL_studio/AFL/qemu_mode/qemu-2.10.0/rules.mak:66：linux-user/syscall.o] 错误 1</span><br><span class="line">make: *** [Makefile:326：subdir-x86_64-linux-user] 错误 2</span><br></pre></td></tr></tbody></table></figure>
+
+<p>参考这个 issue：<a target="_blank" rel="noopener" href="https://github.com/google/AFL/issues/41">https://github.com/google/AFL/issues/41</a></p>
+<p>使用这个项目代替：<a target="_blank" rel="noopener" href="https://github.com/blurbdust/AFL%EF%BC%88%E6%88%96%E8%80%85%E4%BD%BF%E7%94%A8">https://github.com/blurbdust/AFL（或者使用</a> google 更新的 patch 更好）</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">get clone https://github.com/blurbdust/AFL.git</span><br></pre></td></tr></tbody></table></figure>
+<p>之后按照上面的步骤进行安装。</p>
+<p>出现这个就说明安装成功了：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[+] Build process successful!</span><br><span class="line">[*] Copying binary...</span><br><span class="line">-rwxrwxr-x 1 hxn hxn 16787120 5月  24 00:09 ../afl-qemu-trace</span><br><span class="line">[+] Successfully created '../afl-qemu-trace'.</span><br><span class="line">[*] Testing the build...</span><br><span class="line">[+] Instrumentation tests passed. </span><br><span class="line">[+] All set, you can now use the -Q mode in afl-fuzz!</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="下载目标程序集（coreutils-9-1-tar-gz）"><a href="#下载目标程序集（coreutils-9-1-tar-gz）" class="headerlink" title="下载目标程序集（coreutils-9.1.tar.gz）"></a>下载目标程序集（coreutils-9.1.tar.gz）</h3><p>下载地址：<a target="_blank" rel="noopener" href="https://ftp.gnu.org/gnu/coreutils/">https://ftp.gnu.org/gnu/coreutils/</a> </p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https://ftp.gnu.org/gnu/coreutils/coreutils-9.1.tar.gz</span><br><span class="line">tar -zxvf coreutils-9.1.tar.gz</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<h2 id="三、实验步骤"><a href="#三、实验步骤" class="headerlink" title="三、实验步骤"></a>三、实验步骤</h2><h3 id="1-基于编译器的目标程序插桩"><a href="#1-基于编译器的目标程序插桩" class="headerlink" title="1.  基于编译器的目标程序插桩"></a>1.  基于编译器的目标程序插桩</h3><h4 id="（1）使用-afl-gcc，生成-coreutils-的每个二进制程序，具体步骤为："><a href="#（1）使用-afl-gcc，生成-coreutils-的每个二进制程序，具体步骤为：" class="headerlink" title="（1）使用 afl-gcc，生成 coreutils 的每个二进制程序，具体步骤为："></a>（1）使用 <code>afl-gcc</code>，生成 coreutils 的每个二进制程序，具体步骤为：</h4><p>a）查看 coreutils 的 configure 选项，指定 <code>cc=afl-gcc</code>。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./configure CC=afl-gcc</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<blockquote>
+<p>这一步一般用来生成 Makefile，为下一步的编译做准备，你可以通过在 configure 后加上参数来对安装进行控制，比如代码：<code>./configure --prefix=/usr</code> 上面的意思是将该软件安装在 /usr 下面，执行文件就会安装在 /usr/bin. 同时一些软件的配置文件你可以通过指定 –sys-config= 参数进行设定。有一些软件还可以加上 –with、–enable、–without、–disable 等等参数对编译加以控制，你可以通过允许 ./configure –help 察看详细的说明帮助</p>
+</blockquote>
+<p>b）生成 coreutils 二进制程序集。make 出来的每一个插桩后二进制均在 coreutils-9.1/src 目录下。 </p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<h4 id="（2）为-coreutils-的特定程序确定输入种子"><a href="#（2）为-coreutils-的特定程序确定输入种子" class="headerlink" title="（2）为 coreutils 的特定程序确定输入种子"></a>（2）为 coreutils 的特定程序确定输入种子</h4><p>coreutils 包含很多二进制程序，自己从中选择 3 个感兴趣的程序进行 fuzzing。</p>
+<p>构造输入种子列表，存放于 coreutils-9.1/src/input 目录下，构造方法可以选择： </p>
+<p>a）学习 coreutils 文档中这 3 个程序的命令行选项，用这些命令行选项构建<br>（文档见 <a target="_blank" rel="noopener" href="https://www.gnu.org/software/coreutils/manual/coreutils.html%EF%BC%89%E3%80%82">https://www.gnu.org/software/coreutils/manual/coreutils.html）。</a> </p>
+<p>b）直接用随机构造的任意字符串作为输入种子。 </p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mkdir input</span><br><span class="line">mkdir output</span><br><span class="line">cp ../../AFL/dictionaries/* ./input # 将字典拷贝到input目录下</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+
+
+<h4 id="（3）在-coreutils-9-1-x2F-src-目录下，使用-afl-fuzz-i-input-o-output-程序名-进行-fuzzing，一段时间后终止-fuzzing-并在-coreutils-9-1-src-output-目录下查看测试结果。"><a href="#（3）在-coreutils-9-1-x2F-src-目录下，使用-afl-fuzz-i-input-o-output-程序名-进行-fuzzing，一段时间后终止-fuzzing-并在-coreutils-9-1-src-output-目录下查看测试结果。" class="headerlink" title="（3）在 coreutils-9.1/src 目录下，使用 afl-fuzz -i input -o output ./[程序名] @@进行 fuzzing，一段时间后终止 fuzzing 并在 coreutils-9.1/src/output 目录下查看测试结果。"></a>（3）在 coreutils-9.1/src 目录下，使用 <code>afl-fuzz -i input -o output ./[程序名] @@</code>进行 fuzzing，一段时间后终止 fuzzing 并在 <code>coreutils-9.1/src/output</code> 目录下查看测试结果。</h4><p>出现的问题大都可以按提示进行修复</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[-] Hmm, your system is configured to send core dump notifications to an</span><br><span class="line">    external utility. This will cause issues: there will be an extended delay</span><br><span class="line">    between stumbling upon a crash and having this information relayed to the</span><br><span class="line">    fuzzer via the standard waitpid() API.</span><br><span class="line"></span><br><span class="line">    To avoid having crashes misinterpreted as timeouts, please log in as root</span><br><span class="line">    and temporarily modify /proc/sys/kernel/core_pattern, like so:</span><br><span class="line"></span><br><span class="line">    echo core &gt;/proc/sys/kernel/core_pattern</span><br></pre></td></tr></tbody></table></figure>
+<p>解决方法：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">su</span><br><span class="line">echo core &gt;/proc/sys/kernel/core_pattern</span><br></pre></td></tr></tbody></table></figure>
+<p>出现问题：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Whoops, your system uses on-demand CPU frequency scaling, adjusted</span><br><span class="line">    between 781 and 4003 MHz. Unfortunately, the scaling algorithm in the</span><br><span class="line">    kernel is imperfect and can miss the short-lived processes spawned by</span><br><span class="line">    afl-fuzz. To keep things moving, run these commands as root:</span><br><span class="line"></span><br><span class="line">    cd /sys/devices/system/cpu</span><br><span class="line">    echo performance | tee cpu*/cpufreq/scaling_governor</span><br><span class="line"></span><br><span class="line">    You can later go back to the original state by replacing 'performance' with</span><br><span class="line">    'ondemand'. If you don't want to change the settings, set AFL_SKIP_CPUFREQ</span><br><span class="line">    to make afl-fuzz skip this check - but expect some performance drop.</span><br></pre></td></tr></tbody></table></figure>
+<p>解决方法：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">su</span><br><span class="line">cd /sys/devices/system/cpu</span><br><span class="line">echo performance | tee cpu*/cpufreq/scaling_governor</span><br></pre></td></tr></tbody></table></figure>
+
+<p>出现问题：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[-]  SYSTEM ERROR : Unable to create './output/queue/id:000000,orig:gif.dict'</span><br><span class="line">    Stop location : link_or_copy(), afl-fuzz.c:2959</span><br><span class="line">       OS message : Invalid argument</span><br></pre></td></tr></tbody></table></figure>
+
+<p>推测是文件系统的问题，目前运行在 NTFS 中，复制整个工程到 Linux 系统盘上试试。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">afl-fuzz -i input -o output ./od -x @@</span><br></pre></td></tr></tbody></table></figure>
+
+
+<p><img data-src="https://pic4.zhimg.com/80/v2-6ee1a096bb91fef327ea4f6c3cbe49a5.png" alt="Image"></p>
+<p><img data-src="https://pic4.zhimg.com/80/v2-85dcacc94fa813e3973829d812ba2c78.png" alt="Image"></p>
+<p><img data-src="https://pic4.zhimg.com/80/v2-9924f1d1d9f2889e83b6d2c26b36fa68.png" alt="Image"></p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/unr4v31/p/15237728.html">https://www.cnblogs.com/unr4v31/p/15237728.html</a></p>
+<p>什么时候可以停止 fuzzer？其中一个指标可以参考 <code>cycles done</code> 的数字颜色，依次会出现洋葱红色，黄色，蓝色，绿色，变成绿色时就很难产生新的 crash 文件了。</p>
+</blockquote>
+<h3 id="2-基于-AFL-Qemu-的目标程序动态插桩"><a href="#2-基于-AFL-Qemu-的目标程序动态插桩" class="headerlink" title="2.  基于 AFL-Qemu 的目标程序动态插桩"></a>2.  基于 AFL-Qemu 的目标程序动态插桩</h3><p>（1）重新生成 coreutils 的每个二进制程序（不使用 afl-gcc，而是用默认 gcc 进行 configure/make）。 </p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./configure</span><br><span class="line">make</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>（2）使用 afl-fuzz 的 -Q 选项，对你的 3 个 coreutils 程序进行 fuzzing。构造输入种子的方法同上。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">afl-fuzz -Q  -i input -o output od -x @@</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>可以看出相比直接插装要慢好多</p>
+<p><img data-src="https://pic4.zhimg.com/80/v2-cb546ed4ed95ed9181e6cd02b2e0a992.png" alt="Image"></p>
+<p><img data-src="https://pic4.zhimg.com/80/v2-c3921794c8531f3144330d38b582eb6d.png" alt="Image"></p>
+<p><img data-src="https://pic4.zhimg.com/80/v2-9d6a939a0ff888895d92a9f851eab5a9.png" alt="Image"></p>
+<h2 id="四、问题思考"><a href="#四、问题思考" class="headerlink" title="四、问题思考"></a>四、问题思考</h2><h3 id="第“三、1（2）”步骤的两种输入种子构造方法，对于-fuzzing-结果的影响（是否有影响？如果有，对最终获得的路径数量、路径数增长的速度等方面的具体影响）。"><a href="#第“三、1（2）”步骤的两种输入种子构造方法，对于-fuzzing-结果的影响（是否有影响？如果有，对最终获得的路径数量、路径数增长的速度等方面的具体影响）。" class="headerlink" title="第“三、1（2）”步骤的两种输入种子构造方法，对于 fuzzing 结果的影响（是否有影响？如果有，对最终获得的路径数量、路径数增长的速度等方面的具体影响）。"></a>第 “三、1（2）” 步骤的两种输入种子构造方法，对于 fuzzing 结果的影响（是否有影响？如果有，对最终获得的路径数量、路径数增长的速度等方面的具体影响）。</h3><p>有影响：因为 AFL 可以通过启发式算法自动确定输入，但是如果直接用随机构造，最开始只能适应一般情况，而对特定程序的针对性不强。根据程序的输入构建一个高质量的语料库，能更好指导变异生成的随机输入，能发现更多路径数量，路径增长速度更快，就能获得更快的 Fuzzing 速度。</p>
+<h3 id="第“三、1”基于编译插桩的-fuzzing-与第“三、2”的基于-Qemu-动态插桩的-fuzzing，从基本原理和实验效果两方面的差异。"><a href="#第“三、1”基于编译插桩的-fuzzing-与第“三、2”的基于-Qemu-动态插桩的-fuzzing，从基本原理和实验效果两方面的差异。" class="headerlink" title="第“三、1”基于编译插桩的 fuzzing 与第“三、2”的基于 Qemu 动态插桩的 fuzzing，从基本原理和实验效果两方面的差异。"></a>第 “三、1” 基于编译插桩的 fuzzing 与第 “三、2” 的基于 Qemu 动态插桩的 fuzzing，从基本原理和实验效果两方面的差异。</h3><p><strong>基本原理：</strong> 插桩分为动态插桩和静态插桩。<em>基于编译插桩的 fuzzing</em> 就是静态插桩，静态插桩发生在编译之前，PREPROCESS 这个阶段；<em>基于 Qemu 插桩的 fuzzing</em> 是动态插桩，在程序运行的时候发生，也就是每个 INPUTEVAL 阶段。因此，静态插桩相较于动态插桩有更优的开销，而动态插桩则更加容易对 DLL 进行插桩。除了基于源码的插桩，还有基于二进制文件的插桩，即未知源码的插桩技术。常见的动态插桩工具有 DynInst、Dynamo、RIOPIN、Valgrind、QEMU 等。</p>
+<p><strong>实验效果：</strong>基于编译插桩的 fuzzing 的速度要远高于基于 Qemu 动态插桩的 fuzzing。但是基于 Qemu 动态插 桩的 fuzzing 不需要获取程序的源码，可执行文件就可以。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/128972800">https://zhuanlan.zhihu.com/p/128972800</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/c70afbbf5172">https://www.jianshu.com/p/c70afbbf5172</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/youkawa/article/details/45696317">https://blog.csdn.net/youkawa/article/details/45696317</a></p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      <div style="display: inline-block;">
+        <img src="/images/dogecoin.png" alt="Framist dogecoin">
+        <p>dogecoin</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Framist
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://framist.github.io/post/60225.html" title="软件与系统安全 作业 - AFL 模糊测试实验">https://framist.github.io/post/60225.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E4%BA%8C%E8%BF%9B%E5%88%B6/" rel="tag"># 二进制</a>
+              <a href="/tags/%E8%BD%AF%E4%BB%B6%E4%B8%8E%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8/" rel="tag"># 软件与系统安全</a>
+              <a href="/tags/%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95/" rel="tag"># 模糊测试</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/post/21546.html" rel="prev" title="软件与系统安全 作业 - 栈溢出利用的分析">
+      <i class="fa fa-chevron-left"></i> 软件与系统安全 作业 - 栈溢出利用的分析
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/post/ARQ-simulation.html" rel="next" title="【计网作业】选择重发 ARQ 算法模拟">
+      【计网作业】选择重发 ARQ 算法模拟 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BD%AF%E4%BB%B6%E4%B8%8E%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8-AFL-%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E5%AE%9E%E9%AA%8C"><span class="nav-number">1.</span> <span class="nav-text">软件与系统安全 - AFL 模糊测试实验</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%AE%9E%E9%AA%8C%E7%8E%AF%E5%A2%83"><span class="nav-number">1.1.</span> <span class="nav-text">一、实验环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E5%AE%9E%E9%AA%8C%E5%87%86%E5%A4%87"><span class="nav-number">1.2.</span> <span class="nav-text">二、实验准备</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD%E5%B9%B6%E5%AE%89%E8%A3%85-AFL"><span class="nav-number">1.2.1.</span> <span class="nav-text">下载并安装 AFL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD%E7%9B%AE%E6%A0%87%E7%A8%8B%E5%BA%8F%E9%9B%86%EF%BC%88coreutils-9-1-tar-gz%EF%BC%89"><span class="nav-number">1.2.2.</span> <span class="nav-text">下载目标程序集（coreutils-9.1.tar.gz）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E5%AE%9E%E9%AA%8C%E6%AD%A5%E9%AA%A4"><span class="nav-number">1.3.</span> <span class="nav-text">三、实验步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%9F%BA%E4%BA%8E%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%9B%AE%E6%A0%87%E7%A8%8B%E5%BA%8F%E6%8F%92%E6%A1%A9"><span class="nav-number">1.3.1.</span> <span class="nav-text">1.  基于编译器的目标程序插桩</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%EF%BC%881%EF%BC%89%E4%BD%BF%E7%94%A8-afl-gcc%EF%BC%8C%E7%94%9F%E6%88%90-coreutils-%E7%9A%84%E6%AF%8F%E4%B8%AA%E4%BA%8C%E8%BF%9B%E5%88%B6%E7%A8%8B%E5%BA%8F%EF%BC%8C%E5%85%B7%E4%BD%93%E6%AD%A5%E9%AA%A4%E4%B8%BA%EF%BC%9A"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">（1）使用 afl-gcc，生成 coreutils 的每个二进制程序，具体步骤为：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%EF%BC%882%EF%BC%89%E4%B8%BA-coreutils-%E7%9A%84%E7%89%B9%E5%AE%9A%E7%A8%8B%E5%BA%8F%E7%A1%AE%E5%AE%9A%E8%BE%93%E5%85%A5%E7%A7%8D%E5%AD%90"><span class="nav-number">1.3.1.2.</span> <span class="nav-text">（2）为 coreutils 的特定程序确定输入种子</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%EF%BC%883%EF%BC%89%E5%9C%A8-coreutils-9-1-x2F-src-%E7%9B%AE%E5%BD%95%E4%B8%8B%EF%BC%8C%E4%BD%BF%E7%94%A8-afl-fuzz-i-input-o-output-%E7%A8%8B%E5%BA%8F%E5%90%8D-%E8%BF%9B%E8%A1%8C-fuzzing%EF%BC%8C%E4%B8%80%E6%AE%B5%E6%97%B6%E9%97%B4%E5%90%8E%E7%BB%88%E6%AD%A2-fuzzing-%E5%B9%B6%E5%9C%A8-coreutils-9-1-src-output-%E7%9B%AE%E5%BD%95%E4%B8%8B%E6%9F%A5%E7%9C%8B%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C%E3%80%82"><span class="nav-number">1.3.1.3.</span> <span class="nav-text">（3）在 coreutils-9.1&#x2F;src 目录下，使用 afl-fuzz -i input -o output .&#x2F;[程序名] @@进行 fuzzing，一段时间后终止 fuzzing 并在 coreutils-9.1&#x2F;src&#x2F;output 目录下查看测试结果。</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%9F%BA%E4%BA%8E-AFL-Qemu-%E7%9A%84%E7%9B%AE%E6%A0%87%E7%A8%8B%E5%BA%8F%E5%8A%A8%E6%80%81%E6%8F%92%E6%A1%A9"><span class="nav-number">1.3.2.</span> <span class="nav-text">2.  基于 AFL-Qemu 的目标程序动态插桩</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E9%97%AE%E9%A2%98%E6%80%9D%E8%80%83"><span class="nav-number">1.4.</span> <span class="nav-text">四、问题思考</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E2%80%9C%E4%B8%89%E3%80%811%EF%BC%882%EF%BC%89%E2%80%9D%E6%AD%A5%E9%AA%A4%E7%9A%84%E4%B8%A4%E7%A7%8D%E8%BE%93%E5%85%A5%E7%A7%8D%E5%AD%90%E6%9E%84%E9%80%A0%E6%96%B9%E6%B3%95%EF%BC%8C%E5%AF%B9%E4%BA%8E-fuzzing-%E7%BB%93%E6%9E%9C%E7%9A%84%E5%BD%B1%E5%93%8D%EF%BC%88%E6%98%AF%E5%90%A6%E6%9C%89%E5%BD%B1%E5%93%8D%EF%BC%9F%E5%A6%82%E6%9E%9C%E6%9C%89%EF%BC%8C%E5%AF%B9%E6%9C%80%E7%BB%88%E8%8E%B7%E5%BE%97%E7%9A%84%E8%B7%AF%E5%BE%84%E6%95%B0%E9%87%8F%E3%80%81%E8%B7%AF%E5%BE%84%E6%95%B0%E5%A2%9E%E9%95%BF%E7%9A%84%E9%80%9F%E5%BA%A6%E7%AD%89%E6%96%B9%E9%9D%A2%E7%9A%84%E5%85%B7%E4%BD%93%E5%BD%B1%E5%93%8D%EF%BC%89%E3%80%82"><span class="nav-number">1.4.1.</span> <span class="nav-text">第 “三、1（2）” 步骤的两种输入种子构造方法，对于 fuzzing 结果的影响（是否有影响？如果有，对最终获得的路径数量、路径数增长的速度等方面的具体影响）。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E2%80%9C%E4%B8%89%E3%80%811%E2%80%9D%E5%9F%BA%E4%BA%8E%E7%BC%96%E8%AF%91%E6%8F%92%E6%A1%A9%E7%9A%84-fuzzing-%E4%B8%8E%E7%AC%AC%E2%80%9C%E4%B8%89%E3%80%812%E2%80%9D%E7%9A%84%E5%9F%BA%E4%BA%8E-Qemu-%E5%8A%A8%E6%80%81%E6%8F%92%E6%A1%A9%E7%9A%84-fuzzing%EF%BC%8C%E4%BB%8E%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E5%92%8C%E5%AE%9E%E9%AA%8C%E6%95%88%E6%9E%9C%E4%B8%A4%E6%96%B9%E9%9D%A2%E7%9A%84%E5%B7%AE%E5%BC%82%E3%80%82"><span class="nav-number">1.4.2.</span> <span class="nav-text">第 “三、1” 基于编译插桩的 fuzzing 与第 “三、2” 的基于 Qemu 动态插桩的 fuzzing，从基本原理和实验效果两方面的差异。</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">1.5.</span> <span class="nav-text">参考资料</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Framist</p>
+  <div class="site-description" itemprop="description">框架主义者的小窝</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">73</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/framist" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;framist" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:framist@163.com" title="E-Mail → mailto:framist@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/weixin_47102975" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_47102975" rel="noopener" target="_blank"><i class="fas fa-angle-right fa-fw"></i>CSDN</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/kuang-jia-zhu-yi-zhe" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;kuang-jia-zhu-yi-zhe" rel="noopener" target="_blank"><i class="fas fa-angle-right fa-fw"></i>知乎</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://framist.top/" title="http:&#x2F;&#x2F;framist.top&#x2F;" rel="noopener" target="_blank">个人主页</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://craft.framist.top/" title="https:&#x2F;&#x2F;craft.framist.top&#x2F;" rel="noopener" target="_blank">框架科工</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://framist.github.io/2020/10/11/%E6%88%91%E8%BA%AB%E8%BE%B9%E7%9A%84CS%E5%A4%A7%E4%BD%AC%E4%BB%AC/" title="https:&#x2F;&#x2F;framist.github.io&#x2F;2020&#x2F;10&#x2F;11&#x2F;%E6%88%91%E8%BA%AB%E8%BE%B9%E7%9A%84CS%E5%A4%A7%E4%BD%AC%E4%BB%AC&#x2F;">我身边的大佬们</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yuexiavqiufeng.github.io/" title="https:&#x2F;&#x2F;yuexiavqiufeng.github.io&#x2F;" rel="noopener" target="_blank">yuexiavqiufeng</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">浙 ICP 备 2022002862 号 -1 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-at"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Framist</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div><script>
+    let body = document.getElementsByTagName('body')[0];
+    body.addEventListener('click', (e) => {
+        let contentArr = ['欧拉~','ˋ( ° ▽、° ) ','RGB!','_(:з」∠)_','哼','?','¿框架?','QAQ',':3','<3','疯掉了',
+                            'whoami',
+                            'whoareU',
+                            'NULL',
+                            'None',
+                            ' ',
+                            '代价是什么呢？',
+                            '...',
+                            'Big Brother is Watching You',
+                            '喵~', '嗷~', '呜~', '哞~', '咩~', '咕~', '嘎~', '嘤~',
+                            '你看到了。',
+                            '¿爱情障眼法?','¿物种认同障碍?',
+                            '微润欧美，小润终南山，中润润与市，大润中南海',
+                            'init param:<br/>1LTKvNaux7CjrNHJ09C0y87Eo7/Rrbu3zfm4tKOsus7Ksbb41rmjv9a5zqrWucv51rmjrLTLzsTT1rrOtOajvw==',
+                            '这里没有时间的意义',
+                            '嘿嘿嘿，好想被随机异或哦，<br/>嘿嘿嘿，嘿嘿嘿，异或我的异或',
+                            '记忆赋予时间的意义，而不是时间赋予记忆的意义',
+                            '放弃 P ∨ ¬P 吧！',
+                            '抽象是普适性的代价 —— 3b1b',
+                            '得易见平凡，仿照上例显然',
+                            '留作习题答案略，读者自证不难',
+                            '反之亦然同理，推论自然成立',
+                            '略去过程 Q . E . D ，由上可知证毕'];
+        let randomNum = function (n) {
+            return Math.floor(Math.random() * n)
+        }
+        let span = document.createElement('span');
+        span.innerHTML = `${contentArr[randomNum(contentArr.length)]}`;
+        span.style.color = `rgb(${randomNum(256)},${randomNum(256)},${randomNum(256)})`;
+        span.style.position = 'absolute';
+        span.style.top = `${e.pageY}px`;
+        span.style.left = `${e.pageX}px`;
+        span.style.transition = 'all 1s ease';
+        span.style.zIndex = 20000;
+        body.appendChild(span)
+        setTimeout(()=>{
+            span.style.top = span.offsetTop - 25 + 'px';
+            span.style.opacity = 0;
+            setTimeout(()=>{span.remove()},1000)
+        },700)
+    })
+</script>
+
+
+<div style="width: 100px; height: 100px; margin: 0 auto;">
+<script type="text/javascript" id="clstr_globe" src="//clustrmaps.com/globe.js?d=gRWtX21uVt_tIdj_T64nMvo4FK1UrTWME23CVLOzNCg"></script>
+</div>
+<!--
+<script type="text/javascript" 
+color="255,255,255" 
+pointColor='64,184,209' 
+opacity='1' 
+zIndex="-1" 
+count="233" 
+src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js">
+</script>
+-->
+
+
+        
+<div class="busuanzi-count">
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script data-pjax>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '267a9d4a89b9b72b2229',
+      clientSecret: '2dba1f14d21da707ed6c4497fecc05d6178b4fa3',
+      repo        : 'blog-comment',
+      owner       : 'framist',
+      admin       : ['framist'],
+      id          : '8b05652cdea56df282aa323187520312',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+    </div>
+</body>
+</html>

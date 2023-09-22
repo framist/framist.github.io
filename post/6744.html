@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Noto Serif SC:300,300italic,400,400italic,700,700italic|Source Code Pro:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-big-counter.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"framist.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="虚假人脸检测实验摘要：在此次实验中，先尝试了自己手动搭建了一个 CNN 进行虚假人脸的分类实验，但发现有训练速度慢准确率低等缺点。所以尝试使用已有的模型（resnet-18）和预训练的参数进行迁移学习，包括尝试了直接把卷积层借用为固定特征提取器和 Fine-tuning 的方法，大大提高了训练速度与最终结果的准确率。 题目描述给定一个人脸数据集，其中包含 1999 张真实人脸，1999 张虚假人脸">
+<meta property="og:type" content="article">
+<meta property="og:title" content="虚假人脸检测实验：CNN &amp; Transfer Learning">
+<meta property="og:url" content="https://framist.github.io/post/6744.html">
+<meta property="og:site_name" content="Framist&#39;s Little House">
+<meta property="og:description" content="虚假人脸检测实验摘要：在此次实验中，先尝试了自己手动搭建了一个 CNN 进行虚假人脸的分类实验，但发现有训练速度慢准确率低等缺点。所以尝试使用已有的模型（resnet-18）和预训练的参数进行迁移学习，包括尝试了直接把卷积层借用为固定特征提取器和 Fine-tuning 的方法，大大提高了训练速度与最终结果的准确率。 题目描述给定一个人脸数据集，其中包含 1999 张真实人脸，1999 张虚假人脸">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://framist.github.io/%E3%80%90%E4%BF%A1%E6%81%AF%E4%B8%8E%E5%86%85%E5%AE%B9%E5%AE%89%E5%85%A8%E3%80%91%E5%AE%9E%E9%AA%8C%E4%BA%8C%EF%BC%9A%E8%99%9A%E5%81%87%E4%BA%BA%E8%84%B8%E6%A3%80%E6%B5%8B%E5%AE%9E%E9%AA%8C/fakeFace_classifier_5_0.png">
+<meta property="og:image" content="https://pic1.zhimg.com/v2-dfe4eaaa4450e2b58b38c5fe82f918c0_1440w.jpg?source=172ae18b">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-7c0d39a0eb3ba018bc59033955998a6e.png">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-2971da254a6c107ca49346dc653623a6.png">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-6391221c149e050bb1203d8ac5613fd3.png">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-cc79aa5a837b2cf51fd102b5b63b5c44.png">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-d395543956ff7f9b6b1419fc7c072d64.png">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-3ad6c7009833d9545c7bd45238f8237a.png">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-b01f0122ba537be0b683da1aef731ebc.png">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-00f3c34164eca079658285d27057fdcc.png">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-fbc8084144f0ebb768c138d889ebff12.png">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-8574d77b1db308b36e2e4586ddc2f033.png">
+<meta property="article:published_time" content="2022-05-04T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-09-22T07:44:28.705Z">
+<meta property="article:author" content="Framist">
+<meta property="article:tag" content="机器学习">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="信息安全">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://framist.github.io/%E3%80%90%E4%BF%A1%E6%81%AF%E4%B8%8E%E5%86%85%E5%AE%B9%E5%AE%89%E5%85%A8%E3%80%91%E5%AE%9E%E9%AA%8C%E4%BA%8C%EF%BC%9A%E8%99%9A%E5%81%87%E4%BA%BA%E8%84%B8%E6%A3%80%E6%B5%8B%E5%AE%9E%E9%AA%8C/fakeFace_classifier_5_0.png">
+
+<link rel="canonical" href="https://framist.github.io/post/6744.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>虚假人脸检测实验：CNN & Transfer Learning | Framist's Little House</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Framist's Little House</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">◇ 自顶而下 - 面向未来 ◇</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://framist.github.io/post/6744.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Framist">
+      <meta itemprop="description" content="框架主义者的小窝">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Framist's Little House">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          虚假人脸检测实验：CNN & Transfer Learning
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-05-05 00:00:00" itemprop="dateCreated datePublished" datetime="2022-05-05T00:00:00+08:00">2022-05-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-09-22 15:44:28" itemprop="dateModified" datetime="2023-09-22T15:44:28+08:00">2023-09-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">计算机科学</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="虚假人脸检测实验"><a href="#虚假人脸检测实验" class="headerlink" title="虚假人脸检测实验"></a>虚假人脸检测实验</h1><p><strong>摘要：</strong>在此次实验中，先尝试了自己手动搭建了一个 CNN 进行虚假人脸的分类实验，但发现有训练速度慢准确率低等缺点。所以尝试使用已有的模型（resnet-18）和预训练的参数进行迁移学习，包括尝试了直接把卷积层借用为固定特征提取器和 Fine-tuning 的方法，大大提高了训练速度与最终结果的准确率。</p>
+<h2 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h2><p>给定一个人脸数据集，其中包含 1999 张真实人脸，1999 张虚假人脸。将其中 500 张真实人脸和 500 张虚假人脸作为训练集，其余作为测试集。</p>
+<p>根据给定数据集训练训练一个虚假人脸检测器，该检测器本质就是一个二分类分类器。要求利用 Pytorch 框架任意设计一种神经网络模型进行分类，分类准确率越高越好 (分类准确率和得分不相关)。  </p>
+<span id="more"></span>
+
+<h2 id="直接训练一个真假人脸二分类器"><a href="#直接训练一个真假人脸二分类器" class="headerlink" title="直接训练一个真假人脸二分类器"></a>直接训练一个真假人脸二分类器</h2><p><em>后文将提到，除了直接训练分类器，我们还可以用迁移学习 (transfer learning) 的方式来更快地训练分类器。</em></p>
+<p>我们将按顺序执行以下步骤：</p>
+<ol>
+<li>加载数据</li>
+<li>定义一个卷积神经网络 (CNN)</li>
+<li> 定义 loss function</li>
+<li> 根据训练数据对网络进行训练</li>
+<li>在测试数据上测试网络</li>
+</ol>
+<h3 id="1-加载并规范化数据"><a href="#1-加载并规范化数据" class="headerlink" title="1. 加载并规范化数据"></a>1. 加载并规范化数据</h3><p>我们今天要解决的问题是训练一个模型来分类<strong>真实的人脸</strong>和<strong>虚假的人脸</strong>。</p>
+<p>数据需要分为训练集、测试集和验证集。验证集我们暂且不用</p>
+<p>通过以下这个脚本可以把教师给的数据做随机分类：</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 数据集划分.py</span></span><br><span class="line"><span class="comment"># 给定一个人脸数据集，其中包含 1999 张真实人脸，1999 张虚假人脸。</span></span><br><span class="line"><span class="comment"># 将其中 500 张真实人脸和 500 张虚假人脸作为训练集，其余作为测试集。</span></span><br><span class="line"><span class="keyword">import</span> os, random, shutil</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">eachFile</span>(<span class="params">filepath</span>):</span></span><br><span class="line">    pathDir = os.listdir(filepath)</span><br><span class="line">    <span class="keyword">return</span> pathDir</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">mkdir</span>(<span class="params">path</span>):</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(path):</span><br><span class="line">        os.makedirs(path)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">divideTrainValiTest</span>(<span class="params">source, dist</span>):</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">"开始划分数据集..."</span>)</span><br><span class="line">    <span class="built_in">print</span>(eachFile(source))</span><br><span class="line">    <span class="keyword">for</span> c <span class="keyword">in</span> eachFile(source):</span><br><span class="line">        pic_name = eachFile(os.path.join(source, c))</span><br><span class="line">        random.shuffle(pic_name)  <span class="comment"># 随机打乱</span></span><br><span class="line">        train_list = pic_name[<span class="number">0</span>:<span class="number">1499</span>]</span><br><span class="line">        validation_list = pic_name[<span class="number">1499</span>:]</span><br><span class="line">        test_list = []</span><br><span class="line">        </span><br><span class="line">        mkdir(dist+ <span class="string">'train/'</span>+c+<span class="string">'/'</span>)</span><br><span class="line">        mkdir(dist+ <span class="string">'validation/'</span>+c+<span class="string">'/'</span>)</span><br><span class="line">        mkdir(dist+ <span class="string">'test/'</span>+c+<span class="string">'/'</span>)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> train_pic <span class="keyword">in</span> train_list:</span><br><span class="line">            shutil.copy(os.path.join(source, c, train_pic),</span><br><span class="line">                        dist+ <span class="string">'train/'</span>+c+<span class="string">'/'</span>+train_pic)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> validation_pic <span class="keyword">in</span> validation_list:</span><br><span class="line">            shutil.copy(os.path.join(source, c, validation_pic),</span><br><span class="line">                        dist+ <span class="string">'validation/'</span>+c+<span class="string">'/'</span>+validation_pic)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> test_pic <span class="keyword">in</span> test_list:</span><br><span class="line">            shutil.copy(os.path.join(source, c, test_pic),</span><br><span class="line">                        dist + <span class="string">'test/'</span>+c+<span class="string">'/'</span>+test_pic)</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    filepath = <span class="string">r'./CNN_synth_testset/'</span></span><br><span class="line">    dist = <span class="string">r'./CNN_synth_testset_divided/'</span></span><br><span class="line">    divideTrainValiTest(filepath, dist)</span><br><span class="line"></span><br><span class="line"><span class="comment"># ---------------- End of 数据集划分.py ----------------</span></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>我们将使用 <code>torchvision</code> 和 <code>torch.utils.data</code> 用于加载数据的包。</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> torchvision</span><br><span class="line"><span class="keyword">from</span> torchvision <span class="keyword">import</span> datasets, models, transforms</span><br><span class="line"><span class="keyword">import</span> os</span><br></pre></td></tr></tbody></table></figure>
+
+<p>关于以下规范化的参数选择的原因参考：<a target="_blank" rel="noopener" href="https://blog.csdn.net/KaelCui/article/details/106175313">https://blog.csdn.net/KaelCui/article/details/106175313</a></p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">data_transforms = {</span><br><span class="line">    <span class="string">'train'</span>: transforms.Compose([</span><br><span class="line">        transforms.RandomResizedCrop(<span class="number">224</span>),</span><br><span class="line">        transforms.RandomHorizontalFlip(),</span><br><span class="line">        transforms.ToTensor(),</span><br><span class="line">        transforms.Normalize([<span class="number">0.485</span>, <span class="number">0.456</span>, <span class="number">0.406</span>], [<span class="number">0.229</span>, <span class="number">0.224</span>, <span class="number">0.225</span>])</span><br><span class="line">    ]),</span><br><span class="line">    <span class="string">'validation'</span>: transforms.Compose([</span><br><span class="line">        transforms.Resize(<span class="number">256</span>),</span><br><span class="line">        transforms.CenterCrop(<span class="number">224</span>),</span><br><span class="line">        transforms.ToTensor(),</span><br><span class="line">        transforms.Normalize([<span class="number">0.485</span>, <span class="number">0.456</span>, <span class="number">0.406</span>], [<span class="number">0.229</span>, <span class="number">0.224</span>, <span class="number">0.225</span>])</span><br><span class="line">    ]),</span><br><span class="line">}</span><br><span class="line">batch_size = <span class="number">16</span></span><br><span class="line">data_dir = <span class="string">'./CNN_synth_testset_divided/'</span></span><br><span class="line">image_datasets = {x: datasets.ImageFolder(os.path.join(data_dir, x),</span><br><span class="line">                                          data_transforms[x])</span><br><span class="line">                  <span class="keyword">for</span> x <span class="keyword">in</span> [<span class="string">'train'</span>, <span class="string">'validation'</span>]}</span><br><span class="line">dataloaders = {x: torch.utils.data.DataLoader(image_datasets[x], batch_size=batch_size,</span><br><span class="line">                                             shuffle=<span class="literal">True</span>, num_workers=<span class="number">8</span>)</span><br><span class="line">              <span class="keyword">for</span> x <span class="keyword">in</span> [<span class="string">'train'</span>, <span class="string">'validation'</span>]}</span><br><span class="line">dataset_sizes = {x: <span class="built_in">len</span>(image_datasets[x]) <span class="keyword">for</span> x <span class="keyword">in</span> [<span class="string">'train'</span>, <span class="string">'validation'</span>]}</span><br><span class="line"></span><br><span class="line">class_names = image_datasets[<span class="string">'train'</span>].classes</span><br><span class="line">trainloader = dataloaders[<span class="string">'train'</span>]</span><br><span class="line">testloader = dataloaders[<span class="string">'validation'</span>]</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p>展示一些训练图片</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">my_imgs_plot</span>(<span class="params">image, labels, preds=<span class="literal">None</span></span>):</span></span><br><span class="line">    cnt = <span class="number">0</span></span><br><span class="line">    plt.figure(figsize=(<span class="number">16</span>,<span class="number">16</span>)) </span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(image)):</span><br><span class="line">        cnt += <span class="number">1</span></span><br><span class="line">        plt.subplot(<span class="number">1</span>,<span class="built_in">len</span>(image),cnt)</span><br><span class="line">        plt.xticks([], [])</span><br><span class="line">        plt.yticks([], [])</span><br><span class="line">        <span class="keyword">if</span> preds <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            plt.title(<span class="string">f"pred: <span class="subst">{class_names[preds[j]]}</span>\n true: <span class="subst">{class_names[labels[j]]}</span>"</span></span><br><span class="line">                      ,color=<span class="string">'green'</span> <span class="keyword">if</span> preds[j] == labels[j] <span class="keyword">else</span> <span class="string">'red'</span>)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            plt.title(<span class="string">"{}"</span>.<span class="built_in">format</span>(class_names[labels[j]]), fontsize=<span class="number">15</span>, color=<span class="string">'green'</span>)</span><br><span class="line">        inp = image[j].numpy().transpose((<span class="number">1</span>, <span class="number">2</span>, <span class="number">0</span>))</span><br><span class="line">        mean = np.array([<span class="number">0.485</span>, <span class="number">0.456</span>, <span class="number">0.406</span>])</span><br><span class="line">        std = np.array([<span class="number">0.229</span>, <span class="number">0.224</span>, <span class="number">0.225</span>])</span><br><span class="line">        inp = std * inp + mean</span><br><span class="line">        inp = np.clip(inp, <span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">        plt.imshow(inp)</span><br><span class="line">    plt.show()</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>):</span><br><span class="line">    dataiter = <span class="built_in">iter</span>(trainloader)</span><br><span class="line">    images, labels = dataiter.<span class="built_in">next</span>()</span><br><span class="line">    my_imgs_plot(images, labels)</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p>​    </p>
+<p><img data-src="/%E3%80%90%E4%BF%A1%E6%81%AF%E4%B8%8E%E5%86%85%E5%AE%B9%E5%AE%89%E5%85%A8%E3%80%91%E5%AE%9E%E9%AA%8C%E4%BA%8C%EF%BC%9A%E8%99%9A%E5%81%87%E4%BA%BA%E8%84%B8%E6%A3%80%E6%B5%8B%E5%AE%9E%E9%AA%8C/fakeFace_classifier_5_0.png" alt="png"></p>
+<h3 id="2-定义一个卷积神经网络"><a href="#2-定义一个卷积神经网络" class="headerlink" title="2. 定义一个卷积神经网络"></a>2. 定义一个卷积神经网络</h3><p>下图是 VGG 的参考结构。但是我们这里随便定义一个 CNN 试试。</p>
+<p><img data-src="https://pic1.zhimg.com/v2-dfe4eaaa4450e2b58b38c5fe82f918c0_1440w.jpg?source=172ae18b" alt="VGGNet"></p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch.nn <span class="keyword">as</span> nn</span><br><span class="line"><span class="keyword">import</span> torch.nn.functional <span class="keyword">as</span> F</span><br><span class="line"></span><br><span class="line"><span class="comment">## my</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">myNet</span>(<span class="params">nn.Module</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self,in_size = <span class="number">224</span>, in_channels = <span class="number">3</span>, num_classes=<span class="number">2</span></span>):</span></span><br><span class="line">        <span class="built_in">super</span>(myNet,self).__init__()           <span class="comment"># RGB 3*32*32</span></span><br><span class="line">        self.conv1 = nn.Conv2d( in_channels, <span class="number">15</span>,<span class="number">3</span>)     <span class="comment"># 输入 3 通道，输出 15 通道，卷积核为 3*3</span></span><br><span class="line">        self.conv2 = nn.Conv2d(<span class="number">15</span>, <span class="number">75</span>,<span class="number">4</span>)    <span class="comment"># 输入 15 通道，输出 75 通道，卷积核为 4*4</span></span><br><span class="line">        self.conv3 = nn.Conv2d(<span class="number">75</span>,<span class="number">150</span>,<span class="number">3</span>)    <span class="comment"># 输入 75 通道，输出 150 通道，卷积核为 3*3</span></span><br><span class="line">        self.conv4 = nn.Conv2d(<span class="number">150</span>,<span class="number">300</span>,<span class="number">3</span>)    <span class="comment"># 输入 75 通道，输出 300 通道，卷积核为 3*3</span></span><br><span class="line">        self.conv5 = nn.Conv2d(<span class="number">300</span>,<span class="number">300</span>,<span class="number">3</span>)    <span class="comment"># 输入 300 通道，输出 300 通道，卷积核为 3*3</span></span><br><span class="line">        self.fc1 = nn.Linear(<span class="number">7500</span>,<span class="number">400</span>)       <span class="comment"># 输入 10800，输出 400</span></span><br><span class="line">        self.fc2 = nn.Linear(<span class="number">400</span>,<span class="number">120</span>)        <span class="comment"># 输入 400，输出 120</span></span><br><span class="line">        self.fc3 = nn.Linear(<span class="number">120</span>, num_classes)        <span class="comment"># 输入 120，输出 2</span></span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self,x</span>):</span></span><br><span class="line">        x = F.max_pool2d(F.relu(self.conv1(x)), <span class="number">2</span>)      <span class="comment"># 3*224*224  -&gt; 150*222*222 -&gt; 15*111*111</span></span><br><span class="line">        x = F.max_pool2d(F.relu(self.conv2(x)), <span class="number">2</span>)      <span class="comment"># 15*111*111 -&gt; 75*108*108  -&gt; 75*54*54</span></span><br><span class="line">        x = F.max_pool2d(F.relu(self.conv3(x)), <span class="number">2</span>)      <span class="comment"># 75*54*54  -&gt; 150*52*52  -&gt; 150*26*26</span></span><br><span class="line">        x = F.max_pool2d(F.relu(self.conv4(x)), <span class="number">2</span>)      <span class="comment"># 150*26*26   -&gt; 300*24*24  -&gt; 300*12*12</span></span><br><span class="line">        x = F.max_pool2d(F.relu(self.conv5(x)), <span class="number">2</span>)      <span class="comment"># 300*12*12  -&gt; 300*10*10  -&gt; 300*5*5</span></span><br><span class="line">        x = x.view(x.size()[<span class="number">0</span>],-<span class="number">1</span>)                      <span class="comment"># 将 300*5*5 的 tensor 打平成 1 维，7500</span></span><br><span class="line">        x = F.relu(self.fc1(x))                         <span class="comment"># 全连接层 10800 -&gt; 400</span></span><br><span class="line">        x = F.relu(self.fc2(x))                         <span class="comment"># 全连接层 400 -&gt; 120</span></span><br><span class="line">        x = self.fc3(x)                                 <span class="comment"># 全连接层 84  -&gt; 10</span></span><br><span class="line">        <span class="keyword">return</span> x</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line"><span class="comment"># 自动选择 GPU 或 CPU</span></span><br><span class="line">use_cuda = <span class="literal">True</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">"CUDA Available: "</span>,torch.cuda.is_available())</span><br><span class="line">device = torch.device(<span class="string">"cuda"</span> <span class="keyword">if</span> (use_cuda <span class="keyword">and</span> torch.cuda.is_available()) <span class="keyword">else</span> <span class="string">"cpu"</span>)</span><br><span class="line"></span><br><span class="line">net = VGG11(<span class="number">3</span>,num_classes=<span class="number">2</span>).to(device)</span><br><span class="line"><span class="comment"># net = VGGbase().to(device)</span></span><br><span class="line">net = myNet().to(device)</span><br></pre></td></tr></tbody></table></figure>
+
+<pre><code>CUDA Available:  True
+</code></pre>
+<h3 id="3-定义损失函数和优化器"><a href="#3-定义损失函数和优化器" class="headerlink" title="3. 定义损失函数和优化器"></a>3. 定义损失函数和优化器</h3><p>让我们使用分类交叉熵损失（Classification Cross-Entropy）和带动量的 SGD（SGD with momentum）。</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch.optim <span class="keyword">as</span> optim</span><br><span class="line"></span><br><span class="line">criterion = nn.CrossEntropyLoss()</span><br><span class="line">optimizer = optim.SGD(net.parameters(), lr=<span class="number">0.001</span>, momentum=<span class="number">0.9</span>)</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="4-训练网络"><a href="#4-训练网络" class="headerlink" title="4. 训练网络"></a>4. 训练网络</h3><p>我们只需在数据迭代器上循环，并将输入提供给网络和优化，就可以开始训练神经网络了</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> tqdm <span class="keyword">import</span> tqdm</span><br><span class="line">loss_plot = []</span><br><span class="line">net.train()</span><br><span class="line"></span><br><span class="line">l = tqdm(<span class="built_in">range</span>(<span class="number">192</span>))</span><br><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> l:  <span class="comment"># 在数据集上循环多次</span></span><br><span class="line">    <span class="comment"># gc.collect()</span></span><br><span class="line">    <span class="comment"># torch.cuda.empty_cache()</span></span><br><span class="line">    </span><br><span class="line">    running_loss = <span class="number">0.0</span></span><br><span class="line">    <span class="keyword">for</span> i, data <span class="keyword">in</span> <span class="built_in">enumerate</span>(trainloader, <span class="number">0</span>):</span><br><span class="line">        <span class="comment"># 获取输入；数据是 [输入、标签] 的列表</span></span><br><span class="line">        inputs, labels = data[<span class="number">0</span>].to(device), data[<span class="number">1</span>].to(device)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 将参数梯度归零</span></span><br><span class="line">        optimizer.zero_grad()</span><br><span class="line"></span><br><span class="line">        <span class="comment"># forward + backward + optimize</span></span><br><span class="line">        outputs = net(inputs)</span><br><span class="line">        loss = criterion(outputs, labels)</span><br><span class="line">        loss.backward()</span><br><span class="line">        optimizer.step()</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 打印统计数据</span></span><br><span class="line">        running_loss += loss.item()</span><br><span class="line">        <span class="keyword">if</span> i % <span class="number">100</span> ==<span class="number">99</span>:   <span class="comment"># print every 100 mini-batches</span></span><br><span class="line">            loss_plot.append(running_loss / <span class="number">100</span>)</span><br><span class="line">            running_loss = <span class="number">0.0</span></span><br><span class="line">    <span class="comment"># print(f'epoch {epoch + 1} loss: {loss_plot[-1]}')</span></span><br><span class="line">    l.set_description(<span class="string">f'current loss: <span class="subst">{loss_plot[-<span class="number">1</span>]}</span>'</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">'Finished Training'</span>)</span><br><span class="line"></span><br><span class="line">plt.plot(loss_plot)</span><br></pre></td></tr></tbody></table></figure>
+
+<pre><code>current loss: 0.017697893029380792: 100%|██████████| 192/192 [1:07:41&lt;00:00, 21.15s/it] 
+Finished Training
+</code></pre>
+<p>​    </p>
+<pre><code>[&lt;matplotlib.lines.Line2D at 0x7fdadd729820&gt;]
+</code></pre>
+<p><img data-src="https://pic4.zhimg.com/80/v2-7c0d39a0eb3ba018bc59033955998a6e.png" alt="Image"></p>
+<p>在实验中，我最开始发现 loss 曲线不下降，模型 train 不起来，如上图曲线的最开始的平坦的地方所示。我一度怀疑是什么地方错了，后来发现是 epoch 总数设置太少了。</p>
+<p>这里可以保存一下训好的模型：</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">PATH = <span class="string">'./fakeFace_{}.pth'</span>.<span class="built_in">format</span>(net.__class__.__name__)</span><br><span class="line">torch.save(net.state_dict(), PATH)</span><br></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://pytorch.org/docs/stable/notes/serialization.html">保存模型参考说明</a></p>
+</blockquote>
+<h3 id="5-在测试数据上测试网络"><a href="#5-在测试数据上测试网络" class="headerlink" title="5. 在测试数据上测试网络"></a>5. 在测试数据上测试网络</h3><p>我们已经通过训练数据集对网络进行了训练。但我们需要检查网络是否学到了任何东西。</p>
+<p>第一步。让我们显示一个来自测试集的样本：</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dataiter = <span class="built_in">iter</span>(testloader)</span><br><span class="line">images, labels = dataiter.<span class="built_in">next</span>()</span><br><span class="line">my_imgs_plot(images, labels)</span><br></pre></td></tr></tbody></table></figure>
+
+
+<p><img data-src="https://pic4.zhimg.com/80/v2-2971da254a6c107ca49346dc653623a6.png" alt="Image"></p>
+<p>使用训练好的神经网络判断是真脸还是假脸：</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># net = VGG11(3,num_classes=2).to(device)</span></span><br><span class="line"><span class="comment"># net.load_state_dict(torch.load(PATH))</span></span><br><span class="line">net.to(<span class="string">'cpu'</span>)</span><br><span class="line">outputs = net(images)</span><br></pre></td></tr></tbody></table></figure>
+
+
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 输出是 2 个类的 energy。一个类的 energy 越高，网络就越多认为图像是特定类别的。</span></span><br><span class="line"><span class="comment"># 那么，让我们得到最高 energy 的指数：</span></span><br><span class="line">_, predicted = torch.<span class="built_in">max</span>(outputs, <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">my_imgs_plot(images, labels,predicted)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>​<br><img data-src="https://pic4.zhimg.com/80/v2-6391221c149e050bb1203d8ac5613fd3.png" alt="Image"></p>
+<p>发现都预测正确了（不正确的会标红），结果似乎相当不错。</p>
+<p>让我们看看网络在整个测试集上的表现：</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">correct = <span class="number">0</span></span><br><span class="line">total = <span class="number">0</span></span><br><span class="line">net.<span class="built_in">eval</span>()</span><br><span class="line"><span class="comment"># 因为我们不是训练，所以我们不需要计算输出的梯度</span></span><br><span class="line"><span class="keyword">with</span> torch.no_grad():</span><br><span class="line">    <span class="keyword">for</span> data <span class="keyword">in</span> tqdm(testloader):</span><br><span class="line">        images, labels = data</span><br><span class="line">        <span class="comment"># calculate outputs by running images through the network</span></span><br><span class="line">        outputs = net(images)</span><br><span class="line">        <span class="comment"># the class with the highest energy is what we choose as prediction</span></span><br><span class="line">        _, predicted = torch.<span class="built_in">max</span>(outputs.data, <span class="number">1</span>)</span><br><span class="line">        total += labels.size(<span class="number">0</span>)</span><br><span class="line">        correct += (predicted == labels).<span class="built_in">sum</span>().item()</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f'Accuracy of the network on the 10000 test images: <span class="subst">{<span class="number">100</span> * correct // total}</span> %'</span>)</span><br></pre></td></tr></tbody></table></figure>
+
+<pre><code>100%|██████████| 63/63 [00:15&lt;00:00,  4.20it/s]
+
+Accuracy of the network on the 10000 test images: 99.7 %
+</code></pre>
+<p>这看起来比随机选择要好得多，随机选择的准确率为 50%，而我们的模型达到了 99.7 %。</p>
+<p>接着看看哪类表现良好，哪类表现不佳：</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># prepare to count predictions for each class</span></span><br><span class="line">correct_pred = {classname: <span class="number">0</span> <span class="keyword">for</span> classname <span class="keyword">in</span> class_names}</span><br><span class="line">total_pred = {classname: <span class="number">0</span> <span class="keyword">for</span> classname <span class="keyword">in</span> class_names}</span><br><span class="line"></span><br><span class="line"><span class="comment"># 同样，不需要梯度</span></span><br><span class="line"><span class="keyword">with</span> torch.no_grad():</span><br><span class="line">    <span class="keyword">for</span> data <span class="keyword">in</span> tqdm(testloader):</span><br><span class="line">        images, labels = data</span><br><span class="line">        outputs = net(images)</span><br><span class="line">        _, predictions = torch.<span class="built_in">max</span>(outputs, <span class="number">1</span>)</span><br><span class="line">        <span class="comment"># collect the correct predictions for each class</span></span><br><span class="line">        <span class="keyword">for</span> label, prediction <span class="keyword">in</span> <span class="built_in">zip</span>(labels, predictions):</span><br><span class="line">            <span class="keyword">if</span> label == prediction:</span><br><span class="line">                correct_pred[class_names[label]] += <span class="number">1</span></span><br><span class="line">            total_pred[class_names[label]] += <span class="number">1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 打印每一个类的准确性</span></span><br><span class="line"><span class="keyword">for</span> classname, correct_count <span class="keyword">in</span> correct_pred.items():</span><br><span class="line">    accuracy = <span class="number">100</span> * <span class="built_in">float</span>(correct_count) / total_pred[classname]</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f'Accuracy for class: <span class="subst">{classname:5s}</span> is <span class="subst">{accuracy:<span class="number">.1</span>f}</span> %'</span>)</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">100%|██████████| 63/63 [00:15&lt;00:00,  3.97it/s]</span><br><span class="line">Accuracy for class: 0_real is 100.0 %</span><br><span class="line">Accuracy for class: 1_fake is 99.4 %</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>但是通过 GPU 加速下仍一个小时的训练时间也太久了，99.7 % 的准确率也不够满意，有没有更好的方法呢？</p>
+<h2 id="虚假人脸分类的迁移学习"><a href="#虚假人脸分类的迁移学习" class="headerlink" title="虚假人脸分类的迁移学习"></a>虚假人脸分类的迁移学习</h2><blockquote>
+<p>本节参考：<a target="_blank" rel="noopener" href="https://pytorch.org/tutorials/beginner/transfer_learning_tutorial.html">Transfer Learning for Computer Vision Tutorial — PyTorch Tutorials 1.11.0+cu102 documentation</a></p>
+</blockquote>
+<p>实际上，很少有人训练整个卷积网络从头开始（随机初始化），因为很少有足够大的数据集。相反，这是很常见的在非常大的数据集上预训练 ConvNet（例如，ImageNet 包含 120 万张图像（包含 1000 个类别），然后使用 ConvNet 可以作为一个初始化或固定的功能提取器。</p>
+<p>这两个主要的迁移学习场景如下所示：</p>
+<ul>
+<li><strong>ConvNet 作为固定特征提取器</strong>：在这里，我们将冻结权重对于所有网络，除了最终完全连接的网络层最后一个完全连接的层将替换为新层使用随机权重，只对该层进行训练。</li>
+<li><strong>微调 ConvNet</strong>：我们不是随机初始化，而是用预先训练好的网络初始化网络，比如在 imagenet 1000 数据集上接受培训。剩下的训练看起来也一样通常的 </li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> print_function, division</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> torch.nn <span class="keyword">as</span> nn</span><br><span class="line"><span class="keyword">import</span> torch.optim <span class="keyword">as</span> optim</span><br><span class="line"><span class="keyword">from</span> torch.optim <span class="keyword">import</span> lr_scheduler</span><br><span class="line"><span class="keyword">import</span> torch.backends.cudnn <span class="keyword">as</span> cudnn</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> torchvision</span><br><span class="line"><span class="keyword">from</span> torchvision <span class="keyword">import</span> datasets, models, transforms</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> copy</span><br><span class="line"></span><br><span class="line">cudnn.benchmark = <span class="literal">True</span></span><br><span class="line">plt.ion()   <span class="comment"># interactive mode</span></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+
+<pre><code>&lt;matplotlib.pyplot._IonContext at 0x7fd0cccd90a0&gt;
+</code></pre>
+<h3 id="1-读取数据"><a href="#1-读取数据" class="headerlink" title="1. 读取数据"></a>1. 读取数据</h3><p>这里与<a href="#%E7%9B%B4%E6%8E%A5%E8%AE%AD%E7%BB%83%E4%B8%80%E4%B8%AA%E7%9C%9F%E5%81%87%E4%BA%BA%E8%84%B8%E4%BA%8C%E5%88%86%E7%B1%BB%E5%99%A8">上一节</a>基本相同。</p>
+<p>通常，这是一个非常复杂的问题如果从零开始训练，就可以对小数据集进行概括。自从我们如果使用迁移学习，我们应该能够合理地概括好</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Data augmentation and normalization for training</span></span><br><span class="line"><span class="comment"># Just normalization for validation</span></span><br><span class="line"><span class="comment"># https://blog.csdn.net/KaelCui/article/details/106175313</span></span><br><span class="line">data_transforms = {</span><br><span class="line">    <span class="string">'train'</span>: transforms.Compose([</span><br><span class="line">        transforms.RandomResizedCrop(<span class="number">224</span>),</span><br><span class="line">        transforms.RandomHorizontalFlip(),</span><br><span class="line">        transforms.ToTensor(),</span><br><span class="line">        transforms.Normalize([<span class="number">0.485</span>, <span class="number">0.456</span>, <span class="number">0.406</span>], [<span class="number">0.229</span>, <span class="number">0.224</span>, <span class="number">0.225</span>])</span><br><span class="line">    ]),</span><br><span class="line">    <span class="string">'validation'</span>: transforms.Compose([</span><br><span class="line">        transforms.Resize(<span class="number">256</span>),</span><br><span class="line">        transforms.CenterCrop(<span class="number">224</span>),</span><br><span class="line">        transforms.ToTensor(),</span><br><span class="line">        transforms.Normalize([<span class="number">0.485</span>, <span class="number">0.456</span>, <span class="number">0.406</span>], [<span class="number">0.229</span>, <span class="number">0.224</span>, <span class="number">0.225</span>])</span><br><span class="line">    ]),</span><br><span class="line">}</span><br><span class="line">batch_size = <span class="number">4</span></span><br><span class="line">data_dir = <span class="string">'./CNN_synth_testset_divided/'</span></span><br><span class="line">image_datasets = {x: datasets.ImageFolder(os.path.join(data_dir, x),</span><br><span class="line">                                          data_transforms[x])</span><br><span class="line">                  <span class="keyword">for</span> x <span class="keyword">in</span> [<span class="string">'train'</span>, <span class="string">'validation'</span>]}</span><br><span class="line">dataloaders = {x: torch.utils.data.DataLoader(image_datasets[x], batch_size=batch_size,</span><br><span class="line">                                             shuffle=<span class="literal">True</span>, num_workers=<span class="number">4</span>) </span><br><span class="line">              <span class="keyword">for</span> x <span class="keyword">in</span> [<span class="string">'train'</span>, <span class="string">'validation'</span>]}</span><br><span class="line">dataset_sizes = {x: <span class="built_in">len</span>(image_datasets[x]) <span class="keyword">for</span> x <span class="keyword">in</span> [<span class="string">'train'</span>, <span class="string">'validation'</span>]}</span><br><span class="line">class_names = image_datasets[<span class="string">'train'</span>].classes</span><br><span class="line"></span><br><span class="line">device = torch.device(<span class="string">"cuda:0"</span> <span class="keyword">if</span> torch.cuda.is_available() <span class="keyword">else</span> <span class="string">"cpu"</span>)</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="可视化一些图像"><a href="#可视化一些图像" class="headerlink" title="可视化一些图像"></a>可视化一些图像</h4><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">imshow</span>(<span class="params">inp, title=<span class="literal">None</span></span>):</span></span><br><span class="line">    <span class="string">"""Imshow for Tensor."""</span></span><br><span class="line">    inp = inp.numpy().transpose((<span class="number">1</span>, <span class="number">2</span>, <span class="number">0</span>))</span><br><span class="line">    mean = np.array([<span class="number">0.485</span>, <span class="number">0.456</span>, <span class="number">0.406</span>])</span><br><span class="line">    std = np.array([<span class="number">0.229</span>, <span class="number">0.224</span>, <span class="number">0.225</span>])</span><br><span class="line">    inp = std * inp + mean</span><br><span class="line">    inp = np.clip(inp, <span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">    plt.imshow(inp)</span><br><span class="line">    <span class="keyword">if</span> title <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">        plt.title(title)</span><br><span class="line">    plt.pause(<span class="number">0.001</span>)  <span class="comment"># pause a bit so that plots are updated</span></span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">my_imgs_plot</span>(<span class="params">image, labels, preds=<span class="literal">None</span></span>):</span></span><br><span class="line">    cnt = <span class="number">0</span></span><br><span class="line">    plt.figure(figsize=(<span class="number">16</span>,<span class="number">16</span>)) </span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(image)):</span><br><span class="line">        cnt += <span class="number">1</span></span><br><span class="line">        plt.subplot(<span class="number">1</span>,<span class="built_in">len</span>(image),cnt)</span><br><span class="line">        plt.xticks([], [])</span><br><span class="line">        plt.yticks([], [])</span><br><span class="line">        <span class="keyword">if</span> preds <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            plt.title(<span class="string">f"predicted: <span class="subst">{class_names[preds[j]]}</span>, true: <span class="subst">{class_names[labels[j]]}</span>\n"</span></span><br><span class="line">                      ,color=<span class="string">'green'</span> <span class="keyword">if</span> preds[j] == labels[j] <span class="keyword">else</span> <span class="string">'red'</span>)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            plt.title(<span class="string">"{}"</span>.<span class="built_in">format</span>(class_names[labels[j]]), fontsize=<span class="number">15</span>, color=<span class="string">'green'</span>)</span><br><span class="line">        inp = image[j].numpy().transpose((<span class="number">1</span>, <span class="number">2</span>, <span class="number">0</span>))</span><br><span class="line">        mean = np.array([<span class="number">0.485</span>, <span class="number">0.456</span>, <span class="number">0.406</span>])</span><br><span class="line">        std = np.array([<span class="number">0.229</span>, <span class="number">0.224</span>, <span class="number">0.225</span>])</span><br><span class="line">        inp = std * inp + mean</span><br><span class="line">        inp = np.clip(inp, <span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">        plt.imshow(inp)</span><br><span class="line">    plt.show()</span><br><span class="line"></span><br><span class="line"><span class="comment"># Get a batch of training data</span></span><br><span class="line">inputs, classes = <span class="built_in">next</span>(<span class="built_in">iter</span>(dataloaders[<span class="string">'train'</span>]))</span><br><span class="line"></span><br><span class="line">my_imgs_plot(inputs, classes)</span><br></pre></td></tr></tbody></table></figure>
+
+
+<p>​    </p>
+<p><img data-src="https://pic4.zhimg.com/80/v2-cc79aa5a837b2cf51fd102b5b63b5c44.png" alt="Image"></p>
+<h3 id="2-训练模型"><a href="#2-训练模型" class="headerlink" title="2. 训练模型"></a>2. 训练模型</h3><p>现在，让我们编写一个通用函数来训练一个模型。</p>
+<p>在下面的示例中，参数 <code>scheduler</code> 是来自的 LR scheduler 对象 <code>torch.optim.lr_scheduler</code>。</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> tqdm <span class="keyword">import</span> tqdm</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">train_model</span>(<span class="params">model, criterion, optimizer, scheduler, num_epochs=<span class="number">25</span></span>):</span></span><br><span class="line">    loss_plot = []</span><br><span class="line">    since = time.time()</span><br><span class="line"></span><br><span class="line">    best_model_wts = copy.deepcopy(model.state_dict())</span><br><span class="line">    best_acc = <span class="number">0.0</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> epoch <span class="keyword">in</span> tqdm(<span class="built_in">range</span>(num_epochs)):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f'Epoch <span class="subst">{epoch}</span>/<span class="subst">{num_epochs - <span class="number">1</span>}</span>:'</span>,end=<span class="string">' '</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 每个 epoch 都有一个培训和验证阶段</span></span><br><span class="line">        <span class="keyword">for</span> phase <span class="keyword">in</span> [<span class="string">'train'</span>, <span class="string">'validation'</span>]:</span><br><span class="line">            <span class="keyword">if</span> phase == <span class="string">'train'</span>:</span><br><span class="line">                model.train()  <span class="comment"># 将模型设置为训练模式</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                model.<span class="built_in">eval</span>()  <span class="comment"># 将模型设置为评估模式</span></span><br><span class="line"></span><br><span class="line">            running_loss = <span class="number">0.0</span></span><br><span class="line">            running_corrects = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># 迭代数据。</span></span><br><span class="line">            <span class="keyword">for</span> inputs, labels <span class="keyword">in</span> dataloaders[phase]:</span><br><span class="line">                inputs = inputs.to(device)</span><br><span class="line">                labels = labels.to(device)</span><br><span class="line"></span><br><span class="line">                <span class="comment"># 将参数梯度归零</span></span><br><span class="line">                optimizer.zero_grad()</span><br><span class="line"></span><br><span class="line">                <span class="comment"># forward</span></span><br><span class="line">                <span class="comment"># track history if only in train</span></span><br><span class="line">                <span class="keyword">with</span> torch.set_grad_enabled(phase == <span class="string">'train'</span>):</span><br><span class="line">                    outputs = model(inputs)</span><br><span class="line">                    _, preds = torch.<span class="built_in">max</span>(outputs, <span class="number">1</span>)</span><br><span class="line">                    loss = criterion(outputs, labels)</span><br><span class="line"></span><br><span class="line">                    <span class="comment"># backward + optimize only if in training phase</span></span><br><span class="line">                    <span class="keyword">if</span> phase == <span class="string">'train'</span>:</span><br><span class="line">                        loss.backward()</span><br><span class="line">                        optimizer.step()</span><br><span class="line"></span><br><span class="line">                <span class="comment"># statistics</span></span><br><span class="line">                running_loss += loss.item() * inputs.size(<span class="number">0</span>)</span><br><span class="line">                running_corrects += torch.<span class="built_in">sum</span>(preds == labels.data)</span><br><span class="line">            <span class="keyword">if</span> phase == <span class="string">'train'</span>:</span><br><span class="line">                scheduler.step()</span><br><span class="line"></span><br><span class="line">            epoch_loss = running_loss / dataset_sizes[phase]</span><br><span class="line">            epoch_acc = running_corrects.double() / dataset_sizes[phase]</span><br><span class="line"></span><br><span class="line">            <span class="comment"># print(f'{phase} Loss: {epoch_loss:.4f} Acc: {epoch_acc:.4f}')</span></span><br><span class="line">            loss_plot.append(epoch_loss)</span><br><span class="line">            <span class="comment"># deep copy the model</span></span><br><span class="line">            <span class="keyword">if</span> phase == <span class="string">'validation'</span> <span class="keyword">and</span> epoch_acc &gt; best_acc:</span><br><span class="line">                best_acc = epoch_acc</span><br><span class="line">                best_model_wts = copy.deepcopy(model.state_dict())</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    time_elapsed = time.time() - since</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f'Training complete in <span class="subst">{time_elapsed // <span class="number">60</span>:<span class="number">.0</span>f}</span>m <span class="subst">{time_elapsed % <span class="number">60</span>:<span class="number">.0</span>f}</span>s'</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f'Best val Acc: <span class="subst">{best_acc:4f}</span>'</span>)</span><br><span class="line">    plt.plot(loss_plot)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># load best model weights</span></span><br><span class="line">    model.load_state_dict(best_model_wts)</span><br><span class="line">    <span class="keyword">return</span> model</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<h4 id="可视化模型的预测"><a href="#可视化模型的预测" class="headerlink" title="可视化模型的预测"></a>可视化模型的预测</h4><p>这是显示一些图像预测的函数</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">visualize_model</span>(<span class="params">model, num_images=<span class="number">8</span></span>):</span></span><br><span class="line">    was_training = model.training</span><br><span class="line">    model.<span class="built_in">eval</span>()</span><br><span class="line">    images_so_far = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">with</span> torch.no_grad():</span><br><span class="line">        <span class="keyword">for</span> i, (inputs, labels) <span class="keyword">in</span> <span class="built_in">enumerate</span>(dataloaders[<span class="string">'validation'</span>]):</span><br><span class="line">            inputs = inputs.to(device)</span><br><span class="line">            labels = labels.to(device)</span><br><span class="line"></span><br><span class="line">            outputs = model(inputs)</span><br><span class="line">            _, preds = torch.<span class="built_in">max</span>(outputs, <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">            my_imgs_plot(inputs.cpu(),labels, preds)</span><br><span class="line">            images_so_far += batch_size</span><br><span class="line">            <span class="comment"># for j in range(inputs.size()[0]):</span></span><br><span class="line">            <span class="comment">#     plt.figure(figsize=(12,12))</span></span><br><span class="line">            <span class="comment">#     images_so_far += 1</span></span><br><span class="line">            <span class="comment">#     ax = plt.subplot(num_images//2, 2, images_so_far)</span></span><br><span class="line">            <span class="comment">#     ax.axis('off')</span></span><br><span class="line">            <span class="comment">#     ax.set_title(f"predicted: {class_names[preds[j]]}, true: {class_names[labels[j]]},{'success' if preds[j] == labels[j] else 'failure'}")</span></span><br><span class="line">            <span class="comment">#     imshow(inputs.cpu().data[j])</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> images_so_far == num_images:</span><br><span class="line">                model.train(mode=was_training)</span><br><span class="line">                <span class="keyword">return</span></span><br><span class="line">        model.train(mode=was_training)</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<h3 id="3-ConvNet-作为固定特征提取器"><a href="#3-ConvNet-作为固定特征提取器" class="headerlink" title="3. ConvNet 作为固定特征提取器"></a>3. ConvNet 作为固定特征提取器</h3><p>在这里，我们需要冻结除最后一层以外的所有网络。我们需要要设置 <code>requires_grad = False</code> 冻结参数，以便在 <code>backward()</code> 中不计算梯度。</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">model_conv = torchvision.models.resnet18(pretrained=<span class="literal">True</span>)</span><br><span class="line"><span class="keyword">for</span> param <span class="keyword">in</span> model_conv.parameters():</span><br><span class="line">    param.requires_grad = <span class="literal">False</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Parameters of newly constructed modules have requires_grad=True by default</span></span><br><span class="line">num_ftrs = model_conv.fc.in_features</span><br><span class="line">model_conv.fc = nn.Linear(num_ftrs, <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">model_conv = model_conv.to(device)</span><br><span class="line"></span><br><span class="line">criterion = nn.CrossEntropyLoss()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 注意只有最后一层的参数正在优化，而不是之前。</span></span><br><span class="line">optimizer_conv = optim.SGD(model_conv.fc.parameters(), lr=<span class="number">0.001</span>, momentum=<span class="number">0.9</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Decay LR by a factor of 0.1 every 7 epochs</span></span><br><span class="line">exp_lr_scheduler = lr_scheduler.StepLR(optimizer_conv, step_size=<span class="number">7</span>, gamma=<span class="number">0.1</span>)</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="训练和评估"><a href="#训练和评估" class="headerlink" title="训练和评估"></a>训练和评估</h4><p>在 CPU 上，与之前的场景相比，这将花费大约一半的时间。这是预期的，因为大多数情况下不需要计算梯度，然而，forward 确实需要计算。</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">model_conv = train_model(model_conv, criterion, optimizer_conv,</span><br><span class="line">                         exp_lr_scheduler, num_epochs=<span class="number">25</span>)</span><br><span class="line">PATH = <span class="string">'./fakeFace_tf_{}.pth'</span>.<span class="built_in">format</span>(model_conv.__class__.__name__)</span><br><span class="line">torch.save(model_conv.state_dict(), PATH) </span><br></pre></td></tr></tbody></table></figure>
+
+
+<pre><code>100%|██████████| 25/25 [07:15&lt;00:00, 17.42s/it]
+
+validation Loss: 0.3544 Acc: 0.8430
+Training complete in 7m 15s
+Best val Acc: 0.880000
+</code></pre>
+<p>​    </p>
+<p><img data-src="https://pic4.zhimg.com/80/v2-d395543956ff7f9b6b1419fc7c072d64.png" alt="Image"></p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">visualize_model(model_conv)</span><br><span class="line"></span><br><span class="line">plt.ioff()</span><br><span class="line">plt.show()</span><br></pre></td></tr></tbody></table></figure>
+
+
+<p>​    </p>
+<p><img data-src="https://pic4.zhimg.com/80/v2-3ad6c7009833d9545c7bd45238f8237a.png" alt="Image"></p>
+<p><img data-src="https://pic4.zhimg.com/80/v2-b01f0122ba537be0b683da1aef731ebc.png" alt="Image"></p>
+<p>发现仅训练全连接层的话效果不太好，我们再试试对所有产生 Fine-tuning 的方法。</p>
+<h3 id="4-Fine-tuning-微调网络"><a href="#4-Fine-tuning-微调网络" class="headerlink" title="4. Fine-tuning - 微调网络"></a>4. Fine-tuning - 微调网络</h3><p>加载预训练模型并重置最终完全连接的层。</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">model_ft = models.resnet18(pretrained=<span class="literal">True</span>)</span><br><span class="line">num_ftrs = model_ft.fc.in_features</span><br><span class="line"><span class="comment"># 这里，每个输出样本的大小设置为 2。</span></span><br><span class="line"><span class="comment"># 或者，它可以推广到 nn.Linear(num_ftrs, len(class_names)).</span></span><br><span class="line">model_ft.fc = nn.Linear(num_ftrs, <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">model_ft = model_ft.to(device)</span><br><span class="line"></span><br><span class="line">criterion = nn.CrossEntropyLoss()</span><br><span class="line"></span><br><span class="line"><span class="comment"># Observe that all parameters are being optimized</span></span><br><span class="line">optimizer_ft = optim.SGD(model_ft.parameters(), lr=<span class="number">0.001</span>, momentum=<span class="number">0.9</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Decay LR by a factor of 0.1 every 7 epochs</span></span><br><span class="line">exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=<span class="number">7</span>, gamma=<span class="number">0.1</span>)</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="训练和评估-1"><a href="#训练和评估-1" class="headerlink" title="训练和评估"></a>训练和评估</h4><p>在 GPU 上，只需不到 10 分钟</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">model_ft = train_model(model_ft, criterion, optimizer_ft, exp_lr_scheduler,</span><br><span class="line">                       num_epochs=<span class="number">15</span>)</span><br></pre></td></tr></tbody></table></figure>
+
+
+<pre><code>100%|██████████| 15/15 [10:20&lt;00:00, 41.38s/it]
+
+validation Loss: 0.0028 Acc: 1.0000
+Training complete in 10m 21s
+Best val Acc: 1.000000
+</code></pre>
+<p>​    </p>
+<p>可以发现正确率达到了 100%。</p>
+<p><img data-src="https://pic4.zhimg.com/80/v2-00f3c34164eca079658285d27057fdcc.png" alt="Image"></p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">visualize_model(model_ft)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>​    </p>
+<p><img data-src="https://pic4.zhimg.com/80/v2-fbc8084144f0ebb768c138d889ebff12.png" alt="Image"></p>
+<p><img data-src="https://pic4.zhimg.com/80/v2-8574d77b1db308b36e2e4586ddc2f033.png" alt="Image"></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/KaelCui/article/details/106175313">【学习笔记】如何理解 transforms.Normalize ((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])_GRIT_Kael 的博客 - CSDN 博客_transforms.normalize 参数</a></p>
+<p><a target="_blank" rel="noopener" href="https://pytorch.org/docs/master/notes/autograd.html">Autograd mechanics — PyTorch master documentation</a></p>
+<p><a target="_blank" rel="noopener" href="https://pytorch.org/tutorials/intermediate/quantized_transfer_learning_tutorial.html">(beta) Quantized Transfer Learning for Computer Vision Tutorial — PyTorch Tutorials 1.11.0+cu102 documentation</a></p>
+<p><a target="_blank" rel="noopener" href="https://pytorch.org/tutorials/beginner/transfer_learning_tutorial.html">Transfer Learning for Computer Vision Tutorial — PyTorch Tutorials 1.11.0+cu102 documentation</a></p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      <div style="display: inline-block;">
+        <img src="/images/dogecoin.png" alt="Framist dogecoin">
+        <p>dogecoin</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Framist
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://framist.github.io/post/6744.html" title="虚假人脸检测实验：CNN &amp; Transfer Learning">https://framist.github.io/post/6744.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/tags/%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8/" rel="tag"># 信息安全</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/post/7919.html" rel="prev" title="PyTorch：进化">
+      <i class="fa fa-chevron-left"></i> PyTorch：进化
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/post/21951.html" rel="next" title="对抗性样本攻击实验：FGSM">
+      对抗性样本攻击实验：FGSM <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%99%9A%E5%81%87%E4%BA%BA%E8%84%B8%E6%A3%80%E6%B5%8B%E5%AE%9E%E9%AA%8C"><span class="nav-number">1.</span> <span class="nav-text">虚假人脸检测实验</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.1.</span> <span class="nav-text">题目描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B4%E6%8E%A5%E8%AE%AD%E7%BB%83%E4%B8%80%E4%B8%AA%E7%9C%9F%E5%81%87%E4%BA%BA%E8%84%B8%E4%BA%8C%E5%88%86%E7%B1%BB%E5%99%A8"><span class="nav-number">1.2.</span> <span class="nav-text">直接训练一个真假人脸二分类器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%8A%A0%E8%BD%BD%E5%B9%B6%E8%A7%84%E8%8C%83%E5%8C%96%E6%95%B0%E6%8D%AE"><span class="nav-number">1.2.1.</span> <span class="nav-text">1. 加载并规范化数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%AE%9A%E4%B9%89%E4%B8%80%E4%B8%AA%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"><span class="nav-number">1.2.2.</span> <span class="nav-text">2. 定义一个卷积神经网络</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%AE%9A%E4%B9%89%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E5%92%8C%E4%BC%98%E5%8C%96%E5%99%A8"><span class="nav-number">1.2.3.</span> <span class="nav-text">3. 定义损失函数和优化器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E8%AE%AD%E7%BB%83%E7%BD%91%E7%BB%9C"><span class="nav-number">1.2.4.</span> <span class="nav-text">4. 训练网络</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E5%9C%A8%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE%E4%B8%8A%E6%B5%8B%E8%AF%95%E7%BD%91%E7%BB%9C"><span class="nav-number">1.2.5.</span> <span class="nav-text">5. 在测试数据上测试网络</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%99%9A%E5%81%87%E4%BA%BA%E8%84%B8%E5%88%86%E7%B1%BB%E7%9A%84%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0"><span class="nav-number">1.3.</span> <span class="nav-text">虚假人脸分类的迁移学习</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E8%AF%BB%E5%8F%96%E6%95%B0%E6%8D%AE"><span class="nav-number">1.3.1.</span> <span class="nav-text">1. 读取数据</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%AF%E8%A7%86%E5%8C%96%E4%B8%80%E4%BA%9B%E5%9B%BE%E5%83%8F"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">可视化一些图像</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.3.2.</span> <span class="nav-text">2. 训练模型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%AF%E8%A7%86%E5%8C%96%E6%A8%A1%E5%9E%8B%E7%9A%84%E9%A2%84%E6%B5%8B"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">可视化模型的预测</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-ConvNet-%E4%BD%9C%E4%B8%BA%E5%9B%BA%E5%AE%9A%E7%89%B9%E5%BE%81%E6%8F%90%E5%8F%96%E5%99%A8"><span class="nav-number">1.3.3.</span> <span class="nav-text">3. ConvNet 作为固定特征提取器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%AD%E7%BB%83%E5%92%8C%E8%AF%84%E4%BC%B0"><span class="nav-number">1.3.3.1.</span> <span class="nav-text">训练和评估</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Fine-tuning-%E5%BE%AE%E8%B0%83%E7%BD%91%E7%BB%9C"><span class="nav-number">1.3.4.</span> <span class="nav-text">4. Fine-tuning - 微调网络</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%AD%E7%BB%83%E5%92%8C%E8%AF%84%E4%BC%B0-1"><span class="nav-number">1.3.4.1.</span> <span class="nav-text">训练和评估</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">1.4.</span> <span class="nav-text">参考</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Framist</p>
+  <div class="site-description" itemprop="description">框架主义者的小窝</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">73</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/framist" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;framist" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:framist@163.com" title="E-Mail → mailto:framist@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/weixin_47102975" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_47102975" rel="noopener" target="_blank"><i class="fas fa-angle-right fa-fw"></i>CSDN</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/kuang-jia-zhu-yi-zhe" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;kuang-jia-zhu-yi-zhe" rel="noopener" target="_blank"><i class="fas fa-angle-right fa-fw"></i>知乎</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://framist.top/" title="http:&#x2F;&#x2F;framist.top&#x2F;" rel="noopener" target="_blank">个人主页</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://craft.framist.top/" title="https:&#x2F;&#x2F;craft.framist.top&#x2F;" rel="noopener" target="_blank">框架科工</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://framist.github.io/2020/10/11/%E6%88%91%E8%BA%AB%E8%BE%B9%E7%9A%84CS%E5%A4%A7%E4%BD%AC%E4%BB%AC/" title="https:&#x2F;&#x2F;framist.github.io&#x2F;2020&#x2F;10&#x2F;11&#x2F;%E6%88%91%E8%BA%AB%E8%BE%B9%E7%9A%84CS%E5%A4%A7%E4%BD%AC%E4%BB%AC&#x2F;">我身边的大佬们</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yuexiavqiufeng.github.io/" title="https:&#x2F;&#x2F;yuexiavqiufeng.github.io&#x2F;" rel="noopener" target="_blank">yuexiavqiufeng</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">浙 ICP 备 2022002862 号 -1 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-at"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Framist</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div><script>
+    let body = document.getElementsByTagName('body')[0];
+    body.addEventListener('click', (e) => {
+        let contentArr = ['欧拉~','ˋ( ° ▽、° ) ','RGB!','_(:з」∠)_','哼','?','¿框架?','QAQ',':3','<3','疯掉了',
+                            'whoami',
+                            'whoareU',
+                            'NULL',
+                            'None',
+                            ' ',
+                            '代价是什么呢？',
+                            '...',
+                            'Big Brother is Watching You',
+                            '喵~', '嗷~', '呜~', '哞~', '咩~', '咕~', '嘎~', '嘤~',
+                            '你看到了。',
+                            '¿爱情障眼法?','¿物种认同障碍?',
+                            '微润欧美，小润终南山，中润润与市，大润中南海',
+                            'init param:<br/>1LTKvNaux7CjrNHJ09C0y87Eo7/Rrbu3zfm4tKOsus7Ksbb41rmjv9a5zqrWucv51rmjrLTLzsTT1rrOtOajvw==',
+                            '这里没有时间的意义',
+                            '嘿嘿嘿，好想被随机异或哦，<br/>嘿嘿嘿，嘿嘿嘿，异或我的异或',
+                            '记忆赋予时间的意义，而不是时间赋予记忆的意义',
+                            '放弃 P ∨ ¬P 吧！',
+                            '抽象是普适性的代价 —— 3b1b',
+                            '得易见平凡，仿照上例显然',
+                            '留作习题答案略，读者自证不难',
+                            '反之亦然同理，推论自然成立',
+                            '略去过程 Q . E . D ，由上可知证毕'];
+        let randomNum = function (n) {
+            return Math.floor(Math.random() * n)
+        }
+        let span = document.createElement('span');
+        span.innerHTML = `${contentArr[randomNum(contentArr.length)]}`;
+        span.style.color = `rgb(${randomNum(256)},${randomNum(256)},${randomNum(256)})`;
+        span.style.position = 'absolute';
+        span.style.top = `${e.pageY}px`;
+        span.style.left = `${e.pageX}px`;
+        span.style.transition = 'all 1s ease';
+        span.style.zIndex = 20000;
+        body.appendChild(span)
+        setTimeout(()=>{
+            span.style.top = span.offsetTop - 25 + 'px';
+            span.style.opacity = 0;
+            setTimeout(()=>{span.remove()},1000)
+        },700)
+    })
+</script>
+
+
+<div style="width: 100px; height: 100px; margin: 0 auto;">
+<script type="text/javascript" id="clstr_globe" src="//clustrmaps.com/globe.js?d=gRWtX21uVt_tIdj_T64nMvo4FK1UrTWME23CVLOzNCg"></script>
+</div>
+<!--
+<script type="text/javascript" 
+color="255,255,255" 
+pointColor='64,184,209' 
+opacity='1' 
+zIndex="-1" 
+count="233" 
+src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js">
+</script>
+-->
+
+
+        
+<div class="busuanzi-count">
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script data-pjax>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '267a9d4a89b9b72b2229',
+      clientSecret: '2dba1f14d21da707ed6c4497fecc05d6178b4fa3',
+      repo        : 'blog-comment',
+      owner       : 'framist',
+      admin       : ['framist'],
+      id          : 'bb23a039c6663d44259ae9f65d49426a',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+    </div>
+</body>
+</html>

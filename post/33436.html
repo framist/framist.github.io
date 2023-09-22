@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Noto Serif SC:300,300italic,400,400italic,700,700italic|Source Code Pro:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-big-counter.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"framist.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="上机报告 3 java 第三次上机作业： 1、作业内容：习题 6-10,8-2。DDL：2020 年 11 月 17 日 23:59:59 2、报告格式：将报告和程序一起打压缩包发送到████████████邮箱，压缩包必须命名为 “上机作业 3 - 学号 - 姓名”。注：如果压缩包命名格式错误，会漏统计！">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Java】上机作业报告 3">
+<meta property="og:url" content="https://framist.github.io/post/33436.html">
+<meta property="og:site_name" content="Framist&#39;s Little House">
+<meta property="og:description" content="上机报告 3 java 第三次上机作业： 1、作业内容：习题 6-10,8-2。DDL：2020 年 11 月 17 日 23:59:59 2、报告格式：将报告和程序一起打压缩包发送到████████████邮箱，压缩包必须命名为 “上机作业 3 - 学号 - 姓名”。注：如果压缩包命名格式错误，会漏统计！">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2023/08/15/20230815202632.png">
+<meta property="article:published_time" content="2020-09-21T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-09-22T07:21:55.197Z">
+<meta property="article:author" content="Framist">
+<meta property="article:tag" content="学习">
+<meta property="article:tag" content="Java">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2023/08/15/20230815202632.png">
+
+<link rel="canonical" href="https://framist.github.io/post/33436.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【Java】上机作业报告 3 | Framist's Little House</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Framist's Little House</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">◇ 自顶而下 - 面向未来 ◇</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://framist.github.io/post/33436.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Framist">
+      <meta itemprop="description" content="框架主义者的小窝">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Framist's Little House">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【Java】上机作业报告 3
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-09-22 00:00:00" itemprop="dateCreated datePublished" datetime="2020-09-22T00:00:00+08:00">2020-09-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-09-22 15:21:55" itemprop="dateModified" datetime="2023-09-22T15:21:55+08:00">2023-09-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">计算机科学</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E8%AF%BE%E4%B8%9A%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">课业学习</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E8%AF%BE%E4%B8%9A%E5%AD%A6%E4%B9%A0/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="上机报告-3"><a href="#上机报告-3" class="headerlink" title="上机报告 3"></a>上机报告 3</h1><blockquote>
+<p>java 第三次上机作业：</p>
+<p>1、作业内容：习题 6-10,8-2。DDL：2020 年 11 月 17 日 23:59:59</p>
+<p>2、报告格式：将报告和程序一起打压缩包发送到████████████邮箱，压缩包必须命名为 “上机作业 3 - 学号 - 姓名”。注：如果压缩包命名格式错误，会漏统计！</p>
+</blockquote>
+<span id="more"></span>
+
+<br>
+
+<h2 id="6-10"><a href="#6-10" class="headerlink" title="6-10"></a>6-10</h2><p><strong>题目</strong>：实现一个类 <code>KeywoldIdentifier</code>，读入一个.java 文件，输出各个关键字的个数（注释中的不算）。</p>
+<ul>
+<li>Java 关键字如下：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th><strong>关键字</strong></th>
+<th><strong>含义</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td> abstract</td>
+<td> 表明类或者成员方法具有抽象属性</td>
+</tr>
+<tr>
+<td> assert</td>
+<td> 断言，用来进行程序调试</td>
+</tr>
+<tr>
+<td> boolean</td>
+<td> 基本数据类型之一，声明布尔类型的关键字</td>
+</tr>
+<tr>
+<td> break</td>
+<td> 提前跳出一个块</td>
+</tr>
+<tr>
+<td> byte</td>
+<td> 基本数据类型之一，字节类型</td>
+</tr>
+<tr>
+<td> case</td>
+<td> 用在 switch 语句之中，表示其中的一个分支</td>
+</tr>
+<tr>
+<td> catch</td>
+<td> 用在异常处理中，用来捕捉异常</td>
+</tr>
+<tr>
+<td> char</td>
+<td> 基本数据类型之一，字符类型</td>
+</tr>
+<tr>
+<td> class</td>
+<td> 声明一个类</td>
+</tr>
+<tr>
+<td> const</td>
+<td> 保留关键字，没有具体含义</td>
+</tr>
+<tr>
+<td> continue</td>
+<td> 回到一个块的开始处</td>
+</tr>
+<tr>
+<td> default</td>
+<td> 默认，例如，用在 switch 语句中，表明一个默认的分支。Java8 中也作用于声明接口函数的默认实现</td>
+</tr>
+<tr>
+<td> do</td>
+<td> 用在 do-while 循环结构中</td>
+</tr>
+<tr>
+<td> double</td>
+<td> 基本数据类型之一，双精度浮点数类型</td>
+</tr>
+<tr>
+<td> else</td>
+<td> 用在条件语句中，表明当条件不成立时的分支</td>
+</tr>
+<tr>
+<td> enum</td>
+<td> 枚举</td>
+</tr>
+<tr>
+<td> extends</td>
+<td> 表明一个类型是另一个类型的子类型。对于类，可以是另一个类或者抽象类；对于接口，可以是另一个接口</td>
+</tr>
+<tr>
+<td> final</td>
+<td> 用来说明最终属性，表明一个类不能派生出子类，或者成员方法不能被覆盖，或者成员域的值不能被改变，用来定义常量</td>
+</tr>
+<tr>
+<td> finally</td>
+<td> 用于处理异常情况，用来声明一个基本肯定会被执行到的语句块</td>
+</tr>
+<tr>
+<td> float</td>
+<td> 基本数据类型之一，单精度浮点数类型</td>
+</tr>
+<tr>
+<td> for</td>
+<td> 一种循环结构的引导词</td>
+</tr>
+<tr>
+<td> goto</td>
+<td> 保留关键字，没有具体含义</td>
+</tr>
+<tr>
+<td> if</td>
+<td> 条件语句的引导词</td>
+</tr>
+<tr>
+<td> implements</td>
+<td> 表明一个类实现了给定的接口</td>
+</tr>
+<tr>
+<td> import</td>
+<td> 表明要访问指定的类或包</td>
+</tr>
+<tr>
+<td> instanceof</td>
+<td> 用来测试一个对象是否是指定类型的实例对象</td>
+</tr>
+<tr>
+<td> int</td>
+<td> 基本数据类型之一，整数类型</td>
+</tr>
+<tr>
+<td> interface</td>
+<td> 接口</td>
+</tr>
+<tr>
+<td> long</td>
+<td> 基本数据类型之一，长整数类型</td>
+</tr>
+<tr>
+<td> native</td>
+<td> 用来声明一个方法是由与计算机相关的语言（如 C/C++/FORTRAN 语言）实现的</td>
+</tr>
+<tr>
+<td> new</td>
+<td> 用来创建新实例对象</td>
+</tr>
+<tr>
+<td> package</td>
+<td> 包</td>
+</tr>
+<tr>
+<td> private</td>
+<td> 一种访问控制方式：私用模式</td>
+</tr>
+<tr>
+<td> protected</td>
+<td> 一种访问控制方式：保护模式</td>
+</tr>
+<tr>
+<td> public</td>
+<td> 一种访问控制方式：共用模式</td>
+</tr>
+<tr>
+<td> return</td>
+<td> 从成员方法中返回数据</td>
+</tr>
+<tr>
+<td> short</td>
+<td> 基本数据类型之一，短整数类型</td>
+</tr>
+<tr>
+<td> static</td>
+<td> 表明具有静态属性</td>
+</tr>
+<tr>
+<td> strictfp</td>
+<td> 用来声明 FP_strict（单精度或双精度浮点数）表达式遵循 [IEEE 754](<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/IEEE">https://baike.baidu.com/item/IEEE</a> 754) 算术规范</td>
+</tr>
+<tr>
+<td> super</td>
+<td> 表明当前对象的父类型的引用或者父类型的构造方法</td>
+</tr>
+<tr>
+<td> switch</td>
+<td> 分支语句结构的引导词</td>
+</tr>
+<tr>
+<td> synchronized</td>
+<td> 表明一段代码需要同步执行</td>
+</tr>
+<tr>
+<td> this</td>
+<td> 指向当前实例对象的引用</td>
+</tr>
+<tr>
+<td> throw</td>
+<td> 抛出一个异常</td>
+</tr>
+<tr>
+<td> throws</td>
+<td> 声明在当前定义的成员方法中所有需要抛出的异常</td>
+</tr>
+<tr>
+<td> transient</td>
+<td> 声明不用序列化的成员域</td>
+</tr>
+<tr>
+<td> try</td>
+<td> 尝试一个可能抛出异常的程序块</td>
+</tr>
+<tr>
+<td> void</td>
+<td> 声明当前成员方法没有返回值</td>
+</tr>
+<tr>
+<td> volatile</td>
+<td> 表明两个或者多个变量必须同步地发生变化</td>
+</tr>
+<tr>
+<td> while</td>
+<td> 用在循环结构中</td>
+</tr>
+</tbody></table>
+<p>先把 Java 关键字储存在 <code>keyword.txt</code> 中：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">abstract</span><br><span class="line">assert</span><br><span class="line">boolean</span><br><span class="line">break</span><br><span class="line">byte</span><br><span class="line">case</span><br><span class="line">catch</span><br><span class="line">char</span><br><span class="line">class</span><br><span class="line">const</span><br><span class="line">continue</span><br><span class="line">default</span><br><span class="line">do</span><br><span class="line">double</span><br><span class="line">else</span><br><span class="line">enum</span><br><span class="line">extends</span><br><span class="line">final</span><br><span class="line">finally</span><br><span class="line">float</span><br><span class="line">for</span><br><span class="line">goto</span><br><span class="line">if</span><br><span class="line">implements</span><br><span class="line">import</span><br><span class="line">instanceof</span><br><span class="line">int</span><br><span class="line">interface</span><br><span class="line">long</span><br><span class="line">native</span><br><span class="line">new</span><br><span class="line">package</span><br><span class="line">private</span><br><span class="line">protected</span><br><span class="line">public</span><br><span class="line">return</span><br><span class="line">strictfp</span><br><span class="line">short</span><br><span class="line">static</span><br><span class="line">super</span><br><span class="line">switch</span><br><span class="line">synchronized</span><br><span class="line">this</span><br><span class="line">throw</span><br><span class="line">throws</span><br><span class="line">transient</span><br><span class="line">try</span><br><span class="line">void</span><br><span class="line">volatile</span><br><span class="line">while</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>注意排除注释中的内容，有以下两种情况：</p>
+<ul>
+<li><p><code>//</code> 开始 <code>\n</code> 结束</p>
+</li>
+<li><p><code>/*</code> 开始 <code>*/</code> 结束</p>
+</li>
+</ul>
+<p>另外</p>
+<ul>
+<li>注意 <code>"</code> 内的不是关键字</li>
+</ul>
+<p>全部代码如下：</p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> regex;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.RandomAccessFile;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"><span class="keyword">import</span> java.util.TreeMap;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">homework_6_10</span> </span>{</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException </span>{</span><br><span class="line">		keywordIdentifier sc = <span class="keyword">new</span> keywordIdentifier();</span><br><span class="line">        sc.keyWord();</span><br><span class="line">        <span class="keyword">long</span> filePoint = <span class="number">0</span>;</span><br><span class="line">        String s;</span><br><span class="line">        <span class="keyword">boolean</span> inAnnotation = <span class="keyword">false</span>; <span class="comment">//是否在块注释内</span></span><br><span class="line">        RandomAccessFile file = <span class="keyword">new</span> RandomAccessFile(<span class="string">"D:\\code\\Java-XDU\\java-book-code\\book-code\\chap06\\regex\\homework_6_10.java"</span>, <span class="string">"r"</span>);</span><br><span class="line">        <span class="keyword">long</span> fileLength = file.length();</span><br><span class="line">        <span class="keyword">while</span>(filePoint &lt; fileLength) {</span><br><span class="line">            s = file.readLine();</span><br><span class="line">            s = s.replaceAll(<span class="string">"\"(\\\\.|[^\\\\\"])*\""</span>, <span class="string">" "</span>);<span class="comment">//去除引号内</span></span><br><span class="line">            <span class="keyword">if</span>(inAnnotation) {</span><br><span class="line">            	<span class="keyword">if</span>(s.indexOf(<span class="string">"*/"</span>) != -<span class="number">1</span>) {</span><br><span class="line">            		s = s.substring(s.indexOf(<span class="string">"*/"</span>));</span><br><span class="line">                	inAnnotation = <span class="keyword">false</span>;</span><br><span class="line">                }<span class="keyword">else</span> {</span><br><span class="line">                	s = <span class="string">""</span>;</span><br><span class="line">                }</span><br><span class="line">            }</span><br><span class="line">            <span class="keyword">if</span>(s.indexOf(<span class="string">"/*"</span>) != -<span class="number">1</span>) {</span><br><span class="line">            	<span class="keyword">if</span>(s.indexOf(<span class="string">"*/"</span>) != -<span class="number">1</span>) {</span><br><span class="line">                	s = s.substring(<span class="number">0</span>,s.indexOf(<span class="string">"/*"</span>)) + s.substring(s.indexOf(<span class="string">"*/"</span>));</span><br><span class="line">                }<span class="keyword">else</span> {</span><br><span class="line">                	s = s.substring(<span class="number">0</span>,s.indexOf(<span class="string">"/*"</span>));</span><br><span class="line">                	inAnnotation = <span class="keyword">true</span>;</span><br><span class="line">                }</span><br><span class="line">            }</span><br><span class="line">            sc.keyWordCounter(s);</span><br><span class="line">            filePoint = file.getFilePointer();</span><br><span class="line">        }</span><br><span class="line">        file.close();</span><br><span class="line">        </span><br><span class="line">        sc.output();</span><br><span class="line">	}</span><br><span class="line"></span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">keywordIdentifier</span> </span>{</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Map&lt;String, Integer&gt; keyWordCount = <span class="keyword">new</span> TreeMap&lt;String, Integer&gt;();</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">keyWord</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>{</span><br><span class="line">        <span class="keyword">long</span> filePoint = <span class="number">0</span>;</span><br><span class="line">        String s;</span><br><span class="line"></span><br><span class="line">        RandomAccessFile file = <span class="keyword">new</span> RandomAccessFile(<span class="string">"D:\\code\\Java-XDU\\java-book-code\\book-code\\chap06\\regex\\keyword.txt"</span>, <span class="string">"r"</span>);</span><br><span class="line">        <span class="keyword">long</span> fileLength = file.length();</span><br><span class="line">        <span class="keyword">while</span>(filePoint &lt; fileLength) {</span><br><span class="line">            s = file.readLine();</span><br><span class="line"></span><br><span class="line">            String[] s1 = s.split(<span class="string">" "</span>);</span><br><span class="line">            Integer freq = <span class="keyword">new</span> Integer(<span class="number">0</span>);</span><br><span class="line">            <span class="keyword">for</span>(String word : s1) {</span><br><span class="line">                keyWordCount.put(word, freq);</span><br><span class="line">            }</span><br><span class="line">            </span><br><span class="line">            filePoint = file.getFilePointer();</span><br><span class="line">        }</span><br><span class="line">        file.close();</span><br><span class="line">    }</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">keyWordCounter</span><span class="params">(String s)</span></span>{</span><br><span class="line">        <span class="keyword">int</span> pos = s.indexOf(<span class="string">"//"</span>);</span><br><span class="line">        <span class="keyword">if</span>(pos == -<span class="number">1</span>) {</span><br><span class="line">            pos = s.length();</span><br><span class="line">        }</span><br><span class="line">        String sub = s.substring(<span class="number">0</span>, pos);</span><br><span class="line">        String sub1 = sub.replaceAll(<span class="string">"\\W"</span>, <span class="string">" "</span>);</span><br><span class="line">        String sub2 = sub1.replaceAll(<span class="string">" +"</span>,  <span class="string">" "</span>);</span><br><span class="line">        String[] sArray = sub2.split(<span class="string">" "</span>);</span><br><span class="line">        Integer freq;</span><br><span class="line">        <span class="keyword">for</span>(String word : sArray) {</span><br><span class="line">            freq = keyWordCount.get(word);</span><br><span class="line">            <span class="keyword">if</span>(freq != <span class="keyword">null</span>) {</span><br><span class="line">                freq = <span class="keyword">new</span> Integer(freq.intValue() + <span class="number">1</span>);</span><br><span class="line">                keyWordCount.put(word, freq);</span><br><span class="line">            }</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">output</span><span class="params">()</span> </span>{</span><br><span class="line">        System.out.println(keyWordCount);</span><br><span class="line">    }</span><br><span class="line">    </span><br><span class="line">}</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">abstract</span></span><br><span class="line"><span class="comment">assert</span></span><br><span class="line"><span class="comment">boolean</span></span><br><span class="line"><span class="comment">break</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>运行结果如下：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">{abstract=0, assert=0, boolean=1, break=0, byte=0, case=0, catch=0, char=0, class=2, const=0, continue=0, default=0, do=0, double=0, else=2, enum=0, extends=0, final=0, finally=0, float=0, for=2, goto=0, if=6, implements=0, import=4, instanceof=0, int=1, interface=0, long=4, native=0, new=6, package=1, private=1, protected=0, public=5, return=0, short=0, static=1, strictfp=0, super=0, switch=0, synchronized=0, this=0, throw=0, throws=2, transient=0, try=0, void=4, volatile=0, while=2}</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p><em>感觉还有其他的特殊情况没有进行排除</em></p>
+<blockquote>
+<p>参考：</p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/imjustice/p/regex_select_text_in_quota.html">正则表达式匹配引号内字符串</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_30699831/article/details/98134285">文本统计器（Java）</a></p>
+</blockquote>
+<br>
+
+<h2 id="8-2"><a href="#8-2" class="headerlink" title="8-2"></a>8-2</h2><p><strong>题目</strong>：实现一个程序，该程序的输入是一个<em>目录字符串</em>和一个<em>文件扩展名</em>字符串，程序递归搜索该目录及各级子目录，查找与指定相同的文件，将这些文件的<em>相对路径名</em>记录下来并向控制台输出。</p>
+<p>代码如下：</p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.File;</span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"><span class="keyword">import</span> java.util.Scanner;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">homework_8_2</span> </span>{</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>{</span><br><span class="line">		FileFinder finder = <span class="keyword">new</span> FileFinder();</span><br><span class="line">		List&lt;String&gt; filenameList = <span class="keyword">new</span> ArrayList&lt;String&gt;();</span><br><span class="line">		</span><br><span class="line">		Scanner scan = <span class="keyword">new</span> Scanner(System.in);</span><br><span class="line">        System.out.println(<span class="string">"输入目录字符串："</span>);</span><br><span class="line">        String currentDir = scan.nextLine();</span><br><span class="line">        System.out.println(<span class="string">"输入文件扩展名字符串："</span>);</span><br><span class="line">        String filenameSuffix = scan.nextLine();</span><br><span class="line">        scan.close();</span><br><span class="line">        </span><br><span class="line"><span class="comment">//		String currentDir = "D:\\code\\Java-XDU\\java-book-code\\book-code";</span></span><br><span class="line"><span class="comment">//		String filenameSuffix = ".java";</span></span><br><span class="line">		finder.findFiles(filenameSuffix, currentDir, filenameList);</span><br><span class="line">		<span class="keyword">for</span> (String filename : filenameList) {</span><br><span class="line">			System.out.println(filename.substring(currentDir.length()+<span class="number">1</span>));</span><br><span class="line">		}</span><br><span class="line">	}</span><br><span class="line"></span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FileFinder</span> </span>{</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">findFiles</span><span class="params">(String filenameSuffix, String currentDir, List&lt;String&gt; currentFilenameList)</span> </span>{</span><br><span class="line">		File dir = <span class="keyword">new</span> File(currentDir);</span><br><span class="line">		<span class="keyword">if</span> (!dir.exists() || !dir.isDirectory()) {</span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		}</span><br><span class="line"></span><br><span class="line">		<span class="keyword">for</span> (File file : dir.listFiles()) {</span><br><span class="line">			<span class="keyword">if</span> (file.isDirectory()) {</span><br><span class="line">				findFiles(filenameSuffix, file.getAbsolutePath(), currentFilenameList);</span><br><span class="line">			} <span class="keyword">else</span> {</span><br><span class="line">				<span class="keyword">if</span> (file.getAbsolutePath().endsWith(filenameSuffix)) {</span><br><span class="line">					currentFilenameList.add(file.getAbsolutePath());</span><br><span class="line">				}</span><br><span class="line">			}</span><br><span class="line">		}</span><br><span class="line">	}</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>输入：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">输入目录字符串：</span><br><span class="line">D:\code\Java-XDU\java-book-code\book-code</span><br><span class="line">输入文件扩展名字符串：</span><br><span class="line">.java</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2023/08/15/20230815202632.png" alt="image-20201117210339852"></p>
+<p>输出：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br></pre></td><td class="code"><pre><span class="line">chap01\HelloWorld.java</span><br><span class="line">chap02\ArrayCopy.java</span><br><span class="line">chap02\ArrayLength.java</span><br><span class="line">chap02\AssignConversion.java</span><br><span class="line">chap02\BinaryConversion.java</span><br><span class="line">chap02\BreakAndContinueWithLabel.java</span><br><span class="line">chap02\CastRoundingNum.java</span><br><span class="line">chap02\CharConst.java</span><br><span class="line">chap02\EnhancedFor.java</span><br><span class="line">chap02\homework\Homework_2_18.java</span><br><span class="line">chap02\homework\Homework_2_19.java</span><br><span class="line">chap02\homework\Homework_InsertionSort.java</span><br><span class="line">chap02\homework\Homework_MergeSort.java</span><br><span class="line">chap02\PrimitiveConst.java</span><br><span class="line">chap02\ShiftRight.java</span><br><span class="line">chap02\ShortCircuit.java</span><br><span class="line">chap02\UnaryConversion.java</span><br><span class="line">chap02\UnaryConversion2.java</span><br><span class="line">chap02\VariablesAndLocalVarInit.java</span><br><span class="line">chap03\Downcasting.java</span><br><span class="line">chap03\homework\homework_3_2.java</span><br><span class="line">chap03\homework\homework_3_3.java</span><br><span class="line">chap03\homework\homework_3_9.java</span><br><span class="line">chap03\ImportStatic.java</span><br><span class="line">chap03\inheritance\ConstructSubObj.java</span><br><span class="line">chap03\inheritance\ConstructSubObj2.java</span><br><span class="line">chap03\inheritance\TestInheritance.java</span><br><span class="line">chap03\InstanceInitializer.java</span><br><span class="line">chap03\NotOverriding.java</span><br><span class="line">chap03\overloading\AmbiguousOverloading.java</span><br><span class="line">chap03\overloading\ConstructorOverloading.java</span><br><span class="line">chap03\overloading\TestOverloading.java</span><br><span class="line">chap03\PackageImport.java</span><br><span class="line">chap03\ParameterPass.java</span><br><span class="line">chap03\pkg1\A.java</span><br><span class="line">chap03\pkg1\C.java</span><br><span class="line">chap03\pkg2\PrivateVsPackage.java</span><br><span class="line">chap03\pkg2\ProtectedVsPackageAndPublic.java</span><br><span class="line">chap03\pkg2\PublicVsPackage.java</span><br><span class="line">chap03\PolyConstructor.java</span><br><span class="line">chap03\Rectangle.java</span><br><span class="line">chap03\Rectangle2.java</span><br><span class="line">chap03\ReturnedThis.java</span><br><span class="line">chap03\shape\TestShapes.java</span><br><span class="line">chap03\TestClone.java</span><br><span class="line">chap03\TestEquals.java</span><br><span class="line">chap03\Triangle.java</span><br><span class="line">chap03\UnmaskField.java</span><br><span class="line">chap03\VariousArgs.java</span><br><span class="line">chap04\BlankFinals.java</span><br><span class="line">chap04\FinalArgs.java</span><br><span class="line">chap04\FinalVariables.java</span><br><span class="line">chap04\InheritStaticInit.java</span><br><span class="line">chap04\inner\AnonymousInner.java</span><br><span class="line">chap04\inner\Book.java</span><br><span class="line">chap04\inner\DotThis.java</span><br><span class="line">chap04\inner\LocalInner.java</span><br><span class="line">chap04\NewEnum.java</span><br><span class="line">chap04\ProductFactory.java</span><br><span class="line">chap04\SeasonChange.java</span><br><span class="line">chap04\Sportsman.java</span><br><span class="line">chap04\StaticInitialization.java</span><br><span class="line">chap04\StaticPolymorphism.java</span><br><span class="line">chap04\TestEnum.java</span><br><span class="line">chap04\TestShapesAbsClass.java</span><br><span class="line">chap04\TestShapesInterface.java</span><br><span class="line">chap04\TestStaticInit.java</span><br><span class="line">chap04\TestStaticMethod.java</span><br><span class="line">chap05\CollectionWithForeach.java</span><br><span class="line">chap05\TestCollection.java</span><br><span class="line">chap05\TestComparable.java</span><br><span class="line">chap05\TestEnumMap.java</span><br><span class="line">chap05\TestEnumSet.java</span><br><span class="line">chap05\TestIterator.java</span><br><span class="line">chap05\TestListIterator.java</span><br><span class="line">chap05\TestMap.java</span><br><span class="line">chap05\TestPriorityQueue.java</span><br><span class="line">chap05\TestQueue.java</span><br><span class="line">chap05\TestSet.java</span><br><span class="line">chap05\TestShapesArrayList.java</span><br><span class="line">chap06\Autoboxing.java</span><br><span class="line">chap06\Immutable.java</span><br><span class="line">chap06\regex\homework_6_10.java</span><br><span class="line">chap06\regex\MatchGroup.java</span><br><span class="line">chap06\regex\PatternMatcherTest.java</span><br><span class="line">chap06\regex\PatternSplit.java</span><br><span class="line">chap06\regex\Replacement.java</span><br><span class="line">chap06\regex\ScannerRegex.java</span><br><span class="line">chap06\regex\StringMatch.java</span><br><span class="line">chap06\regex\StringReplacement.java</span><br><span class="line">chap06\regex\StringSplit.java</span><br><span class="line">chap06\ScannerDemo.java</span><br><span class="line">chap06\SimpleFormat.java</span><br><span class="line">chap06\StringBuilderDemo.java</span><br><span class="line">chap06\StringImmediate.java</span><br><span class="line">chap06\StringTokenizerDemo.java</span><br><span class="line">chap07\HelloWorld.java</span><br><span class="line">chap07\ListOfNumbers.java</span><br><span class="line">chap07\TestListOfNumbersDeclared.java</span><br><span class="line">chap07\TestMyException.java</span><br><span class="line">chap08\BufferedIO.java</span><br><span class="line">chap08\DataInputEOF.java</span><br><span class="line">chap08\DataIO.java</span><br><span class="line">chap08\FileCopy.java</span><br><span class="line">chap08\homework_8_2.java</span><br><span class="line">chap08\nio\TestMappedByteBuffer.java</span><br><span class="line">chap08\nio\TestNIO.java</span><br><span class="line">chap08\nio\TestNIO2.java</span><br><span class="line">chap08\nio\TestNIOSimple.java</span><br><span class="line">chap08\RandomAccessFileDemo.java</span><br><span class="line">chap08\RenameFile.java</span><br><span class="line">chap08\SerializeDate.java</span><br><span class="line">chap08\StandardIO.java</span><br><span class="line">chap08\UnSerializeDate.java</span><br><span class="line">chap10\AddAccount.java</span><br><span class="line">chap10\AddAccountSync.java</span><br><span class="line">chap10\CountDown.java</span><br><span class="line">chap10\CountDown2.java</span><br><span class="line">chap10\CountDown3.java</span><br><span class="line">chap10\CountDown4.java</span><br><span class="line">chap10\GetLockAgain.java</span><br><span class="line">chap10\PipedIO.java</span><br><span class="line">chap10\producerconsumer\AccountProducerConsumer.java</span><br><span class="line">chap10\TestJoin.java</span><br><span class="line">chap10\TestStop.java</span><br><span class="line">chap11\LocalHost.java</span><br><span class="line">chap11\NetworkResolver.java</span><br><span class="line">chap11\TCPClient.java</span><br><span class="line">chap11\TCPServer.java</span><br><span class="line">chap11\UDPClient.java</span><br><span class="line">chap11\UDPServer.java</span><br><span class="line">chap11\URLParse.java</span><br><span class="line">chap11\URLRetrieve.java</span><br><span class="line">chap11\URLRetrieve2.java</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+
+
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://www.iteye.com/blog/mouselearnjava-1959690">参考</a></p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      <div style="display: inline-block;">
+        <img src="/images/dogecoin.png" alt="Framist dogecoin">
+        <p>dogecoin</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Framist
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://framist.github.io/post/33436.html" title="【Java】上机作业报告 3">https://framist.github.io/post/33436.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%AD%A6%E4%B9%A0/" rel="tag"># 学习</a>
+              <a href="/tags/Java/" rel="tag"># Java</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/post/16989.html" rel="next" title="【Java】上机作业报告 2">
+      【Java】上机作业报告 2 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%8A%E6%9C%BA%E6%8A%A5%E5%91%8A-3"><span class="nav-number">1.</span> <span class="nav-text">上机报告 3</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#6-10"><span class="nav-number">1.1.</span> <span class="nav-text">6-10</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-2"><span class="nav-number">1.2.</span> <span class="nav-text">8-2</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Framist</p>
+  <div class="site-description" itemprop="description">框架主义者的小窝</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">73</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/framist" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;framist" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:framist@163.com" title="E-Mail → mailto:framist@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/weixin_47102975" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_47102975" rel="noopener" target="_blank"><i class="fas fa-angle-right fa-fw"></i>CSDN</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/kuang-jia-zhu-yi-zhe" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;kuang-jia-zhu-yi-zhe" rel="noopener" target="_blank"><i class="fas fa-angle-right fa-fw"></i>知乎</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://framist.top/" title="http:&#x2F;&#x2F;framist.top&#x2F;" rel="noopener" target="_blank">个人主页</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://craft.framist.top/" title="https:&#x2F;&#x2F;craft.framist.top&#x2F;" rel="noopener" target="_blank">框架科工</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://framist.github.io/2020/10/11/%E6%88%91%E8%BA%AB%E8%BE%B9%E7%9A%84CS%E5%A4%A7%E4%BD%AC%E4%BB%AC/" title="https:&#x2F;&#x2F;framist.github.io&#x2F;2020&#x2F;10&#x2F;11&#x2F;%E6%88%91%E8%BA%AB%E8%BE%B9%E7%9A%84CS%E5%A4%A7%E4%BD%AC%E4%BB%AC&#x2F;">我身边的大佬们</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yuexiavqiufeng.github.io/" title="https:&#x2F;&#x2F;yuexiavqiufeng.github.io&#x2F;" rel="noopener" target="_blank">yuexiavqiufeng</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">浙 ICP 备 2022002862 号 -1 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-at"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Framist</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div><script>
+    let body = document.getElementsByTagName('body')[0];
+    body.addEventListener('click', (e) => {
+        let contentArr = ['欧拉~','ˋ( ° ▽、° ) ','RGB!','_(:з」∠)_','哼','?','¿框架?','QAQ',':3','<3','疯掉了',
+                            'whoami',
+                            'whoareU',
+                            'NULL',
+                            'None',
+                            ' ',
+                            '代价是什么呢？',
+                            '...',
+                            'Big Brother is Watching You',
+                            '喵~', '嗷~', '呜~', '哞~', '咩~', '咕~', '嘎~', '嘤~',
+                            '你看到了。',
+                            '¿爱情障眼法?','¿物种认同障碍?',
+                            '微润欧美，小润终南山，中润润与市，大润中南海',
+                            'init param:<br/>1LTKvNaux7CjrNHJ09C0y87Eo7/Rrbu3zfm4tKOsus7Ksbb41rmjv9a5zqrWucv51rmjrLTLzsTT1rrOtOajvw==',
+                            '这里没有时间的意义',
+                            '嘿嘿嘿，好想被随机异或哦，<br/>嘿嘿嘿，嘿嘿嘿，异或我的异或',
+                            '记忆赋予时间的意义，而不是时间赋予记忆的意义',
+                            '放弃 P ∨ ¬P 吧！',
+                            '抽象是普适性的代价 —— 3b1b',
+                            '得易见平凡，仿照上例显然',
+                            '留作习题答案略，读者自证不难',
+                            '反之亦然同理，推论自然成立',
+                            '略去过程 Q . E . D ，由上可知证毕'];
+        let randomNum = function (n) {
+            return Math.floor(Math.random() * n)
+        }
+        let span = document.createElement('span');
+        span.innerHTML = `${contentArr[randomNum(contentArr.length)]}`;
+        span.style.color = `rgb(${randomNum(256)},${randomNum(256)},${randomNum(256)})`;
+        span.style.position = 'absolute';
+        span.style.top = `${e.pageY}px`;
+        span.style.left = `${e.pageX}px`;
+        span.style.transition = 'all 1s ease';
+        span.style.zIndex = 20000;
+        body.appendChild(span)
+        setTimeout(()=>{
+            span.style.top = span.offsetTop - 25 + 'px';
+            span.style.opacity = 0;
+            setTimeout(()=>{span.remove()},1000)
+        },700)
+    })
+</script>
+
+
+<div style="width: 100px; height: 100px; margin: 0 auto;">
+<script type="text/javascript" id="clstr_globe" src="//clustrmaps.com/globe.js?d=gRWtX21uVt_tIdj_T64nMvo4FK1UrTWME23CVLOzNCg"></script>
+</div>
+<!--
+<script type="text/javascript" 
+color="255,255,255" 
+pointColor='64,184,209' 
+opacity='1' 
+zIndex="-1" 
+count="233" 
+src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js">
+</script>
+-->
+
+
+        
+<div class="busuanzi-count">
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script data-pjax>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '267a9d4a89b9b72b2229',
+      clientSecret: '2dba1f14d21da707ed6c4497fecc05d6178b4fa3',
+      repo        : 'blog-comment',
+      owner       : 'framist',
+      admin       : ['framist'],
+      id          : '1b590fbf4ecea0480097fbdbf82eaa10',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+    </div>
+</body>
+</html>

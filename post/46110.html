@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Noto Serif SC:300,300italic,400,400italic,700,700italic|Source Code Pro:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-big-counter.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"framist.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="基于神经网络的 MNIST 手写数字识别仅仅是 “人工智能选修课” 的上机作业">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【人工智能选修课】实验报告">
+<meta property="og:url" content="https://framist.github.io/post/46110.html">
+<meta property="og:site_name" content="Framist&#39;s Little House">
+<meta property="og:description" content="基于神经网络的 MNIST 手写数字识别仅仅是 “人工智能选修课” 的上机作业">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-04-23T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-09-22T07:21:55.195Z">
+<meta property="article:author" content="Framist">
+<meta property="article:tag" content="机器学习">
+<meta property="article:tag" content="python">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://framist.github.io/post/46110.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【人工智能选修课】实验报告 | Framist's Little House</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Framist's Little House</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">◇ 自顶而下 - 面向未来 ◇</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://framist.github.io/post/46110.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Framist">
+      <meta itemprop="description" content="框架主义者的小窝">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Framist's Little House">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【人工智能选修课】实验报告
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-04-24 00:00:00" itemprop="dateCreated datePublished" datetime="2021-04-24T00:00:00+08:00">2021-04-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-09-22 15:21:55" itemprop="dateModified" datetime="2023-09-22T15:21:55+08:00">2023-09-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">计算机科学</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="基于神经网络的-MNIST-手写数字识别"><a href="#基于神经网络的-MNIST-手写数字识别" class="headerlink" title="基于神经网络的 MNIST 手写数字识别"></a>基于神经网络的 MNIST 手写数字识别</h1><p><em>仅仅是 “人工智能选修课” 的上机作业</em></p>
+<span id="more"></span>
+
+<p>[TOC]</p>
+<h2 id="一、实验目的"><a href="#一、实验目的" class="headerlink" title="一、实验目的"></a>一、实验目的</h2><ul>
+<li>掌握运用神经网络模型解决有监督学习问题</li>
+<li>掌握机器学习中常用的模型训练测试方法</li>
+<li>了解不同训练方法的选择对测试结果的影响</li>
+</ul>
+<h2 id="二、实验内容"><a href="#二、实验内容" class="headerlink" title="二、实验内容"></a>二、实验内容</h2><h3 id="MNIST-数据集"><a href="#MNIST-数据集" class="headerlink" title="MNIST 数据集"></a>MNIST 数据集</h3><p>本实验采用的数据集 MNIST 是一个手写数字图片数据集，共包含图像和对应的标签。数据集中所有图片都是 28x28 像素大小，且所有的图像都经过了适当的处理使得数字位于图片的中心位置。MNIST 数据集使用二进制方式存储。图片数据中每个图片为一个长度为 784（28x28x1，即长宽 28 像素的单通道灰度图）的一维向量，而标签数据中每个标签均为长度为 10 的一维向量。</p>
+<h3 id="分层采样方法"><a href="#分层采样方法" class="headerlink" title="分层采样方法"></a>分层采样方法</h3><p>分层采样（或分层抽样，也叫类型抽样）方法，是将总体样本分成多个类别，再分别在每个类别中进行采样的方法。通过划分类别，采样出的样本的类型分布和总体样本相似，并且更具有代表性。在本实验中，MNIST 数据集为手写数字集，有 0~9 共 10 种数字，进行分层采样时先将数据集按数字分为 10 类，再按同样的方式分别进行采样。</p>
+<h3 id="神经网络模型评估方法"><a href="#神经网络模型评估方法" class="headerlink" title="神经网络模型评估方法"></a>神经网络模型评估方法</h3><p>通常，我们可以通过实验测试来对神经网络模型的误差进行评估。为此，需要使用一个测试集来测试模型对新样本的判别能力，然后以此测试集上的测试误差作为误差的近似值。两种常见的划分训练集和测试集的方法：</p>
+<p><strong>留出法（hold-out）</strong>直接将数据集按比例划分为两个互斥的集合。划分时为尽可能保持数据分布的一致性，可以采用分层采样（stratified sampling）的方式，使得训练集和测试集中的类别比例尽可能相似。需要注意的是，测试集在整个数据集上的分布如果不够均匀还可能引入额外的偏差，所以单次使用留出法得到的估计结果往往不够稳定可靠。在使用留出法时，一般要采用若干次随机划分、重复进行实验评估后取平均值作为留出法的评估结果。</p>
+<p><strong>k 折交叉验证法（k-fold cross validation）</strong>先将数据集划分为 k 个大小相似的互斥子集，每个子集都尽可能保持数据分布的一致性，即也采用分层采样（stratified sampling）的方法。然后，每次用 k-1 个子集的并集作为训练集，余下的那个子集作为测试集，这样就可以获得 k 组训练集和测试集，从而可以进行 k 次训练和测试。最终返回的是这 k 个测试结果的均值。显然，k 折交叉验证法的评估结果的稳定性和保真性在很大程度上取决于 k 的取值。k 最常用的取值是 10，此外常用的取值还有 5、20 等。</p>
+<h2 id="三、实验方法设计"><a href="#三、实验方法设计" class="headerlink" title="三、实验方法设计"></a>三、实验方法设计</h2><p>介绍实验中程序的总体设计方案、关键步骤的编程方法及思路，主要包括：</p>
+<h3 id="1）模型构建的程序设计（伪代码或源代码截图）及说明解释（10-分）"><a href="#1）模型构建的程序设计（伪代码或源代码截图）及说明解释（10-分）" class="headerlink" title="1）模型构建的程序设计（伪代码或源代码截图）及说明解释（10 分）"></a>1）模型构建的程序设计（伪代码或源代码截图）及说明解释（10 分）</h3><p>构建全连接神经网络，每一层的神经元个数分别为：784-&gt;128-&gt;128-&gt;10</p>
+<p>采用 Adam 优化器，使用 softmax 函数计算 loss</p>
+<p><em>具体解释见代码注释</em></p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 构建和训练模型</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">train_and_test</span>(<span class="params">images_train, labels_train, images_test, labels_test, images_validation, labels_validation</span>):</span></span><br><span class="line">    x = tf.placeholder(tf.float32, [<span class="literal">None</span>, <span class="number">784</span>], name=<span class="string">"X"</span>)</span><br><span class="line">    y = tf.placeholder(tf.float32, [<span class="literal">None</span>, <span class="number">10</span>], name=<span class="string">"Y"</span>)</span><br><span class="line">    h1 = fcn_layer(inputs=x,</span><br><span class="line">                   input_dim=<span class="number">784</span>,</span><br><span class="line">                   output_dim=<span class="number">128</span>,</span><br><span class="line">                   activation=tf.nn.relu)</span><br><span class="line"></span><br><span class="line">    h2 = fcn_layer(inputs=h1,</span><br><span class="line">                   input_dim=<span class="number">128</span>,</span><br><span class="line">                   output_dim=<span class="number">128</span>,</span><br><span class="line">                   activation=tf.nn.relu)</span><br><span class="line">    forward = fcn_layer(inputs=h2,</span><br><span class="line">                        input_dim=<span class="number">128</span>,</span><br><span class="line">                        output_dim=<span class="number">10</span>,</span><br><span class="line">                        activation=<span class="literal">None</span>)</span><br><span class="line">    pred = tf.nn.softmax(forward)</span><br><span class="line"></span><br><span class="line">    loss_function = tf.reduce_mean(</span><br><span class="line">        tf.nn.softmax_cross_entropy_with_logits(logits=forward, labels=y))</span><br><span class="line"></span><br><span class="line">    optimizer = tf.train.AdamOptimizer(learning_rate).minimize(loss_function) <span class="comment"># 优化器</span></span><br><span class="line">    correct_prediction = tf.equal(tf.argmax(pred, <span class="number">1</span>), tf.argmax(y, <span class="number">1</span>)) <span class="comment"># 比较预测值和真实值</span></span><br><span class="line">    accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32)) </span><br></pre></td></tr></tbody></table></figure>
+
+
+<p>其中 <code>fcn_layer</code> 函数：</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fcn_layer</span>(<span class="params">inputs,           <span class="comment"># 输入数据</span></span></span></span><br><span class="line"><span class="function"><span class="params">              input_dim,        <span class="comment"># 输入神经元数量</span></span></span></span><br><span class="line"><span class="function"><span class="params">              output_dim,       <span class="comment"># 输出神经元数量</span></span></span></span><br><span class="line"><span class="function"><span class="params">              activation=<span class="literal">None</span></span>):</span> <span class="comment"># 激活函数</span></span><br><span class="line">    W = tf.Variable(tf.truncated_normal(</span><br><span class="line">        [input_dim, output_dim], stddev=<span class="number">0.1</span>))  <span class="comment"># 初始化权重</span></span><br><span class="line">    b = tf.Variable(tf.zeros([output_dim]))  <span class="comment"># 初始化为 0</span></span><br><span class="line">    XWb = tf.matmul(inputs, W) + b</span><br><span class="line">    <span class="keyword">return</span> XWb <span class="keyword">if</span> activation <span class="keyword">is</span> <span class="literal">None</span> <span class="keyword">else</span> activation(XWb)</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<h3 id="2）模型迭代训练的程序设计（伪代码或源代码截图）及说明解释（10-分）"><a href="#2）模型迭代训练的程序设计（伪代码或源代码截图）及说明解释（10-分）" class="headerlink" title="2）模型迭代训练的程序设计（伪代码或源代码截图）及说明解释（10 分）"></a>2）模型迭代训练的程序设计（伪代码或源代码截图）及说明解释（10 分）</h3><p><em>具体解释见代码注释</em></p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">train_epochs = <span class="number">32</span>  <span class="comment"># 训练轮数</span></span><br><span class="line">batch_size = <span class="number">64</span>  <span class="comment"># 单次训练样本数（批次大小）</span></span><br><span class="line">display_step = <span class="number">4096</span>  <span class="comment"># 显示粒度</span></span><br><span class="line">learning_rate = <span class="number">0.001</span>  <span class="comment"># 学习率</span></span><br><span class="line"></span><br><span class="line">optimizer = tf.train.AdamOptimizer(learning_rate).minimize(loss_function) <span class="comment"># 优化器</span></span><br><span class="line">correct_prediction = tf.equal(tf.argmax(pred, <span class="number">1</span>), tf.argmax(y, <span class="number">1</span>)) <span class="comment"># 比较预测值和真实值</span></span><br><span class="line"><span class="comment"># 准确率，将布尔值转化为浮点数，并计算平均值</span></span><br><span class="line">accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32)) </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:</span><br><span class="line">    init = tf.global_variables_initializer()  <span class="comment"># 初始化变量</span></span><br><span class="line">    sess.run(init)</span><br><span class="line"></span><br><span class="line">    step = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> (batchImages, batchLabels) <span class="keyword">in</span> batch_iter(images_train, labels_train, batch_size, train_epochs, shuffle=<span class="literal">True</span>):</span><br><span class="line">        sess.run(optimizer,feed_dict={x: batchImages, y: batchLabels})</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<h3 id="3）模型训练过程中周期性测试的程序设计（伪代码或源代码截图）及说明解释（周期性测试指的是每训练-n-个-step-就对模型进行一次测试，得到准确率和-loss-值）（10-分）"><a href="#3）模型训练过程中周期性测试的程序设计（伪代码或源代码截图）及说明解释（周期性测试指的是每训练-n-个-step-就对模型进行一次测试，得到准确率和-loss-值）（10-分）" class="headerlink" title="3）模型训练过程中周期性测试的程序设计（伪代码或源代码截图）及说明解释（周期性测试指的是每训练 n 个 step 就对模型进行一次测试，得到准确率和 loss 值）（10 分）"></a>3）模型训练过程中周期性测试的程序设计（伪代码或源代码截图）及说明解释（周期性测试指的是每训练 n 个 step 就对模型进行一次测试，得到准确率和 loss 值）（10 分）</h3><p><em>具体解释见代码注释</em></p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">display_step = <span class="number">4096</span>  <span class="comment"># 显示粒度</span></span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:</span><br><span class="line">    init = tf.global_variables_initializer()  <span class="comment"># 初始化变量</span></span><br><span class="line">    sess.run(init)</span><br><span class="line"></span><br><span class="line">    step = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> (batchImages, batchLabels) <span class="keyword">in</span> batch_iter(images_train, labels_train, batch_size, train_epochs, shuffle=<span class="literal">True</span>):</span><br><span class="line">        sess.run(optimizer,feed_dict={x: batchImages, y: batchLabels})</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> step % display_step == <span class="number">0</span>:</span><br><span class="line">            loss, acc = sess.run([loss_function, accuracy],</span><br><span class="line">                                 feed_dict={x: images_validation, y: labels_validation}) <span class="comment"># 测试</span></span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f"step: <span class="subst">{step+<span class="number">1</span>}</span> Loss=<span class="subst">{loss}</span> accuracy=<span class="subst">{acc}</span>"</span>)</span><br><span class="line">            step += <span class="number">1</span></span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>输出结果：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">step: 1 Loss=2.238192558288574 accuracy=0.17159998416900635</span><br><span class="line">step: 4097 Loss=0.09725397080183029 accuracy=0.9717997312545776</span><br><span class="line">step: 8193 Loss=0.10235630720853806 accuracy=0.9781997203826904</span><br><span class="line">step: 12289 Loss=0.13071678578853607 accuracy=0.9735997915267944</span><br><span class="line">step: 16385 Loss=0.12960655987262726 accuracy=0.9757996797561646</span><br><span class="line">step: 20481 Loss=0.14140461385250092 accuracy=0.9765996932983398</span><br><span class="line">step: 24577 Loss=0.16358020901679993 accuracy=0.9759997129440308</span><br><span class="line">=== test accuracy: 0.97  ===</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<h3 id="4）分层采样的程序设计（伪代码或源代码截图）及说明解释（10-分）"><a href="#4）分层采样的程序设计（伪代码或源代码截图）及说明解释（10-分）" class="headerlink" title="4）分层采样的程序设计（伪代码或源代码截图）及说明解释（10 分）"></a>4）分层采样的程序设计（伪代码或源代码截图）及说明解释（10 分）</h3><p>利用 <code>sklearn</code> 中的 <code>train_test_split</code> 实现。十次随机抽取训练集和测试集，取平均值。</p>
+<p><em>具体解释见代码注释</em></p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 留出法（hold-out）</span></span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hold_out</span>(<span class="params">images, labels, train_percentage</span>):</span></span><br><span class="line">    accu = []</span><br><span class="line">    <span class="comment"># 十次随机抽取训练集和测试集，取平均值</span></span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>):</span><br><span class="line">        train_images, test_images, train_labels, test_labels = \</span><br><span class="line">            train_test_split(images, </span><br><span class="line">                             labels, </span><br><span class="line">                             train_size=train_percentage, <span class="comment"># 训练集比例</span></span><br><span class="line">                             stratify = labels <span class="comment"># 保持类别分布</span></span><br><span class="line">                             ) </span><br><span class="line">        accu.append(train_and_test(train_images, train_labels, test_images, test_labels, test_images, test_labels))</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">"hold-out accuracy:"</span>, accu)</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<h3 id="5）k-折交叉验证法的程序设计（伪代码或源代码截图）及说明解释（10-分）"><a href="#5）k-折交叉验证法的程序设计（伪代码或源代码截图）及说明解释（10-分）" class="headerlink" title="5）k 折交叉验证法的程序设计（伪代码或源代码截图）及说明解释（10 分）"></a>5）k 折交叉验证法的程序设计（伪代码或源代码截图）及说明解释（10 分）</h3><p>利用 <code>sklearn</code> 中的 <code>KFold</code> 实现。计算 k 中不同抽取下的平均值。</p>
+<p><em>具体解释见代码注释</em></p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># k 折交叉验证法（k-fold cross validation）</span></span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> KFold</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">cross_validation</span>(<span class="params">images, labels, k</span>):</span></span><br><span class="line">    accu = []</span><br><span class="line">    kf = KFold(n_splits=k, shuffle=<span class="literal">True</span>)</span><br><span class="line">    <span class="keyword">for</span> train_index, test_index <span class="keyword">in</span> kf.split(images):</span><br><span class="line">        images_train, images_test = images[train_index], images[test_index]</span><br><span class="line">        labels_train, labels_test = labels[train_index], labels[test_index]</span><br><span class="line">        accu.append(train_and_test(images_train, labels_train, images_test, labels_test, images_test, labels_test))</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">"cross-validation accuracy:"</span>, np.mean(accu))</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+
+
+
+
+
+<h2 id="四、实验结果展示"><a href="#四、实验结果展示" class="headerlink" title="四、实验结果展示"></a>四、实验结果展示</h2><p>展示程序界面设计、运行结果及相关分析等，主要包括：</p>
+<h3 id="1）模型在验证集下的准确率（输出结果并截图）（10-分）"><a href="#1）模型在验证集下的准确率（输出结果并截图）（10-分）" class="headerlink" title="1）模型在验证集下的准确率（输出结果并截图）（10 分）"></a>1）模型在验证集下的准确率（输出结果并截图）（10 分）</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">step: 1 Loss=2.238192558288574 accuracy=0.17159998416900635</span><br><span class="line">step: 4097 Loss=0.09725397080183029 accuracy=0.9717997312545776</span><br><span class="line">step: 8193 Loss=0.10235630720853806 accuracy=0.9781997203826904</span><br><span class="line">step: 12289 Loss=0.13071678578853607 accuracy=0.9735997915267944</span><br><span class="line">step: 16385 Loss=0.12960655987262726 accuracy=0.9757996797561646</span><br><span class="line">step: 20481 Loss=0.14140461385250092 accuracy=0.9765996932983398</span><br><span class="line">step: 24577 Loss=0.16358020901679993 accuracy=0.9759997129440308</span><br><span class="line">=== test accuracy: 0.97  ===</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<h3 id="2）不同模型参数（隐藏层数、隐藏层节点数）对准确率的影响和分析（10-分）"><a href="#2）不同模型参数（隐藏层数、隐藏层节点数）对准确率的影响和分析（10-分）" class="headerlink" title="2）不同模型参数（隐藏层数、隐藏层节点数）对准确率的影响和分析（10 分）"></a>2）不同模型参数（隐藏层数、隐藏层节点数）对准确率的影响和分析（10 分）</h3><h4 id="不同的隐藏层数"><a href="#不同的隐藏层数" class="headerlink" title="不同的隐藏层数"></a>不同的隐藏层数</h4><ul>
+<li>隐藏层数为 0 时：</li>
+</ul>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">step: 1 Loss=2.5073938369750977 accuracy=0.0729999914765358</span><br><span class="line">step: 4097 Loss=0.27769413590431213 accuracy=0.9217997789382935</span><br><span class="line">step: 8193 Loss=0.26662880182266235 accuracy=0.9259997010231018</span><br><span class="line">step: 12289 Loss=0.263393372297287 accuracy=0.9231997728347778</span><br><span class="line">step: 16385 Loss=0.26742368936538696 accuracy=0.9237997531890869</span><br><span class="line">step: 20481 Loss=0.26651620864868164 accuracy=0.9251997470855713</span><br><span class="line">step: 24577 Loss=0.26798802614212036 accuracy=0.9247996807098389</span><br><span class="line">=== test accuracy: 0.9248  ===</span><br><span class="line">0.92479974</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<ul>
+<li>隐藏层数为 1 时：</li>
+</ul>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">step: 1 Loss=2.4127447605133057 accuracy=0.09719999134540558</span><br><span class="line">step: 4097 Loss=0.08607088774442673 accuracy=0.9745997190475464</span><br><span class="line">step: 8193 Loss=0.07784661650657654 accuracy=0.9785997271537781</span><br><span class="line">step: 12289 Loss=0.095745749771595 accuracy=0.9759998321533203</span><br><span class="line">step: 16385 Loss=0.09472983330488205 accuracy=0.9799997210502625</span><br><span class="line">step: 20481 Loss=0.09713517129421234 accuracy=0.9787996411323547</span><br><span class="line">step: 24577 Loss=0.0993366464972496 accuracy=0.9801996946334839</span><br><span class="line">=== test accuracy: 0.9802  ===</span><br><span class="line">0.98019964</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<ul>
+<li>隐藏层数为 2 时：</li>
+</ul>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">step: 1 Loss=2.238192558288574 accuracy=0.17159998416900635</span><br><span class="line">step: 4097 Loss=0.09725397080183029 accuracy=0.9717997312545776</span><br><span class="line">step: 8193 Loss=0.10235630720853806 accuracy=0.9781997203826904</span><br><span class="line">step: 12289 Loss=0.13071678578853607 accuracy=0.9735997915267944</span><br><span class="line">step: 16385 Loss=0.12960655987262726 accuracy=0.9757996797561646</span><br><span class="line">step: 20481 Loss=0.14140461385250092 accuracy=0.9765996932983398</span><br><span class="line">step: 24577 Loss=0.16358020901679993 accuracy=0.9759997129440308</span><br><span class="line">=== test accuracy: 0.97  ===</span><br></pre></td></tr></tbody></table></figure>
+
+<p>综上可以得出结论：隐藏层的层数越多，训练越久，但是得到的结果也越准确。但越多增加的效果也越不明显</p>
+<h4 id="不同的隐藏层节点数"><a href="#不同的隐藏层节点数" class="headerlink" title="不同的隐藏层节点数"></a>不同的隐藏层节点数</h4><ul>
+<li>隐藏节点数为 10*10 时：</li>
+</ul>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">step: 1 Loss=2.300844669342041 accuracy=0.12519998848438263</span><br><span class="line">step: 4097 Loss=0.2754775583744049 accuracy=0.9239997863769531</span><br><span class="line">step: 8193 Loss=0.24036210775375366 accuracy=0.9319997429847717</span><br><span class="line">step: 12289 Loss=0.22833241522312164 accuracy=0.9349997639656067</span><br><span class="line">step: 16385 Loss=0.22694511711597443 accuracy=0.9351996779441833</span><br><span class="line">step: 20481 Loss=0.2160138636827469 accuracy=0.9395997524261475</span><br><span class="line">step: 24577 Loss=0.20927678048610687 accuracy=0.9417997598648071</span><br><span class="line">=== test accuracy: 0.9392  ===</span><br><span class="line">0.93919969</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<ul>
+<li>隐藏层数为 16*16 时：</li>
+</ul>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">step: 1 Loss=2.302095890045166 accuracy=0.10459998995065689</span><br><span class="line">step: 4097 Loss=0.24206139147281647 accuracy=0.9285997152328491</span><br><span class="line">step: 8193 Loss=0.19353719055652618 accuracy=0.9429997801780701</span><br><span class="line">step: 12289 Loss=0.18354550004005432 accuracy=0.9491997361183167</span><br><span class="line">step: 16385 Loss=0.18149533867835999 accuracy=0.9485996961593628</span><br><span class="line">step: 20481 Loss=0.1877274215221405 accuracy=0.9493997097015381</span><br><span class="line">step: 24577 Loss=0.1913667917251587 accuracy=0.951799750328064</span><br><span class="line">=== test accuracy: 0.9548  ===</span><br><span class="line">0.95479971</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<ul>
+<li>隐藏层数为 128*128 时：</li>
+</ul>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">step: 1 Loss=2.238192558288574 accuracy=0.17159998416900635</span><br><span class="line">step: 4097 Loss=0.09725397080183029 accuracy=0.9717997312545776</span><br><span class="line">step: 8193 Loss=0.10235630720853806 accuracy=0.9781997203826904</span><br><span class="line">step: 12289 Loss=0.13071678578853607 accuracy=0.9735997915267944</span><br><span class="line">step: 16385 Loss=0.12960655987262726 accuracy=0.9757996797561646</span><br><span class="line">step: 20481 Loss=0.14140461385250092 accuracy=0.9765996932983398</span><br><span class="line">step: 24577 Loss=0.16358020901679993 accuracy=0.9759997129440308</span><br><span class="line">=== test accuracy: 0.97  ===</span><br></pre></td></tr></tbody></table></figure>
+
+<p>综上可以得出结论：</p>
+<p>隐藏层的节点数越多，参数量指数上升，训练越久，但是得到的结果也越准确。</p>
+<p>（但随着参数量到一定程度，训练结果准确率上升趋于不明显，甚至发生过拟合现象。）</p>
+<h3 id="3）不同训练参数（batch-size、epoch-num、学习率）对准确率的影响和分析（10-分）"><a href="#3）不同训练参数（batch-size、epoch-num、学习率）对准确率的影响和分析（10-分）" class="headerlink" title="3）不同训练参数（batch size、epoch num、学习率）对准确率的影响和分析（10 分）"></a>3）不同训练参数（batch size、epoch num、学习率）对准确率的影响和分析（10 分）</h3><h4 id="不同的-batch-size"><a href="#不同的-batch-size" class="headerlink" title="不同的 batch size"></a>不同的 batch size</h4><ul>
+<li>batch size = 64</li>
+</ul>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">step: 1 Loss=2.238192558288574 accuracy=0.17159998416900635</span><br><span class="line">step: 4097 Loss=0.09725397080183029 accuracy=0.9717997312545776</span><br><span class="line">step: 8193 Loss=0.10235630720853806 accuracy=0.9781997203826904</span><br><span class="line">step: 12289 Loss=0.13071678578853607 accuracy=0.9735997915267944</span><br><span class="line">step: 16385 Loss=0.12960655987262726 accuracy=0.9757996797561646</span><br><span class="line">step: 20481 Loss=0.14140461385250092 accuracy=0.9765996932983398</span><br><span class="line">step: 24577 Loss=0.16358020901679993 accuracy=0.9759997129440308</span><br><span class="line">=== test accuracy: 0.97  ===</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<ul>
+<li>batch size = 4096</li>
+</ul>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">step: 1 Loss=2.2310731410980225 accuracy=0.16619999706745148</span><br><span class="line">=== test accuracy: 0.9718  ===</span><br><span class="line">0.97179973</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<ul>
+<li>batch size = 32786</li>
+</ul>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">step: 1 Loss=2.2919344902038574 accuracy=0.15059998631477356</span><br><span class="line">=== test accuracy: 0.8782  ===</span><br><span class="line">0.87819982</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>综上可以得出结论：batch size 越大，训练越快。</p>
+<p>但是过大的 batch size 会占用过多的显存，甚至导致溢出；同时也不利于随机梯度下降。</p>
+<h4 id="不同的-epoch-num"><a href="#不同的-epoch-num" class="headerlink" title="不同的 epoch num"></a>不同的 epoch num</h4><ul>
+<li>epoch num = 1</li>
+</ul>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">step: 1 Loss=2.343087673187256 accuracy=0.11779998987913132</span><br><span class="line">step: 129 Loss=0.330795556306839 accuracy=0.9037997722625732</span><br><span class="line">step: 257 Loss=0.24847447872161865 accuracy=0.925399661064148</span><br><span class="line">step: 385 Loss=0.198109969496727 accuracy=0.9409997463226318</span><br><span class="line">step: 513 Loss=0.17987975478172302 accuracy=0.9479997754096985</span><br><span class="line">step: 641 Loss=0.1628917008638382 accuracy=0.9541996717453003</span><br><span class="line">step: 769 Loss=0.14910820126533508 accuracy=0.9547997117042542</span><br><span class="line">=== test accuracy: 0.9526  ===</span><br><span class="line">0.95259976</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<ul>
+<li>epoch num = 32</li>
+</ul>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">step: 1 Loss=2.238192558288574 accuracy=0.17159998416900635</span><br><span class="line">step: 4097 Loss=0.09725397080183029 accuracy=0.9717997312545776</span><br><span class="line">step: 8193 Loss=0.10235630720853806 accuracy=0.9781997203826904</span><br><span class="line">step: 12289 Loss=0.13071678578853607 accuracy=0.9735997915267944</span><br><span class="line">step: 16385 Loss=0.12960655987262726 accuracy=0.9757996797561646</span><br><span class="line">step: 20481 Loss=0.14140461385250092 accuracy=0.9765996932983398</span><br><span class="line">step: 24577 Loss=0.16358020901679993 accuracy=0.9759997129440308</span><br><span class="line">=== test accuracy: 0.97  ===</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>综上可以得出结论：epoch num 训练了多少数据后停止训练。最好在模型准确率趋于稳定之后停止训练，不然准确率将达不到期望值。</p>
+<h4 id="不同的学习率"><a href="#不同的学习率" class="headerlink" title="不同的学习率"></a>不同的学习率</h4><ul>
+<li>学习率 = 0.0001</li>
+</ul>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">step: 1 Loss=2.328317642211914 accuracy=0.09679999947547913</span><br><span class="line">step: 129 Loss=1.5215153694152832 accuracy=0.7011998891830444</span><br><span class="line">step: 257 Loss=0.8109210133552551 accuracy=0.8205997943878174</span><br><span class="line">step: 385 Loss=0.5582057237625122 accuracy=0.863199770450592</span><br><span class="line">step: 513 Loss=0.4527219235897064 accuracy=0.8837997317314148</span><br><span class="line">step: 641 Loss=0.39591166377067566 accuracy=0.8925997614860535</span><br><span class="line">step: 769 Loss=0.3588014245033264 accuracy=0.8997997641563416</span><br><span class="line">=== test accuracy: 0.9004  ===</span><br><span class="line">0.9003998</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>学习率 = 0.001</li>
+</ul>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">step: 1 Loss=2.343087673187256 accuracy=0.11779998987913132</span><br><span class="line">step: 129 Loss=0.330795556306839 accuracy=0.9037997722625732</span><br><span class="line">step: 257 Loss=0.24847447872161865 accuracy=0.925399661064148</span><br><span class="line">step: 385 Loss=0.198109969496727 accuracy=0.9409997463226318</span><br><span class="line">step: 513 Loss=0.17987975478172302 accuracy=0.9479997754096985</span><br><span class="line">step: 641 Loss=0.1628917008638382 accuracy=0.9541996717453003</span><br><span class="line">step: 769 Loss=0.14910820126533508 accuracy=0.9547997117042542</span><br><span class="line">=== test accuracy: 0.9526  ===</span><br><span class="line">0.95259976</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>学习率 = 0.01</li>
+</ul>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">step: 1 Loss=2.3110170364379883 accuracy=0.2709999680519104</span><br><span class="line">step: 129 Loss=0.2452460527420044 accuracy=0.9277997016906738</span><br><span class="line">step: 257 Loss=0.215981587767601 accuracy=0.9361997246742249</span><br><span class="line">step: 385 Loss=0.21104326844215393 accuracy=0.9363997578620911</span><br><span class="line">step: 513 Loss=0.172766774892807 accuracy=0.9469997882843018</span><br><span class="line">step: 641 Loss=0.14438582956790924 accuracy=0.9573997855186462</span><br><span class="line">step: 769 Loss=0.15849816799163818 accuracy=0.9527996778488159</span><br><span class="line">=== test accuracy: 0.9558  ===</span><br><span class="line">0.95579976</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>学习率 = 0.1</li>
+</ul>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">step: 1 Loss=43.770484924316406 accuracy=0.10619999468326569</span><br><span class="line">step: 129 Loss=1.7850791215896606 accuracy=0.2809999883174896</span><br><span class="line">step: 257 Loss=1.7752128839492798 accuracy=0.3105999827384949</span><br><span class="line">step: 385 Loss=1.719871997833252 accuracy=0.3147999942302704</span><br><span class="line">step: 513 Loss=1.6704318523406982 accuracy=0.3511999845504761</span><br><span class="line">step: 641 Loss=1.6277217864990234 accuracy=0.34059998393058777</span><br><span class="line">step: 769 Loss=1.8401107788085938 accuracy=0.2733999788761139</span><br><span class="line">=== test accuracy: 0.2738  ===</span><br><span class="line">0.27379999</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>综上可以得出结论：</p>
+<p>学习率减小，准确率提高，但收敛慢。</p>
+<p>学习率减小，学习速率增加，但易震荡</p>
+<h3 id="4）留出法不同比例对结果的影响和分析（10-分）"><a href="#4）留出法不同比例对结果的影响和分析（10-分）" class="headerlink" title="4）留出法不同比例对结果的影响和分析（10 分）"></a>4）留出法不同比例对结果的影响和分析（10 分）</h3><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="string">"===== hold-out ====="</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">"train_percentage: 0.8: "</span>, end=<span class="string">''</span>)</span><br><span class="line">hold_out(total_images, total_labels, <span class="number">0.8</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">"train_percentage: 0.9: "</span>, end=<span class="string">''</span>)</span><br><span class="line">hold_out(total_images, total_labels, <span class="number">0.9</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">"train_percentage: 0.5: "</span>, end=<span class="string">''</span>)</span><br><span class="line">hold_out(total_images, total_labels, <span class="number">0.5</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">"train_percentage: 0.2: "</span>, end=<span class="string">''</span>)</span><br><span class="line">hold_out(total_images, total_labels, <span class="number">0.2</span>)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>结果：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">===== hold-out =====</span><br><span class="line"></span><br><span class="line">train_percentage: 0.8:</span><br><span class="line">hold-out accuracy: [0.97072774, 0.974455, 0.97690958, 0.97781873, 0.97545499, 0.96990955, 0.97654593, 0.97209132, 0.97390956, 0.97772777]</span><br><span class="line"></span><br><span class="line">train_percentage: 0.9: </span><br><span class="line">hold-out accuracy: [0.97945446, 0.97327256, 0.97381806, 0.97654533, 0.97981811, 0.97472721, 0.97472715, 0.97327256, 0.97436351, 0.97163624]</span><br><span class="line"></span><br><span class="line">train_percentage: 0.5: </span><br><span class="line">hold-out accuracy: [0.97501898, 0.97083724, 0.97414637, 0.97454625, 0.97087359, 0.97469169, 0.97520077, 0.96894628, 0.97367346, 0.97367346]</span><br><span class="line"></span><br><span class="line">train_percentage: 0.2:</span><br><span class="line">hold-out accuracy: [0.96202344, 0.95893252, 0.95929617, 0.95911437, 0.95968258, 0.95965987, 0.96059167, 0.96009171, 0.96056885, 0.95806891]</span><br></pre></td></tr></tbody></table></figure>
+
+<p>综上可以得出结论：太极端的 train_percentage 使测试说服性降低，最好在 0.8 附近</p>
+<h3 id="5）k-折交叉验证法不同-k-值对结果的影响和分析（10-分）"><a href="#5）k-折交叉验证法不同-k-值对结果的影响和分析（10-分）" class="headerlink" title="5）k 折交叉验证法不同 k 值对结果的影响和分析（10 分）"></a>5）k 折交叉验证法不同 k 值对结果的影响和分析（10 分）</h3><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="string">"===== cross-validation ====="</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">"k=5: "</span>, end=<span class="string">''</span>)</span><br><span class="line">cross_validation(total_images, total_labels, <span class="number">5</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">"k=10: "</span>, end=<span class="string">''</span>)</span><br><span class="line">cross_validation(total_images, total_labels, <span class="number">10</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">"k=20: "</span>, end=<span class="string">''</span>)</span><br><span class="line">cross_validation(total_images, total_labels, <span class="number">20</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">"k=2: "</span>, end=<span class="string">''</span>)</span><br><span class="line">cross_validation(total_images, total_labels, <span class="number">2</span>)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>结果：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">===== cross-validation =====</span><br><span class="line">k=5:</span><br><span class="line">cross-validation accuracy: 0.975146</span><br><span class="line"></span><br><span class="line">k=10: </span><br><span class="line">cross-validation accuracy: 0.976927</span><br><span class="line"></span><br><span class="line">k=20: </span><br><span class="line">cross-validation accuracy: 0.977491</span><br><span class="line"></span><br><span class="line">k=2: </span><br><span class="line">cross-validation accuracy: 0.973474</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p>综上可以得出结论：k 折交叉验证法比留出法对 k 的鲁棒性要好一点</p>
+<h2 id="五、实验总结及心得"><a href="#五、实验总结及心得" class="headerlink" title="五、实验总结及心得"></a>五、实验总结及心得</h2><p>我通过 MNIST 手写数字图片数据集训练一个简单的手写数字识别神经网络为例子，了解了用 Transflow 训练全连接神经网络的技巧，探究了神经网络的各种参数对训练过程以及训练结果的影响。</p>
+<p>还尝试了 “留出法” 与 “k 折交叉验证法” 这两种神经网络模型评估方法，探索了这两种方法参数对评估结果的影响。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><strong>anaconda 优雅安装 tensorflow（不用手动安装 cuda、cudnn 等）：</strong></p>
+<p><code>conda create --name tf_gpu_env python=3.6 anaconda tensorflow-gpu</code></p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/50449900">不踩坑：Ubuntu 下安装 TensorFlow 的最简单方法（无需手动安装 CUDA 和 cuDNN） - 知乎 (zhihu.com)</a></p>
+<p><strong>运行 jupyter 时遇到的问题解决：</strong></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/Joyyang_c/article/details/108486172">彻底解决：AttributeError：type object IOLoop has no attribute initialized_Joyyang_c 的博客 - CSDN 博客</a></p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      <div style="display: inline-block;">
+        <img src="/images/dogecoin.png" alt="Framist dogecoin">
+        <p>dogecoin</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Framist
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://framist.github.io/post/46110.html" title="【人工智能选修课】实验报告">https://framist.github.io/post/46110.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+              <a href="/tags/python/" rel="tag"># python</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/post/34561.html" rel="prev" title="微机原理作业一">
+      <i class="fa fa-chevron-left"></i> 微机原理作业一
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/post/23889.html" rel="next" title="【Mini L 2020 题解】日常玩耍">
+      【Mini L 2020 题解】日常玩耍 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%9A%84-MNIST-%E6%89%8B%E5%86%99%E6%95%B0%E5%AD%97%E8%AF%86%E5%88%AB"><span class="nav-number">1.</span> <span class="nav-text">基于神经网络的 MNIST 手写数字识别</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%AE%9E%E9%AA%8C%E7%9B%AE%E7%9A%84"><span class="nav-number">1.1.</span> <span class="nav-text">一、实验目的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E5%AE%9E%E9%AA%8C%E5%86%85%E5%AE%B9"><span class="nav-number">1.2.</span> <span class="nav-text">二、实验内容</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MNIST-%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">1.2.1.</span> <span class="nav-text">MNIST 数据集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%B1%82%E9%87%87%E6%A0%B7%E6%96%B9%E6%B3%95"><span class="nav-number">1.2.2.</span> <span class="nav-text">分层采样方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0%E6%96%B9%E6%B3%95"><span class="nav-number">1.2.3.</span> <span class="nav-text">神经网络模型评估方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E5%AE%9E%E9%AA%8C%E6%96%B9%E6%B3%95%E8%AE%BE%E8%AE%A1"><span class="nav-number">1.3.</span> <span class="nav-text">三、实验方法设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%EF%BC%89%E6%A8%A1%E5%9E%8B%E6%9E%84%E5%BB%BA%E7%9A%84%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%BC%AA%E4%BB%A3%E7%A0%81%E6%88%96%E6%BA%90%E4%BB%A3%E7%A0%81%E6%88%AA%E5%9B%BE%EF%BC%89%E5%8F%8A%E8%AF%B4%E6%98%8E%E8%A7%A3%E9%87%8A%EF%BC%8810-%E5%88%86%EF%BC%89"><span class="nav-number">1.3.1.</span> <span class="nav-text">1）模型构建的程序设计（伪代码或源代码截图）及说明解释（10 分）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%EF%BC%89%E6%A8%A1%E5%9E%8B%E8%BF%AD%E4%BB%A3%E8%AE%AD%E7%BB%83%E7%9A%84%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%BC%AA%E4%BB%A3%E7%A0%81%E6%88%96%E6%BA%90%E4%BB%A3%E7%A0%81%E6%88%AA%E5%9B%BE%EF%BC%89%E5%8F%8A%E8%AF%B4%E6%98%8E%E8%A7%A3%E9%87%8A%EF%BC%8810-%E5%88%86%EF%BC%89"><span class="nav-number">1.3.2.</span> <span class="nav-text">2）模型迭代训练的程序设计（伪代码或源代码截图）及说明解释（10 分）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3%EF%BC%89%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83%E8%BF%87%E7%A8%8B%E4%B8%AD%E5%91%A8%E6%9C%9F%E6%80%A7%E6%B5%8B%E8%AF%95%E7%9A%84%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%BC%AA%E4%BB%A3%E7%A0%81%E6%88%96%E6%BA%90%E4%BB%A3%E7%A0%81%E6%88%AA%E5%9B%BE%EF%BC%89%E5%8F%8A%E8%AF%B4%E6%98%8E%E8%A7%A3%E9%87%8A%EF%BC%88%E5%91%A8%E6%9C%9F%E6%80%A7%E6%B5%8B%E8%AF%95%E6%8C%87%E7%9A%84%E6%98%AF%E6%AF%8F%E8%AE%AD%E7%BB%83-n-%E4%B8%AA-step-%E5%B0%B1%E5%AF%B9%E6%A8%A1%E5%9E%8B%E8%BF%9B%E8%A1%8C%E4%B8%80%E6%AC%A1%E6%B5%8B%E8%AF%95%EF%BC%8C%E5%BE%97%E5%88%B0%E5%87%86%E7%A1%AE%E7%8E%87%E5%92%8C-loss-%E5%80%BC%EF%BC%89%EF%BC%8810-%E5%88%86%EF%BC%89"><span class="nav-number">1.3.3.</span> <span class="nav-text">3）模型训练过程中周期性测试的程序设计（伪代码或源代码截图）及说明解释（周期性测试指的是每训练 n 个 step 就对模型进行一次测试，得到准确率和 loss 值）（10 分）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4%EF%BC%89%E5%88%86%E5%B1%82%E9%87%87%E6%A0%B7%E7%9A%84%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%BC%AA%E4%BB%A3%E7%A0%81%E6%88%96%E6%BA%90%E4%BB%A3%E7%A0%81%E6%88%AA%E5%9B%BE%EF%BC%89%E5%8F%8A%E8%AF%B4%E6%98%8E%E8%A7%A3%E9%87%8A%EF%BC%8810-%E5%88%86%EF%BC%89"><span class="nav-number">1.3.4.</span> <span class="nav-text">4）分层采样的程序设计（伪代码或源代码截图）及说明解释（10 分）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5%EF%BC%89k-%E6%8A%98%E4%BA%A4%E5%8F%89%E9%AA%8C%E8%AF%81%E6%B3%95%E7%9A%84%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%BC%AA%E4%BB%A3%E7%A0%81%E6%88%96%E6%BA%90%E4%BB%A3%E7%A0%81%E6%88%AA%E5%9B%BE%EF%BC%89%E5%8F%8A%E8%AF%B4%E6%98%8E%E8%A7%A3%E9%87%8A%EF%BC%8810-%E5%88%86%EF%BC%89"><span class="nav-number">1.3.5.</span> <span class="nav-text">5）k 折交叉验证法的程序设计（伪代码或源代码截图）及说明解释（10 分）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C%E5%B1%95%E7%A4%BA"><span class="nav-number">1.4.</span> <span class="nav-text">四、实验结果展示</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%EF%BC%89%E6%A8%A1%E5%9E%8B%E5%9C%A8%E9%AA%8C%E8%AF%81%E9%9B%86%E4%B8%8B%E7%9A%84%E5%87%86%E7%A1%AE%E7%8E%87%EF%BC%88%E8%BE%93%E5%87%BA%E7%BB%93%E6%9E%9C%E5%B9%B6%E6%88%AA%E5%9B%BE%EF%BC%89%EF%BC%8810-%E5%88%86%EF%BC%89"><span class="nav-number">1.4.1.</span> <span class="nav-text">1）模型在验证集下的准确率（输出结果并截图）（10 分）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%EF%BC%89%E4%B8%8D%E5%90%8C%E6%A8%A1%E5%9E%8B%E5%8F%82%E6%95%B0%EF%BC%88%E9%9A%90%E8%97%8F%E5%B1%82%E6%95%B0%E3%80%81%E9%9A%90%E8%97%8F%E5%B1%82%E8%8A%82%E7%82%B9%E6%95%B0%EF%BC%89%E5%AF%B9%E5%87%86%E7%A1%AE%E7%8E%87%E7%9A%84%E5%BD%B1%E5%93%8D%E5%92%8C%E5%88%86%E6%9E%90%EF%BC%8810-%E5%88%86%EF%BC%89"><span class="nav-number">1.4.2.</span> <span class="nav-text">2）不同模型参数（隐藏层数、隐藏层节点数）对准确率的影响和分析（10 分）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8D%E5%90%8C%E7%9A%84%E9%9A%90%E8%97%8F%E5%B1%82%E6%95%B0"><span class="nav-number">1.4.2.1.</span> <span class="nav-text">不同的隐藏层数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8D%E5%90%8C%E7%9A%84%E9%9A%90%E8%97%8F%E5%B1%82%E8%8A%82%E7%82%B9%E6%95%B0"><span class="nav-number">1.4.2.2.</span> <span class="nav-text">不同的隐藏层节点数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3%EF%BC%89%E4%B8%8D%E5%90%8C%E8%AE%AD%E7%BB%83%E5%8F%82%E6%95%B0%EF%BC%88batch-size%E3%80%81epoch-num%E3%80%81%E5%AD%A6%E4%B9%A0%E7%8E%87%EF%BC%89%E5%AF%B9%E5%87%86%E7%A1%AE%E7%8E%87%E7%9A%84%E5%BD%B1%E5%93%8D%E5%92%8C%E5%88%86%E6%9E%90%EF%BC%8810-%E5%88%86%EF%BC%89"><span class="nav-number">1.4.3.</span> <span class="nav-text">3）不同训练参数（batch size、epoch num、学习率）对准确率的影响和分析（10 分）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8D%E5%90%8C%E7%9A%84-batch-size"><span class="nav-number">1.4.3.1.</span> <span class="nav-text">不同的 batch size</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8D%E5%90%8C%E7%9A%84-epoch-num"><span class="nav-number">1.4.3.2.</span> <span class="nav-text">不同的 epoch num</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8D%E5%90%8C%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%8E%87"><span class="nav-number">1.4.3.3.</span> <span class="nav-text">不同的学习率</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4%EF%BC%89%E7%95%99%E5%87%BA%E6%B3%95%E4%B8%8D%E5%90%8C%E6%AF%94%E4%BE%8B%E5%AF%B9%E7%BB%93%E6%9E%9C%E7%9A%84%E5%BD%B1%E5%93%8D%E5%92%8C%E5%88%86%E6%9E%90%EF%BC%8810-%E5%88%86%EF%BC%89"><span class="nav-number">1.4.4.</span> <span class="nav-text">4）留出法不同比例对结果的影响和分析（10 分）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5%EF%BC%89k-%E6%8A%98%E4%BA%A4%E5%8F%89%E9%AA%8C%E8%AF%81%E6%B3%95%E4%B8%8D%E5%90%8C-k-%E5%80%BC%E5%AF%B9%E7%BB%93%E6%9E%9C%E7%9A%84%E5%BD%B1%E5%93%8D%E5%92%8C%E5%88%86%E6%9E%90%EF%BC%8810-%E5%88%86%EF%BC%89"><span class="nav-number">1.4.5.</span> <span class="nav-text">5）k 折交叉验证法不同 k 值对结果的影响和分析（10 分）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E5%AE%9E%E9%AA%8C%E6%80%BB%E7%BB%93%E5%8F%8A%E5%BF%83%E5%BE%97"><span class="nav-number">1.5.</span> <span class="nav-text">五、实验总结及心得</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">1.6.</span> <span class="nav-text">参考</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Framist</p>
+  <div class="site-description" itemprop="description">框架主义者的小窝</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">73</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/framist" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;framist" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:framist@163.com" title="E-Mail → mailto:framist@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/weixin_47102975" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_47102975" rel="noopener" target="_blank"><i class="fas fa-angle-right fa-fw"></i>CSDN</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/kuang-jia-zhu-yi-zhe" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;kuang-jia-zhu-yi-zhe" rel="noopener" target="_blank"><i class="fas fa-angle-right fa-fw"></i>知乎</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://framist.top/" title="http:&#x2F;&#x2F;framist.top&#x2F;" rel="noopener" target="_blank">个人主页</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://craft.framist.top/" title="https:&#x2F;&#x2F;craft.framist.top&#x2F;" rel="noopener" target="_blank">框架科工</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://framist.github.io/2020/10/11/%E6%88%91%E8%BA%AB%E8%BE%B9%E7%9A%84CS%E5%A4%A7%E4%BD%AC%E4%BB%AC/" title="https:&#x2F;&#x2F;framist.github.io&#x2F;2020&#x2F;10&#x2F;11&#x2F;%E6%88%91%E8%BA%AB%E8%BE%B9%E7%9A%84CS%E5%A4%A7%E4%BD%AC%E4%BB%AC&#x2F;">我身边的大佬们</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yuexiavqiufeng.github.io/" title="https:&#x2F;&#x2F;yuexiavqiufeng.github.io&#x2F;" rel="noopener" target="_blank">yuexiavqiufeng</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">浙 ICP 备 2022002862 号 -1 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-at"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Framist</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div><script>
+    let body = document.getElementsByTagName('body')[0];
+    body.addEventListener('click', (e) => {
+        let contentArr = ['欧拉~','ˋ( ° ▽、° ) ','RGB!','_(:з」∠)_','哼','?','¿框架?','QAQ',':3','<3','疯掉了',
+                            'whoami',
+                            'whoareU',
+                            'NULL',
+                            'None',
+                            ' ',
+                            '代价是什么呢？',
+                            '...',
+                            'Big Brother is Watching You',
+                            '喵~', '嗷~', '呜~', '哞~', '咩~', '咕~', '嘎~', '嘤~',
+                            '你看到了。',
+                            '¿爱情障眼法?','¿物种认同障碍?',
+                            '微润欧美，小润终南山，中润润与市，大润中南海',
+                            'init param:<br/>1LTKvNaux7CjrNHJ09C0y87Eo7/Rrbu3zfm4tKOsus7Ksbb41rmjv9a5zqrWucv51rmjrLTLzsTT1rrOtOajvw==',
+                            '这里没有时间的意义',
+                            '嘿嘿嘿，好想被随机异或哦，<br/>嘿嘿嘿，嘿嘿嘿，异或我的异或',
+                            '记忆赋予时间的意义，而不是时间赋予记忆的意义',
+                            '放弃 P ∨ ¬P 吧！',
+                            '抽象是普适性的代价 —— 3b1b',
+                            '得易见平凡，仿照上例显然',
+                            '留作习题答案略，读者自证不难',
+                            '反之亦然同理，推论自然成立',
+                            '略去过程 Q . E . D ，由上可知证毕'];
+        let randomNum = function (n) {
+            return Math.floor(Math.random() * n)
+        }
+        let span = document.createElement('span');
+        span.innerHTML = `${contentArr[randomNum(contentArr.length)]}`;
+        span.style.color = `rgb(${randomNum(256)},${randomNum(256)},${randomNum(256)})`;
+        span.style.position = 'absolute';
+        span.style.top = `${e.pageY}px`;
+        span.style.left = `${e.pageX}px`;
+        span.style.transition = 'all 1s ease';
+        span.style.zIndex = 20000;
+        body.appendChild(span)
+        setTimeout(()=>{
+            span.style.top = span.offsetTop - 25 + 'px';
+            span.style.opacity = 0;
+            setTimeout(()=>{span.remove()},1000)
+        },700)
+    })
+</script>
+
+
+<div style="width: 100px; height: 100px; margin: 0 auto;">
+<script type="text/javascript" id="clstr_globe" src="//clustrmaps.com/globe.js?d=gRWtX21uVt_tIdj_T64nMvo4FK1UrTWME23CVLOzNCg"></script>
+</div>
+<!--
+<script type="text/javascript" 
+color="255,255,255" 
+pointColor='64,184,209' 
+opacity='1' 
+zIndex="-1" 
+count="233" 
+src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js">
+</script>
+-->
+
+
+        
+<div class="busuanzi-count">
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script data-pjax>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '267a9d4a89b9b72b2229',
+      clientSecret: '2dba1f14d21da707ed6c4497fecc05d6178b4fa3',
+      repo        : 'blog-comment',
+      owner       : 'framist',
+      admin       : ['framist'],
+      id          : '83996bba1d02b321285831025a2a31b7',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+    </div>
+</body>
+</html>

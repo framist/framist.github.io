@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Noto Serif SC:300,300italic,400,400italic,700,700italic|Source Code Pro:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-big-counter.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"framist.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="建站杂记：framist.top乱七八糟地记录建站、博客等等的配置 实时更新">
+<meta property="og:type" content="article">
+<meta property="og:title" content="建站实践">
+<meta property="og:url" content="https://framist.github.io/post/build-site-for-framist-top.html">
+<meta property="og:site_name" content="Framist&#39;s Little House">
+<meta property="og:description" content="建站杂记：framist.top乱七八糟地记录建站、博客等等的配置 实时更新">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://letsencrypt.org/images/letsencrypt-logo-horizontal.svg">
+<meta property="article:published_time" content="2022-01-25T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-09-22T07:51:02.496Z">
+<meta property="article:author" content="Framist">
+<meta property="article:tag" content="web">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://letsencrypt.org/images/letsencrypt-logo-horizontal.svg">
+
+<link rel="canonical" href="https://framist.github.io/post/build-site-for-framist-top.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>建站实践 | Framist's Little House</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Framist's Little House</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">◇ 自顶而下 - 面向未来 ◇</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://framist.github.io/post/build-site-for-framist-top.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Framist">
+      <meta itemprop="description" content="框架主义者的小窝">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Framist's Little House">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          建站实践
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-01-26 00:00:00" itemprop="dateCreated datePublished" datetime="2022-01-26T00:00:00+08:00">2022-01-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-09-22 15:51:02" itemprop="dateModified" datetime="2023-09-22T15:51:02+08:00">2023-09-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">计算机科学</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/web/" itemprop="url" rel="index"><span itemprop="name">web</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="建站杂记：framist-top"><a href="#建站杂记：framist-top" class="headerlink" title="建站杂记：framist.top"></a>建站杂记：framist.top</h1><p>乱七八糟地记录建站、博客等等的配置</p>
+<p><em><a href="https://framist.github.io/2022/01/26/%E5%BB%BA%E7%AB%99%E5%AE%9E%E9%AA%8C/">实时更新</a></em></p>
+<span id="more"></span>
+
+<h2 id="临时的主页"><a href="#临时的主页" class="headerlink" title="临时的主页"></a>临时的主页</h2><p>用 typora 随便写了一下</p>
+<h2 id="备案"><a href="#备案" class="headerlink" title="备案"></a>备案</h2><p><em>早知道备案这么麻烦就租香港或国外的的服务器了</em></p>
+<p><a href="https://beian.miit.gov.cn/" target="_blank">浙 ICP 备 2022002862 号 -1</a></p>
+<h1 id="网站安全与运维"><a href="#网站安全与运维" class="headerlink" title="网站安全与运维"></a>网站安全与运维</h1><p>一些安全的注意事项：</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://github.com/treehollow/install-doc">treehollow/install-doc: 如何搭建一个树洞 (github.com)</a></p>
+<p>请务必确保时刻没有子域名 DNS 解析到服务器真实 IP，并且服务器真实 IP 必须始终保密！</p>
+<p>服务器的 IP 如果泄露，DDoS 等情况就有可能发生，同时还会极大地增加攻击面。因此，服务器的 HTTP 流量必须始终通过 CDN (比如 Cloudflare CDN)。在 <a target="_blank" rel="noopener" href="https://securitytrails.com/dns-trails">https://securitytrails.com/dns-trails</a> 网站上，一个域名的全部子域名和 DNS 历史记录都可以轻松查到，因此不能有任何时刻让服务器真实 IP 暴露在外。</p>
+<p>配置 SELinux</p>
+<p><em>但由于目前使用的个人主站的服务器 ip 早已暴露，所以先没有做这些安全事项了</em></p>
+</blockquote>
+<h2 id="Cloudflare-免费-CDN-加速-amp-保护"><a href="#Cloudflare-免费-CDN-加速-amp-保护" class="headerlink" title="Cloudflare: 免费 CDN 加速 &amp; 保护"></a>Cloudflare: 免费 CDN 加速 &amp; 保护</h2><p>需要修改域名服务器，国内用户访问速度不稳定</p>
+<h2 id="HTTPS-SSL"><a href="#HTTPS-SSL" class="headerlink" title="HTTPS - SSL"></a>HTTPS - SSL</h2><p>可以非常方便地使用</p>
+<p><a target="_blank" rel="noopener" href="https://letsencrypt.org/zh-cn/"><img data-src="https://letsencrypt.org/images/letsencrypt-logo-horizontal.svg" alt="Let's Encrypt"></a> </p>
+<p>实现 (通过 <code>Certbot</code> 的脚本)</p>
+<p>真的真的非常地方便！并且免费！所以我不写具体教程了。</p>
+<p>一些具体的细节需要注意，比如有些后端的应用需要端口转发等。</p>
+<h2 id="Clash"><a href="#Clash" class="headerlink" title="Clash"></a>Clash</h2><p>采取 docker 配置的方法</p>
+<p>官方文档：<a target="_blank" rel="noopener" href="https://a76yyyy.github.io/clash/zh_CN/introduction/service.html#docker">Clash 服务运行 | Clash (a76yyyy.github.io)</a></p>
+<p>参考：<a target="_blank" rel="noopener" href="https://blog.zzsqwq.cn/posts/how-to-use-clash-on-linux/#%E4%B8%80%E5%9F%BA%E4%BA%8E-docker-%E7%9A%84%E5%AE%9E%E7%8E%B0">如何在 Linux 上优雅的使用 Clash？・Zs’s Blog (zzsqwq.cn)</a></p>
+<figure class="highlight yaml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">'3'</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">clash:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">dreamacro/clash</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">clash</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./config.yaml:/root/.config/clash/config.yaml</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./Country.mmdb:/root/.config/clash/Country.mmdb</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./ui:/ui</span> <span class="comment"># dashboard volume</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">"7890:7890"</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">"7891:7891"</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">"9090:9090"</span> <span class="comment"># external controller (Restful API)</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">unless-stopped</span></span><br><span class="line">    <span class="attr">network_mode:</span> <span class="string">"bridge"</span></span><br></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<p><strong>Note.</strong> 在 config.yaml 中：<code>allow-lan: true</code>。不然的话没法用 docker clash 做转发。</p>
+</blockquote>
+<p>ui 可以可以直接访问对应的链接</p>
+<ul>
+<li>clash-dashboard: <a target="_blank" rel="noopener" href="http://clash.razord.top/">http://clash.razord.top/</a></li>
+<li>yacd-dashboard: <a target="_blank" rel="noopener" href="http://yacd.haishan.me/">http://yacd.haishan.me/</a></li>
+</ul>
+<p>记得保护好端口，仅限本地环回或临时使用</p>
+<h1 id="网站应用"><a href="#网站应用" class="headerlink" title="网站应用"></a>网站应用</h1><p>我的愿景是所有数据与计算都在云端。无论何时何地，只需一台安装有通用浏览器的终端机，就能安全方便地访问自己的应用与数据</p>
+<h2 id="思源笔记"><a href="#思源笔记" class="headerlink" title="思源笔记"></a>思源笔记</h2><h3 id="docker-部署思源"><a href="#docker-部署思源" class="headerlink" title="docker 部署思源"></a>docker 部署思源</h3><p>配置 <code>docker-compose.yml</code> 文件：</p>
+<details>
+<summary>[点击查看旧版本（2.4 版本之前）的方法]</summary>
+
+<figure class="highlight yaml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">'3'</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">siyuan:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">b3log/siyuan:latest</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">siyuan</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">user:</span> <span class="string">"1000:1000"</span> <span class="comment"># 镜像中是使用默认创建的普通用户 `siyuan` 来启动内核进程的</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">"6806:6806"</span> <span class="comment"># 宿主机端口：容器端口</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/root/siyuan/workspace:/siyuan/workspace</span> <span class="comment"># workspace 是思源的数据目录</span></span><br><span class="line">    <span class="attr">command:</span> [<span class="string">--resident=true</span>,<span class="string">--ssl=false</span>,<span class="string">--accessAuthCode=password</span>,<span class="string">--servePath=sy.framist.top</span>,<span class="string">--workspace=/siyuan/workspace/</span> ] <span class="comment"># 约 2.4 版本前</span></span><br></pre></td></tr></tbody></table></figure>
+</details>
+
+<p>约 2.4 版本后：</p>
+<figure class="highlight yaml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">'3'</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">siyuan:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">b3log/siyuan:latest</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">siyuan</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">user:</span> <span class="string">"1000:1000"</span> <span class="comment"># 镜像中是使用默认创建的普通用户 `siyuan` 来启动内核进程的</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">"6806:6806"</span> <span class="comment"># 宿主机端口：容器端口</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/root/siyuan/workspace:/siyuan/workspace</span> <span class="comment"># workspace 是思源的数据目录</span></span><br><span class="line">    <span class="attr">command:</span> [<span class="string">--ssl=false</span>,<span class="string">--accessAuthCode=password</span>,<span class="string">--servePath=sy.framist.top</span>,<span class="string">--workspace=/siyuan/workspace/</span> ]</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p>开启 HTTPS 后可设置 <code>--ssl=true</code></p>
+<blockquote>
+<p>镜像中是使用默认创建的普通用户 <code>siyuan</code>（uid 1000/gid 1000）来启动内核进程的，所以在宿主机创建工作空间文件夹时请注意设置该文件夹所属用户组：<code>chown -R 1000:1000 ./workspace</code>，在启动容器时需要带参数 <code>-u 1000:1000</code>。</p>
+</blockquote>
+<p><code>docker-compose up -d</code> 后台启动容器</p>
+<p><del>一个简单的手动更新 python 脚本：</del></p>
+<p>使用 <code>watchtower</code> 优雅得更新 docker 镜像：<em>TODO 还未实际测试</em></p>
+<p>在 <code>docker-compose.yml</code> 后添加：</p>
+<figure class="highlight yaml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">watchtower:</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">containrrr/watchtower</span></span><br><span class="line">  <span class="attr">container_name:</span> <span class="string">watchtower_for_siyuan</span></span><br><span class="line">  <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">  <span class="attr">environment:</span> </span><br><span class="line">      <span class="bullet">-</span> <span class="string">TZ=Asia/Shanghai</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">/var/run/docker.sock:/var/run/docker.sock</span></span><br><span class="line">  <span class="attr">command:</span> <span class="string">siyuan</span> <span class="string">--cleanup</span> <span class="string">--schedule</span> <span class="string">"0 0 5 * * *"</span>  <span class="comment"># 北京时间早晨 5 点</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="Nginx-反向代理"><a href="#Nginx-反向代理" class="headerlink" title="Nginx 反向代理"></a>Nginx 反向代理</h3><p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/4e761ec96f67">Nginx 多个子域名映射到不同的端口或 ip</a></p>
+<p><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1558240">https://cloud.tencent.com/developer/article/1558240</a></p>
+<p>注意要在阿里云的 DNS 云解析设置中添加子域名解析记录，否则反向代理不生效。</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"># cp nginx_siyuan.conf /etc/nginx/sites-available/siyuan.conf</span><br><span class="line"># ln -s /etc/nginx/sites-available/siyuan.conf /etc/nginx/sites-enabled/sy.framist.top.conf</span><br><span class="line">server {</span><br><span class="line">    listen 80;</span><br><span class="line"></span><br><span class="line">    server_name sy.framist.top;</span><br><span class="line"></span><br><span class="line">    location / {</span><br><span class="line">        proxy_pass       http://127.0.0.1:6806;</span><br><span class="line">        proxy_set_header Host      $host;</span><br><span class="line">        proxy_set_header X-Real-IP $remote_addr;</span><br><span class="line">    }</span><br><span class="line">    # 配置 WebSocket 反代 `/ws`</span><br><span class="line">    location /ws { </span><br><span class="line">        proxy_pass http://127.0.0.1:6806; </span><br><span class="line">        proxy_read_timeout 60s; </span><br><span class="line">        proxy_http_version 1.1; </span><br><span class="line">        proxy_set_header Upgrade $http_upgrade; </span><br><span class="line">        proxy_set_header Connection 'Upgrade'; </span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="数据同步、备份与还原"><a href="#数据同步、备份与还原" class="headerlink" title="数据同步、备份与还原"></a>数据同步、备份与还原</h3><p><strong>备份与还原</strong></p>
+<p>新版本可以直接通过 <code>思源-设置-导出</code> 进行备份与还原。以下是旧版本的方法：</p>
+<details>
+<summary>旧版本的方法备份与还原 </summary>
+
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># tar：</span></span><br><span class="line"><span class="comment"># -z 代表用 gzip 算法来压缩/解压。</span></span><br><span class="line"><span class="comment"># -c, --create               创建一个新归档</span></span><br><span class="line"><span class="comment"># -v：显示所有过程</span></span><br><span class="line"><span class="comment"># -f, --file=ARCHIVE         使用归档文件或 ARCHIVE 设备</span></span><br><span class="line">tar -zcvf siyuan_backup.tar.gz [思源的数据目录]</span><br><span class="line"><span class="comment"># sz 从服务器下载到本地</span></span><br><span class="line">sz siyuan_backup.tar.gz</span><br></pre></td></tr></tbody></table></figure>
+
+<p>上传备份文件</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># rz 上传文件到服务器</span></span><br><span class="line">rz </span><br><span class="line"><span class="comment"># 注：z 代表用 gzip 算法来压缩/解压。</span></span><br><span class="line"><span class="comment"># -x, --extract, --get       从归档中解出文件</span></span><br><span class="line">tar -zxvf [原文件名].tar.gz </span><br></pre></td></tr></tbody></table></figure>
+
+</details>
+
+<p><strong>2.5.0 版本之后的第三方数据同步（官方）</strong></p>
+<p><a target="_blank" rel="noopener" href="https://ld246.com/article/1668443267350">思源笔记 v2.5.0 发布，数据同步和备份支持第三方 WebDAV 和 S3 协议，支持导出长图</a> 之后，就可以官方支持第三方数据稳定的同步了</p>
+<p>仿照用阿里云 OSS 建图床的方式（这个有很多教程了）</p>
+<p>阿里云创建一个对象 OSS（私有读 / 写）</p>
+<p>在 RAM 访问控制中创建一个子用户</p>
+<p>开通 Open API 调用访问，记下 <code>AccessKey ID</code>、<code>AccessKey Secret</code></p>
+<p>在 思源 - 设置 - 云端 里选择 S3，填入以下内容</p>
+<p><code>bucket</code> 实际上就是 阿里云上的名字</p>
+<p><code>Endpoint</code>（地域节点） </p>
+<p><code>Region</code> <a target="_blank" rel="noopener" href="https://help.aliyun.com/document_detail/31837.html">公共云下 OSS Region 和 Endpoint 对照表</a></p>
+<p><code>Addressing</code> 选择 Virtual-hosted-style (?)</p>
+<p>注意内网可以使用内网访问节点</p>
+<p>然后就可以同步啦</p>
+<p><em>哎，现在这个又成收费功能了。其实这种不需要开发者提供支持服务，软件本身又是开源的情况下，做成必须登录才使用的功能是不合适的，而且很容易就绕过、产生分叉</em></p>
+<h2 id="code-server"><a href="#code-server" class="headerlink" title="code-server"></a>code-server</h2><h2 id="HedgeDoc"><a href="#HedgeDoc" class="headerlink" title="HedgeDoc"></a>HedgeDoc</h2><h3 id="Codimd"><a href="#Codimd" class="headerlink" title="Codimd"></a>Codimd</h3><p>旧的：</p>
+<figure class="highlight yml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">"3"</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">database:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">postgres:11.6-alpine</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">POSTGRES_USER=codimd</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">POSTGRES_PASSWORD=change_password</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">POSTGRES_DB=codimd</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">"database-data:/var/lib/postgresql/data"</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">  <span class="attr">codimd:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">hackmdio/hackmd:2.4.1</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CMD_DB_URL=postgres://codimd:change_password@database/codimd</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CMD_USECDN=false</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">database</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">"3000:3000"</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">upload-data:/home/hackmd/app/public/uploads</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line"><span class="attr">volumes:</span></span><br><span class="line">  <span class="attr">database-data:</span> {}</span><br><span class="line">  <span class="attr">upload-data:</span> {}</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+<p>备份：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /var/lib/docker/volumes</span><br><span class="line">tar -zxvf plasma_backup.tar.gz </span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p>新的：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /var/lib/docker/volumes</span><br><span class="line">tar -zcvf plasma_backup.tar.gz </span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<figure class="highlight yml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">"3"</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">database:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">postgres:11.6-alpine</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">POSTGRES_USER=codimd</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">POSTGRES_PASSWORD=change_password</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">POSTGRES_DB=codimd</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">"database-data:/var/lib/postgresql/data"</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">  <span class="attr">codimd:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">hackmdio/hackmd:2.4.1</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CMD_DB_URL=postgres://codimd:change_password@database/codimd</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CMD_USECDN=false</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">database</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">"3000:3000"</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">upload-data:/home/hackmd/app/public/uploads</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line"><span class="attr">volumes:</span></span><br><span class="line">  <span class="attr">database-data:</span> {}</span><br><span class="line">  <span class="attr">upload-data:</span> {}</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="Hexo"><a href="#Hexo" class="headerlink" title="Hexo"></a>Hexo</h2><p>个人博客部分目前是用 Hexo - Next 建设的。</p>
+<h3 id="配置备份"><a href="#配置备份" class="headerlink" title="配置备份"></a>配置备份</h3><h3 id="配置多端发布"><a href="#配置多端发布" class="headerlink" title="配置多端发布"></a>配置多端发布</h3><h3 id="插件"><a href="#插件" class="headerlink" title="插件"></a>插件</h3><p>参考：<a target="_blank" rel="noopener" href="https://loafing.cn/posts/hexo-tags.html">「推荐」本站用到的 hexo 插件 | 若风 (loafing.cn)</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/yangstar/articles/16690342.html">Hexo 如何隐藏文章</a></p>
+<h2 id="602-雏鹰之家"><a href="#602-雏鹰之家" class="headerlink" title="602 雏鹰之家"></a>602 雏鹰之家</h2><p>602.framist.top</p>
+<p>bucket 静态网页托管</p>
+<p>注意事项：</p>
+<p>出于安全考虑，中国内地各地域自 2018 年 09 月 28 日起，非中国内地各地域自 2019 年 09 月 25 日起，通过浏览器访问 OSS 静态网页类型文件（mimetype 为 text/html，扩展名包括 HTM、HTML、JSP、PLG、HTX、STM）：</p>
+<p>使用 OSS 默认域名通过浏览器访问静态网页文件时，Response Header 中会自动加上 Content-Disposition:attachment。即从浏览器访问这些文件时，会以附件形式进行下载。</p>
+<p>使用自定义域名通过浏览器访问静态网页文件时，在浏览器支持预览对应格式的网页文件的情况下，默认直接预览文件内容。</p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/read/cv3372025">https://www.bilibili.com/read/cv3372025</a></p>
+<h2 id="WordPress-临时"><a href="#WordPress-临时" class="headerlink" title="WordPress (临时)"></a>WordPress (临时)</h2><figure class="highlight yml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">"3.3"</span></span><br><span class="line">    </span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">db:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">mysql:5.7</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">db_data:/var/lib/mysql</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="attr">MYSQL_ROOT_PASSWORD:</span> <span class="string">mysql_password</span></span><br><span class="line">      <span class="attr">MYSQL_DATABASE:</span> <span class="string">wordpress</span></span><br><span class="line">      <span class="attr">MYSQL_USER:</span> <span class="string">wordpress</span></span><br><span class="line">      <span class="attr">MYSQL_PASSWORD:</span> <span class="string">wordpress_password</span></span><br><span class="line">    </span><br><span class="line">  <span class="attr">wordpress:</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">db</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">wordpress:latest</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">wordpress_data:/var/www/html</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">"8081:80"</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="attr">WORDPRESS_DB_HOST:</span> <span class="string">db</span></span><br><span class="line">      <span class="attr">WORDPRESS_DB_USER:</span> <span class="string">wordpress</span></span><br><span class="line">      <span class="attr">WORDPRESS_DB_PASSWORD:</span> <span class="string">wordpress_password</span></span><br><span class="line">      <span class="attr">WORDPRESS_DB_NAME:</span> <span class="string">wordpress</span></span><br><span class="line"><span class="attr">volumes:</span></span><br><span class="line">  <span class="attr">db_data:</span> {}</span><br><span class="line">  <span class="attr">wordpress_data:</span> {}</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="Gitea-托管平台"><a href="#Gitea-托管平台" class="headerlink" title="Gitea 托管平台"></a>Gitea 托管平台</h2><h1 id="其他相关项"><a href="#其他相关项" class="headerlink" title="其他相关项"></a>其他相关项</h1><h2 id="阿里云-OSS-图床"><a href="#阿里云-OSS-图床" class="headerlink" title="阿里云 OSS 图床"></a>阿里云 OSS 图床</h2>
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      <div style="display: inline-block;">
+        <img src="/images/dogecoin.png" alt="Framist dogecoin">
+        <p>dogecoin</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Framist
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://framist.github.io/post/build-site-for-framist-top.html" title="建站实践">https://framist.github.io/post/build-site-for-framist-top.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/web/" rel="tag"># web</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/post/8267.html" rel="prev" title="XDSEC 个人周报 0x0C">
+      <i class="fa fa-chevron-left"></i> XDSEC 个人周报 0x0C
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/post/frame-world.html" rel="next" title="FRAME's World">
+      FRAME's World <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BB%BA%E7%AB%99%E6%9D%82%E8%AE%B0%EF%BC%9Aframist-top"><span class="nav-number">1.</span> <span class="nav-text">建站杂记：framist.top</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%B4%E6%97%B6%E7%9A%84%E4%B8%BB%E9%A1%B5"><span class="nav-number">1.1.</span> <span class="nav-text">临时的主页</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%87%E6%A1%88"><span class="nav-number">1.2.</span> <span class="nav-text">备案</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BD%91%E7%AB%99%E5%AE%89%E5%85%A8%E4%B8%8E%E8%BF%90%E7%BB%B4"><span class="nav-number">2.</span> <span class="nav-text">网站安全与运维</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Cloudflare-%E5%85%8D%E8%B4%B9-CDN-%E5%8A%A0%E9%80%9F-amp-%E4%BF%9D%E6%8A%A4"><span class="nav-number">2.1.</span> <span class="nav-text">Cloudflare: 免费 CDN 加速 &amp; 保护</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HTTPS-SSL"><span class="nav-number">2.2.</span> <span class="nav-text">HTTPS - SSL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Clash"><span class="nav-number">2.3.</span> <span class="nav-text">Clash</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BD%91%E7%AB%99%E5%BA%94%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">网站应用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%9D%E6%BA%90%E7%AC%94%E8%AE%B0"><span class="nav-number">3.1.</span> <span class="nav-text">思源笔记</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-%E9%83%A8%E7%BD%B2%E6%80%9D%E6%BA%90"><span class="nav-number">3.1.1.</span> <span class="nav-text">docker 部署思源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Nginx-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86"><span class="nav-number">3.1.2.</span> <span class="nav-text">Nginx 反向代理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5%E3%80%81%E5%A4%87%E4%BB%BD%E4%B8%8E%E8%BF%98%E5%8E%9F"><span class="nav-number">3.1.3.</span> <span class="nav-text">数据同步、备份与还原</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#code-server"><span class="nav-number">3.2.</span> <span class="nav-text">code-server</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HedgeDoc"><span class="nav-number">3.3.</span> <span class="nav-text">HedgeDoc</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Codimd"><span class="nav-number">3.3.1.</span> <span class="nav-text">Codimd</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hexo"><span class="nav-number">3.4.</span> <span class="nav-text">Hexo</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E5%A4%87%E4%BB%BD"><span class="nav-number">3.4.1.</span> <span class="nav-text">配置备份</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E5%A4%9A%E7%AB%AF%E5%8F%91%E5%B8%83"><span class="nav-number">3.4.2.</span> <span class="nav-text">配置多端发布</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%92%E4%BB%B6"><span class="nav-number">3.4.3.</span> <span class="nav-text">插件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#602-%E9%9B%8F%E9%B9%B0%E4%B9%8B%E5%AE%B6"><span class="nav-number">3.5.</span> <span class="nav-text">602 雏鹰之家</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WordPress-%E4%B8%B4%E6%97%B6"><span class="nav-number">3.6.</span> <span class="nav-text">WordPress (临时)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Gitea-%E6%89%98%E7%AE%A1%E5%B9%B3%E5%8F%B0"><span class="nav-number">3.7.</span> <span class="nav-text">Gitea 托管平台</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E7%9B%B8%E5%85%B3%E9%A1%B9"><span class="nav-number">4.</span> <span class="nav-text">其他相关项</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%BF%E9%87%8C%E4%BA%91-OSS-%E5%9B%BE%E5%BA%8A"><span class="nav-number">4.1.</span> <span class="nav-text">阿里云 OSS 图床</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Framist</p>
+  <div class="site-description" itemprop="description">框架主义者的小窝</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">73</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/framist" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;framist" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:framist@163.com" title="E-Mail → mailto:framist@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/weixin_47102975" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_47102975" rel="noopener" target="_blank"><i class="fas fa-angle-right fa-fw"></i>CSDN</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/kuang-jia-zhu-yi-zhe" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;kuang-jia-zhu-yi-zhe" rel="noopener" target="_blank"><i class="fas fa-angle-right fa-fw"></i>知乎</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://framist.top/" title="http:&#x2F;&#x2F;framist.top&#x2F;" rel="noopener" target="_blank">个人主页</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://craft.framist.top/" title="https:&#x2F;&#x2F;craft.framist.top&#x2F;" rel="noopener" target="_blank">框架科工</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://framist.github.io/2020/10/11/%E6%88%91%E8%BA%AB%E8%BE%B9%E7%9A%84CS%E5%A4%A7%E4%BD%AC%E4%BB%AC/" title="https:&#x2F;&#x2F;framist.github.io&#x2F;2020&#x2F;10&#x2F;11&#x2F;%E6%88%91%E8%BA%AB%E8%BE%B9%E7%9A%84CS%E5%A4%A7%E4%BD%AC%E4%BB%AC&#x2F;">我身边的大佬们</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yuexiavqiufeng.github.io/" title="https:&#x2F;&#x2F;yuexiavqiufeng.github.io&#x2F;" rel="noopener" target="_blank">yuexiavqiufeng</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">浙 ICP 备 2022002862 号 -1 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-at"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Framist</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div><script>
+    let body = document.getElementsByTagName('body')[0];
+    body.addEventListener('click', (e) => {
+        let contentArr = ['欧拉~','ˋ( ° ▽、° ) ','RGB!','_(:з」∠)_','哼','?','¿框架?','QAQ',':3','<3','疯掉了',
+                            'whoami',
+                            'whoareU',
+                            'NULL',
+                            'None',
+                            ' ',
+                            '代价是什么呢？',
+                            '...',
+                            'Big Brother is Watching You',
+                            '喵~', '嗷~', '呜~', '哞~', '咩~', '咕~', '嘎~', '嘤~',
+                            '你看到了。',
+                            '¿爱情障眼法?','¿物种认同障碍?',
+                            '微润欧美，小润终南山，中润润与市，大润中南海',
+                            'init param:<br/>1LTKvNaux7CjrNHJ09C0y87Eo7/Rrbu3zfm4tKOsus7Ksbb41rmjv9a5zqrWucv51rmjrLTLzsTT1rrOtOajvw==',
+                            '这里没有时间的意义',
+                            '嘿嘿嘿，好想被随机异或哦，<br/>嘿嘿嘿，嘿嘿嘿，异或我的异或',
+                            '记忆赋予时间的意义，而不是时间赋予记忆的意义',
+                            '放弃 P ∨ ¬P 吧！',
+                            '抽象是普适性的代价 —— 3b1b',
+                            '得易见平凡，仿照上例显然',
+                            '留作习题答案略，读者自证不难',
+                            '反之亦然同理，推论自然成立',
+                            '略去过程 Q . E . D ，由上可知证毕'];
+        let randomNum = function (n) {
+            return Math.floor(Math.random() * n)
+        }
+        let span = document.createElement('span');
+        span.innerHTML = `${contentArr[randomNum(contentArr.length)]}`;
+        span.style.color = `rgb(${randomNum(256)},${randomNum(256)},${randomNum(256)})`;
+        span.style.position = 'absolute';
+        span.style.top = `${e.pageY}px`;
+        span.style.left = `${e.pageX}px`;
+        span.style.transition = 'all 1s ease';
+        span.style.zIndex = 20000;
+        body.appendChild(span)
+        setTimeout(()=>{
+            span.style.top = span.offsetTop - 25 + 'px';
+            span.style.opacity = 0;
+            setTimeout(()=>{span.remove()},1000)
+        },700)
+    })
+</script>
+
+
+<div style="width: 100px; height: 100px; margin: 0 auto;">
+<script type="text/javascript" id="clstr_globe" src="//clustrmaps.com/globe.js?d=gRWtX21uVt_tIdj_T64nMvo4FK1UrTWME23CVLOzNCg"></script>
+</div>
+<!--
+<script type="text/javascript" 
+color="255,255,255" 
+pointColor='64,184,209' 
+opacity='1' 
+zIndex="-1" 
+count="233" 
+src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js">
+</script>
+-->
+
+
+        
+<div class="busuanzi-count">
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script data-pjax>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '267a9d4a89b9b72b2229',
+      clientSecret: '2dba1f14d21da707ed6c4497fecc05d6178b4fa3',
+      repo        : 'blog-comment',
+      owner       : 'framist',
+      admin       : ['framist'],
+      id          : '21a072193eb06d8b1488832ea6b4cd1d',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+    </div>
+</body>
+</html>
