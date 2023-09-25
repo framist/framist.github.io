@@ -77,8 +77,7 @@
         <div class="comments-info mb-3">
             <div class="row">
                 <div class="col align-self-start" id="comments-num">
-                    检索到 0 条评论 😢 
-                    <!-- 可能是后端服务器出故障了 🐎 速速联系<a href="https://t.me/SAFC_admin">管理员</a> -->
+                    检索到 0 条评论
                 </div>
             </div>
         </div>
@@ -87,7 +86,8 @@
     </div>
 
     <div class="text-center">
-        <i>this page's source code fork from <a href="https://gitee.com/wdwdwd123/RateMySupervisor">RateMySupervisor</a> </i> <br>
+        <i>this page's source code fork from <a href="https://gitee.com/wdwdwd123/RateMySupervisor">RateMySupervisor</a>
+        </i> <br>
         <i>made by <a href="https://github.com/framist/SAFC-bot">SAFC</a> </i>
     </div>
 
@@ -161,7 +161,11 @@
             schoolcates = d;
             setSelectOptions(schoolcate_sel, schoolcates);
             schoolcate_sel.trigger('change');
+        }).fail(() => {
+            commentsNumDiv.empty();
+            commentsNumDiv.append(`😢 可能后端服务器出故障了 🐎 速速拷打<a href="https://t.me/SAFC_admin">管理员</a>`);
         });
+            
 
         //Selector change 
 
