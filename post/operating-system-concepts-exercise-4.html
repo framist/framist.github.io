@@ -23,12 +23,12 @@
     var CONFIG = {"hostname":"framist.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="Operating System Concepts Exercises 4Threads  操作系统作业 4  网上学习 Linux 中的信号（signal）机制  4.2, 4.4, 4.7, 4.8, 4.9, 4.14, 4.15, 4.16, 4.17 4.21  每题最后一个引用块是老师提供的参考答案">
+  <meta name="description" content="Operating System Concepts Exercises 4Threads  操作系统作业 4  网上学习 Linux 中的信号（signal）机制 4.2, 4.4, 4.7, 4.8, 4.9, 4.14, 4.15, 4.16, 4.17 4.21  每题最后一个引用块是老师提供的参考答案">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【操作系统概念 - 作业 4】Threads">
 <meta property="og:url" content="https://framist.github.io/post/operating-system-concepts-exercise-4.html">
 <meta property="og:site_name" content="Framist&#39;s Little House">
-<meta property="og:description" content="Operating System Concepts Exercises 4Threads  操作系统作业 4  网上学习 Linux 中的信号（signal）机制  4.2, 4.4, 4.7, 4.8, 4.9, 4.14, 4.15, 4.16, 4.17 4.21  每题最后一个引用块是老师提供的参考答案">
+<meta property="og:description" content="Operating System Concepts Exercises 4Threads  操作系统作业 4  网上学习 Linux 中的信号（signal）机制 4.2, 4.4, 4.7, 4.8, 4.9, 4.14, 4.15, 4.16, 4.17 4.21  每题最后一个引用块是老师提供的参考答案">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2023/08/15/20230815203844.png">
 <meta property="article:published_time" content="2021-10-07T16:00:00.000Z">
@@ -251,7 +251,7 @@
 <p>操作系统作业 4</p>
 <ul>
 <li>网上学习 Linux 中的信号（signal）机制</li>
-<li> 4.2, 4.4,</li>
+<li>4.2, 4.4,</li>
 <li>4.7, 4.8, 4.9, 4.14, 4.15, 4.16, 4.17</li>
 <li>4.21</li>
 </ul>
@@ -296,8 +296,8 @@
 </ul>
 <p><em>If the kernel is single-threaded</em>, then kernel-level threads are better than user-level threads, because any user-level thread performing a blocking system call will cause the entire process to block, even if other threads are available to run within the application.</p>
 <p><em>针对内核是单线程</em>的情况，内核线程优于用户线程。因为任何执行阻塞系统调用的用户线程都会导致整个进程阻塞，即使应用程序中可以运行其他线程。</p>
-<p>For example a process P1 has 2 kernel level threads and process P2 has 2 user-level threads. If one thread in P1 gets blocked, its second thread is not affected. But in case of P2 if one thread is blocked (say for I/O), the whole process P2 along with the 2nd thread gets blocked.</p>
-<p>例如，有两个进程 a 和 b。进程 a 有 2 个内核线程，而进程 b 有 2 个用户线程。如果 a 中的一个线程被阻塞，它的第二个线程不会受到影响。但是对于 b，如果一个线程被阻塞 (比如 I/O)，整个进程 b 和第二个线程就会被阻塞。</p>
+<p>For example a process P1 has 2 kernel level threads and process P2 has 2 user-level threads. If one thread in P1 gets blocked, its second thread is not affected. But in case of P2 if one thread is blocked (say for I&#x2F;O), the whole process P2 along with the 2nd thread gets blocked.</p>
+<p>例如，有两个进程 a 和 b。进程 a 有 2 个内核线程，而进程 b 有 2 个用户线程。如果 a 中的一个线程被阻塞，它的第二个线程不会受到影响。但是对于 b，如果一个线程被阻塞 (比如 I&#x2F;O)，整个进程 b 和第二个线程就会被阻塞。</p>
 <p><em>In a multiprocessor environment</em>, the kernel-level threads are better than user-level threads, because kernel-level threads can run on different processors simultaneously while user-level threads of a process will run on one processor only even if multiple processors are available.</p>
 <p><em>针对多处理器环境</em>，内核线程优于用户线程，因为内核线程可以在不同的处理器上同时运行，而即使有多个处理器可用，进程的用户线程也只能在一个处理器上运行。 </p>
 <ul>
@@ -384,9 +384,9 @@
 </ul>
 <blockquote>
 <p>Four. There should be as many threads as there are processing cores. Fewer would be a waste of processing resources, and any number &gt; 4 would be unable to run.</p>
-<p>四。有多少个线程就应该有多少个处理核心。更少的会浪费处理资源，任何 &gt; 4 的数量都会无法运行。</p>
+<p>四。有多少个线程就应该有多少个处理核心。更少的会浪费处理资源，任何&gt;4 的数量都会无法运行。</p>
 </blockquote>
-<h3 id="4-15-Consider-the-following-code-segment"><a href="#4-15-Consider-the-following-code-segment" class="headerlink" title="4.15 Consider the following code segment:"></a>4.15 Consider the following code segment:</h3><figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pid_t</span> pid;</span><br><span class="line">pid = fork();</span><br><span class="line"><span class="keyword">if</span> (pid == <span class="number">0</span>) { <span class="comment">/* child process */</span></span><br><span class="line">    fork();</span><br><span class="line">    <span class="function">thread <span class="title">create</span><span class="params">( . . .)</span></span>;</span><br><span class="line">}</span><br><span class="line">fork();</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="4-15-Consider-the-following-code-segment"><a href="#4-15-Consider-the-following-code-segment" class="headerlink" title="4.15 Consider the following code segment:"></a>4.15 Consider the following code segment:</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pid_t</span> pid;</span><br><span class="line">pid = fork();</span><br><span class="line"><span class="keyword">if</span> (pid == <span class="number">0</span>) &#123; <span class="comment">/* child process */</span></span><br><span class="line">    fork();</span><br><span class="line">    <span class="function">thread <span class="title">create</span><span class="params">( . . .)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line">fork();</span><br></pre></td></tr></table></figure>
 
 <h4 id="a-How-many-unique-processes-are-created"><a href="#a-How-many-unique-processes-are-created" class="headerlink" title="a. How many unique processes are created?"></a>a. How many unique processes are created?</h4><p><strong>答：</strong></p>
 <ul>
@@ -413,7 +413,7 @@
 <p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2023/08/15/20230815203844.png" alt="image-20210701012014413"></p>
 </blockquote>
 <h3 id="4-16"><a href="#4-16" class="headerlink" title="4.16*"></a>4.16*</h3><p>As described in Section 4.7.2, Linux does not distinguish between processes and threads. Instead, Linux treats both in the same way, allowing a task to be more akin to a process or a thread depending on the set of flags passed to the <code>clone()</code> system call. However, other operating systems, such as Windows, treat processes and threads differently. Typically, such systems use a notation in which the data structure for a process contains pointers to the separate threads belonging to the process. Contrast these two approaches for modeling processes and threads within the kernel.</p>
-<p>**(不要求)** 如第 4.7.2 节所述，Linux 不区分进程和线程。取而代之的是，Linux 以相同的方式对待两者，从而使任务更类似于进程或线程，具体取决于传递给 <code>clone()</code> 系统调用的标志集。但是，其他操作系统（例如 Windows）对进程和线程的处理方式也有所不同。通常，此类系统使用一种表示法，其中进程的数据结构包含指向属于该进程的单独线程的指针。</p>
+<p>**(不要求)**如第 4.7.2 节所述，Linux 不区分进程和线程。取而代之的是，Linux 以相同的方式对待两者，从而使任务更类似于进程或线程，具体取决于传递给<code>clone()</code>系统调用的标志集。但是，其他操作系统（例如 Windows）对进程和线程的处理方式也有所不同。通常，此类系统使用一种表示法，其中进程的数据结构包含指向属于该进程的单独线程的指针。</p>
 <p>对比这两种在内核中对进程和线程进行建模的方法。</p>
 <p>Linux operating systems consider both threads and processes as tasks; it cannot distinguish between them. In contrast, windows operating system threads and processes differently.<br>This approach has pros and cons while modeling threads and processes inside the kernel.</p>
 <p><strong>Pros:</strong></p>
@@ -434,10 +434,10 @@
 <p>In systems where processes and threads are considered as similar entities, some of the operating system code could be simplified. A scheduler, for instance, can consider the different processes and threads on an equal footing without requiring special code to examine the threads associated with a process during every scheduling step. However, this uniformity could make it harder to impose process-wide resource constraints in a direct manner. Instead, some extra complexity is required to identify which threads correspond to which process and perform the relevant accounting tasks.</p>
 </blockquote>
 <h3 id="4-17-The-program-shown-in-Figure-4-16-uses-the-Pthreads-API-What-would-be-the-output-from-the-program-at-LINE-C-and-LINE-P"><a href="#4-17-The-program-shown-in-Figure-4-16-uses-the-Pthreads-API-What-would-be-the-output-from-the-program-at-LINE-C-and-LINE-P" class="headerlink" title="4.17 The program shown in Figure 4.16 uses the Pthreads API. What would be the output from the program at LINE C and LINE P?"></a>4.17 The program shown in Figure 4.16 uses the Pthreads API. What would be the output from the program at <code>LINE C</code> and <code>LINE P</code>?</h3><p>Figure 4.16:</p>
-<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pthread.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;types.h&gt;</span></span></span><br><span class="line"><span class="keyword">int</span> value = <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">runner</span><span class="params">(<span class="keyword">void</span> *param)</span></span>; <span class="comment">/* the thread */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span> </span>{</span><br><span class="line">	<span class="keyword">pid_t</span> pid;</span><br><span class="line">	<span class="keyword">pthread_t</span> tid;</span><br><span class="line">	<span class="keyword">pthread_attr_t</span> attr;</span><br><span class="line">	pid = fork();</span><br><span class="line">	<span class="keyword">if</span> (pid == <span class="number">0</span>) { <span class="comment">/* child process */</span></span><br><span class="line">		pthread_attr_init(&amp;attr);</span><br><span class="line">		pthread_create(&amp;tid, &amp;attr, runner, <span class="literal">NULL</span>);</span><br><span class="line">		pthread_join(tid, <span class="literal">NULL</span>);</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"CHILD: value = %d"</span>, value); <span class="comment">/* LINE C */</span></span><br><span class="line">	}</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (pid &gt; <span class="number">0</span>) { <span class="comment">/* parent process */</span></span><br><span class="line">		wait(<span class="literal">NULL</span>);</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"PARENT: value = %d"</span>, value); <span class="comment">/* LINE P */</span></span><br><span class="line">	}</span><br><span class="line">}</span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">runner</span><span class="params">(<span class="keyword">void</span> *param)</span> </span>{</span><br><span class="line">	value = <span class="number">5</span>;</span><br><span class="line">	pthread_exit(<span class="number">0</span>);</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pthread.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;types.h&gt;</span></span></span><br><span class="line"><span class="keyword">int</span> value = <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">runner</span><span class="params">(<span class="keyword">void</span> *param)</span></span>; <span class="comment">/* the thread */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span> </span>&#123;</span><br><span class="line">	<span class="keyword">pid_t</span> pid;</span><br><span class="line">	<span class="keyword">pthread_t</span> tid;</span><br><span class="line">	<span class="keyword">pthread_attr_t</span> attr;</span><br><span class="line">	pid = fork();</span><br><span class="line">	<span class="keyword">if</span> (pid == <span class="number">0</span>) &#123; <span class="comment">/* child process */</span></span><br><span class="line">		pthread_attr_init(&amp;attr);</span><br><span class="line">		pthread_create(&amp;tid, &amp;attr, runner, <span class="literal">NULL</span>);</span><br><span class="line">		pthread_join(tid, <span class="literal">NULL</span>);</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;CHILD: value = %d&quot;</span>, value); <span class="comment">/* LINE C */</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (pid &gt; <span class="number">0</span>) &#123; <span class="comment">/* parent process */</span></span><br><span class="line">		wait(<span class="literal">NULL</span>);</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;PARENT: value = %d&quot;</span>, value); <span class="comment">/* LINE P */</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">runner</span><span class="params">(<span class="keyword">void</span> *param)</span> </span>&#123;</span><br><span class="line">	value = <span class="number">5</span>;</span><br><span class="line">	pthread_exit(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>The output of <code>LINE C</code> in the program:</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CHILD: value = 5</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CHILD: value &#x3D; 5</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>The child process in the thread is forked by parent process and child process each have its own memory space.</li>
@@ -446,7 +446,7 @@
 <li>Thus, after execution of this line, the value displayed will be 5.</li>
 </ul>
 <p>The output of <code>LINE P</code> in the program:</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PARENT: value = 0</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PARENT: value &#x3D; 0</span><br></pre></td></tr></table></figure>
 
 
 <ul>
@@ -462,7 +462,7 @@
 <p>编写一个多线程程序，为一串数字计算各种统计值。这个程序将在命令行上传递一系列的数字，然后创建三个独立的工作线程。一个线程将确定这些数字的平均值，第二个线程将确定最大值，第三个线程将确定最小值。例如，假设你的程序被传递了整数：</p>
 <p><code>90 81 78 95 79 72 85</code></p>
 <p>The program will report:</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">The average value is 82 </span><br><span class="line">The minimum value is 72 </span><br><span class="line">The maximum value is 95</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">The average value is 82 </span><br><span class="line">The minimum value is 72 </span><br><span class="line">The maximum value is 95</span><br></pre></td></tr></table></figure>
 
 <p>The variables representing the average, minimum, and maximum values will be stored globally. The worker threads will set these values, and the parent thread will output the values once the workers have exited. (We could obviously expand this program by creating additional threads that determine other statistical values, such as median and standard deviation.)</p>
 <p>代表平均值、最小值和最大值的变量将被全局存储。工人线程将设置这些值，一旦工人退出，父线程将输出这些值。显然，我们可以通过创建额外的线程来扩展这个程序，以确定其他统计值，如中位数和标准差）。</p>
@@ -474,8 +474,8 @@
 <p><strong>注：</strong></p>
 <p>翻译：deepl</p>
 <p>参考资料：</p>
-<p>[1] <a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_37205708/article/details/86518889">操作系统学习笔记（三） — 线程_雲的博客 - CSDN 博客</a></p>
-<p>[2] <a target="_blank" rel="noopener" href="https://github.com/Criviere/os">Criviere/os (github.com)</a></p>
+<p>[1] <a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_37205708/article/details/86518889">操作系统学习笔记（三） —线程_雲的博客-CSDN 博客</a></p>
+<p>[2] <a target="_blank" rel="noopener" href="https://github.com/Criviere/os">Criviere&#x2F;os (github.com)</a></p>
 <p>[3] Operating System Concepts – 9th Edition 及其答案</p>
 
     </div>
@@ -527,8 +527,8 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/post/operating-system-concepts-exercise-10.html" rel="prev" title="【操作系统概念 - 作业 10】Mass-Storage Systems">
-      <i class="fa fa-chevron-left"></i> 【操作系统概念 - 作业 10】Mass-Storage Systems
+    <a href="/post/9475.html" rel="prev" title="【MiniLCTF2021 题解】Web&Crypto&Misc">
+      <i class="fa fa-chevron-left"></i> 【MiniLCTF2021 题解】Web&Crypto&Misc
     </a></div>
       <div class="post-nav-item">
     <a href="/post/operating-system-concepts-exercise-13.html" rel="next" title="【操作系统概念 - 作业 13】I/O Systems">

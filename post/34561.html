@@ -258,101 +258,101 @@
 </tr>
 </thead>
 <tbody><tr>
-<td> CPU</td>
-<td> 牙膏厂 Intel e8500</td>
-<td align="left"> 主板附带</td>
-<td> 0 元</td>
+<td>CPU</td>
+<td>牙膏厂 Intel e8500</td>
+<td align="left">主板附带</td>
+<td>0 元</td>
 </tr>
 <tr>
 <td>显卡</td>
 <td>凄惨红 9600gt512m</td>
 <td align="left">28 元</td>
-<td> 0 元</td>
+<td>0 元</td>
 </tr>
 <tr>
 <td>主板</td>
 <td>打人硕 p5g41</td>
-<td align="left"> 版 U 套装 60 元</td>
-<td> 0 元</td>
+<td align="left">版 U 套装 60 元</td>
+<td>0 元</td>
 </tr>
 <tr>
 <td>内存</td>
-<td> DDR3 1330 2g×2</td>
+<td>DDR3 1330 2g×2</td>
 <td align="left">50 元</td>
-<td> 0 元</td>
+<td>0 元</td>
 </tr>
 <tr>
 <td>硬盘 SSD</td>
 <td>320G 闲鱼</td>
-<td align="left"> 0</td>
+<td align="left">0</td>
 <td>15 元</td>
 </tr>
 <tr>
 <td>硬盘 HDD</td>
-<td> 辛士达 120g 固态</td>
-<td align="left"> 50 元</td>
-<td> 0 元</td>
+<td>辛士达 120g 固态</td>
+<td align="left">50 元</td>
+<td>0 元</td>
 </tr>
 <tr>
 <td>机箱</td>
 <td>废弃鞋盒</td>
-<td align="left"> 0 元</td>
+<td align="left">0 元</td>
 <td>无需</td>
 </tr>
 <tr>
 <td>散热</td>
-<td>牙膏 (替代硅脂)+ 胡萝卜</td>
-<td align="left"> 0 元</td>
+<td>牙膏 (替代硅脂)+胡萝卜</td>
+<td align="left">0 元</td>
 <td>无需</td>
 </tr>
 <tr>
 <td>电源</td>
-<td> 300w 航嘉电源</td>
-<td align="left"> 30 元</td>
+<td>300w 航嘉电源</td>
+<td align="left">30 元</td>
 <td>包邮</td>
 </tr>
 <tr>
 <td>总计</td>
 <td></td>
 <td align="left"></td>
-<td> 233 元</td>
+<td>233 元</td>
 </tr>
 </tbody></table>
 <p>原因：</p>
 <ul>
 <li>性能高<ul>
 <li>独立显卡</li>
-<li> CPU 可超频</li>
+<li>CPU 可超频</li>
 <li>游戏方面 LOL1080p 可达 60 帧</li>
 </ul>
 </li>
 <li>储存大<ul>
-<li> HDD+SSD</li>
+<li>HDD+SSD</li>
 </ul>
 </li>
-<li> 价格便宜<ul>
+<li>价格便宜<ul>
 <li>部分可以捡垃圾以达到更低的价格</li>
 </ul>
 </li>
 </ul>
 <p><em>参考自图拉丁吧</em></p>
-<h2 id="微机处理一个程序的流程，画图，详细解释。"><a href="#微机处理一个程序的流程，画图，详细解释。" class="headerlink" title="微机处理一个程序的流程，画图，详细解释。"></a>微机处理一个程序的流程，画图，详细解释。</h2><p>编写一个 <code>1 + 1 = ?</code> 的程序。其<strong>机器码</strong>和<strong>助记符</strong>程序如下：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 机器码						助记符</span><br><span class="line"># ---------------------		----------------------</span><br><span class="line">.text 10110000 00000001		MOV A, 1;	# 第一个操作数</span><br><span class="line"># (5)送到累加器</span><br><span class="line">.text 00001000 00000001		ADD A, 8;	# 1与第2个数1相加,结果2送到累加器</span><br><span class="line">.text 11110100				HLT;		# 停机</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="微机处理一个程序的流程，画图，详细解释。"><a href="#微机处理一个程序的流程，画图，详细解释。" class="headerlink" title="微机处理一个程序的流程，画图，详细解释。"></a>微机处理一个程序的流程，画图，详细解释。</h2><p>编写一个<code>1 + 1 = ?</code>的程序。其<strong>机器码</strong>和<strong>助记符</strong>程序如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 机器码						助记符</span><br><span class="line"># ---------------------		----------------------</span><br><span class="line">.text 10110000 00000001		MOV A, 1;	# 第一个操作数</span><br><span class="line"># (5)送到累加器</span><br><span class="line">.text 00001000 00000001		ADD A, 8;	# 1与第2个数1相加,结果2送到累加器</span><br><span class="line">.text 11110100				HLT;		# 停机</span><br></pre></td></tr></table></figure>
 
 
 <p>取第一条指令的过程如下：</p>
 <ol>
-<li>指令所在的地址 (这里为 <code>00000000</code>) 赋给<u>程序计算器 PC</u> 并送到<u>地址寄存器 AR</u></li>
-<li><u>PC</u> 自动加 1 (即由 <code>0000000</code> 变为 <code>00000001</code>),<u>AR</u> 内容不变。</li>
-<li>将<u>地址寄存器 AR</u> 的内容 <code>00000000</code> 放在地址总线上，并送至内存储器，经<u>地址译码器</u> , 选中相应的 <code>00000000</code> 单元。</li>
+<li>指令所在的地址 (这里为<code>00000000</code>) 赋给<u>程序计算器 PC</u>并送到<u>地址寄存器 AR</u></li>
+<li><u>PC</u>自动加 1(即由<code>0000000</code>变为<code>00000001</code>),<u>AR</u>内容不变。</li>
+<li>将<u>地址寄存器 AR</u>的内容<code>00000000</code>放在地址总线上，并送至内存储器，经<u>地址译码器</u>,选中相应的<code>00000000</code>单元。</li>
 <li>CPU 的控制器发出<strong>读命令</strong>。</li>
-<li>在读命令控制下，将所选中的 <code>00000000</code> 单元中的内容即第一条指令的操作码 <code>10110000</code> 读到<u>数据总线 DB</u>。</li>
-<li>将读出的内容 <code>10110000</code> 经数据总线送到<u>数据寄存器 DR</u>。</li>
-<li>取指令阶段的最后一步是指令译码。因为取出的是指令的操作码，故<u>数据寄存器 DR</u> 将它送到指令寄存器 R，然后再送到<u>指令译码器 ID</u></li>
+<li>在读命令控制下，将所选中的<code>00000000</code>单元中的内容即第一条指令的操作码<code>10110000</code>读到<u>数据总线 DB</u>。</li>
+<li>将读出的内容<code>10110000</code>经数据总线送到<u>数据寄存器 DR</u>。</li>
+<li>取指令阶段的最后一步是指令译码。因为取出的是指令的操作码，故<u>数据寄存器 DR</u>将它送到指令寄存器 R，然后再送到<u>指令译码器 ID</u></li>
 </ol>
 <p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2023/08/15/20230815204012.png" alt="image-20210323223032016"></p>
 <h2 id="CPU-进行读和写的操作过程解释清楚。"><a href="#CPU-进行读和写的操作过程解释清楚。" class="headerlink" title="CPU 进行读和写的操作过程解释清楚。"></a>CPU 进行读和写的操作过程解释清楚。</h2><blockquote>
-<p>CPU 的工作原理概括如下：<br>CPU 的控制器从内存中读取指令，放置到指令寄存器，再送到指令译码器；CPU 从内存中读取操作数，放置到内部寄存器；运算器根据指令对应的操作，对操作数进行运算处理。</p>
+<p>CPU 的工作原理概括如下：<br>CPU 的控制器从内存中读取指令，放置到指令寄存器，再送到指令译码器;CPU 从内存中读取操作数，放置到内部寄存器;运算器根据指令对应的操作，对操作数进行运算处理。</p>
 </blockquote>
 
     </div>
@@ -404,8 +404,8 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/post/43935.html" rel="prev" title="智能的本质 —— 如何衡量机器智能">
-      <i class="fa fa-chevron-left"></i> 智能的本质 —— 如何衡量机器智能
+    <a href="/post/43935.html" rel="prev" title="智能的本质——如何衡量机器智能">
+      <i class="fa fa-chevron-left"></i> 智能的本质——如何衡量机器智能
     </a></div>
       <div class="post-nav-item">
     <a href="/post/46110.html" rel="next" title="【人工智能选修课】实验报告">

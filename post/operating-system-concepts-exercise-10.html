@@ -256,11 +256,11 @@
 <span id="more"></span>
 
 <h2 id="Practice-Exercises"><a href="#Practice-Exercises" class="headerlink" title="Practice Exercises"></a>Practice Exercises</h2><p>10.4, 10.5</p>
-<h3 id="10-4-Why-is-it-important-to-balance-file-system-I-x2F-O-among-the-disks-and-controllers-on-a-system-in-a-multitasking-environment"><a href="#10-4-Why-is-it-important-to-balance-file-system-I-x2F-O-among-the-disks-and-controllers-on-a-system-in-a-multitasking-environment" class="headerlink" title="10.4 Why is it important to balance file-system I/O among the disks and controllers on a system in a multitasking environment?"></a>10.4 Why is it important to balance file-system I/O among the disks and controllers on a system in a multitasking environment?</h3><p>为什么在多任务环境中平衡文件系统在磁盘和控制器之间的 I/O 很重要？</p>
+<h3 id="10-4-Why-is-it-important-to-balance-file-system-I-x2F-O-among-the-disks-and-controllers-on-a-system-in-a-multitasking-environment"><a href="#10-4-Why-is-it-important-to-balance-file-system-I-x2F-O-among-the-disks-and-controllers-on-a-system-in-a-multitasking-environment" class="headerlink" title="10.4 Why is it important to balance file-system I&#x2F;O among the disks and controllers on a system in a multitasking environment?"></a>10.4 Why is it important to balance file-system I&#x2F;O among the disks and controllers on a system in a multitasking environment?</h3><p>为什么在多任务环境中平衡文件系统在磁盘和控制器之间的 I&#x2F;O 很重要？</p>
 <p><strong>答：</strong></p>
 <blockquote>
-<p>A system can perform only at the speed of its slowest bottleneck. Disks or disk controllers are frequently the bottleneck in modern systems as their individual performance cannot keep up with that of the CPU and system bus. By balancing I/O among disks and controllers, neither an individual disk nor a controller is overwhelmed, so that bottleneck is avoided.</p>
-<p>一个系统只能以其最慢的瓶颈的速度运行。在现代系统中，磁盘或磁盘控制器经常成为瓶颈，因为它们的单个性能无法跟上 CPU 和系统总线的性能。通过在磁盘和控制器之间平衡 I/O，单个磁盘或控制器都不会被压垮，因此可以避免瓶颈的出现。</p>
+<p>A system can perform only at the speed of its slowest bottleneck. Disks or disk controllers are frequently the bottleneck in modern systems as their individual performance cannot keep up with that of the CPU and system bus. By balancing I&#x2F;O among disks and controllers, neither an individual disk nor a controller is overwhelmed, so that bottleneck is avoided.</p>
+<p>一个系统只能以其最慢的瓶颈的速度运行。在现代系统中，磁盘或磁盘控制器经常成为瓶颈，因为它们的单个性能无法跟上 CPU 和系统总线的性能。通过在磁盘和控制器之间平衡 I&#x2F;O，单个磁盘或控制器都不会被压垮，因此可以避免瓶颈的出现。</p>
 </blockquote>
 <h3 id="10-5-What-are-the-tradeoffs-involved-in-rereading-code-pages-from-the-file-system-versus-using-swap-space-to-store-them"><a href="#10-5-What-are-the-tradeoffs-involved-in-rereading-code-pages-from-the-file-system-versus-using-swap-space-to-store-them" class="headerlink" title="10.5 What are the tradeoffs involved in rereading code pages from the file system versus using swap space to store them?"></a>10.5 What are the tradeoffs involved in rereading code pages from the file system versus using swap space to store them?</h3><p>从文件系统中重读代码页与使用交换空间来存储代码页之间的权衡是什么？</p>
 <p><strong>答：</strong></p>
@@ -288,13 +288,13 @@
 <blockquote>
 <p>To prevent unusually long response times.</p>
 </blockquote>
-<h4 id="d-Give-three-or-more-examples-of-circumstances-in-which-it-is-important-that-the-operating-system-be-unfair-in-serving-I-x2F-O-requests"><a href="#d-Give-three-or-more-examples-of-circumstances-in-which-it-is-important-that-the-operating-system-be-unfair-in-serving-I-x2F-O-requests" class="headerlink" title="d. Give three or more examples of circumstances in which it is important that the operating system be unfair in serving I/O requests."></a>d. Give three or more examples of circumstances in which it is important that the operating system be unfair in serving I/O requests.</h4><p>举出三个或更多的例子，说明操作系统在为 I/O 请求提供服务时的不公平是很重要的。</p>
+<h4 id="d-Give-three-or-more-examples-of-circumstances-in-which-it-is-important-that-the-operating-system-be-unfair-in-serving-I-x2F-O-requests"><a href="#d-Give-three-or-more-examples-of-circumstances-in-which-it-is-important-that-the-operating-system-be-unfair-in-serving-I-x2F-O-requests" class="headerlink" title="d. Give three or more examples of circumstances in which it is important that the operating system be unfair in serving I&#x2F;O requests."></a>d. Give three or more examples of circumstances in which it is important that the operating system be unfair in serving I&#x2F;O requests.</h4><p>举出三个或更多的例子，说明操作系统在为 I&#x2F;O 请求提供服务时的不公平是很重要的。</p>
 <p><strong>答：</strong></p>
 <blockquote>
 <p>Paging and swapping should take priority over user requests.</p>
-<p>It may be desirable for other kernel-initiated I/O, such as the writing of file system metadata, to take precedence over user I/O. </p>
-<p>If the kernel supports real-time process priorities, the I/O requests of those processes should be favored.</p>
-<p>分页和交换应该优先于用户请求。<br>其他由内核发起的 I/O，例如文件系统元数据的写入，可能需要优先于用户 I/O。<br>如果内核支持实时进程的优先级，这些进程的 I/O 请求应该被优先考虑。</p>
+<p>It may be desirable for other kernel-initiated I&#x2F;O, such as the writing of file system metadata, to take precedence over user I&#x2F;O. </p>
+<p>If the kernel supports real-time process priorities, the I&#x2F;O requests of those processes should be favored.</p>
+<p>分页和交换应该优先于用户请求。<br>其他由内核发起的 I&#x2F;O，例如文件系统元数据的写入，可能需要优先于用户 I&#x2F;O。<br>如果内核支持实时进程的优先级，这些进程的 I&#x2F;O 请求应该被优先考虑。</p>
 </blockquote>
 <h3 id="10-10-Explain-why-SSDs-often-use-an-FCFS-disk-scheduling-algorithm"><a href="#10-10-Explain-why-SSDs-often-use-an-FCFS-disk-scheduling-algorithm" class="headerlink" title="10.10 Explain why SSDs often use an FCFS disk-scheduling algorithm."></a>10.10 Explain why SSDs often use an FCFS disk-scheduling algorithm.</h3><p><strong>答：</strong></p>
 <p>SSD 没有磁头调度问题，随机读取所花费的时间是一样的</p>
@@ -398,12 +398,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/post/operating-system-concepts-exercise-3.html" rel="prev" title="【操作系统概念 - 作业 3】Operating-System Structures">
-      <i class="fa fa-chevron-left"></i> 【操作系统概念 - 作业 3】Operating-System Structures
+    <a href="/post/operating-system-concepts-exercise-12.html" rel="prev" title="【操作系统概念 - 作业 12】File-System Implementation">
+      <i class="fa fa-chevron-left"></i> 【操作系统概念 - 作业 12】File-System Implementation
     </a></div>
       <div class="post-nav-item">
-    <a href="/post/operating-system-concepts-exercise-4.html" rel="next" title="【操作系统概念 - 作业 4】Threads">
-      【操作系统概念 - 作业 4】Threads <i class="fa fa-chevron-right"></i>
+    <a href="/post/operating-system-concepts-exercise-11.html" rel="next" title="【操作系统概念 - 作业 11】File-System Interface">
+      【操作系统概念 - 作业 11】File-System Interface <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
