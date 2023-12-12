@@ -672,10 +672,11 @@
         span.innerHTML = `${contentArr[randomNum(contentArr.length)]}`;
         span.style.color = `rgb(${randomNum(256)},${randomNum(256)},${randomNum(256)})`;
         span.style.position = 'absolute';
-        span.style.top = `${e.pageY}px`;
-        span.style.left = `${e.pageX}px`;
+        span.style.top = `${e.pageY - 50}px`;
+        span.style.left = `${e.pageX - randomNum(50)}px`;
         span.style.transition = 'all 1s ease';
         span.style.zIndex = 20000;
+        span.style.fontSize = `${randomNum(8) + 10}px`;
         body.appendChild(span)
         setTimeout(()=>{
             span.style.top = span.offsetTop - 25 + 'px';
