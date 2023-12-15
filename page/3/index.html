@@ -171,6 +171,93 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://framist.github.io/post/6744.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Framist">
+      <meta itemprop="description" content="框架主义者的小窝">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Framist's Little House">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/post/6744.html" class="post-title-link" itemprop="url">虚假人脸检测实验：CNN & Transfer Learning</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-05-05 00:00:00" itemprop="dateCreated datePublished" datetime="2022-05-05T00:00:00+08:00">2022-05-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-09-22 15:44:28" itemprop="dateModified" datetime="2023-09-22T15:44:28+08:00">2023-09-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">计算机科学</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="虚假人脸检测实验"><a href="#虚假人脸检测实验" class="headerlink" title="虚假人脸检测实验"></a>虚假人脸检测实验</h1><p><strong>摘要：</strong>在此次实验中，先尝试了自己手动搭建了一个 CNN 进行虚假人脸的分类实验，但发现有训练速度慢准确率低等缺点。所以尝试使用已有的模型（resnet-18）和预训练的参数进行迁移学习，包括尝试了直接把卷积层借用为固定特征提取器和 Fine-tuning 的方法，大大提高了训练速度与最终结果的准确率。</p>
+<h2 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h2><p>给定一个人脸数据集，其中包含 1999 张真实人脸，1999 张虚假人脸。将其中 500 张真实人脸和 500 张虚假人脸作为训练集，其余作为测试集。</p>
+<p>根据给定数据集训练训练一个虚假人脸检测器，该检测器本质就是一个二分类分类器。要求利用 Pytorch 框架任意设计一种神经网络模型进行分类，分类准确率越高越好 (分类准确率和得分不相关)。  </p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/post/6744.html#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://framist.github.io/post/7919.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -896,7 +983,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-09-22 15:34:47" itemprop="dateModified" datetime="2023-09-22T15:34:47+08:00">2023-09-22</time>
+                <time title="修改时间：2023-12-15 18:49:04" itemprop="dateModified" datetime="2023-12-15T18:49:04+08:00">2023-12-15</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -935,129 +1022,6 @@
             </div>
           <!--/noindex-->
         
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://framist.github.io/post/chronicles-of-frame.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Framist">
-      <meta itemprop="description" content="框架主义者的小窝">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Framist's Little House">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/post/chronicles-of-frame.html" class="post-title-link" itemprop="url">Chronicles of FRAME</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-11-15 00:00:00" itemprop="dateCreated datePublished" datetime="2021-11-15T00:00:00+08:00">2021-11-15</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-12-15 18:35:46" itemprop="dateModified" datetime="2023-12-15T18:35:46+08:00">2023-12-15</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%93%B2%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">哲学</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%93%B2%E5%AD%A6/%E6%A1%86%E6%9E%B6%E4%B8%BB%E4%B9%89/" itemprop="url" rel="index"><span itemprop="name">框架主义</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="框架主义理论编年史"><a href="#框架主义理论编年史" class="headerlink" title="框架主义理论编年史"></a>框架主义理论编年史</h1><p><em>此文将不断更新……</em></p>
-<h2 id="lt-2013"><a href="#lt-2013" class="headerlink" title="&lt; 2013"></a>&lt; 2013</h2><p>小学时，对世界本质进行了初步的思考</p>
-<p>但只注重提问，思考也仅限于此，陷入了两元论。</p>
-<p><img data-src="https://pic2.zhimg.com/80/v2-3ffedab302b855a2a82a2434267e2535_720w.jpg" alt="复原图"></p>
-<h2 id="2016"><a href="#2016" class="headerlink" title="~ 2016"></a>~ 2016</h2><p>初中时期，我第一次整体表示框架主义思想。</p>
-<p>具有了直观方法的雏形，但没有明确和坚持。也产生类似于机械决定论的错误观点。</p>
-<p><img data-src="https://pic3.zhimg.com/80/v2-cd08442e7d057ded37418666635240c6_720w.jpg" alt="纸本扫描"></p>
-<h2 id="2018"><a href="#2018" class="headerlink" title="2018"></a>2018</h2><p>高中时期，开始表达分享自己的思想</p>
-<p><img data-src="https://pic1.zhimg.com/80/v2-73e8d84c27b19957e854dae75cf69784_720w.jpg" alt="纸本扫描"></p>
-<h2 id="2019"><a href="#2019" class="headerlink" title="2019"></a>2019</h2><p>高考前一段时间，写了一本小册子用于交了框架主义思想</p>
-<summary>点击展开</summary>
-<details>
-
-<p><img data-src="https://pic4.zhimg.com/80/v2-8de432758e8701d735bdadaf6aca4f59.png" alt="小册子截图"></p>
-<p><img data-src="https://pic4.zhimg.com/80/v2-6063d78469d70f464ea15e75700c8ca3.png" alt="小册子截图"></p>
-<p><img data-src="https://pic4.zhimg.com/80/v2-fcbe5a5677007aef5148c8a5bd98ba8e.png" alt="小册子截图"></p>
-<p><img data-src="https://pic4.zhimg.com/80/v2-5d4ea848e78dae3f9ae70634cf5e7ef0.png" alt="小册子截图"></p>
-<p><img data-src="https://pic4.zhimg.com/80/v2-07466886ecf9bdd1a11b5b9430837009.png" alt="小册子截图"></p>
-<p><img data-src="https://pic4.zhimg.com/80/v2-27203fd48ab88ff2cff0efbd6f9ad96b.png" alt="小册子截图"></p>
-<p><img data-src="https://pic4.zhimg.com/80/v2-50cdef526be09301fd183726d0a94a7d.png" alt="小册子截图"></p>
-<p><img data-src="https://pic4.zhimg.com/80/v2-b9f8e97daed3471ff5ac0718c7111afb.png" alt="小册子截图"></p>
-<p><img data-src="https://pic4.zhimg.com/80/v2-d3aff1db3e0e5c0034c4f6799d45604b.png" alt="小册子截图"></p>
-<p><img data-src="https://pic4.zhimg.com/80/v2-d1098d4843823ea92853220a8ac71fff.png" alt="小册子截图"></p>
-<p><img data-src="https://pic4.zhimg.com/80/v2-888e562cc8aad8513e9d4ef100bf2985.png" alt="小册子截图"></p>
-<p><img data-src="https://pic4.zhimg.com/80/v2-c81cee55315ec402049e606aa6739a46.png" alt="小册子截图"></p>
-<p><img data-src="https://pic4.zhimg.com/80/v2-f94c6e03cb03949f7e5e7962c1f60c0d.png" alt="小册子截图"></p>
-<p><img data-src="https://pic4.zhimg.com/80/v2-044bc966ae717e725787303cf12d26b5.png" alt="小册子截图"></p>
-<p><img data-src="https://pic4.zhimg.com/80/v2-051e44dd23cf082d7782613de6cdbbbf.png" alt="小册子截图"></p>
-<p><img data-src="https://pic4.zhimg.com/80/v2-daecc7bc797c5b1436894b2604fdda76.png" alt="小册子截图"></p>
-<p><img data-src="https://pic4.zhimg.com/80/v2-4c04f2ecb9286bc0a487f78faf39f92f.png" alt="小册子截图"></p>
-<p><img data-src="https://pic4.zhimg.com/80/v2-fd0f98f638586e8ba7f6dd56be8b4957.png" alt="小册子截图"></p>
-<p><img data-src="https://pic4.zhimg.com/80/v2-41809785ea76f1f76e9cf3258bec48ed.png" alt="小册子截图"></p>
-<p><img data-src="https://pic4.zhimg.com/80/v2-2aeb1d2f4d7deb8d76bfb0235a98e16a.png" alt="小册子截图"></p>
-</details>
-
-<h2 id="至今"><a href="#至今" class="headerlink" title="至今"></a>至今</h2><!-- ![Image](https://pic4.zhimg.com/80/v2-fd488df1eb41e9ec70ddd3dbd646c7d0.png) -->
-
-<p>……</p>
-<blockquote>
-<p>框架主义的大厦是否已经建成</p>
-<p>修修补补的简单可以矗立永恒</p>
-<p>那朵朵乌云笼罩天空</p>
-<p>初生的婴孩还待历练</p>
-<p>——《直观基型理论体系的建立（提纲）》</p>
-</blockquote>
-<h2 id="参见"><a href="#参见" class="headerlink" title="参见"></a>参见</h2><p>本文也发布在<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/73733210">知乎</a></p>
-
       
     </div>
 
