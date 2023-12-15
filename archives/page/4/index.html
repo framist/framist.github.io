@@ -175,10 +175,33 @@
     <div class="posts-collapse">
       <div class="collection-title">
         
-        <span class="collection-header">不错! 目前共计 76 篇日志。 继续努力。</span>
+        <span class="collection-header">不错! 目前共计 77 篇日志。 继续努力。</span>
       </div>
 
       
+    <div class="collection-year">
+      <span class="collection-header">2021</span>
+    </div>
+
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <div class="post-meta">
+        <time itemprop="dateCreated"
+              datetime="2021-01-13T00:00:00+08:00"
+              content="2021-01-13">
+          01-13
+        </time>
+      </div>
+
+      <div class="post-title">
+          <a class="post-title-link" href="/post/16134.html" itemprop="url">
+            <span itemprop="name">XDSEC 个人周报 0x02 - 0x08</span>
+          </a>
+      </div>
+
+    </header>
+  </article>
     <div class="collection-year">
       <span class="collection-header">2020</span>
     </div>
@@ -578,7 +601,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-count">77</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -676,7 +699,7 @@
                             '你看到了。',
                             '¿爱情障眼法?','¿物种认同障碍?',
                             '微润欧美，小润终南山，中润润与市，大润中南海',
-                            'init param:<br/>1LTKvNaux7CjrNHJ09C0y87Eo7/Rrbu3zfm4tKOsus7Ksbb41rmjv9a5zqrWucv51rmjrLTLzsTT1rrOtOajvw==',
+                            'init param:<br/>1LTKvNaux7CjrNHJ09C0y87Eo7/Rrbu3zfm4tKOsus<br/>7Ksbb41rmjv9a5zqrWucv51rmjrLTLzsTT1rrOtOajvw==',
                             '这里没有时间的意义',
                             '嘿嘿嘿，好想被随机异或哦，<br/>嘿嘿嘿，嘿嘿嘿，异或我的异或',
                             '记忆赋予时间的意义，而不是时间赋予记忆的意义',
@@ -693,9 +716,9 @@
         span.innerHTML = `${contentArr[randomNum(contentArr.length)]}`;
         span.style.color = `rgb(${randomNum(256)},${randomNum(256)},${randomNum(256)})`;
         span.style.position = 'absolute';
-        span.style.top = `${e.pageY - 50}px`;
+        span.style.top = `${e.pageY - 25 - randomNum(50)}px`;
         span.style.left = `${e.pageX - randomNum(50)}px`;
-        span.style.transition = 'all 1s ease';
+        span.style.transition = 'all 1.5s ease';
         span.style.zIndex = 20000;
         span.style.fontSize = `${randomNum(8) + 10}px`;
         body.appendChild(span)

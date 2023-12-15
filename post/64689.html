@@ -2861,7 +2861,7 @@ Eugene H. Spafford对蠕虫的定义：“**计算机蠕虫可以独立运行**�
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-count">77</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -2959,7 +2959,7 @@ Eugene H. Spafford对蠕虫的定义：“**计算机蠕虫可以独立运行**�
                             '你看到了。',
                             '¿爱情障眼法?','¿物种认同障碍?',
                             '微润欧美，小润终南山，中润润与市，大润中南海',
-                            'init param:<br/>1LTKvNaux7CjrNHJ09C0y87Eo7/Rrbu3zfm4tKOsus7Ksbb41rmjv9a5zqrWucv51rmjrLTLzsTT1rrOtOajvw==',
+                            'init param:<br/>1LTKvNaux7CjrNHJ09C0y87Eo7/Rrbu3zfm4tKOsus<br/>7Ksbb41rmjv9a5zqrWucv51rmjrLTLzsTT1rrOtOajvw==',
                             '这里没有时间的意义',
                             '嘿嘿嘿，好想被随机异或哦，<br/>嘿嘿嘿，嘿嘿嘿，异或我的异或',
                             '记忆赋予时间的意义，而不是时间赋予记忆的意义',
@@ -2976,9 +2976,9 @@ Eugene H. Spafford对蠕虫的定义：“**计算机蠕虫可以独立运行**�
         span.innerHTML = `${contentArr[randomNum(contentArr.length)]}`;
         span.style.color = `rgb(${randomNum(256)},${randomNum(256)},${randomNum(256)})`;
         span.style.position = 'absolute';
-        span.style.top = `${e.pageY - 50}px`;
+        span.style.top = `${e.pageY - 25 - randomNum(50)}px`;
         span.style.left = `${e.pageX - randomNum(50)}px`;
-        span.style.transition = 'all 1s ease';
+        span.style.transition = 'all 1.5s ease';
         span.style.zIndex = 20000;
         span.style.fontSize = `${randomNum(8) + 10}px`;
         body.appendChild(span)
