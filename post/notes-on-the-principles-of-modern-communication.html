@@ -71,7 +71,6 @@
 <meta property="og:image" content="https://pic4.zhimg.com/80/v2-7768b55766f86cb8b376db5c0d89e8ff.png">
 <meta property="og:image" content="https://pic4.zhimg.com/80/v2-e22a39525639804d709a524c83976b61.png">
 <meta property="og:image" content="https://pic4.zhimg.com/80/v2-04c461f6327fb597a5f7cfe07a68b5fc.png">
-<meta property="og:image" content="https://pic4.zhimg.com/80/v2-86aadd3120d289768f98ec52148ac030.png">
 <meta property="og:image" content="https://pic4.zhimg.com/80/v2-3d1047d3165e6a9a676d8209cfdf1d71.png">
 <meta property="og:image" content="https://pic4.zhimg.com/80/v2-a335636fac6e7e1b1596ad777584c997.png">
 <meta property="og:image" content="https://pic4.zhimg.com/80/v2-985b11f2946873968e04553118dac3d4.png">
@@ -223,7 +222,7 @@
 <meta property="og:image" content="https://pic4.zhimg.com/80/v2-cac880522a464da5ddd67bee3df4ff98.png">
 <meta property="og:image" content="https://pic4.zhimg.com/80/v2-a71309e3e2561ee5aac6a4031fa592e3.png">
 <meta property="article:published_time" content="2022-03-14T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-10-27T07:48:48.824Z">
+<meta property="article:modified_time" content="2025-04-02T08:05:06.586Z">
 <meta property="article:author" content="Framist">
 <meta property="article:tag" content="现代通信原理">
 <meta name="twitter:card" content="summary">
@@ -398,7 +397,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-10-27 15:48:48" itemprop="dateModified" datetime="2023-10-27T15:48:48+08:00">2023-10-27</time>
+                <time title="修改时间：2025-04-02 16:05:06" itemprop="dateModified" datetime="2025-04-02T16:05:06+08:00">2025-04-02</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1418,12 +1417,55 @@
 <p>带宽和信噪比的互换</p>
 <p><strong>已知调制信号$m(t)&#x3D;cos(2000 \pi t)$，载波为$2cos10^4\pi t$，分别写出 AM、DSB、USB、LSB 信号的时域表示式，并画出频谱图。</strong></p>
 <p><img data-src="https://pic4.zhimg.com/80/v2-04c461f6327fb597a5f7cfe07a68b5fc.png" alt="Image"></p>
-<hr>
 <p><strong>已知某单频调频波的振幅是 10V，瞬时频率为$f(t)&#x3D;10^6+10^4cos2 \pi 10^3 t \mathrm{(Hz)}$，</strong></p>
 <p><strong>（1）此调频波的表达式</strong></p>
-<p>&#x3D;&#x3D;TODO&#x3D;&#x3D;</p>
+<blockquote>
+<p>QwQ：</p>
+<p>根据题目条件，已知调频波的振幅为 10V，瞬时频率为 ( f(t) &#x3D; 10^6 + 10^4 \cos(2\pi \times 10^3 t) ) Hz。要求其表达式，步骤如下：</p>
+<p><strong>步骤 1：确定瞬时角频率</strong><br>瞬时角频率 ( \omega(t) ) 是瞬时频率 ( f(t) ) 的两倍：<br>[<br>\omega(t) &#x3D; 2\pi f(t) &#x3D; 2\pi \left[10^6 + 10^4 \cos(2\pi \times 10^3 t)\right] , \text{rad&#x2F;s}<br>]</p>
+<p><strong>步骤 2：计算相位函数 ( \phi(t) )</strong><br>相位 ( \phi(t) ) 是角频率对时间的积分：<br>[<br>\phi(t) &#x3D; \int_0^t \omega(\tau) , d\tau + \phi_0<br>]<br>假设初始相位 ( \phi_0 &#x3D; 0 )，则：<br>[<br>\phi(t) &#x3D; \int_0^t \left[2\pi \times 10^6 + 2\pi \times 10^4 \cos(2\pi \times 10^3 \tau)\right] d\tau<br>]</p>
+<p><strong>分步积分：</strong></p>
+<ol>
+<li><p><strong>载波部分积分：</strong><br>[<br>\int_0^t 2\pi \times 10^6 , d\tau &#x3D; 2\pi \times 10^6 \cdot t<br>]</p>
+</li>
+<li><p><strong>调制部分积分：</strong><br>令 ( \theta &#x3D; 2\pi \times 10^3 \tau )，则 ( d\theta &#x3D; 2\pi \times 10^3 , d\tau )，积分变为：<br>[<br>\int_0^t 2\pi \times 10^4 \cos(2\pi \times 10^3 \tau) , d\tau &#x3D; 10 \cdot \sin(2\pi \times 10^3 t)<br>]</p>
+</li>
+</ol>
+<p><strong>合并结果：</strong><br>[<br>\phi(t) &#x3D; 2\pi \times 10^6 \cdot t + 10 \cdot \sin(2\pi \times 10^3 t)<br>]</p>
+<p><strong>步骤 3：写出调频波表达式</strong><br>调频波的一般形式为：<br>[<br>u(t) &#x3D; U_c \cos\left[\omega_c t + \phi_m \sin(\Omega t)\right]<br>]<br>其中：</p>
+<ul>
+<li>( U_c &#x3D; 10 , \text{V} )（振幅）</li>
+<li>( \omega_c &#x3D; 2\pi \times 10^6 , \text{rad&#x2F;s} )（中心角频率）</li>
+<li>( \phi_m &#x3D; 10 )（最大相偏，即调频系数 ( m_f )）</li>
+<li>( \Omega &#x3D; 2\pi \times 10^3 , \text{rad&#x2F;s} )（调制信号角频率）</li>
+</ul>
+<p>代入参数得：<br>[<br>u(t) &#x3D; 10 \cos\left[2\pi \times 10^6 t + 10 \sin(2\pi \times 10^3 t)\right]<br>]</p>
+<p><strong>最终答案</strong><br>调频波的表达式为：<br>[<br>\boxed{u(t) &#x3D; 10 \cos\left(2\pi \times 10^6 t + 10 \sin(2\pi \times 10^3 t)\right)}<br>]</p>
+</blockquote>
 <p><strong>（2）此调频波的最大频率偏移、调频指数和频带宽度</strong></p>
-<p><img data-src="https://pic4.zhimg.com/80/v2-86aadd3120d289768f98ec52148ac030.png" alt="Image"></p>
+<blockquote>
+<p>Deepseek R1:</p>
+<p>已知某单频调频波的振幅是 10V，瞬时频率为$f(t)&#x3D;10^6 + 10^4 \cos(2\pi \times 10^3 t) <br>\text{Hz}$，</p>
+<p>（1）此调频波的表达式：</p>
+<p>调频波的表达式可以通过对瞬时频率积分得到相位，然后代入振幅得到。瞬时频率$f(t)$的积分结果如下：</p>
+<p>$$ \theta(t) &#x3D; 2\pi \int_0^t f(t’) , dt’ &#x3D; 2\pi \int_0^t \left(10^6 +<br>10^4 \cos(2\pi \times 10^3 t’)\right) , dt’ $$</p>
+<p>积分分为两部分：</p>
+<p>$$ \int_0^t 10^6 , dt’ &#x3D; 10^6 t $$</p>
+<p>$$ \int_0^t 10^4 \cos(2\pi \times 10^3 t’) , dt’ &#x3D; \frac{10^4}{2\pi<br>\times 10^3} \sin(2\pi \times 10^3 t) &#x3D; \frac{10}{2\pi} \sin(2\pi<br>\times 10^3 t) $$</p>
+<p>因此，相位为：</p>
+<p>$$ \theta(t) &#x3D; 2\pi \times 10^6 t + 10 \sin(2\pi \times 10^3 t) $$</p>
+<p>调频波的表达式为：</p>
+<p>$$ s(t) &#x3D; 10 \cos\left(2\pi \times 10^6 t + 10 \sin(2\pi \times 10^3<br>t)\right) $$</p>
+<p>（2）此调频波的最大频率偏移、调频指数和频带宽度：</p>
+<ul>
+<li>最大频率偏移$\Delta f$：瞬时频率相对于载波频率的最大偏移量为$10^4 \ \text{Hz}$，即$\Delta f &#x3D; 10 \ \text{kHz}$。</li>
+<li>调频指数$\beta$：最大频率偏移与调制信号频率的比值，$\beta &#x3D; \frac{\Delta f}{f_m} &#x3D; \frac{10^4}{10^3} &#x3D; 10$。</li>
+<li>频带宽度：根据卡森公式，频带宽度为$2(\Delta f + f_m) &#x3D; 2(10^4 + 10^3) &#x3D; 22 \ \text{kHz}$。</li>
+</ul>
+<p>最终答案：</p>
+<p>（1）此调频波的表达式 $\boxed{10 \cos\left(2\pi \times 10^6 t + 10 \sin 2\pi<br>\times 10^3 t\right)}$；</p>
+<p>（2）最大频率偏移为$\boxed{10\ \text{kHz}}$，调频指数为$\boxed{10}$，频带宽度为$\boxed{22<br>\text{kHz}}$。</p>
+</blockquote>
 <h3 id="三角变换"><a href="#三角变换" class="headerlink" title="三角变换"></a>三角变换</h3><p>$$<br>\sin 2\alpha &#x3D;2\sin \alpha \cos \alpha<br>\<br>\cos 2\alpha &#x3D;\cos ^2\alpha -\sin ^2\alpha<br>\<br>&#x3D;2\cos ^2\alpha -1<br>\<br>&#x3D;1-2\sin ^2\alpha<br>\<br>\tan 2\alpha &#x3D;\frac{2\tan \alpha}{1-\tan ^2\alpha}<br>$$</p>
 <p>$$<br>\sin ^2\frac{\alpha}{2}&#x3D;\frac{1-\cos \alpha}{2}<br>\<br>\cos ^2\frac{\alpha}{2}&#x3D;\frac{1+\cos \alpha}{2}<br>\<br>\tan \frac{\alpha}{2}&#x3D;\frac{\sin \alpha}{1+\cos \alpha}<br>$$</p>
 <p>$$<br>\sin \left( \alpha +\beta \right) &#x3D;\sin \alpha \cos \beta +\cos \alpha \sin \beta<br>\<br>\sin \left( \alpha -\beta \right) &#x3D;\sin \alpha \cos \beta -\cos \alpha \sin \beta<br>\<br>\cos \left( \alpha +\beta \right) &#x3D;\cos \alpha \cos \beta -\sin \alpha \sin \beta<br>\<br>\cos \left( \alpha -\beta \right) &#x3D;\cos \alpha \cos \beta +\sin \alpha \sin \beta<br>\<br>\tan \left( \alpha +\beta \right) &#x3D;\frac{\tan \alpha +\tan \beta}{1-\tan \alpha \tan \beta}<br>\<br>\tan \left( \alpha -\beta \right) &#x3D;\frac{\tan \alpha -\tan \beta}{1+\tan \alpha \tan \beta}<br>$$</p>
