@@ -195,10 +195,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2025-07-01 22:19:07 / 修改时间：22:31:44" itemprop="dateCreated datePublished" datetime="2025-07-01T22:19:07+08:00">2025-07-01</time>
+              <time title="创建时间：2025-07-01 22:19:07" itemprop="dateCreated datePublished" datetime="2025-07-01T22:19:07+08:00">2025-07-01</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-07-03 10:53:08" itemprop="dateModified" datetime="2025-07-03T10:53:08+08:00">2025-07-03</time>
+              </span>
 
           
 
@@ -211,16 +217,86 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="SSVEP-Next：现代化的-SSVEP-可视化-Web-快速实现"><a href="#SSVEP-Next：现代化的-SSVEP-可视化-Web-快速实现" class="headerlink" title="SSVEP Next：现代化的 SSVEP 可视化 Web 快速实现"></a>SSVEP Next：现代化的 SSVEP 可视化 Web 快速实现</h2><p><a href="https://framist.github.io/ssvep-next/">在线使用</a> | <a target="_blank" rel="noopener" href="https://github.com/framist/ssvep-next">Github</a></p>
-<p><img data-src="https://i-blog.csdnimg.cn/direct/a1c9a5100dcc4c949a6f4584cc128aa6.png" alt="image">​</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/post/ssvep-next.html#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <h2 id="SSVEP-Next：现代化的-SSVEP-可视化-Web-快速实现"><a href="#SSVEP-Next：现代化的-SSVEP-可视化-Web-快速实现" class="headerlink" title="SSVEP Next：现代化的 SSVEP 可视化 Web 快速实现"></a>SSVEP Next：现代化的 SSVEP 可视化 Web 快速实现</h2><p>i18n 支持、拖拽界面和实时刺激渲染</p>
+<p><a href="https://framist.github.io/ssvep-next/">在线使用</a> | <a target="_blank" rel="noopener" href="https://github.com/framist/ssvep-next">Github</a></p>
+<p><img data-src="https://i-blog.csdnimg.cn/direct/f3bf6ad836db4a9c9bfd5b8a0d4f2137.png" alt="image">​</p>
+<p>SSVEP-Next 是一个基于 React、TypeScript 和 Vite 构建的单页面应用 (SPA)，旨在提供一个直观、高效的图形化界面，用于设计和运行稳态视觉诱发电位 (SSVEP) 实验中的视觉刺激。用户可以通过拖拽、配置属性的方式，在画布上轻松创建和管理 SSVEP 刺激界面。</p>
+<p>主要特性包括：</p>
+<ul>
+<li><strong>可视化设计器：</strong>  通过拖拽方式在画布上布局刺激方块、文本和 iframe 控件。</li>
+<li><strong>属性配置：</strong>  实时调整控件的频率、文本、颜色、位置和大小等属性。</li>
+<li><strong>刺激渲染：</strong>  精确渲染配置好的 SSVEP 刺激，支持全屏运行模式。</li>
+<li><strong>画布自定义</strong>: 自由设置画布大小，适应不同屏幕和实验需求。</li>
+<li><strong>矩阵一键生成</strong>: 快速创建行列均匀分布的刺激矩阵。</li>
+<li><strong>全局默认配置</strong>: 统一设置新刺激块的初始属性，简化重复操作。</li>
+<li><strong>多种控件支持</strong>: 除了刺激方块外，还支持文本控件和 iframe 嵌入控件。</li>
+<li><strong>布局优化</strong>: 采用稳定的三栏式布局，交互体验更流畅。</li>
+<li><strong>国际化支持</strong>: 支持中英文界面切换，自动检测浏览器语言偏好。</li>
+<li><strong>模块化组件：</strong>  清晰的项目结构，便于功能扩展和维护。</li>
+</ul>
+<p><img data-src="https://i-blog.csdnimg.cn/direct/6f9d4d05b24245ebb0f7c7932817d908.png" alt="image"></p>
+<p>本项目深受 <a target="_blank" rel="noopener" href="https://github.com/OmidS/quickssvep">quick-ssvep</a> 的启发，并旨在将其核心科学功能与现代 Web 开发范式相结合，提供更强大、更灵活的实验设计工具。</p>
+<table>
+<thead>
+<tr>
+<th align="left">特性</th>
+<th align="left">quick-ssvep</th>
+<th align="left">SSVEP-Next (本项目)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>核心范式</strong></td>
+<td align="left">参数化配置，代码驱动</td>
+<td align="left">✅ <strong>可视化、拖拽式设计</strong></td>
+</tr>
+<tr>
+<td align="left"><strong>技术架构</strong></td>
+<td align="left">原生 JavaScript, HTML, CSS</td>
+<td align="left">✅ <strong>React, TypeScript, Vite</strong> (现代 Web 架构)</td>
+</tr>
+<tr>
+<td align="left"><strong>刺激类型</strong></td>
+<td align="left">仅支持方波，颜色与样式固定</td>
+<td align="left">多种波形类型支持：方波、正弦波；用户可自定义颜色与样式</td>
+</tr>
+<tr>
+<td align="left"><strong>多种控件支持</strong></td>
+<td align="left">仅支持刺激方块</td>
+<td align="left">✅ <strong>刺激方块、文本控件、iframe 嵌入控件</strong></td>
+</tr>
+<tr>
+<td align="left"><strong>状态管理</strong></td>
+<td align="left">全局变量，DOM 查询</td>
+<td align="left">✅ <strong>Zustand</strong> (集中式、可预测的状态管理)</td>
+</tr>
+<tr>
+<td align="left"><strong>频率测量</strong></td>
+<td align="left">直接测量瞬时&#x2F;平均频率</td>
+<td align="left">✅ <strong>继承并优化</strong>：实现相同的直接测量法，并增加滑动窗口平滑</td>
+</tr>
+<tr>
+<td align="left"><strong>帧率监控</strong></td>
+<td align="left">启动前预估</td>
+<td align="left">✅ <strong>实时动态监控</strong>，运行时反馈更准确</td>
+</tr>
+<tr>
+<td align="left"><strong>分享与协作</strong></td>
+<td align="left">生成静态 URL</td>
+<td align="left">✅ <strong>继承并优化</strong> 一键分享链接，轻松复现实验设计</td>
+</tr>
+<tr>
+<td align="left"><strong>国际化</strong></td>
+<td align="left">无</td>
+<td align="left">✅ <strong>i18n 支持</strong> (中英文切换)</td>
+</tr>
+<tr>
+<td align="left"><strong>部署</strong></td>
+<td align="left">手动上传文件</td>
+<td align="left">✅ <strong>CI&#x2F;CD 自动化部署</strong> (GitHub Actions)</td>
+</tr>
+</tbody></table>
+<p>‍</p>
+
       
     </div>
 
