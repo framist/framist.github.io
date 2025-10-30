@@ -27,14 +27,14 @@
   <meta name="description" content="框架主义者的小窝">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Framist&#39;s Little House">
-<meta property="og:url" content="https://framist.github.io/tags/Web/index.html">
+<meta property="og:url" content="https://framist.github.io/tags/web/index.html">
 <meta property="og:site_name" content="Framist&#39;s Little House">
 <meta property="og:description" content="框架主义者的小窝">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:author" content="Framist">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://framist.github.io/tags/Web/">
+<link rel="canonical" href="https://framist.github.io/tags/web/">
 
 
 <script id="page-configurations">
@@ -47,7 +47,7 @@
   };
 </script>
 
-  <title>标签: Web | Framist's Little House</title>
+  <title>标签: web | Framist's Little House</title>
   
 
 
@@ -175,14 +175,14 @@
   <div class="post-block">
     <div class="posts-collapse">
       <div class="collection-title">
-        <h2 class="collection-header">Web
+        <h2 class="collection-header">web
           <small>标签</small>
         </h2>
       </div>
 
       
     <div class="collection-year">
-      <span class="collection-header">2025</span>
+      <span class="collection-header">2022</span>
     </div>
 
   <article itemscope itemtype="http://schema.org/Article">
@@ -190,61 +190,15 @@
 
       <div class="post-meta">
         <time itemprop="dateCreated"
-              datetime="2025-07-01T22:19:07+08:00"
-              content="2025-07-01">
-          07-01
+              datetime="2022-01-26T00:00:00+08:00"
+              content="2022-01-26">
+          01-26
         </time>
       </div>
 
       <div class="post-title">
-          <a class="post-title-link" href="/post/ssvep-next.html" itemprop="url">
-            <span itemprop="name">SSVEP-Next</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-    <div class="collection-year">
-      <span class="collection-header">2021</span>
-    </div>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-04-29T00:00:00+08:00"
-              content="2021-04-29">
-          04-29
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/post/23889.html" itemprop="url">
-            <span itemprop="name">【Mini L 2020 题解】日常玩耍</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-    <div class="collection-year">
-      <span class="collection-header">2020</span>
-    </div>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2020-10-09T00:00:00+08:00"
-              content="2020-10-09">
-          10-09
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/post/moeCTF-06.html" itemprop="url">
-            <span itemprop="name">【moeCTF 题解 -0x06】Web</span>
+          <a class="post-title-link" href="/post/build-site-for-framist-top.html" itemprop="url">
+            <span itemprop="name">建站实践</span>
           </a>
       </div>
 
@@ -322,7 +276,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">85</span>
+          <span class="site-state-item-count">86</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -647,6 +601,48 @@ window.addEventListener('pjax:success', () => {
         renderActions: {
           findScript: [10, doc => {
             document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+    </div>
+</body>
+</html>
+ript[type^="math/tex"]').forEach(node => {
               const display = !!node.type.match(/; *mode=display/);
               const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
               const text = document.createTextNode('');

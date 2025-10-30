@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+<meta name="google-site-verification" content="L6yHwE6A2iaXD8k96v05szGztESL_4f9nVI5lxU25h0" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Noto Serif SC:300,300italic,400,400italic,700,700italic|Source Code Pro:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-big-counter.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"framist.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="基于 pytorch-2.8.0&#x2F;torch&#x2F;utils&#x2F;checkpoint.py   梯度检查点实现 PyTorch 源码解读 可重入实现（old） forward：正向 backward：重建现场 + 重算 + 取梯度   非可重入实现（propose） 入口 生成器逻辑 _checkpoint_without_reentrant_generator 环境状态">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【PyTorch】梯度检查点 checkpoint 实现源码剖析">
+<meta property="og:url" content="https://framist.github.io/post/source-code-analysis-for-pytorch-checkpoint.html">
+<meta property="og:site_name" content="Framist&#39;s Little House">
+<meta property="og:description" content="基于 pytorch-2.8.0&#x2F;torch&#x2F;utils&#x2F;checkpoint.py   梯度检查点实现 PyTorch 源码解读 可重入实现（old） forward：正向 backward：重建现场 + 重算 + 取梯度   非可重入实现（propose） 入口 生成器逻辑 _checkpoint_without_reentrant_generator 环境状态">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i-blog.csdnimg.cn/direct/4218790e57714383b4726161659e2121.png">
+<meta property="article:published_time" content="2025-10-30T07:34:53.000Z">
+<meta property="article:modified_time" content="2025-10-30T07:37:52.792Z">
+<meta property="article:author" content="Framist">
+<meta property="article:tag" content="机器学习">
+<meta property="article:tag" content="python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i-blog.csdnimg.cn/direct/4218790e57714383b4726161659e2121.png">
+
+<link rel="canonical" href="https://framist.github.io/post/source-code-analysis-for-pytorch-checkpoint.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【PyTorch】梯度检查点 checkpoint 实现源码剖析 | Framist's Little House</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Framist's Little House</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">◇ 自顶而下 - 面向未来 ◇</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-safc">
+
+    <a href="/safc/" rel="section"><i class="fa fa-landmark fa-fw"></i>SAFC</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://framist.github.io/post/source-code-analysis-for-pytorch-checkpoint.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Framist">
+      <meta itemprop="description" content="框架主义者的小窝">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Framist's Little House">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【PyTorch】梯度检查点 checkpoint 实现源码剖析
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2025-10-30 15:34:53 / 修改时间：15:37:52" itemprop="dateCreated datePublished" datetime="2025-10-30T15:34:53+08:00">2025-10-30</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">计算机科学</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>基于 <a target="_blank" rel="noopener" href="https://fossies.org/linux/pytorch/torch/utils/checkpoint.py">pytorch-2.8.0&#x2F;torch&#x2F;utils&#x2F;checkpoint.py</a></p>
+</blockquote>
+<ul>
+<li>梯度检查点实现 PyTorch 源码解读<ul>
+<li><a href="#%E5%8F%AF%E9%87%8D%E5%85%A5%E5%AE%9E%E7%8E%B0old">可重入实现（old）</a><ul>
+<li><a href="#forward%E6%AD%A3%E5%90%91">forward：正向</a></li>
+<li><a href="#backward%E9%87%8D%E5%BB%BA%E7%8E%B0%E5%9C%BA--%E9%87%8D%E7%AE%97--%E5%8F%96%E6%A2%AF%E5%BA%A6">backward：重建现场 + 重算 + 取梯度</a></li>
+</ul>
+</li>
+<li><a href="#%E9%9D%9E%E5%8F%AF%E9%87%8D%E5%85%A5%E5%AE%9E%E7%8E%B0propose">非可重入实现（propose）</a><ul>
+<li><a href="#%E5%85%A5%E5%8F%A3">入口</a></li>
+<li><a href="#%E7%94%9F%E6%88%90%E5%99%A8%E9%80%BB%E8%BE%91-_checkpoint_without_reentrant_generator">生成器逻辑 <code>_checkpoint_without_reentrant_generator</code></a></li>
+<li><a href="#%E7%8E%AF%E5%A2%83%E7%8A%B6%E6%80%81%E6%8D%95%E8%8E%B7-_checkpointframe">环境状态捕获 <code>_CheckpointFrame</code></a></li>
+<li><a href="#%E8%BE%93%E5%85%A5%E6%8D%95%E8%8E%B7-_noopsaveinputs">输入捕获 <code>_NoopSaveInputs</code></a><ul>
+<li><a href="#%E5%9F%BA%E7%B1%BB">基类</a></li>
+<li><a href="#%E5%AE%9E%E7%8E%B0">实现</a></li>
+</ul>
+</li>
+<li><a href="#%E5%8D%A0%E4%BD%8D%E7%AC%A6-_holder">占位符 <code>_Holder</code></a></li>
+<li><a href="#%E5%89%8D%E5%90%91%E5%8F%8D%E5%90%91-hook-_checkpoint_hook">前向反向 Hook <code>_checkpoint_hook</code></a><ul>
+<li><a href="#%E5%9F%BA%E7%B1%BB-1">基类</a></li>
+<li><a href="#%E5%89%8D%E5%90%91%E5%AE%9E%E7%8E%B0-pack_hook">前向实现 <code>pack_hook</code></a></li>
+<li><a href="#%E9%87%8D%E7%AE%97-hook-_recomputation_hook-%E5%AE%9E%E7%8E%B0">重算 Hook <code>_recomputation_hook</code> 实现</a></li>
+</ul>
+</li>
+<li><a href="#%E6%97%B6%E5%BA%8F%E5%9B%BE%E5%89%8D%E5%90%91-forward-pass">时序图：前向 (Forward Pass)</a></li>
+<li><a href="#%E6%97%B6%E5%BA%8F%E5%9B%BE%E5%8F%8D%E5%90%91--%E9%87%8D%E8%AE%A1%E7%AE%97-backward-pass">时序图：反向 &amp; 重计算 (Backward Pass)</a></li>
+<li><a href="#%E6%97%B6%E5%BA%8F%E5%9B%BE_holder">时序图：<code>_Holder</code></a></li>
+</ul>
+</li>
+<li><a href="#%E5%85%B6%E4%BB%96%E7%9A%84%E7%BB%86%E8%8A%82">其他的细节</a><ul>
+<li><a href="#%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8%E7%A4%BA%E4%BE%8B">简单使用示例</a></li>
+<li><a href="#%E5%B5%8C%E5%A5%97-checkpoint">嵌套 checkpoint</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<span id="more"></span>
+
+<p><em>reentrant 是什么，为什么叫“可重入”</em></p>
+<p>“reentrant（可重入）checkpoint”的做法是：在前向阶段用 torch.no_grad() 运行被 checkpoint 的函数，不记录它的 autograd 计算图；等到反向阶段，autograd 引擎会“再次进入（re-enter）用户前向函数”，把这段前向重新跑一遍，用于重建需要的激活并继续求梯度。简单说：正向不记图，反向再“重入前向”重算。</p>
+<p>“non-reentrant（非可重入）checkpoint”则在正向时正常记图，并通过“已保存张量钩子”来在需要时只重建必要的中间量；因此它允许你在 checkpoint 区域内部也能再做一次 backward 等等，适配面更广。</p>
+<p>之所以叫“可重入”，就是因为反向时会“重入”的前向函数去重算（而不是复用正向时记录的图）。当前更推荐 non-reentrant。</p>
+<h2 id="可重入实现（old）"><a href="#可重入实现（old）" class="headerlink" title="可重入实现（old）"></a>可重入实现（old）</h2><p>在这不重点分析了</p>
+<h3 id="forward：正向"><a href="#forward：正向" class="headerlink" title="forward：正向"></a>forward：正向</h3><ul>
+<li>把 <code>run_function</code>、<code>preserve_rng_state</code>、推断出的 设备类型（<code>cuda</code>&#x2F;<code>cpu</code>&#x2F;其他）和 autocast 配置 缓存在 <code>ctx</code> 上。</li>
+<li>若需要保存 RNG：保存 CPU RNG，并在已初始化的相应设备上（如 CUDA）保存每个参与的 device 的 RNG 状态（<code>get_device_states</code>）。</li>
+<li>仅把 Tensor 型输入通过 <code>ctx.save_for_backward</code> 存起来，非 Tensor 输入保存在 <code>ctx.inputs</code>，Tensor 在那里留一个 <code>None</code> 的占位，然后在 <code>torch.no_grad()</code> 下执行真正的前向，因此中间激活并不会入图保存。</li>
+</ul>
+<h3 id="backward：重建现场-重算-取梯度"><a href="#backward：重建现场-重算-取梯度" class="headerlink" title="backward：重建现场 + 重算 + 取梯度"></a>backward：重建现场 + 重算 + 取梯度</h3><ul>
+<li>首先检查兼容性：当 <code>use_reentrant=True</code> 时，不允许使用 <code>.grad()</code> 或 <code>.backward(inputs=…)</code> 这种“显式指定输入”的反向路径，否则抛错；这是这条实现最重要的限制之一。</li>
+<li>复原输入：把刚才保存的 Tensors 填回 <code>ctx.inputs</code> 里的占位。</li>
+<li>RNG 恢复：用 <code>torch.random.fork_rng</code> 把外部 RNG 状态备份一下，然后把 CPU RNG + 对应设备的 RNG 恢复到“前向当时”的状态。</li>
+<li>AMP&#x2F;Autocast 恢复：根据 forward 时记录的设备与 <code>cpu</code> 的 autocast 状态，分别进入相同的 autocast 上下文。</li>
+<li>重算：对分离后的输入（<code>detach_variable</code>，并保留 <code>requires_grad</code> 标志）调用 <code>run_function</code>。这样会重新构建一张“临时前向图”。</li>
+<li>喂入反向梯度：把 <code>backward</code> 传进来的 <code>*args</code> 当作上游梯度，调用 Autograd 让它在这张“重算图”上做传播。</li>
+</ul>
+<h2 id="非可重入实现（propose）"><a href="#非可重入实现（propose）" class="headerlink" title="非可重入实现（propose）"></a>非可重入实现（propose）</h2><p>不再在 Autograd 的 <code>backward</code> 回调里重跑前向，而是借助 Saved Tensor Hooks 控制“什么时候、如何重算出需要的中间张量”。</p>
+<h3 id="入口"><a href="#入口" class="headerlink" title="入口"></a>入口</h3><p>非重入实现使用以下逻辑</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@torch._disable_dynamo</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">checkpoint</span>(<span class="params">...</span>):</span></span><br><span class="line">    gen = _checkpoint_without_reentrant_generator(</span><br><span class="line">        function, preserve, context_fn, determinism_check, debug, *args, **kwargs</span><br><span class="line">    )</span><br><span class="line">    <span class="comment"># - Runs pre-forward logic</span></span><br><span class="line">    <span class="built_in">next</span>(gen)</span><br><span class="line">    ret = function(*args, **kwargs)</span><br><span class="line">    <span class="comment"># - Runs post-forward logic</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="built_in">next</span>(gen)</span><br><span class="line">    <span class="keyword">except</span> StopIteration:</span><br><span class="line">        <span class="keyword">return</span> ret</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><strong><code>gen = _checkpoint_...()</code></strong>: 在 <code>checkpoint</code> 函数中，一个生成器对象 <code>gen</code> 被创建。此时，<code>_checkpoint_...</code> 函数内的代码<strong>一行都未执行</strong>。</li>
+<li><strong><code>next(gen)</code> - 第一次迭代</strong>:<ul>
+<li>前置工作</li>
+<li><strong>最重要的是进入了 <code>with _checkpoint_hook(...)</code> 上下文管理器</strong>。</li>
+<li>控制权返回到 <code>checkpoint</code> 函数，<code>next(gen)</code> 调用结束。</li>
+</ul>
+</li>
+<li><strong><code>ret = function(...)</code> - 核心执行</strong>:<ul>
+<li><code>checkpoint</code> 函数现在调用用户传入的 <code>function</code>。</li>
+<li>虽然这个调用发生在 <code>checkpoint</code> 函数的作用域里，但由于上一步激活的 <code>_checkpoint_hook</code> 仍然“存活”在暂停的生成器中，这个钩子会对 <code>function</code> 的执行产生作用！它会拦截所有需要保存以备反向传播的张量，用一个轻量级的占位符 <code>_Holder</code> 替换它们，从而实现节省内存的目的。</li>
+<li><code>function</code> 执行完毕，返回结果 <code>ret</code>。</li>
+</ul>
+</li>
+<li><strong><code>next(gen)</code> - 第二次迭代</strong>:<ul>
+<li><code>with _checkpoint_hook(...)</code> 语句块执行完毕，上下文管理器正常退出。</li>
+<li>执行清理代码。</li>
+<li><code>_checkpoint_...</code> 函数执行到末尾，自然结束。</li>
+</ul>
+</li>
+<li><strong><code>StopIteration</code></strong>:<ul>
+<li>当一个生成器函数执行完毕时，它会自动引发一个 <code>StopIteration</code> 异常。</li>
+<li><code>checkpoint</code> 函数中的 <code>except StopIteration:</code> 捕获了这个异常，这标志着整个流程（前置 - 执行 - 后置）已经成功完成。</li>
+<li>函数返回 <code>ret</code>。</li>
+</ul>
+</li>
+</ol>
+<p><img data-src="https://i-blog.csdnimg.cn/direct/4218790e57714383b4726161659e2121.png" alt="在这里插入图片描述"></p>
+<p><em>一般做法是将生成器转化为上下文管理器 <code>contextlib.contextmanager</code>。这里是反过来了。一个在生成器内部启动的上下文，其效果作用于生成器外部的函数调用</em></p>
+<blockquote>
+<p>可能的解释是：为了将“状态的生命周期”与“函数的执行”解耦：<code>checkpoint</code> 的设计巧妙地将状态的创建&#x2F;销毁逻辑（在生成器中）与被该状态影响的核心业务逻辑（用户的 <code>function</code>）分离开来。<code>checkpoint</code> 函数作为“指挥官”，协调着两者的交互，但两者本身互不知晓对方的内部实现。这是一种高度内聚、低耦合的优雅设计。</p>
+</blockquote>
+<summary>TorchDynamo 说明</summary>
+<details>
+TorchDynamo 不会进入 utils.checkpoint 函数内部进行分析。整个流程如下：
+
+<p>当 TorchDynamo 遇到 utils.checkpoint 函数时，会尝试将其封装为一个高阶操作符（HigherOrderOp）。这个过程分为三个阶段：</p>
+<ol>
+<li>TorchDynamo 会先试探性地检查传入的前向传播函数是否可以安全地被追踪（即函数内部是否包含 Dynamo 支持的运算）。如果函数逻辑简单且符合追踪规范，则进入下一步。</li>
+<li>如果前向传播函数被判定为安全，TorchDynamo 会将 utils.checkpoint 整体封装为一个高阶操作符，并将其加入生成的 Fx 计算图中。此时，Dynamo 不会深入分析 utils.checkpoint 内部的具体实现逻辑，而是将其视为一个不可拆分的原子操作。</li>
+<li>如果前向传播函数无法被安全追踪（例如包含动态控制流或未知操作），TorchDynamo 会触发图中断（graph break），回退到 PyTorch 的急切模式（eager mode）执行。此时，@torch._disable_dynamo 装饰器会确保 Dynamo 不会对 utils.checkpoint 内部创建的计算帧再次触发优化流程。</li></ol></details>
+
+<h3 id="生成器逻辑-checkpoint-without-reentrant-generator"><a href="#生成器逻辑-checkpoint-without-reentrant-generator" class="headerlink" title="生成器逻辑 _checkpoint_without_reentrant_generator"></a>生成器逻辑 <code>_checkpoint_without_reentrant_generator</code></h3><ul>
+<li>保存状态：保存 CPU 和 GPU 的随机数生成器状态，确保重计算时有完全相同的随机行为。</li>
+<li>定义 <code>recompute_fn</code>：创建一个闭包，它知道如何使用保存的 RNG 状态和上下文来重新执行原始函数 fn。</li>
+<li>创建 <code>_CheckpointFrame</code>：初始化一个状态对象，用于在前后向之间传递信息。</li>
+<li>应用 <code>_NoopSaveInputs.apply(dummy, *args)</code>，将所有输入 args“保存”到计算图中。这样在反向传播时，我们可以通过它的 grad_fn 访问到这些原始输入。</li>
+<li>设置钩子：通过 <code>with _checkpoint_hook(frame):</code> 激活我们的自定义保存行为。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># In torch.utils.checkpoint</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_checkpoint_without_reentrant_generator</span>(<span class="params">fn, preserve_rng_state, ...</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># =======================================================</span></span><br><span class="line">    <span class="comment"># &quot;前置&quot; 逻辑：在第一个 yield 之前执行</span></span><br><span class="line">    <span class="comment"># =======================================================</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># * 状态捕获</span></span><br><span class="line">    <span class="comment"># - 初始化错误回调</span></span><br><span class="line">    <span class="comment"># - 检查调试模式与上下文函数的兼容性</span></span><br><span class="line">    <span class="comment"># - 验证确定性检查参数：是否检查张量形状、类型、设备等。</span></span><br><span class="line">    <span class="comment"># - 推断设备类型并获取</span></span><br><span class="line">    <span class="comment"># - 生成前向与重计算上下文 默认没有 `noop_context_fn`</span></span><br><span class="line">    <span class="comment"># - 在编译模式 `_is_compiling` 下进行类型断言</span></span><br><span class="line">    <span class="comment"># - 获取自动混合精度的配置参数</span></span><br><span class="line">    <span class="comment"># - 保存随机数状态</span></span><br><span class="line">    <span class="keyword">if</span> preserve_rng_state:</span><br><span class="line">        fwd_cpu_state = torch.get_rng_state()</span><br><span class="line">        <span class="comment"># ... and GPU states</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 创建一个闭包，它知道如何使用保存的 RNG 状态和上下文来重新执行原始函数 fn。</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">recompute_fn</span>(<span class="params">*inputs</span>):</span></span><br><span class="line">        ...</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 创建 `_CheckpointFrame` 一个状态对象，用于在前后向之间传递信息。</span></span><br><span class="line">    new_frame = _CheckpointFrame(recompute_fn, ...)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># * 输入捕获</span></span><br><span class="line">    <span class="comment"># 创建一个哑的 autograd.Function，用于在计算图中保存输入</span></span><br><span class="line">    dummy = torch.empty((<span class="number">0</span>,), requires_grad=<span class="literal">True</span>)</span><br><span class="line">    new_frame.input_saver = _NoopSaveInputs.apply(dummy, kwargs, *args)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 本身没有 梯度环境的时候 自然不用</span></span><br><span class="line">    <span class="keyword">if</span> new_frame.input_saver.grad_fn <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        <span class="keyword">yield</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># * 创建一个钩子，并用 with 语句激活它</span></span><br><span class="line">    <span class="comment"># 这个 with 语句的生命周期将横跨整个生成器的暂停阶段</span></span><br><span class="line">    <span class="keyword">with</span> _checkpoint_hook(new_frame), forward_context:</span><br><span class="line">        <span class="comment"># =======================================================</span></span><br><span class="line">        <span class="comment"># 暂停点！控制权返回给 checkpoint 函数</span></span><br><span class="line">        <span class="keyword">yield</span></span><br><span class="line">        <span class="comment"># in checkpoint fnuc: ret = function(*args, **kwargs)</span></span><br><span class="line">        <span class="comment"># =======================================================</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># =======================================================</span></span><br><span class="line">    <span class="comment"># &quot;后置&quot; 逻辑：在第二次 next() 调用时恢复执行</span></span><br><span class="line">    <span class="comment"># =======================================================</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Debugging &amp; 检查</span></span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 函数自然结束，将会隐式地引发 StopIteration</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="环境状态捕获-CheckpointFrame"><a href="#环境状态捕获-CheckpointFrame" class="headerlink" title="环境状态捕获 _CheckpointFrame"></a>环境状态捕获 <code>_CheckpointFrame</code></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建 `_CheckpointFrame` 一个状态对象，用于在前后向之间传递信息。</span></span><br><span class="line">new_frame = _CheckpointFrame(recompute_fn, ...)</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><strong>管理前向期间所有被 checkpoint 的张量</strong>（用弱引用占位符替代本体）。</li>
+<li><strong>调度和缓存反向期间的重计算结果</strong>，支持嵌套、多次 backward 等复杂场景。</li>
+<li><strong>支持提前终止重计算</strong>，提升效率。</li>
+<li><strong>元数据比对与 Debug 支持</strong>，强力保障模型梯度正确性。</li>
+<li><strong>通过 WeakKeyDictionary 等机制高效管理内存和生命周期</strong>，无需手动清理。</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">_CheckpointFrame</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, recompute_fn, early_stop, ... 用于异常和校验 </span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        recompute_fn: 封装了 如何重算前向区域 的函数闭包。注意它会复现原来的 RNG 状态、上下文环境等。</span></span><br><span class="line"><span class="string">        early_stop: 是否允许在重计算时“提前终止”。如果为 True，只要所有需要的张量已重算出来就立即中断，节约计算。</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="comment"># - 如何重算前向区域的函数闭包</span></span><br><span class="line">        self.recompute_fn = recompute_fn</span><br><span class="line"></span><br><span class="line">        <span class="comment"># - 用于保存前向区域的输入（包括张量和非张量）。</span></span><br><span class="line">        <span class="comment"># - 实际上会被赋值为 `_NoopSaveInputs.apply(dummy, kwargs, *args)` 的返回值。</span></span><br><span class="line">        <span class="comment"># - 它的 `.grad_fn` 可以在反向时恢复所有输入（见 unpack_hook 逻辑）。</span></span><br><span class="line">        self.input_saver = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># - 存储每一个“被 checkpoint 机制保存的张量”的占位符 `_Holder` 的**弱引用**。</span></span><br><span class="line">        <span class="comment"># - 弱引用因为张量本体早已被释放，只要 Autograd 计算图清理了变量，这里的 `_Holder` 也会自动失效，无需手工管理生命周期。</span></span><br><span class="line">        self.weak_holders: <span class="type">List</span>[ReferenceType] = []</span><br><span class="line"></span><br><span class="line">        <span class="comment"># - 这是一个二级结构：</span></span><br><span class="line">        <span class="comment">#     - 外层 key: `gid`，即当前反向传播过程的唯一 id（graph task id），防止多次 backward 混淆。</span></span><br><span class="line">        <span class="comment">#     - 内层 value: `WeakKeyDictionary`，其 key 是 `_Handle`（每个张量占位符分配的唯一句柄），value 是重算出来的张量。</span></span><br><span class="line">        <span class="comment"># - 目的：支持高阶 backward（如 retain_graph=True 多次反向）或嵌套 checkpoint 时，不同的 graph task 能独立缓存各自的重计算张量。</span></span><br><span class="line">        <span class="comment"># - 为什么用 WeakKeyDictionary？方便垃圾回收，某些张量一旦用完即可释放。</span></span><br><span class="line">        <span class="comment"># We store this as a weakkeydictionary so that in the case of a partial</span></span><br><span class="line">        <span class="comment"># backward, the entries in the dict are cleared alongside the Holder</span></span><br><span class="line">        <span class="comment"># which will be removed when the SavedVariable is cleared.</span></span><br><span class="line">        self.recomputed: DefaultDict[</span><br><span class="line">            <span class="built_in">int</span>, weakref.WeakKeyDictionary[_Handle, torch.Tensor]</span><br><span class="line">        ] = defaultdict(weakref.WeakKeyDictionary)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># - 计数器，记录在某个 gid 下已经重算了多少个张量。用于 early stop 时判断是否所有张量都已生成。</span></span><br><span class="line">        <span class="comment"># We need both recomp_counter and recomputed since they can diverge</span></span><br><span class="line">        <span class="comment"># https://github.com/pytorch/pytorch/pull/90105#discussion_r1135889885</span></span><br><span class="line">        self.recomp_counter: DefaultDict[<span class="built_in">int</span>, <span class="built_in">int</span>] = defaultdict(<span class="built_in">int</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># - 标记：在某个 graph task id 下，frame 是否已经完成过一次重计算（防止重复重算，提高效率）。</span></span><br><span class="line">        self.is_recomputed: DefaultDict[<span class="built_in">int</span>, <span class="built_in">bool</span>] = defaultdict(<span class="built_in">bool</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># See Rule 5</span></span><br><span class="line">        self.early_stop = early_stop</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Debugging</span></span><br><span class="line">        ...</span><br></pre></td></tr></table></figure>
+
+<h3 id="输入捕获-NoopSaveInputs"><a href="#输入捕获-NoopSaveInputs" class="headerlink" title="输入捕获 _NoopSaveInputs"></a>输入捕获 <code>_NoopSaveInputs</code></h3><p>_No Operation Save Inputs_：与 Autograd 计算图生命周期绑定的存储方式</p>
+<ul>
+<li><strong>问题</strong>：我们需要一种独立于 Python GC、与计算图生命周期同步的方式来保存 <code>checkpoint</code> 的输入。</li>
+<li><strong>方案</strong>：我们不自己实现这个复杂的生命周期管理，而是“欺骗”并“利用”Autograd 引擎，让它来为我们做这件事。</li>
+<li><strong>实现</strong>：通过一个“空操作”的 <code>autograd.Function</code>，Autograd 引擎可以将张量的生命周期与计算图绑定。只要这个计算节点还在图中（即未来的反向传播还需要它），Autograd 就会确保 <code>save_for_backward</code> 保存的张量是可访问的。通过上下文对象<code>ctx.saved_tensors</code> 把它们取回来</li>
+</ul>
+<h4 id="基类"><a href="#基类" class="headerlink" title="基类"></a>基类</h4><p><code>torch.autograd.Function</code> 是 PyTorch 中自定义自动微分逻的核心抽象类，用于突破默认自动微分（依赖计算图追踪）的限制，让开发者手动定义算子的前向传播（forward）与反向传播（backward，梯度计算）规则。</p>
+<p>在这里我们需要的是借助 <code>ctx</code> 上下文对象保存张量</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">_SingleLevelFunction</span>(<span class="params"></span></span></span><br><span class="line"><span class="class"><span class="params">    _C._FunctionBase, FunctionCtx, _HookMixin, metaclass=FunctionMeta</span></span></span><br><span class="line"><span class="class"><span class="params"></span>):</span></span><br><span class="line"><span class="meta">    @staticmethod</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">*args: <span class="type">Any</span>, **kwargs: <span class="type">Any</span></span>) -&gt; <span class="type">Any</span>:</span></span><br><span class="line">        <span class="string">r&quot;&quot;&quot;定义自定义 autograd Function 的前向传播。</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        这个函数需要被所有子类重写。</span></span><br><span class="line"><span class="string">        定义 forward 有两种方式：</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        用法 1 (合并 forward 和 ctx)::</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">            @staticmethod</span></span><br><span class="line"><span class="string">            def forward(ctx: Any, *args: Any, **kwargs: Any) -&gt; Any:</span></span><br><span class="line"><span class="string">                pass</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        - 它必须接受一个上下文对象 ctx 作为第一个参数，后面跟着任意数量的参数（张量或其他类型）。</span></span><br><span class="line"><span class="string">        - 更多细节请参见 :ref:`combining-forward-context`。</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        用法 2 (分离 forward 和 ctx)::</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">            @staticmethod</span></span><br><span class="line"><span class="string">            def forward(*args: Any, **kwargs: Any) -&gt; Any:</span></span><br><span class="line"><span class="string">                pass</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">            @staticmethod</span></span><br><span class="line"><span class="string">            def setup_context(ctx: Any, inputs: Tuple[Any, ...], output: Any) -&gt; None:</span></span><br><span class="line"><span class="string">                pass</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        - 此时 forward不再接受 ctx 参数。</span></span><br><span class="line"><span class="string">        - 相反，你必须同时重写 :meth:`torch.autograd.Function.setup_context` 这个静态方法来处理 `ctx` 对象的设置。</span></span><br><span class="line"><span class="string">          `output` 是 forward 的输出，`inputs` 是一个包含 forward 所有输入的元组（Tuple）。</span></span><br><span class="line"><span class="string">        - 更多细节请参见 :ref:`extending-autograd`。</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        上下文 `ctx` 可以用来存储任意数据，这些数据可以在反向传播过程中被取出。</span></span><br><span class="line"><span class="string">        张量不应该直接存储在 `ctx` 上（尽管为了向后兼容目前没有强制执行）。</span></span><br><span class="line"><span class="string">        相反，如果张量打算在 `backward` (等价于 `vjp`) 中使用，应该用 :func:`ctx.save_for_backward` 保存；</span></span><br><span class="line"><span class="string">        如果打算在 `jvp` 中使用，则用 :func:`ctx.save_for_forward` 保存。</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">raise</span> NotImplementedError(</span><br><span class="line">            <span class="string">&quot;你必须为自定义的 autograd.Function 实现 forward 函数。&quot;</span></span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line"><span class="meta">    @staticmethod</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">setup_context</span>(<span class="params">ctx: <span class="type">Any</span>, inputs: <span class="built_in">tuple</span>[<span class="type">Any</span>, ...], output: <span class="type">Any</span></span>) -&gt; <span class="type">Any</span>:</span></span><br><span class="line">        <span class="string">r&quot;&quot;&quot;定义 autograd.Function 前向传播有两种方式。</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        其中一种是：</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        1. 使用 `forward(ctx, *args, **kwargs)` 签名来重写 forward。</span></span><br><span class="line"><span class="string">           此时 `setup_context` 不需要被重写。为反向传播设置 ctx 的操作在 `forward` 内部完成。</span></span><br><span class="line"><span class="string">        2. 使用 `forward(*args, **kwargs)` 签名来重写 forward，并同时重写 `setup_context`。</span></span><br><span class="line"><span class="string">           此时为反向传播设置 ctx 的操作在 `setup_context` 内部完成（而不是在 `forward` 内部）。</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        更多细节请参见 :meth:`torch.autograd.Function.forward` 和 :ref:`extending-autograd`。</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">raise</span> NotImplementedError(<span class="string">&quot;setup_context 未被实现。&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">    @staticmethod</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">backward</span>(<span class="params">ctx: <span class="type">Any</span>, *grad_outputs: <span class="type">Any</span></span>) -&gt; <span class="type">Any</span>:</span></span><br><span class="line">        <span class="string">r&quot;&quot;&quot;为该操作定义在反向模式自动微分下的求导法则。</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        这个函数需要被所有子类重写。</span></span><br><span class="line"><span class="string">        (定义这个函数等价于定义 `vjp` 函数。)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        它必须接受一个上下文 :attr:`ctx` 作为第一个参数，后面跟着与 :func:`forward` 返回值一样多的梯度输出</span></span><br><span class="line"><span class="string">        （对于 forward 返回的非张量输出，这里会传入 None），</span></span><br><span class="line"><span class="string">        并且它应该返回与 :func:`forward` 的输入一样多的张量。</span></span><br><span class="line"><span class="string">        每个参数都是对应输出的梯度，而每个返回值应该是对应输入的梯度。</span></span><br><span class="line"><span class="string">        如果某个输入不是张量，或者是一个不需要梯度的张量，你可以为那个输入直接返回 None 作为梯度。</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        上下文 `ctx` 可以用来取回在前向传播中保存的张量。</span></span><br><span class="line"><span class="string">        它还有一个属性 :attr:`ctx.needs_input_grad`，是一个布尔值的元组，表示每个输入是否需要梯度。</span></span><br><span class="line"><span class="string">        例如，如果 :func:`forward` 的第一个输入需要计算梯度，那么在 :func:`backward` 中</span></span><br><span class="line"><span class="string">        ``ctx.needs_input_grad[0]`` 的值就会是 ``True``。</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="keyword">raise</span> NotImplementedError(</span><br><span class="line">            <span class="string">&quot;为了在反向模式 AD 中使用你的自定义 autograd.Function，&quot;</span></span><br><span class="line">            <span class="string">&quot;你必须实现 backward 或 vjp 方法。&quot;</span></span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">    <span class="comment"># vjp 和 backward 是彼此的别名</span></span><br><span class="line">    vjp = backward <span class="comment"># 反向模式求导（Vector-Jacobian Product）</span></span><br><span class="line"></span><br><span class="line"><span class="meta">    @staticmethod</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">jvp</span>(<span class="params">ctx: <span class="type">Any</span>, *grad_inputs: <span class="type">Any</span></span>) -&gt; <span class="type">Any</span>:</span> <span class="comment"># 前向模式求导（Jacobian-Vector Product）</span></span><br><span class="line">        <span class="string">r&quot;&quot;&quot;为该操作定义在前向模式自动微分下的求导法则。</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Function</span>(<span class="params">_SingleLevelFunction</span>):</span></span><br><span class="line">    <span class="string">r&quot;&quot;&quot;用于创建自定义 `autograd.Function` 的基类。</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    要创建一个自定义的 `autograd.Function`，需要继承这个类并实现</span></span><br><span class="line"><span class="string">    :meth:`forward` 和 :meth:`backward` 这两个静态方法。然后，在前向传播中使用你的</span></span><br><span class="line"><span class="string">    自定义操作时，调用类方法 ``apply``。不要直接调用 :meth:`forward`。</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    为了确保正确性和最佳性能，请确保你在 ``ctx`` 上调用了正确的方法，并使用</span></span><br><span class="line"><span class="string">    :func:`torch.autograd.gradcheck` 来验证你的 backward 函数。</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, *args, **kwargs</span>):</span> warnings.warn()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__call__</span>(<span class="params">self, *args, **kwargs</span>):</span> <span class="keyword">raise</span> RuntimeError()</span><br><span class="line">        <span class="comment"># 永远不要直接调用 MyFunction.forward(...)。要通过 MyFunction.apply(...) 来调用。</span></span><br><span class="line"></span><br><span class="line"><span class="meta">    @staticmethod</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">vmap</span>(<span class="params">info, in_dims, *args</span>):</span> <span class="keyword">raise</span> NotImplementedError()</span><br><span class="line">        <span class="comment"># 提供了与 torch.vmap（自动向量化）集成的接口</span></span><br><span class="line"></span><br><span class="line"><span class="meta">    @classmethod</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">apply</span>(<span class="params">cls, *args, **kwargs</span>):</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">bind_default_args</span>(<span class="params">func, *args, **kwargs</span>):</span></span><br><span class="line">            signature = inspect.signature(func)</span><br><span class="line">            bound_args = signature.bind(*args, **kwargs)</span><br><span class="line">            bound_args.apply_defaults()</span><br><span class="line"></span><br><span class="line">            <span class="keyword">return</span> bound_args.args</span><br><span class="line"></span><br><span class="line">        is_setup_ctx_defined = _is_setup_context_defined(cls.setup_context)</span><br><span class="line">        <span class="keyword">if</span> is_setup_ctx_defined:</span><br><span class="line">            args = bind_default_args(cls.forward, *args, **kwargs)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> torch._C._are_functorch_transforms_active():</span><br><span class="line">            <span class="comment"># 参见注意：[functorch vjp 和 autograd 交互]</span></span><br><span class="line">            args = _functorch.utils.unwrap_dead_wrappers(args)</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">super</span>().apply(*args, **kwargs)  <span class="comment"># type: ignore[misc]</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> is_setup_ctx_defined:</span><br><span class="line">            <span class="keyword">raise</span> RuntimeError(</span><br><span class="line">                <span class="string">&quot;为了将 autograd.Function 与 functorch 转换（vmap, grad, jvp, jacrev, ...）一起使用，&quot;</span></span><br><span class="line">                <span class="string">&quot;它必须重写 setup_context 静态方法。更多细节，请参见 &quot;</span></span><br><span class="line">                <span class="string">&quot;https://pytorch.org/docs/main/notes/extending.func.html&quot;</span></span><br><span class="line">            )</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> custom_function_call(cls, *args, **kwargs)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_is_setup_context_defined</span>(<span class="params">fn</span>):</span></span><br><span class="line">    <span class="keyword">return</span> fn != _SingleLevelFunction.setup_contex</span><br></pre></td></tr></table></figure>
+
+<p>以 <code>y = x²</code> 为例，手动实现前向与反向（反向梯度应为 <code>dy/dx = 2x</code>）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SquareFunction</span>(<span class="params">torch.autograd.Function</span>):</span></span><br><span class="line"><span class="meta">    @staticmethod</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">ctx, x</span>):</span></span><br><span class="line">        <span class="comment"># 前向计算：y = x²</span></span><br><span class="line">        y = x ** <span class="number">2</span></span><br><span class="line">        <span class="comment"># 保存反向所需的中间结果 x</span></span><br><span class="line">        ctx.save_for_backward(x)</span><br><span class="line">        <span class="keyword">return</span> y</span><br><span class="line"></span><br><span class="line"><span class="meta">    @staticmethod</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">backward</span>(<span class="params">ctx, grad_y</span>):</span></span><br><span class="line">        <span class="comment"># 取出前向保存的 x</span></span><br><span class="line">        x, = ctx.saved_tensors</span><br><span class="line">        <span class="comment"># 反向计算：输入梯度 = 下游梯度 * 2x</span></span><br><span class="line">        grad_x = grad_y * <span class="number">2</span> * x</span><br><span class="line">        <span class="keyword">return</span> grad_x  <span class="comment"># 与 forward 输入数量一致（仅 x）</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用方式：通过 apply 方法调用</span></span><br><span class="line">x = torch.tensor([<span class="number">1.0</span>, <span class="number">2.0</span>], requires_grad=<span class="literal">True</span>)</span><br><span class="line">y = SquareFunction.apply(x)  <span class="comment"># 前向</span></span><br><span class="line">y.<span class="built_in">sum</span>().backward()  <span class="comment"># 反向</span></span><br><span class="line"><span class="built_in">print</span>(x.grad)  <span class="comment"># 输出梯度：tensor([2., 4.])，符合 2x 的预期</span></span><br></pre></td></tr></table></figure>
+
+<p>自定义 <code>Function</code> 会被视为计算图中的一个“原子节点”：</p>
+<ul>
+<li>前向时，<code>Function.apply(x)</code> 会在计算图中插入一个“自定义节点”，并通过 <code>ctx</code> 隐式关联前向数据与反向逻辑；</li>
+<li>反向时，Autograd 引擎遇到该节点，会直接调用其 <code>backward</code> 方法，而非自动推导梯度。</li>
+</ul>
+<h4 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h4><ol>
+<li>一个自定义的 <code>autograd.Function</code>。</li>
+<li>它的 <code>forward</code> 方法几乎什么都不做（No-op）。</li>
+<li><code>setup_context</code> 使用 <code>ctx.save_for_backward</code> 把所有我们需要的输入保存起来。</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">_NoopSaveInputs</span>(<span class="params">torch.autograd.Function</span>):</span></span><br><span class="line"><span class="meta">    @staticmethod</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">*args</span>):</span></span><br><span class="line">        <span class="comment"># 这个 forward 方法本身是“空操作”的，它返回一个空的哑元张量，</span></span><br><span class="line">        <span class="comment"># 只是为了在计算图中留下一个节点。</span></span><br><span class="line">        <span class="keyword">return</span> torch.empty((<span class="number">0</span>,))</span><br><span class="line"></span><br><span class="line"><span class="meta">    @staticmethod</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">setup_context</span>(<span class="params">ctx: <span class="type">Any</span>, inputs: <span class="type">Tuple</span>[<span class="type">Any</span>, ...], output: <span class="type">Any</span></span>) -&gt; <span class="literal">None</span>:</span></span><br><span class="line">        <span class="comment"># 这个函数在 forward 之后、backward 之前被调用。</span></span><br><span class="line">        <span class="comment"># 它的职责就是设置反向传播所需的上下文 ctx。</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># `inputs` 是 .apply() 传入的完整参数元组，即 (dummy, kwargs, *args)</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 1. 分离张量与非张量输入</span></span><br><span class="line">        <span class="comment"># `save_for_backward` 只能保存张量。其他类型的参数（如 int, str, dict, None）</span></span><br><span class="line">        <span class="comment"># 必须直接保存在 ctx 对象上。</span></span><br><span class="line">        tensor_indices, tensors = <span class="built_in">zip</span>(</span><br><span class="line">            *[(i, o) <span class="keyword">for</span> i, o <span class="keyword">in</span> <span class="built_in">enumerate</span>(inputs) <span class="keyword">if</span> <span class="built_in">isinstance</span>(o, torch.Tensor)]</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">        <span class="comment"># `idx2saved_idx` 是一个映射，用于后续从 saved_tensors 中恢复张量。</span></span><br><span class="line">        <span class="comment"># key 是张量在原始 inputs 元组中的索引，value 是它在 tensors 列表（即将被保存）中的索引。</span></span><br><span class="line">        idx2saved_idx = &#123;b: a <span class="keyword">for</span> a, b <span class="keyword">in</span> <span class="built_in">enumerate</span>(tensor_indices)&#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 2. 准备一个“模板”，用于恢复所有参数</span></span><br><span class="line">        <span class="comment"># 创建一个列表，其中张量被替换为 None 占位符，非张量保持原样。</span></span><br><span class="line">        args = [<span class="literal">None</span> <span class="keyword">if</span> <span class="built_in">isinstance</span>(o, torch.Tensor) <span class="keyword">else</span> o <span class="keyword">for</span> o <span class="keyword">in</span> inputs]</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 3. 定义一个恢复函数 `get_args`，并将其挂载到 ctx 上</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">get_args</span>(<span class="params">saved_tensors</span>):</span></span><br><span class="line">            <span class="comment"># `saved_tensors` 是反向传播时，Autograd 提供的、当初保存的张量元组。</span></span><br><span class="line">            <span class="comment"># 遍历模板，用 `saved_tensors` 填充 None 占位符</span></span><br><span class="line">            ret = [</span><br><span class="line">                saved_tensors[idx2saved_idx[i]] <span class="keyword">if</span> i <span class="keyword">in</span> tensor_indices <span class="keyword">else</span> o</span><br><span class="line">                <span class="keyword">for</span> i, o <span class="keyword">in</span> <span class="built_in">enumerate</span>(args)</span><br><span class="line">            ]</span><br><span class="line">            <span class="comment"># `inputs` 的结构是 (dummy, kwargs, *args)，我们只需要后面的 kwargs 和 *args</span></span><br><span class="line">            <span class="comment"># 所以返回切片 [1:]</span></span><br><span class="line">            <span class="keyword">return</span> ret[<span class="number">1</span>:]</span><br><span class="line"></span><br><span class="line">        ctx.get_args = get_args</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 4. 最后，调用核心的保存方法</span></span><br><span class="line">        <span class="comment"># 将所有张量交给 Autograd 引擎保管。</span></span><br><span class="line">        ctx.save_for_backward(*tensors)</span><br><span class="line"></span><br><span class="line"><span class="meta">    @staticmethod</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">backward</span>(<span class="params">ctx, *grad_outputs</span>):</span></span><br><span class="line">        <span class="comment"># 我们永远不期望对 _NoopSaveInputs 的输出（那个哑元张量）进行反向传播。</span></span><br><span class="line">        <span class="comment"># 这个节点只是一个“数据胶囊”，不参与梯度计算。</span></span><br><span class="line">        <span class="comment"># 如果代码逻辑意外地走到了这里，说明有地方出错了，所以直接断言。</span></span><br><span class="line">        <span class="keyword">raise</span> AssertionError(<span class="string">&quot;Did not expect to backward on this graph&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># * 输入捕获</span></span><br><span class="line"><span class="comment"># 创建一个哑的 autograd.Function，用于在计算图中保存输入</span></span><br><span class="line">dummy = torch.empty((<span class="number">0</span>,), requires_grad=<span class="literal">True</span>)</span><br><span class="line">new_frame.input_saver = _NoopSaveInputs.apply(dummy, kwargs, *args)</span><br></pre></td></tr></table></figure>
+
+<p>torch.autograd.Function 是自定义可微操作的核心类，而 <code>apply</code> 方法是其唯一实例化调用入口，用于触发自定义操作的前向传播（forward）与后续反向传播（backward）逻辑</p>
+<ol>
+<li><code>dummy</code>: 这是一个需要梯度的张量（<code>torch.empty((0,), requires_grad=True)</code>）。它的作用是确保 <code>_NoopSaveInputs</code> 这个操作被记录到计算图中。如果所有输入都不需要梯度，Autograd 引擎可能会优化掉这个节点，保存机制就会失效。</li>
+<li><code>kwargs</code>, <code>*args</code>: 需要传递给用户函数 <code>fn</code> 的所有参数</li>
+<li><code>.apply(...)</code>: 执行时：<ul>
+<li><code>_NoopSaveInputs.forward</code> 被调用，它接收 <code>(dummy, kwargs, *args)</code> 作为参数，然后返回一个空张量。</li>
+<li><code>_NoopSaveInputs.setup_context</code> 被调用，打包了所有 <code>args</code> 和 <code>kwargs</code>，将张量部分交给 <code>ctx.save_for_backward</code>，并创建了一个 <code>ctx.get_args</code> 函数用于未来的恢复。</li>
+</ul>
+</li>
+<li><code>new_frame.input_saver = ...</code>: <code>.apply()</code> 的返回值是一个张量，这个张量拥有一个 <code>.grad_fn</code> 属性，它指向一个代表 <code>_NoopSaveInputs</code> 反向节点的对象。这个对象内部就包含了我们设置好的 <code>ctx</code></li>
+</ol>
+<p>_图不一定连通_：<code>_NoopSaveInputs</code> 形成了一个并行的、逻辑上的分支。虽然它不直接参与梯度计算流，但它通过 <code>dummy.requires_grad=True</code> 这个属性，作为一个有效的图节点存在。</p>
+<p>在反向传播期间，<code>checkpoint</code> 内部的钩子 <code>_checkpoint_hook</code> 会被触发，这个钩子可以通过 <code>new_frame.input_saver</code> 找到这个 <code>_NoopSaveInputsBackward</code> 节点，并从中提取出保存的输入 <code>x</code> 来进行重计算。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在 unpack_hook 内部</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">unpack_hook</span>(<span class="params">holder</span>):</span></span><br><span class="line">    <span class="comment"># ...</span></span><br><span class="line">    <span class="comment"># 从 frame 中取出这个“时空胶囊”</span></span><br><span class="line">    ctx = frame.input_saver.grad_fn</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 调用我们当初存下的恢复函数，传入从 Autograd 取回的被保存的张量</span></span><br><span class="line">    original_inputs = ctx.get_args(ctx.saved_tensors)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 拿到了原始的所有输入！</span></span><br><span class="line">    <span class="comment"># 现在可以调用重计算函数了</span></span><br><span class="line">    frame.recompute_fn(*original_inputs)</span><br><span class="line">    <span class="comment"># ...</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="占位符-Holder"><a href="#占位符-Holder" class="headerlink" title="占位符 _Holder"></a>占位符 <code>_Holder</code></h3><ul>
+<li><code>_Holder</code>：保存张量的占位符对象（不是张量本体）。正向在 <code>saved_tensors_hooks(pack, unpack)</code> 的 <code>pack_hook</code> 中为每个需要“保存”的张量创建一个 <code>_Holder</code> 并把它塞回计算图里，真正的张量稍后在反向触发“重算”时再填充到缓存。<code>_Holder</code> 内部维护一个 <code>handles: Dict[int, Optional[_Handle]]</code>，把一次前向里出现的保存位映射到对应的 <code>_Handle</code></li>
+<li><code>_Handle</code>：每个“保存位”的键对象。帧级缓存用 <code>WeakKeyDictionary[_Handle, Tensor]</code> 存（key 是 _Handle，value 才是重算得到的真实 Tensor）。这样只要 _Handle 没有强引用（由 _Holder 持有的引用消失），缓存项就会自动被回收，适配“只做了部分反向”的情况。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">_CheckpointFrame</span><br><span class="line">    .weak_holders: <span class="type">List</span>[ReferenceType]</span><br><span class="line">    .recomputed: DefaultDict[<span class="built_in">int</span>, weakref.WeakKeyDictionary[_Handle, torch.Tensor]]</span><br><span class="line">    .recomp_counter: DefaultDict[<span class="built_in">int</span>, <span class="built_in">int</span>]</span><br><span class="line">    .is_recomputed: DefaultDict[<span class="built_in">int</span>, <span class="built_in">bool</span>]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">_Handle</span>:</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    它的实例被用作 `_CheckpointFrame.recomputed` 字典的键（key）</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">_Holder</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        - 键 `int` 类型，代表 `gid` (graph_task_id)，即当前反向传播任务的唯一 ID。每次调用 `.backward()` 都会生成一个新的 `gid`。</span></span><br><span class="line"><span class="string">        - 值 `Optional[_Handle]`。它是一个 `_Handle` 实例，作为在 `_CheckpointFrame.recomputed` 字典中查找重计算张量的键。当张量被解包使用后，这个值会被设为 `None`，以防止在同一次反向传播中被重复使用。</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        self.handles: <span class="type">Dict</span>[<span class="built_in">int</span>, <span class="type">Optional</span>[_Handle]] = &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>_Holder</code> 的生命周期贯穿了检查点机制的三个关键阶段：前向传播（打包）、反向传播（解包与重计算）、以及状态清理。</p>
+<p><strong>阶段一：前向传播（打包 - Pack）</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">pack_hook</span>(<span class="params">x</span>):</span></span><br><span class="line">    holder = _Holder()</span><br><span class="line">    frame.weak_holders.append(weakref.ref(holder))</span><br><span class="line">    <span class="keyword">return</span> holder</span><br></pre></td></tr></table></figure>
+
+<p><em>为什么是弱引用？</em> Autograd 引擎会将 <code>holder</code> 实例保存在一个 <code>SavedVariable</code> 对象中。如果 <code>retain_graph=False</code>，反向传播结束后，<code>SavedVariable</code> 会被销毁，对 <code>holder</code> 的强引用就消失了。这时，如果没有其他地方强引用 <code>holder</code>，垃圾回收器就会回收它。</p>
+<p><strong>阶段二：反向传播（解包 - Unpack 与重计算）</strong></p>
+<p>当反向传播过程需要用到被 <code>_Holder</code> 替代的那个张量时，<code>_checkpoint_hook</code> 的 <code>unpack_hook</code> 会被调用。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">unpack_hook</span>(<span class="params">holder</span>):</span></span><br><span class="line">    gid = torch._C._current_graph_task_id()</span><br><span class="line">    <span class="keyword">if</span> gid == -<span class="number">1</span>: gid = <span class="built_in">int</span>(uuid.uuid4())</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> frame.is_recomputed[gid]:</span><br><span class="line">        <span class="comment"># ... (触发重计算的逻辑)</span></span><br><span class="line">        <span class="keyword">with</span> _recomputation_hook(weakref.ref(frame), gid), torch.autograd.enable_grad():</span><br><span class="line">            frame.recompute_fn(*args)</span><br><span class="line">            ...</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 标记重计算已完成</span></span><br><span class="line">        frame.is_recomputed[gid] = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 从 holder 中获取重计算结果的“钥匙”Handle</span></span><br><span class="line">    _internal_assert(gid <span class="keyword">in</span> holder.handles)</span><br><span class="line">    <span class="keyword">if</span> holder.handles[gid] <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        <span class="keyword">raise</span> CheckpointError(...) <span class="comment"># 防止重复解包</span></span><br><span class="line"></span><br><span class="line">    handle_key = holder.handles[gid]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 使用 handle_key 从 frame.recomputed 字典中取出张量</span></span><br><span class="line">    _internal_assert(handle_key <span class="keyword">in</span> frame.recomputed[gid])</span><br><span class="line">    ret = frame.recomputed[gid][handle_key]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 清理 handle，防止在同一次 backward 中被再次使用</span></span><br><span class="line">    holder.handles[gid] = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> ret</span><br></pre></td></tr></table></figure>
+
+<p><strong><code>_Holder</code> 在重计算过程中的角色：</strong></p>
+<p>重计算由 <code>_recomputation_hook</code> 控制。它的 <code>pack_hook</code> 会在重计算过程中再次“保存”张量。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">_recomputation_hook</span>(<span class="params">torch.autograd.graph.saved_tensors_hooks</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, target_frame_ref: ReferenceType, gid: <span class="built_in">int</span></span>):</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">pack_hook</span>(<span class="params">x</span>):</span></span><br><span class="line">            <span class="comment"># ... (一些索引和错误检查) ...</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># a. 通过弱引用获取原始的 _Holder</span></span><br><span class="line">            holder = target_frame.weak_holders[recomp_idx]()</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> holder <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">                <span class="comment"># b. 创建一个新的 _Handle 实例作为“钥匙”</span></span><br><span class="line">                _internal_assert(holder.handles.get(gid, <span class="literal">None</span>) <span class="keyword">is</span> <span class="literal">None</span>)</span><br><span class="line">                holder.handles[gid] = _Handle()</span><br><span class="line"></span><br><span class="line">                <span class="comment"># c. 将重计算的张量 x 与“钥匙”关联起来，存入 frame.recomputed</span></span><br><span class="line">                target_frame.recomputed[gid][holder.handles[gid]] = x</span><br><span class="line"></span><br><span class="line">            <span class="comment"># ... (提前停止逻辑) ...</span></span><br><span class="line">            <span class="keyword">return</span> x</span><br><span class="line">        <span class="comment"># ...</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="前向反向-Hook-checkpoint-hook"><a href="#前向反向-Hook-checkpoint-hook" class="headerlink" title="前向反向 Hook _checkpoint_hook"></a>前向反向 Hook <code>_checkpoint_hook</code></h3><h4 id="基类-1"><a href="#基类-1" class="headerlink" title="基类"></a>基类</h4><p><code>saved_tensors_hooks</code> 是一个上下文管理器（<code>with</code> 语句），用于定义张量在反向传播中被保存和读取时的自定义操作。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">saved_tensors_hooks</span>:</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;上下文管理器，用于为保存的张量设置一对打包 / 解包钩子。</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    使用这个上下文管理器来定义操作的中间结果应该如何在保存前进行打包，并在检索时进行解包。</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    在这个上下文中，每次操作保存一个张量用于反向传播时（这包括使用</span></span><br><span class="line"><span class="string">    :func:`~torch.autograd.function._ContextMethodMixin.save_for_backward` 保存的中间结果，</span></span><br><span class="line"><span class="string">    也包括由 PyTorch 定义的操作记录的张量），都会调用 ``pack_hook`` 函数。``pack_hook`` 的输出将被存储在计算图中，而不是原始张量。</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    当需要访问保存的张量时（即在执行 :func:`torch.Tensor.backward()` 或</span></span><br><span class="line"><span class="string">    :func:`torch.autograd.grad()` 时），会调用 ``unpack_hook``。它接收 ``pack_hook`` 返回的*打包后的对象*作为参数，并应返回一个与原始张量内容相同的张量（即在对应 ``pack_hook`` 中传入的张量）。</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    钩子函数应具有如下签名：</span></span><br><span class="line"><span class="string">        pack_hook(tensor: Tensor) -&gt; Any</span></span><br><span class="line"><span class="string">        unpack_hook(Any) -&gt; Tensor</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    其中 ``pack_hook`` 的返回值应是 ``unpack_hook`` 的有效输入。</span></span><br><span class="line"><span class="string">    通常，你希望 ``unpack_hook(pack_hook(t))`` 在值、大小、数据类型和设备上与 ``t`` 相等。</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    示例::</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        &gt;&gt;&gt; # xdoctest: +REQUIRES(env:TORCH_DOCTEST_AUTOGRAD)</span></span><br><span class="line"><span class="string">        &gt;&gt;&gt; def pack_hook(x):</span></span><br><span class="line"><span class="string">        ...     print(&quot;Packing&quot;, x)</span></span><br><span class="line"><span class="string">        ...     return x</span></span><br><span class="line"><span class="string">        &gt;&gt;&gt;</span></span><br><span class="line"><span class="string">        &gt;&gt;&gt; def unpack_hook(x):</span></span><br><span class="line"><span class="string">        ...     print(&quot;Unpacking&quot;, x)</span></span><br><span class="line"><span class="string">        ...     return x</span></span><br><span class="line"><span class="string">        &gt;&gt;&gt;</span></span><br><span class="line"><span class="string">        &gt;&gt;&gt; a = torch.ones(5, requires_grad=True)</span></span><br><span class="line"><span class="string">        &gt;&gt;&gt; b = torch.ones(5, requires_grad=True) * 2</span></span><br><span class="line"><span class="string">        &gt;&gt;&gt; with torch.autograd.graph.saved_tensors_hooks(pack_hook, unpack_hook):</span></span><br><span class="line"><span class="string">        ...     y = a * b</span></span><br><span class="line"><span class="string">        Packing tensor([1., 1., 1., 1., 1.], requires_grad=True)</span></span><br><span class="line"><span class="string">        Packing tensor([2., 2., 2., 2., 2.], grad_fn=&lt;MulBackward0&gt;)</span></span><br><span class="line"><span class="string">        &gt;&gt;&gt; y.sum().backward()</span></span><br><span class="line"><span class="string">        Unpacking tensor([1., 1., 1., 1., 1.], requires_grad=True)</span></span><br><span class="line"><span class="string">        Unpacking tensor([2., 2., 2., 2., 2.], grad_fn=&lt;MulBackward0&gt;)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    .. warning ::</span></span><br><span class="line"><span class="string">        在钩子的输入上执行原地操作可能导致未定义行为。</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    .. warning ::    &lt;--- 会用到这个特性</span></span><br><span class="line"><span class="string">        同一时间只允许使用一对钩子。当递归嵌套使用此上下文管理器时，只有最内层的一对钩子会被应用。</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">        self,</span></span></span><br><span class="line"><span class="function"><span class="params">        pack_hook: <span class="type">Callable</span>[[torch.Tensor], <span class="type">Any</span>],</span></span></span><br><span class="line"><span class="function"><span class="params">        unpack_hook: <span class="type">Callable</span>[[<span class="type">Any</span>], torch.Tensor],</span></span></span><br><span class="line"><span class="function"><span class="params">    </span>) -&gt; <span class="literal">None</span>:</span></span><br></pre></td></tr></table></figure>
+
+<p>checkpoint 继承：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">_checkpoint_hook</span>(<span class="params">torch.autograd.graph.saved_tensors_hooks</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, frame: _CheckpointFrame</span>):</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">pack_hook</span>(<span class="params">x</span>):</span> ...</span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">unpack_hook</span>(<span class="params">holder</span>):</span> ...</span><br><span class="line">        <span class="built_in">super</span>().__init__(pack_hook, unpack_hook)</span><br></pre></td></tr></table></figure>
+
+<h4 id="前向实现-pack-hook"><a href="#前向实现-pack-hook" class="headerlink" title="前向实现 pack_hook"></a>前向实现 <code>pack_hook</code></h4><p>在前向传播时，当 Autograd 引擎想要保存一个大的中间激活张量时，<code>_checkpoint_hook</code> 会介入，阻止保存这个大张量，而是保存一个极小的“凭证”（placeholder）。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> _checkpoint_hook(new_frame), forward_context:</span><br><span class="line">    <span class="keyword">yield</span></span><br><span class="line">    <span class="comment"># in checkpoint fnuc: ret = function(*args, **kwargs)</span></span><br></pre></td></tr></table></figure>
+
+<p><code>_checkpoint_hook</code> 依赖于 <code>_CheckpointFrame</code> 来存储状态<br>依赖于 <code>_Holder</code> 作为返回给 Autograd 的占位符</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">_CheckpointFrame.weak_holders: <span class="type">List</span>[ReferenceType] = [] <span class="comment"># 占位符的弱引用列表</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">_checkpoint_hook</span>(<span class="params">torch.autograd.graph.saved_tensors_hooks</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, frame: _CheckpointFrame</span>):</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">pack_hook</span>(<span class="params">x</span>):</span> <span class="comment"># 参数 x: 需要丢弃的原始激活张量。</span></span><br><span class="line">            <span class="comment"># 原始的张量 x 的引用计数会减少。如果没有其他地方引用它，就会把它从内存中释放掉</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># _Holder 是一个空对象，它的实例在内存中的地址是唯一的。</span></span><br><span class="line">            holder = _Holder()</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 将占位符的弱引用存入 frame</span></span><br><span class="line">            frame.weak_holders.append(weakref.ref(holder))</span><br><span class="line"></span><br><span class="line">            <span class="comment"># ... (可选) 保存元数据用于确定性检查</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># Autograd 把这个轻量级的 holder 保存在计算图中。</span></span><br><span class="line">            <span class="keyword">return</span> holder</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">unpack_hook</span>(<span class="params">holder</span>):</span>...  <span class="comment"># 后文</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="重算-Hook-recomputation-hook-实现"><a href="#重算-Hook-recomputation-hook-实现" class="headerlink" title="重算 Hook _recomputation_hook 实现"></a>重算 Hook <code>_recomputation_hook</code> 实现</h4><p>在反向传播时，当 Autograd 引擎需要这个张量来计算梯度时，<code>_checkpoint_hook</code> 再次介入。它接收到之前保存的“凭证”，意识到张量并不存在，于是立即触发一段“重计算”流程来重新生成这个张量，然后将新鲜出炉的张量交给 Autograd 引擎。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">_CheckpointFrame</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, recompute_fn, early_stop, unpack_error_cb, metadata_fn</span>):</span></span><br><span class="line">        self.recompute_fn = recompute_fn  <span class="comment"># 知道如何重计算的函数</span></span><br><span class="line">        self.input_saver = <span class="literal">None</span>          <span class="comment"># 保存了原始输入的哑函数</span></span><br><span class="line">        self.weak_holders: <span class="type">List</span>[ReferenceType] = [] <span class="comment"># 占位符的弱引用列表</span></span><br><span class="line">        <span class="comment"># ...</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">_checkpoint_hook</span>(<span class="params">torch.autograd.graph.saved_tensors_hooks</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, frame: _CheckpointFrame</span>):</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">pack_hook</span>(<span class="params">x</span>):</span>...    <span class="comment"># 前文</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 负责触发重计算。</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">unpack_hook</span>(<span class="params">holder</span>):</span></span><br><span class="line">            <span class="comment"># 参数 holder: 正是 pack_hook 中返回的那个占位符对象。</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># 1. 获取当前反向传播任务的唯一 ID (Graph Task ID)。</span></span><br><span class="line">            <span class="comment"># 为什么需要这个？因为可能存在多次独立的 backward() 调用（例如，当</span></span><br><span class="line">            <span class="comment"># retain_graph=True 时）。gid 确保了每一次 backward() 都有自己</span></span><br><span class="line">            <span class="comment"># 独立的重计算上下文，避免互相干扰。</span></span><br><span class="line">            gid = torch._C._current_graph_task_id()</span><br><span class="line">            <span class="keyword">if</span> gid == -<span class="number">1</span>:</span><br><span class="line">                <span class="comment"># 如果不在一个标准的 backward 任务中（例如，直接调用 .grad()），</span></span><br><span class="line">                <span class="comment"># gid 可能为 -1。此时我们生成一个临时的 UUID 作为唯一标识。</span></span><br><span class="line">                gid = <span class="built_in">int</span>(uuid.uuid4())</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 2. 检查当前 backward 任务是否已经执行过重计算。</span></span><br><span class="line">            <span class="comment"># frame.is_recomputed 是一个以 gid 为键的字典。</span></span><br><span class="line">            <span class="comment"># 这是一个重要的优化：对于同一次 backward()，整个 checkpointed 区域</span></span><br><span class="line">            <span class="comment"># 只需要重计算一次。当需要第一个被 checkpoint 的张量时，我们重计算</span></span><br><span class="line">            <span class="comment"># 整个区域，并把所有需要的张量都缓存起来。后续再需要这个区域的其他</span></span><br><span class="line">            <span class="comment"># 张量时，直接从缓存中取即可。</span></span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> frame.is_recomputed[gid]:</span><br><span class="line">                <span class="comment"># ---- 如果还没有重计算，那就现在----</span></span><br><span class="line"></span><br><span class="line">                <span class="comment"># a. 获取原始输入。</span></span><br><span class="line">                <span class="comment"># frame.input_saver 是前向传播时创建的 _NoopSaveInputs 的实例。</span></span><br><span class="line">                <span class="comment"># 它的 grad_fn 保存了 checkpointed 函数的所有原始输入。</span></span><br><span class="line">                ctx = frame.input_saver.grad_fn</span><br><span class="line">                args = ctx.get_args(ctx.saved_tensors)</span><br><span class="line"></span><br><span class="line">                <span class="keyword">try</span>:</span><br><span class="line">                    <span class="comment"># b. 激活“重计算钩子”并执行重计算。</span></span><br><span class="line">                    <span class="keyword">with</span> _recomputation_hook(weakref.ref(frame), gid), torch.autograd.enable_grad():</span><br><span class="line">                        <span class="comment"># c. 调用重计算函数。</span></span><br><span class="line">                        frame.recompute_fn(*args)</span><br><span class="line">                <span class="keyword">except</span> _StopRecomputationError: <span class="comment"># d. (优化) 捕获提前终止信号。</span></span><br><span class="line">                    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">                <span class="comment"># e. 标记本次 backward 的重计算已完成。</span></span><br><span class="line">                frame.is_recomputed[gid] = <span class="literal">True</span></span><br><span class="line">                <span class="comment"># ... 检查与断言</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># ... 检查与断言</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># 3. 从缓存中获取重计算出的张量。</span></span><br><span class="line">            ret = frame.recomputed[gid][holder.handles[gid]]</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 4. 清理</span></span><br><span class="line">            <span class="comment"># 将句柄设为 None，防止重复解包。</span></span><br><span class="line">            <span class="comment"># 更重要的是，这也有助于及时释放内存。一旦张量被 Autograd 使用完毕，</span></span><br><span class="line">            <span class="comment"># 如果没有其他引用，这个清理操作有助于垃圾回收。</span></span><br><span class="line">            holder.handles[gid] = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># 5. 返回真实的（重计算出的）张量</span></span><br><span class="line">            <span class="keyword">return</span> ret</span><br></pre></td></tr></table></figure>
+
+<p>_为什么 _recomputation_hook 要单独设计？_：如果用同一个 hook，就必须在 pack_hook 内加多层 if 来区分“我是 forward 还是 recompute”，还要避免 forward 阶段误存真实张量&#x2F;重算阶段误产 Holder，逻辑会极度耦合与脆弱。而拆分成两个 hook，可以利用“上下文覆盖”这一特性，天然保证不会交叉污染。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">_recomputation_hook</span>(<span class="params">torch.autograd.graph.saved_tensors_hooks</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, target_frame_ref: ReferenceType, gid: <span class="built_in">int</span></span>):</span></span><br><span class="line">        <span class="comment"># 构造函数接收两个关键参数：</span></span><br><span class="line">        <span class="comment"># 1. target_frame_ref: 一个对 _CheckpointFrame 实例的弱引用。</span></span><br><span class="line">        <span class="comment">#    这是它与 _checkpoint_hook 共享状态的唯一途径。</span></span><br><span class="line">        <span class="comment">#    使用弱引用是为了防止引用循环，确保资源可以被正常回收。</span></span><br><span class="line">        <span class="comment"># 2. gid: 当前反向传播任务的全局唯一 ID。</span></span><br><span class="line">        <span class="comment">#    这保证了它捕获的张量会被存放在专属于本次 backward() 的 key 里，</span></span><br><span class="line">        <span class="comment">#    不会与其它并发或后续的 backward() 调用混淆。</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 在重计算过程中，当 Autograd 尝试保存张量时，此函数被调用</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">pack_hook</span>(<span class="params">x</span>):</span></span><br><span class="line">            <span class="comment"># 参数 x: 在重计算过程中，由某个操作（如 matmul）产生，</span></span><br><span class="line">            <span class="comment">#          并且需要为后续操作（如 add）的反向传播而保存的真实张量。</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># 1. 分离张量的计算历史。</span></span><br><span class="line">            <span class="comment"># 我们只关心这个张量的“值”，不关心它在“重计算图”中的梯度历史。</span></span><br><span class="line">            <span class="comment"># 因为我们的目标是把这个值送回“原始计算图”去计算梯度。</span></span><br><span class="line">            <span class="comment"># .detach() 操作创建了一个共享底层数据但没有 autograd 历史的新张量。</span></span><br><span class="line">            x = x.detach() <span class="keyword">if</span> x.requires_grad <span class="keyword">else</span> x</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 2. 获取共享的状态机 frame。</span></span><br><span class="line">            target_frame = target_frame_ref()</span><br><span class="line">            <span class="keyword">assert</span> target_frame <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>  <span class="comment"># appease mypy</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># 3. 获取并递增“重计算计数器”。</span></span><br><span class="line">            <span class="comment"># 这个计数器 (recomp_counter) 追踪在本次重计算中，这是第几个被保存的张量。</span></span><br><span class="line">            <span class="comment"># 它的顺序必须与原始前向传播中创建 _Holder 的顺序严格一致。</span></span><br><span class="line">            recomp_idx = target_frame.recomp_counter[gid]</span><br><span class="line">            target_frame.recomp_counter[gid] += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># 4. 健壮性与确定性检查。</span></span><br><span class="line">            <span class="comment"># 如果重计算想要保存的张量数量超过了原始前向传播记录的数量</span></span><br><span class="line">            <span class="keyword">if</span> recomp_idx &gt;= <span class="built_in">len</span>(target_frame.weak_holders):</span><br><span class="line">                <span class="keyword">assert</span> <span class="keyword">not</span> target_frame.early_stop</span><br><span class="line">                <span class="keyword">if</span> <span class="keyword">not</span> target_frame.forward_completed:</span><br><span class="line">                    <span class="comment"># We run into this case when early stop is not enabled and do</span></span><br><span class="line">                    <span class="comment"># grad within checkpoint.</span></span><br><span class="line">                    <span class="comment"># We need to set this flag, so we don&#x27;t error out later when</span></span><br><span class="line">                    <span class="comment"># we check if the number of tensors saved during forward and</span></span><br><span class="line">                    <span class="comment"># recomputation match.</span></span><br><span class="line">                    target_frame.ignore_saved_mismatch = <span class="literal">True</span></span><br><span class="line">                    <span class="keyword">return</span> x</span><br><span class="line">                <span class="keyword">raise</span> CheckpointError()</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 5. 获取原始的占位符 _Holder。</span></span><br><span class="line">            <span class="comment"># 通过与计数器同步的索引，我们从 frame 中取出原始前向传播时</span></span><br><span class="line">            <span class="comment"># 创建的那个 _Holder 的弱引用。</span></span><br><span class="line">            holder = target_frame.weak_holders[recomp_idx]()</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 6. 建立“凭证 -&gt; 真实张量”的映射关系。</span></span><br><span class="line">            <span class="keyword">if</span> holder <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:  <span class="comment"># 检查 holder 是否已被垃圾回收</span></span><br><span class="line">                <span class="comment"># a. 在 holder 上为本次 backward(gid) 创建一个唯一的句柄 (_Handle)。</span></span><br><span class="line">                _internal_assert(holder.handles.get(gid, <span class="literal">None</span>) <span class="keyword">is</span> <span class="literal">None</span>)</span><br><span class="line">                holder.handles[gid] = _Handle()</span><br><span class="line"></span><br><span class="line">                <span class="comment"># b. **核心操作**：将重计算出的张量 x 存入 frame 的缓存中。</span></span><br><span class="line">                <span class="comment">#    这个缓存是一个字典，键是刚刚创建的唯一句柄，值是张量 x。</span></span><br><span class="line">                target_frame.recomputed[gid][holder.handles[gid]] = x</span><br><span class="line">                <span class="comment">#    _checkpoint_hook.unpack_hook 通过 holder -&gt; gid -&gt; handle</span></span><br><span class="line">                <span class="comment">#    精确地找到这个刚刚被我们存进去的张量</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># 7. (优化) 检查是否可以提前终止重计算。</span></span><br><span class="line">            <span class="comment"># 如果已捕获的张量数量等于原始记录的数量，说明所有“债”都还清了。</span></span><br><span class="line">            <span class="keyword">if</span> target_frame.early_stop <span class="keyword">and</span> target_frame.recomp_counter[gid] == <span class="built_in">len</span>(</span><br><span class="line">                target_frame.weak_holders</span><br><span class="line">            ):</span><br><span class="line">                <span class="comment"># 抛出特殊异常，这个异常会被 unpack_hook 的 try...except 块捕获，</span></span><br><span class="line">                <span class="comment"># 从而安全地跳出重计算函数，节省计算资源。</span></span><br><span class="line">                <span class="keyword">raise</span> _StopRecomputationError</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 8. 返回张量 x，使得重计算过程中的后续操作可以正确执行。</span></span><br><span class="line">            <span class="keyword">return</span> x</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 在重计算过程中，我们不希望再触发另一层嵌套的重计算</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">unpack_hook</span>(<span class="params">x</span>):</span></span><br><span class="line">            <span class="keyword">return</span> x</span><br><span class="line"></span><br><span class="line">        <span class="built_in">super</span>().__init__(pack_hook, unpack_hook)</span><br></pre></td></tr></table></figure>
+
+<h3 id="时序图：前向-Forward-Pass"><a href="#时序图：前向-Forward-Pass" class="headerlink" title="时序图：前向 (Forward Pass)"></a>时序图：前向 (Forward Pass)</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line">    participant C as checkpoint()</span><br><span class="line">    participant G as _checkpoint_..._generator</span><br><span class="line">    participant Autograd as Autograd 引擎</span><br><span class="line">    participant UserFunc as 用户 function()</span><br><span class="line">    participant Hook as _checkpoint_hook</span><br><span class="line"></span><br><span class="line">    %% &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; 1. 准备阶段 &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</span><br><span class="line">    rect rgb(230, 247, 255)</span><br><span class="line">        note over C: 开始执行 checkpoint() 函数</span><br><span class="line">        C-&gt;&gt;+G: gen &#x3D; _checkpoint_..._generator(...)</span><br><span class="line">        note right of G: 生成器对象被创建，代码&lt;br&#x2F;&gt;此时一行都未执行。</span><br><span class="line">        G--&gt;&gt;-C: 返回 gen 对象</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    %% &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; 2. 前置设置与暂停 (关键阶段) &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</span><br><span class="line">    rect rgb(255, 243, 230)</span><br><span class="line">        C-&gt;&gt;G: next(gen)</span><br><span class="line">        note right of G: 第一次唤醒：执行生成器的“前置”逻辑</span><br><span class="line"></span><br><span class="line">        G-&gt;&gt;G: 1. 保存RNG状态、创建 _CheckpointFrame (frame)</span><br><span class="line"></span><br><span class="line">        note over G, Autograd: 2. 应用 _NoopSaveInputs 保存输入</span><br><span class="line">        G-&gt;&gt;Autograd: _NoopSaveInputs.apply(dummy, *args, **kwargs)</span><br><span class="line">        note left of Autograd: Autograd 执行 _NoopSaveInputs 的&lt;br&#x2F;&gt; &#96;forward&#96; 和 &#96;setup_context&#96;</span><br><span class="line">        Autograd-&gt;&gt;Autograd: a. 在计算图中创建 _NoopSaveInputsBackward (grad_fn) 节点</span><br><span class="line">        Autograd-&gt;&gt;Autograd: b. 将 *args, **kwargs 保存到该 grad_fn 节点中</span><br><span class="line">        Autograd--&gt;&gt;G: 返回一个哑输出</span><br><span class="line">        note right of G: 将这个 grad_fn 节点的引用&lt;br&#x2F;&gt;保存在 frame.input_saver 中</span><br><span class="line"></span><br><span class="line">        note over G, Hook: 3. 进入 &#96;with _checkpoint_hook(frame)&#96; 上下文</span><br><span class="line">        G-&gt;&gt;Hook: 激活 _checkpoint_hook</span><br><span class="line">        note right of Hook: 状态: **激活** &lt;br&#x2F;&gt; (pack_hook 已准备就绪)</span><br><span class="line"></span><br><span class="line">        note over G: 4. 到达 &#96;yield&#96;，暂停执行！</span><br><span class="line">        G--&gt;&gt;C: 控制权返回给 checkpoint()</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    %% &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; 3. 核心执行与钩子拦截&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</span><br><span class="line">    rect rgb(232, 255, 232)</span><br><span class="line">        note over C: 生成器已暂停，但其内部的&lt;br&#x2F;&gt;&#96;_checkpoint_hook&#96; 仍然激活！</span><br><span class="line">        C-&gt;&gt;+UserFunc: ret &#x3D; function(*args, **kwargs)</span><br><span class="line">        note right of UserFunc: 开始执行用户代码...</span><br><span class="line">        UserFunc-&gt;&gt;UserFunc: e.g., y &#x3D; op1(x)</span><br><span class="line"></span><br><span class="line">        note over UserFunc, Autograd: Autograd 尝试为 op1 保存其输入 x</span><br><span class="line">        UserFunc-&gt;&gt;Autograd: (内部调用)</span><br><span class="line">        note left of Autograd: 发现有激活的 saved_tensors_hooks</span><br><span class="line">        Autograd-&gt;&gt;Hook: 调用 pack_hook(x)</span><br><span class="line"></span><br><span class="line">        note right of Hook: 丢弃张量，返回占位符</span><br><span class="line">        Hook-&gt;&gt;Hook: a. 创建 _Holder 占位符</span><br><span class="line">        Hook-&gt;&gt;Hook: b. 在 frame 中存入 holder 的弱引用</span><br><span class="line">        Hook-&gt;&gt;Hook: c. 丢弃对真实张量 x 的引用</span><br><span class="line">        Hook--&gt;&gt;Autograd: d. 返回 _Holder 对象</span><br><span class="line"></span><br><span class="line">        note left of Autograd: 收到并保存了轻量级的 _Holder，&lt;br&#x2F;&gt;而非沉重的张量 x。内存节省达成！</span><br><span class="line">        Autograd--&gt;&gt;UserFunc:</span><br><span class="line"></span><br><span class="line">        UserFunc-&gt;&gt;UserFunc: ...更多操作...</span><br><span class="line">        UserFunc--&gt;&gt;-C: function 执行完毕，返回 ret</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    %% &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; 4. 恢复与清理 &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</span><br><span class="line">    rect rgb(255, 243, 230)</span><br><span class="line">        note over C: 准备执行“后置”逻辑</span><br><span class="line">        C-&gt;&gt;G: next(gen)</span><br><span class="line">        note right of G: 第二次唤醒：从 &#96;yield&#96; 之后恢复执行</span><br><span class="line"></span><br><span class="line">        note over G, Hook: 5. 离开 &#96;with _checkpoint_hook(...)&#96; 上下文</span><br><span class="line">        G-&gt;&gt;Hook: 停用 _checkpoint_hook</span><br><span class="line">        note right of Hook: 状态: **非激活**</span><br><span class="line"></span><br><span class="line">        G-&gt;&gt;G: 6. 执行清理工作 (e.g., frame.forward_completed &#x3D; True)</span><br><span class="line">        note right of G: 7. 生成器函数执行完毕</span><br><span class="line">        G--&gt;&gt;C: 抛出 StopIteration 异常</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    %% &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; 5. 结束 &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</span><br><span class="line">    rect rgb(230, 247, 255)</span><br><span class="line">        note over C: 捕获 StopIteration，表示流程正常结束</span><br><span class="line">        C-&gt;&gt;C: return ret</span><br><span class="line">        note over C: checkpoint() 执行结束</span><br><span class="line">    end</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="时序图：反向-amp-重计算-Backward-Pass"><a href="#时序图：反向-amp-重计算-Backward-Pass" class="headerlink" title="时序图：反向 &amp; 重计算 (Backward Pass)"></a>时序图：反向 &amp; 重计算 (Backward Pass)</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line">    participant User as 用户代码</span><br><span class="line">    participant Autograd as Autograd 引擎</span><br><span class="line">    participant UnpackHook as _checkpoint_hook.unpack_hook</span><br><span class="line">    participant Frame as _CheckpointFrame (状态中心)</span><br><span class="line">    participant Inputs as _NoopSaveInputs Backward (输入源)</span><br><span class="line">    participant RecompHook as _recomputation_hook</span><br><span class="line">    participant RecompFn as recompute_fn</span><br><span class="line"></span><br><span class="line">    %% &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; 1. 反向传播启动，遇到“凭证” &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</span><br><span class="line">    rect rgb(255, 235, 238)</span><br><span class="line">        User-&gt;&gt;Autograd: loss.backward()</span><br><span class="line">        note over Autograd: 开始反向传播...</span><br><span class="line">        Autograd-&gt;&gt;Autograd: 遇到一个需要已保存张量 &#96;x&#96; 的节点</span><br><span class="line">        note over Autograd: 从计算图中取出保存物，&lt;br&#x2F;&gt;发现它是一个 &#96;_Holder&#96; 对象，而非 Tensor！</span><br><span class="line">        note over Autograd: 检测到有 saved_tensors_hooks (unpack_hook)</span><br><span class="line">        Autograd-&gt;&gt;+UnpackHook: 调用 unpack_hook(holder)</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    %% &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; 2. UnpackHook 协调重计算 (核心逻辑) &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</span><br><span class="line">    rect rgb(255, 248, 225)</span><br><span class="line">        note over UnpackHook: 接收到 holder 凭证</span><br><span class="line">        UnpackHook-&gt;&gt;Frame: 检查 is_recomputed[gid] 是否为 False</span><br><span class="line">        note right of Frame: 状态: 首次请求，返回 False</span><br><span class="line"></span><br><span class="line">        note over UnpackHook, Inputs: **需要启动重计算！**&lt;br&#x2F;&gt;第一步：获取原始输入。</span><br><span class="line">        UnpackHook-&gt;&gt;Frame: 获取 frame.input_saver</span><br><span class="line">        UnpackHook-&gt;&gt;Inputs: 从 grad_fn 节点中&lt;br&#x2F;&gt;提取保存的 *args, **kwargs</span><br><span class="line">        Inputs--&gt;&gt;UnpackHook: 返回原始输入</span><br><span class="line"></span><br><span class="line">        note over UnpackHook, RecompFn: 第二步：启动生产线 (recompute_fn)</span><br><span class="line">        UnpackHook-&gt;&gt;RecompHook: 激活 &#96;with _recomputation_hook(...)&#96;</span><br><span class="line">        note right of RecompHook: 状态: **激活**&lt;br&#x2F;&gt;(pack_hook 已准备就绪，开始“监工”)</span><br><span class="line">        UnpackHook-&gt;&gt;+RecompFn: 调用 recompute_fn(原始输入)</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    %% &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; 3. 重计算执行，RecompHook 捕获张量 &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</span><br><span class="line">    rect rgb(232, 242, 255)</span><br><span class="line">        note over RecompFn: 开始执行重计算...&lt;br&#x2F;&gt;(内部逻辑与用户原始 function 一致)</span><br><span class="line">        RecompFn-&gt;&gt;RecompFn: e.g., y &#x3D; op1(x)</span><br><span class="line"></span><br><span class="line">        note over RecompFn, Autograd: 重计算图中的 Autograd 尝试保存 &#96;x&#96;</span><br><span class="line">        RecompFn-&gt;&gt;Autograd: (内部调用)</span><br><span class="line">        note left of Autograd: 发现有激活的 hooks (RecompHook)</span><br><span class="line">        Autograd-&gt;&gt;RecompHook: 调用 pack_hook(x)</span><br><span class="line"></span><br><span class="line">        note right of RecompHook: **执行“捕获与缓存”操作**</span><br><span class="line">        RecompHook-&gt;&gt;RecompHook: a. detach 张量 x</span><br><span class="line">        RecompHook-&gt;&gt;RecompHook: b. 创建唯一句柄 _Handle</span><br><span class="line">        RecompHook-&gt;&gt;Frame: c. 将 (handle -&gt; x) 存入&lt;br&#x2F;&gt; frame.recomputed[gid] 缓存</span><br><span class="line">        RecompHook--&gt;&gt;Autograd: d. 返回原始张量 x</span><br><span class="line">        note left of Autograd: 收到 x，重计算图&lt;br&#x2F;&gt;内部的反向传播得以正常进行</span><br><span class="line">        Autograd--&gt;&gt;RecompFn:</span><br><span class="line"></span><br><span class="line">        note over RecompFn: ...更多重计算操作...</span><br><span class="line">        RecompFn--&gt;&gt;-UnpackHook: recompute_fn 执行完毕</span><br><span class="line">        UnpackHook-&gt;&gt;RecompHook: &#96;with&#96; 语句结束，停用 RecompHook</span><br><span class="line">        note right of RecompHook: 状态: **非激活**</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    %% &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; 4. UnpackHook 返回结果，Autograd 继续 &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</span><br><span class="line">    rect rgb(224, 247, 224)</span><br><span class="line">        note over UnpackHook, Frame: 第三步：完成收尾，提供“货物”</span><br><span class="line">        UnpackHook-&gt;&gt;Frame: 标记 is_recomputed[gid] &#x3D; True</span><br><span class="line">        UnpackHook-&gt;&gt;Frame: 从 frame.recomputed[gid] 缓存中&lt;br&#x2F;&gt;根据 holder 凭证找到张量 x</span><br><span class="line">        Frame--&gt;&gt;UnpackHook: 返回重计算出的张量 x</span><br><span class="line"></span><br><span class="line">        UnpackHook--&gt;&gt;-Autograd: 返回新鲜出炉的张量 x</span><br><span class="line">        note over Autograd: 成功拿到所需的张量！</span><br><span class="line">        Autograd-&gt;&gt;Autograd: 使用 x 计算梯度...</span><br><span class="line">        Autograd-&gt;&gt;Autograd: ...继续反向传播...</span><br><span class="line">    end</span><br></pre></td></tr></table></figure>
+
+<h3 id="时序图：-Holder"><a href="#时序图：-Holder" class="headerlink" title="时序图：_Holder"></a>时序图：<code>_Holder</code></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line">    participant User as User code</span><br><span class="line">    participant CP as checkpoint</span><br><span class="line">    participant Frame as _CheckpointFrame</span><br><span class="line">    participant Hooks as saved_tensors_hooks(pack,unpack)</span><br><span class="line">    participant SV as SavedVariable(持有“保存物”)</span><br><span class="line">    participant Bwd as backward()</span><br><span class="line"></span><br><span class="line">    User-&gt;&gt;CP: 调用 checkpoint(fn, *args)</span><br><span class="line">    CP-&gt;&gt;Frame: 构造 Frame（recompute_fn &#x2F; weak_holders &#x2F; cache）</span><br><span class="line">    CP-&gt;&gt;Hooks: 进入 hooks 上下文（pack, unpack）</span><br><span class="line">    note over Hooks: 正向阶段</span><br><span class="line">    Hooks-&gt;&gt;Hooks: pack(x) 创建 holder&#x3D;_Holder()</span><br><span class="line">    Hooks-&gt;&gt;Frame: weak_holders.append(weakref(holder))</span><br><span class="line">    Hooks--&gt;&gt;SV: 返回 holder 作为“保存物”（不是 x）</span><br><span class="line">    User--&gt;&gt;CP: 正向结束（未保存 x）</span><br><span class="line"></span><br><span class="line">    note over Bwd,Hooks: 反向阶段第一次需要该保存位</span><br><span class="line">    Bwd-&gt;&gt;Hooks: 触发 unpack(holder)</span><br><span class="line">    alt 缓存已有</span><br><span class="line">        Hooks--&gt;&gt;Bwd: 直接返回缓存 Tensor</span><br><span class="line">    else 首次解包</span><br><span class="line">        Hooks-&gt;&gt;Frame: 触发 recompute_fn() 做一次重算</span><br><span class="line">        Hooks-&gt;&gt;Hooks: 内层 hooks(inner_pack)</span><br><span class="line">        Hooks-&gt;&gt;Frame: inner_pack 顺序遇到保存位</span><br><span class="line">        alt 对应 weak_holder 仍存活</span><br><span class="line">            Hooks-&gt;&gt;Frame: 把真实 Tensor 写入 WeakKeyDictionary[handle]（或旧版以 holder 为键）</span><br><span class="line">        else 已死亡</span><br><span class="line">            Hooks--&gt;&gt;Frame: 跳过（不填充，省内存&#x2F;算力）</span><br><span class="line">        end</span><br><span class="line">        Hooks--&gt;&gt;Bwd: 从缓存取出 Tensor 返回</span><br><span class="line">    end</span><br><span class="line">    note over SV,Frame: 随反向推进 SavedVariable reset_data()\</span><br><span class="line">    note over SV,Frame: holder 失去强引用，弱键缓存项自动被清理</span><br></pre></td></tr></table></figure>
+
+<h2 id="其他的细节"><a href="#其他的细节" class="headerlink" title="其他的细节"></a>其他的细节</h2><h3 id="简单使用示例"><a href="#简单使用示例" class="headerlink" title="简单使用示例"></a>简单使用示例</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">from</span> torch <span class="keyword">import</span> nn</span><br><span class="line"><span class="keyword">from</span> torch.utils.checkpoint <span class="keyword">import</span> checkpoint</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Block</span>(<span class="params">nn.Module</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, dim</span>):</span></span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        self.net = nn.Sequential(</span><br><span class="line">            nn.Linear(dim, dim*<span class="number">4</span>),</span><br><span class="line">            nn.GELU(),</span><br><span class="line">            nn.Linear(dim*<span class="number">4</span>, dim)</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, x</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.net(x)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Model</span>(<span class="params">nn.Module</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, depth=<span class="number">12</span>, dim=<span class="number">768</span></span>):</span></span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        self.blocks = nn.ModuleList([Block(dim) <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(depth)])</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, x</span>):</span></span><br><span class="line">        <span class="keyword">for</span> i, blk <span class="keyword">in</span> <span class="built_in">enumerate</span>(self.blocks):</span><br><span class="line">            <span class="comment"># 对每个 Block 开启激活检查点</span></span><br><span class="line">            x = checkpoint(blk, x, use_reentrant=<span class="literal">False</span>)</span><br><span class="line">        <span class="keyword">return</span> x</span><br><span class="line"></span><br><span class="line">x = torch.randn(<span class="number">8</span>, <span class="number">768</span>, requires_grad=<span class="literal">True</span>)</span><br><span class="line">m = Model()</span><br><span class="line">out = m(x)</span><br><span class="line">loss = out.<span class="built_in">pow</span>(<span class="number">2</span>).mean()</span><br><span class="line">loss.backward()</span><br></pre></td></tr></table></figure>
+
+<h3 id="嵌套-checkpoint"><a href="#嵌套-checkpoint" class="headerlink" title="嵌套 checkpoint"></a>嵌套 checkpoint</h3><p>源码中的解释：</p>
+<blockquote>
+<p>注意 [ 可嵌套的检查点（Nestable Checkpoint）]</p>
+<p>嵌套检查点的语义可以通过两个基本规则来定义。遵循这两个规则会引出一个重要的推论，该推论是设计动机的核心。</p>
+<h2 id="规则-1：保存的张量仅由最内层的检查点管理，并对所有外层检查点隐藏。"><a href="#规则-1：保存的张量仅由最内层的检查点管理，并对所有外层检查点隐藏。" class="headerlink" title="规则 1：保存的张量仅由最内层的检查点管理，并对所有外层检查点隐藏。"></a>规则 1：保存的张量仅由最内层的检查点管理，并对所有外层检查点隐藏。</h2><h2 id="规则-2：内层检查点的输入被视为被保存到其父级检查点中的张量。"><a href="#规则-2：内层检查点的输入被视为被保存到其父级检查点中的张量。" class="headerlink" title="规则 2：内层检查点的输入被视为被保存到其父级检查点中的张量。"></a>规则 2：内层检查点的输入被视为被保存到其父级检查点中的张量。</h2><h3 id="推论："><a href="#推论：" class="headerlink" title="推论："></a>推论：</h3><p>要重新计算任何一个给定的已保存张量，我们必须重新计算所有包裹它的检查点。</p>
+<p><strong>为什么这是必然的？</strong><br>在反向传播中解包某个已保存张量 <code>X</code> 时，我们需要重新计算包含 <code>X</code> 的最内层检查点（根据规则 1）。而为了重新计算这个检查点，我们又需要它的输入，这些输入是由该检查点的父级检查点所管理的（根据规则 2），因此父级也必须先被重新计算。以此类推可以发现：为了成功解包 <code>X</code>，所有在 <code>X</code> 被保存时处于激活状态的检查点都必须被重新计算（除非在当前反向传播过程中，由于其他张量的需求已经完成过这些重计算）。</p>
+<p>在实践中，我们使用一个无操作的自动微分函数（noop autograd Function）将输入作为“已保存张量”进行存储。在解包时调用 <code>ctx.saved_tensor</code> 会触发父级检查点的重新计算。</p>
+<h2 id="规则-3：开始重新计算时应假设当前没有任何检查点处于激活状态。但在重新计算过程中遇到的新检查点仍需被尊重。"><a href="#规则-3：开始重新计算时应假设当前没有任何检查点处于激活状态。但在重新计算过程中遇到的新检查点仍需被尊重。" class="headerlink" title="规则 3：开始重新计算时应假设当前没有任何检查点处于激活状态。但在重新计算过程中遇到的新检查点仍需被尊重。"></a>规则 3：开始重新计算时应假设当前没有任何检查点处于激活状态。但在重新计算过程中遇到的新检查点仍需被尊重。</h2><p>当我们启动重新计算时，会在栈上压入一个专用于重新计算的“已保存变量钩子”（saved variable hook）。更多上下文请参见规则 6 中的示例。</p>
+<hr>
+<p>除了上述针对嵌套检查点的基本语义之外，我们还施加了若干额外约束，这些约束可能普遍适用于检查点机制本身。</p>
+<h2 id="规则-4：重新计算出的张量的生命周期"><a href="#规则-4：重新计算出的张量的生命周期" class="headerlink" title="规则 4：重新计算出的张量的生命周期"></a>规则 4：重新计算出的张量的生命周期</h2><blockquote>
+<p><strong>重新计算出的张量只属于特定一次反向传播调用，在它们被解包后立即清除。</strong><br>特别地，即使设置了 <code>retain_graph=True</code>，我们也要求这样做。</p>
+</blockquote>
+<h3 id="规则-4-的实现细节"><a href="#规则-4-的实现细节" class="headerlink" title="[规则 4 的实现细节]"></a>[规则 4 的实现细节]</h3><p>如果我们允许在设置 <code>retain_graph=True</code> 时让重新计算出的张量继续存活，那么我们可以将这些张量作为值存入一个 <code>WeakKeyDictionary</code>（弱键字典），并将强引用打包为键。这样，在反向传播结束时，只要 <code>retain_graph=False</code>，打包的键就会被清除，从而自动删除字典中的对应项。</p>
+<p>但如果我们希望在 <code>retain_graph=True</code> 的情况下也能在解包时<strong>立刻清除</strong>重新计算出的张量，则不能依赖反向传播自动清除打包的键。取而代之的是：我们将强引用包装在一个容器对象中，并在解包时手动清空该容器。</p>
+<p>一个重要细节是：如果发生了第二次反向传播，第二次的重新计算需要重置该容器并创建一个新的键。</p>
+<h2 id="规则-5：一旦完成了所需张量的重新计算，就应立即停止重新计算过程。"><a href="#规则-5：一旦完成了所需张量的重新计算，就应立即停止重新计算过程。" class="headerlink" title="规则 5：一旦完成了所需张量的重新计算，就应立即停止重新计算过程。"></a>规则 5：一旦完成了所需张量的重新计算，就应立即停止重新计算过程。</h2><h3 id="规则-5-的实现细节"><a href="#规则-5-的实现细节" class="headerlink" title="[规则 5 的实现细节]"></a>[规则 5 的实现细节]</h3><p>在重新计算期间，当已重新计算的张量数量达到预期目标数量时，抛出一个异常。我们在外部通过 <code>try-catch</code> 捕获这一特定异常以提前终止执行。具体示例见下方规则 6。</p>
+<h2 id="规则-6：支持在检查点上下文中执行反向传播"><a href="#规则-6：支持在检查点上下文中执行反向传播" class="headerlink" title="规则 6：支持在检查点上下文中执行反向传播"></a>规则 6：支持在检查点上下文中执行反向传播</h2><h3 id="保留图结构的情况：retain-graph-True"><a href="#保留图结构的情况：retain-graph-True" class="headerlink" title="[保留图结构的情况：retain_graph=True]"></a>[保留图结构的情况：<code>retain_graph=True</code>]</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fn</span>(<span class="params">x</span>):</span></span><br><span class="line">  y = x.sin()</span><br><span class="line">  z = y.cos()</span><br><span class="line">  gx, = torch.autograd.grad(z, x, retain_grad=<span class="literal">True</span>)</span><br><span class="line">  <span class="keyword">return</span> gx, z</span><br><span class="line"></span><br><span class="line">out = checkpoint(fn)(inp)</span><br><span class="line">out.backward()</span><br></pre></td></tr></table></figure>
+
+<p>由于 <code>z</code> 是在启用检查点的情况下由 <code>cos()</code> 保存的，它实际上不会被真正保存。因此内部的 <code>.grad()</code> 调用必须触发一次重新计算。</p>
+<p>在重新计算过程中，“内部打包钩子”有两个职责：</p>
+<ol>
+<li>和通常一样，填充用于存储重新计算出张量的 <code>WeakKeyDictionary</code>；</li>
+<li>打包实际的张量（已分离），以便可以在重新构建的计算图上执行反向传播。这些被打包的张量将一直存在直到本次重新计算结束；或者更早地，如果有人以 <code>retain_graph=False</code> 执行反向传播，则会被提前释放。</li>
+</ol>
+<p>更一般地说，在以下情况中会对重新构建的图执行反向传播：</p>
+<ul>
+<li>如果在前向传播中执行了反向传播：<ul>
+<li>在原始前向传播期间（若未启用提前停止）</li>
+<li>在原始反向传播期间</li>
+</ul>
+</li>
+<li>如果存在多个 <code>.grad()</code> 或 <code>.backward()</code> 调用，即使启用了提前停止，我们也会对重新构建的图执行反向传播（见下例）</li>
+</ul>
+<h3 id="不保留图结构的情况：retain-graph-False"><a href="#不保留图结构的情况：retain-graph-False" class="headerlink" title="[不保留图结构的情况：retain_graph=False]"></a>[不保留图结构的情况：<code>retain_graph=False</code>]</h3><p>下面的例子展示了：在重新计算过程中，如果我们发现某些试图重新计算的张量已经被清除会发生什么。</p>
+<blockquote>
+<p><strong>剧透：我们不做特殊处理，直接跳过它们！</strong></p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fn</span>(<span class="params">x</span>):</span></span><br><span class="line">  y = x.sin()                           <span class="comment"># (1)</span></span><br><span class="line">  z = y.cos()                           <span class="comment"># (2)</span></span><br><span class="line">  gx, = torch.autograd.grad(z, x)       <span class="comment"># (3)</span></span><br><span class="line">  <span class="keyword">return</span> x.cos() * gx                   <span class="comment"># (4)</span></span><br><span class="line"></span><br><span class="line">out = checkpoint(fn)(inp)</span><br><span class="line">out.backward()                          <span class="comment"># (5)</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>**(1)(2)**：由于处于检查点内，不保存 <code>x</code> 和 <code>y</code>。</li>
+<li>**(3)**：触发 <code>fn</code> 的重新计算，因为 <code>x</code> 和 <code>y</code> 未被保存。<br>根据是否启用提前停止，可能运行到 (2) 就停止，或继续执行下去。<br>因为此次反向传播使用了 <code>retain_graph=False</code>，所以我们会清除 <code>x</code> 和 <code>y</code> 对应的持有者（holder）。</li>
+<li>**(4)**：仍在检查点内，不保存 <code>x</code>。</li>
+<li>**(5)**：调用 <code>.backward()</code> 再次触发 <code>fn</code> 的重新计算。<br>在这次重新计算中，我们发现 <code>x</code> 和 <code>y</code> 在原图中的持有者已是 <code>None</code>（已被清除），于是直接跳过它们。<br>但我们仍然会在 (4) 处保存 <code>x</code>（因为此时它的持有者仍然有效）。</li>
+</ul>
+</blockquote>
+<p><strong>嵌套使用示例</strong></p>
+<p>假设 Block 内又想对子结构再切分：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SubBlock</span>(<span class="params">nn.Module</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, dim</span>):</span></span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        self.lin1 = nn.Linear(dim, dim)</span><br><span class="line">        self.lin2 = nn.Linear(dim, dim)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, x</span>):</span></span><br><span class="line">        <span class="comment"># 这里再嵌套一次</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">inner</span>(<span class="params">y</span>):</span></span><br><span class="line">            <span class="keyword">return</span> torch.relu(self.lin2(torch.relu(self.lin1(y))))</span><br><span class="line">        <span class="keyword">return</span> checkpoint(inner, x, use_reentrant=<span class="literal">False</span>)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">OuterBlock</span>(<span class="params">nn.Module</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, dim</span>):</span></span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        self.sub1 = SubBlock(dim)</span><br><span class="line">        self.sub2 = SubBlock(dim)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, x</span>):</span></span><br><span class="line">        <span class="comment"># 外层再 checkpoint 整体</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">big</span>(<span class="params">y</span>):</span></span><br><span class="line">            y = self.sub1(y)</span><br><span class="line">            y = self.sub2(y)</span><br><span class="line">            <span class="keyword">return</span> y</span><br><span class="line">        <span class="keyword">return</span> checkpoint(big, x, use_reentrant=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+
+<p>此时内层与外层是嵌套 checkpoint，反向时若只需要来自 big 内某一步保存的中间张量，会触发两层级联重算但利用“早停 + 不重复”逻辑最小化代价。</p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      <div style="display: inline-block;">
+        <img src="/images/dogecoin.png" alt="Framist dogecoin">
+        <p>dogecoin</p>
+      </div>
+      <div style="display: inline-block;">
+        <img src="/images/afdian.jpg" alt="Framist afdian">
+        <p>afdian</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Framist
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://framist.github.io/post/source-code-analysis-for-pytorch-checkpoint.html" title="【PyTorch】梯度检查点 checkpoint 实现源码剖析">https://framist.github.io/post/source-code-analysis-for-pytorch-checkpoint.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+              <a href="/tags/python/" rel="tag"># python</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/post/ssvep-next.html" rel="prev" title="SSVEP-Next">
+      <i class="fa fa-chevron-left"></i> SSVEP-Next
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E9%87%8D%E5%85%A5%E5%AE%9E%E7%8E%B0%EF%BC%88old%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">可重入实现（old）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#forward%EF%BC%9A%E6%AD%A3%E5%90%91"><span class="nav-number">1.1.</span> <span class="nav-text">forward：正向</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#backward%EF%BC%9A%E9%87%8D%E5%BB%BA%E7%8E%B0%E5%9C%BA-%E9%87%8D%E7%AE%97-%E5%8F%96%E6%A2%AF%E5%BA%A6"><span class="nav-number">1.2.</span> <span class="nav-text">backward：重建现场 + 重算 + 取梯度</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%9E%E5%8F%AF%E9%87%8D%E5%85%A5%E5%AE%9E%E7%8E%B0%EF%BC%88propose%EF%BC%89"><span class="nav-number">2.</span> <span class="nav-text">非可重入实现（propose）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%A5%E5%8F%A3"><span class="nav-number">2.1.</span> <span class="nav-text">入口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%9F%E6%88%90%E5%99%A8%E9%80%BB%E8%BE%91-checkpoint-without-reentrant-generator"><span class="nav-number">2.2.</span> <span class="nav-text">生成器逻辑 _checkpoint_without_reentrant_generator</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E7%8A%B6%E6%80%81%E6%8D%95%E8%8E%B7-CheckpointFrame"><span class="nav-number">2.3.</span> <span class="nav-text">环境状态捕获 _CheckpointFrame</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E6%8D%95%E8%8E%B7-NoopSaveInputs"><span class="nav-number">2.4.</span> <span class="nav-text">输入捕获 _NoopSaveInputs</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E7%B1%BB"><span class="nav-number">2.4.1.</span> <span class="nav-text">基类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.4.2.</span> <span class="nav-text">实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%A0%E4%BD%8D%E7%AC%A6-Holder"><span class="nav-number">2.5.</span> <span class="nav-text">占位符 _Holder</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E5%90%91%E5%8F%8D%E5%90%91-Hook-checkpoint-hook"><span class="nav-number">2.6.</span> <span class="nav-text">前向反向 Hook _checkpoint_hook</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E7%B1%BB-1"><span class="nav-number">2.6.1.</span> <span class="nav-text">基类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%89%8D%E5%90%91%E5%AE%9E%E7%8E%B0-pack-hook"><span class="nav-number">2.6.2.</span> <span class="nav-text">前向实现 pack_hook</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%87%8D%E7%AE%97-Hook-recomputation-hook-%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.6.3.</span> <span class="nav-text">重算 Hook _recomputation_hook 实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%B6%E5%BA%8F%E5%9B%BE%EF%BC%9A%E5%89%8D%E5%90%91-Forward-Pass"><span class="nav-number">2.7.</span> <span class="nav-text">时序图：前向 (Forward Pass)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%B6%E5%BA%8F%E5%9B%BE%EF%BC%9A%E5%8F%8D%E5%90%91-amp-%E9%87%8D%E8%AE%A1%E7%AE%97-Backward-Pass"><span class="nav-number">2.8.</span> <span class="nav-text">时序图：反向 &amp; 重计算 (Backward Pass)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%B6%E5%BA%8F%E5%9B%BE%EF%BC%9A-Holder"><span class="nav-number">2.9.</span> <span class="nav-text">时序图：_Holder</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E7%9A%84%E7%BB%86%E8%8A%82"><span class="nav-number">3.</span> <span class="nav-text">其他的细节</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8%E7%A4%BA%E4%BE%8B"><span class="nav-number">3.1.</span> <span class="nav-text">简单使用示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B5%8C%E5%A5%97-checkpoint"><span class="nav-number">3.2.</span> <span class="nav-text">嵌套 checkpoint</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%84%E5%88%99-1%EF%BC%9A%E4%BF%9D%E5%AD%98%E7%9A%84%E5%BC%A0%E9%87%8F%E4%BB%85%E7%94%B1%E6%9C%80%E5%86%85%E5%B1%82%E7%9A%84%E6%A3%80%E6%9F%A5%E7%82%B9%E7%AE%A1%E7%90%86%EF%BC%8C%E5%B9%B6%E5%AF%B9%E6%89%80%E6%9C%89%E5%A4%96%E5%B1%82%E6%A3%80%E6%9F%A5%E7%82%B9%E9%9A%90%E8%97%8F%E3%80%82"><span class="nav-number">4.</span> <span class="nav-text">规则 1：保存的张量仅由最内层的检查点管理，并对所有外层检查点隐藏。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%84%E5%88%99-2%EF%BC%9A%E5%86%85%E5%B1%82%E6%A3%80%E6%9F%A5%E7%82%B9%E7%9A%84%E8%BE%93%E5%85%A5%E8%A2%AB%E8%A7%86%E4%B8%BA%E8%A2%AB%E4%BF%9D%E5%AD%98%E5%88%B0%E5%85%B6%E7%88%B6%E7%BA%A7%E6%A3%80%E6%9F%A5%E7%82%B9%E4%B8%AD%E7%9A%84%E5%BC%A0%E9%87%8F%E3%80%82"><span class="nav-number">5.</span> <span class="nav-text">规则 2：内层检查点的输入被视为被保存到其父级检查点中的张量。</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A8%E8%AE%BA%EF%BC%9A"><span class="nav-number">5.1.</span> <span class="nav-text">推论：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%84%E5%88%99-3%EF%BC%9A%E5%BC%80%E5%A7%8B%E9%87%8D%E6%96%B0%E8%AE%A1%E7%AE%97%E6%97%B6%E5%BA%94%E5%81%87%E8%AE%BE%E5%BD%93%E5%89%8D%E6%B2%A1%E6%9C%89%E4%BB%BB%E4%BD%95%E6%A3%80%E6%9F%A5%E7%82%B9%E5%A4%84%E4%BA%8E%E6%BF%80%E6%B4%BB%E7%8A%B6%E6%80%81%E3%80%82%E4%BD%86%E5%9C%A8%E9%87%8D%E6%96%B0%E8%AE%A1%E7%AE%97%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E6%96%B0%E6%A3%80%E6%9F%A5%E7%82%B9%E4%BB%8D%E9%9C%80%E8%A2%AB%E5%B0%8A%E9%87%8D%E3%80%82"><span class="nav-number">6.</span> <span class="nav-text">规则 3：开始重新计算时应假设当前没有任何检查点处于激活状态。但在重新计算过程中遇到的新检查点仍需被尊重。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%84%E5%88%99-4%EF%BC%9A%E9%87%8D%E6%96%B0%E8%AE%A1%E7%AE%97%E5%87%BA%E7%9A%84%E5%BC%A0%E9%87%8F%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="nav-number">7.</span> <span class="nav-text">规则 4：重新计算出的张量的生命周期</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%84%E5%88%99-4-%E7%9A%84%E5%AE%9E%E7%8E%B0%E7%BB%86%E8%8A%82"><span class="nav-number">7.1.</span> <span class="nav-text">[规则 4 的实现细节]</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%84%E5%88%99-5%EF%BC%9A%E4%B8%80%E6%97%A6%E5%AE%8C%E6%88%90%E4%BA%86%E6%89%80%E9%9C%80%E5%BC%A0%E9%87%8F%E7%9A%84%E9%87%8D%E6%96%B0%E8%AE%A1%E7%AE%97%EF%BC%8C%E5%B0%B1%E5%BA%94%E7%AB%8B%E5%8D%B3%E5%81%9C%E6%AD%A2%E9%87%8D%E6%96%B0%E8%AE%A1%E7%AE%97%E8%BF%87%E7%A8%8B%E3%80%82"><span class="nav-number">8.</span> <span class="nav-text">规则 5：一旦完成了所需张量的重新计算，就应立即停止重新计算过程。</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%84%E5%88%99-5-%E7%9A%84%E5%AE%9E%E7%8E%B0%E7%BB%86%E8%8A%82"><span class="nav-number">8.1.</span> <span class="nav-text">[规则 5 的实现细节]</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%84%E5%88%99-6%EF%BC%9A%E6%94%AF%E6%8C%81%E5%9C%A8%E6%A3%80%E6%9F%A5%E7%82%B9%E4%B8%8A%E4%B8%8B%E6%96%87%E4%B8%AD%E6%89%A7%E8%A1%8C%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD"><span class="nav-number">9.</span> <span class="nav-text">规则 6：支持在检查点上下文中执行反向传播</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%9D%E7%95%99%E5%9B%BE%E7%BB%93%E6%9E%84%E7%9A%84%E6%83%85%E5%86%B5%EF%BC%9Aretain-graph-True"><span class="nav-number">9.1.</span> <span class="nav-text">[保留图结构的情况：retain_graph&#x3D;True]</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8D%E4%BF%9D%E7%95%99%E5%9B%BE%E7%BB%93%E6%9E%84%E7%9A%84%E6%83%85%E5%86%B5%EF%BC%9Aretain-graph-False"><span class="nav-number">9.2.</span> <span class="nav-text">[不保留图结构的情况：retain_graph&#x3D;False]</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Framist</p>
+  <div class="site-description" itemprop="description">框架主义者的小窝</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">86</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/framist" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;framist" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:framist@163.com" title="E-Mail → mailto:framist@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/weixin_47102975" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_47102975" rel="noopener" target="_blank"><i class="fas fa-angle-right fa-fw"></i>CSDN</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/kuang-jia-zhu-yi-zhe" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;kuang-jia-zhu-yi-zhe" rel="noopener" target="_blank"><i class="fas fa-angle-right fa-fw"></i>知乎</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://framist.top/" title="http:&#x2F;&#x2F;framist.top&#x2F;" rel="noopener" target="_blank">个人主页</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://craft.framist.top/" title="https:&#x2F;&#x2F;craft.framist.top&#x2F;" rel="noopener" target="_blank">框架科工</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://framist.github.io/2020/10/11/%E6%88%91%E8%BA%AB%E8%BE%B9%E7%9A%84CS%E5%A4%A7%E4%BD%AC%E4%BB%AC/" title="https:&#x2F;&#x2F;framist.github.io&#x2F;2020&#x2F;10&#x2F;11&#x2F;%E6%88%91%E8%BA%AB%E8%BE%B9%E7%9A%84CS%E5%A4%A7%E4%BD%AC%E4%BB%AC&#x2F;">我身边的大佬们</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yuexiavqiufeng.github.io/" title="https:&#x2F;&#x2F;yuexiavqiufeng.github.io&#x2F;" rel="noopener" target="_blank">yuexiavqiufeng</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">浙 ICP 备 2022002862 号 -1 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-at"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Framist</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div><script>
+    let body = document.getElementsByTagName('body')[0];
+    body.addEventListener('click', (e) => {
+        let contentArr = ['欧拉~','ˋ( ° ▽、° ) ','RGB!','_(:з」∠)_','哼','?','¿框架?','QAQ',':3','<3','疯掉了',
+                            'whoami',
+                            'whoareU',
+                            'NULL',
+                            'None',
+                            ' ',
+                            '代价是什么呢？',
+                            '...',
+                            'Big Brother is Watching You',
+                            '喵~', '嗷~', '呜~', '哞~', '咩~', '咕~', '嘎~', '嘤~',
+                            '你看到了。',
+                            '¿爱情障眼法?','¿物种认同障碍?',
+                            '微润欧美，小润终南山，中润润与市，大润中南海',
+                            'init param:<br/>1LTKvNaux7CjrNHJ09C0y87Eo7/Rrbu3zfm4tKOsus<br/>7Ksbb41rmjv9a5zqrWucv51rmjrLTLzsTT1rrOtOajvw==',
+                            '这里没有时间的意义',
+                            '嘿嘿嘿，好想被随机异或哦，<br/>嘿嘿嘿，嘿嘿嘿，异或我的异或',
+                            '记忆赋予时间的意义，而不是时间赋予记忆的意义',
+                            '放弃 P ∨ ¬P 吧！',
+                            '抽象是普适性的代价 —— 3b1b',
+                            '得易见平凡，仿照上例显然',
+                            '留作习题答案略，读者自证不难',
+                            '反之亦然同理，推论自然成立',
+                            '略去过程 Q . E . D ，由上可知证毕'];
+        let randomNum = function (n) {
+            return Math.floor(Math.random() * n)
+        }
+        let span = document.createElement('span');
+        span.innerHTML = `${contentArr[randomNum(contentArr.length)]}`;
+        span.style.color = `rgb(${randomNum(256)},${randomNum(256)},${randomNum(256)})`;
+        span.style.position = 'absolute';
+        span.style.top = `${e.pageY - 25 - randomNum(50)}px`;
+        span.style.left = `${e.pageX - randomNum(50)}px`;
+        span.style.transition = 'all 1.5s ease';
+        span.style.zIndex = 20000;
+        span.style.fontSize = `${randomNum(8) + 10}px`;
+        body.appendChild(span)
+        setTimeout(()=>{
+            span.style.top = span.offsetTop - 25 + 'px';
+            span.style.opacity = 0;
+            setTimeout(()=>{span.remove()},1000)
+        },700)
+    })
+</script>
+
+
+<div style="width: 100px; height: 100px; margin: 0 auto;">
+<script type="text/javascript" id="clstr_globe" src="//clustrmaps.com/globe.js?d=gRWtX21uVt_tIdj_T64nMvo4FK1UrTWME23CVLOzNCg"></script>
+</div>
+<!--
+<script type="text/javascript" 
+color="255,255,255" 
+pointColor='64,184,209' 
+opacity='1' 
+zIndex="-1" 
+count="233" 
+src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js">
+</script>
+-->
+
+
+        
+<div class="busuanzi-count">
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script data-pjax>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '267a9d4a89b9b72b2229',
+      clientSecret: '2dba1f14d21da707ed6c4497fecc05d6178b4fa3',
+      repo        : 'blog-comment',
+      owner       : 'framist',
+      admin       : ['framist'],
+      id          : '8b33764546002e05241dfc905b1e61e9',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+    </div>
+</body>
+</html>
