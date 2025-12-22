@@ -24,17 +24,22 @@
     var CONFIG = {"hostname":"framist.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="框架主义者的小窝">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Framist&#39;s Little House">
-<meta property="og:url" content="https://framist.github.io/tags/%E8%AF%BE%E4%B8%9A%E5%AD%A6%E4%B9%A0/index.html">
+  <meta name="description" content="万物互联口号下真正的连接却显得日益奢侈。人们怀念网吧时代局域网联机的无拘无束，渴望随时随地能像坐在同一张沙发上那样，与远方的好友在这个虚拟世界里并肩作战。然而，横亘在彼此之间的，往往是公网 IP 的缺失、复杂的端口映射以及冷冰冰的防火墙高墙。 市面上并非没有成熟的方案。Tailscale 或 ZeroTier 固然稳定，也非常技术，但它们有着严格的“门禁制度”——注册账号、验证身份、授权设备。这就">
+<meta property="og:type" content="article">
+<meta property="og:title" content="N2N Maid - 一个开源多端的 N2N 虚拟局域网图形界面">
+<meta property="og:url" content="https://framist.github.io/post/n2n-maid.html">
 <meta property="og:site_name" content="Framist&#39;s Little House">
-<meta property="og:description" content="框架主义者的小窝">
+<meta property="og:description" content="万物互联口号下真正的连接却显得日益奢侈。人们怀念网吧时代局域网联机的无拘无束，渴望随时随地能像坐在同一张沙发上那样，与远方的好友在这个虚拟世界里并肩作战。然而，横亘在彼此之间的，往往是公网 IP 的缺失、复杂的端口映射以及冷冰冰的防火墙高墙。 市面上并非没有成熟的方案。Tailscale 或 ZeroTier 固然稳定，也非常技术，但它们有着严格的“门禁制度”——注册账号、验证身份、授权设备。这就">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2025/12/22/20251222220916.png">
+<meta property="og:image" content="https://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2025/12/22/20251222220736.png">
+<meta property="article:published_time" content="2025-12-22T15:21:04.000Z">
+<meta property="article:modified_time" content="2025-12-22T15:23:26.399Z">
 <meta property="article:author" content="Framist">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2025/12/22/20251222220916.png">
 
-<link rel="canonical" href="https://framist.github.io/tags/%E8%AF%BE%E4%B8%9A%E5%AD%A6%E4%B9%A0/">
+<link rel="canonical" href="https://framist.github.io/post/n2n-maid.html">
 
 
 <script id="page-configurations">
@@ -42,12 +47,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>标签: 课业学习 | Framist's Little House</title>
+  <title>N2N Maid - 一个开源多端的 N2N 虚拟局域网图形界面 | Framist's Little House</title>
   
 
 
@@ -166,117 +171,150 @@
         <div class="content-wrap">
           
 
-          <div class="content tag">
+          <div class="content post posts-expand">
             
 
+    
   
   
-  
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        <h2 class="collection-header">课业学习
-          <small>标签</small>
-        </h2>
-      </div>
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://framist.github.io/post/n2n-maid.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Framist">
+      <meta itemprop="description" content="框架主义者的小窝">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Framist's Little House">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          N2N Maid - 一个开源多端的 N2N 虚拟局域网图形界面
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2025-12-22 23:21:04 / 修改时间：23:23:26" itemprop="dateCreated datePublished" datetime="2025-12-22T23:21:04+08:00">2025-12-22</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/" itemprop="url" rel="index"><span itemprop="name">计算机</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    <div class="collection-year">
-      <span class="collection-header">2021</span>
-    </div>
+        <p>万物互联口号下真正的连接却显得日益奢侈。人们怀念网吧时代局域网联机的无拘无束，渴望随时随地能像坐在同一张沙发上那样，与远方的好友在这个虚拟世界里并肩作战。然而，横亘在彼此之间的，往往是公网 IP 的缺失、复杂的端口映射以及冷冰冰的防火墙高墙。</p>
+<p>市面上并非没有成熟的方案。Tailscale 或 ZeroTier 固然稳定，也非常技术，但它们有着严格的“门禁制度”——注册账号、验证身份、授权设备。这就像邀请朋友来家里玩，却还要强迫对方先去物业办理全套门禁卡。对于只是想临时组局打一把游戏的伙伴来说，这种仪式感未免太过沉重。<a target="_blank" rel="noopener" href="https://github.com/ntop/n2n">N2N</a> 正解决了这一个问题，但是它的命令行配置又让很多人望而却步。</p>
+<span id="more"></span>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-10-08T00:00:00+08:00"
-              content="2021-10-08">
-          10-08
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/post/operating-system-concepts-exercise-8.html" itemprop="url">
-            <span itemprop="name">【操作系统概念 - 作业 8】Main Memory</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-05-20T00:00:00+08:00"
-              content="2021-05-20">
-          05-20
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/post/53867.html" itemprop="url">
-            <span itemprop="name">【数据库原理】实验报告</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-04-16T00:00:00+08:00"
-              content="2021-04-16">
-          04-16
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/post/34561.html" itemprop="url">
-            <span itemprop="name">微机原理作业一</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-03-29T00:00:00+08:00"
-              content="2021-03-29">
-          03-29
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/post/61205.html" itemprop="url">
-            <span itemprop="name">科技术语的构成及其翻译方法</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
+<h2 id="把复杂留给后台，把简单还给主人"><a href="#把复杂留给后台，把简单还给主人" class="headerlink" title="把复杂留给后台，把简单还给主人"></a>把复杂留给后台，把简单还给主人</h2><p>自己喜欢折腾技术，不代表朋友也乐意。如果扔过去一串 <code>edge -c mynetwork -l supernode.ntop.org:7777 -u mydevice ...</code> 的命令，换来的可能是朋友的一句：“太麻烦了，要不算了吧。”</p>
+<p>工具的门槛，不应成为友谊的绊脚石。恩兔酱让过去那些晦涩的参数配置，现在被简化为了一份直观的“家政需求单”。想要组建一个虚拟局域网，用户只需最开始告诉她一些基本信息，以后都能<strong>一键直连</strong>。同时，也支持<strong>列举局域网设备、实时测测延迟、看看有没有 p2p 打洞成功</strong>等实用功能。</p>
+<h2 id="轻盈，开源，多端，可靠"><a href="#轻盈，开源，多端，可靠" class="headerlink" title="轻盈，开源，多端，可靠"></a>轻盈，开源，多端，可靠</h2><p><img data-src="https://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2025/12/22/20251222220916.png" alt="demo"></p>
+<p>其实市面上并不是没有 N2N 的图形界面工具。在 Windows 生态里，大家可能很熟悉那只著名的“小黄鸭”（EasyN2N）。它功能强大，集成了很多实用工具，是很多人的首选。</p>
+<p>但作为一个喜欢折腾不同系统的人，我总觉得缺了点什么。我们希望无论在哪个屏幕前，都能获得一致的、流畅的体验。我们也希望这个工具是<strong>开源透明</strong>的，因为当一个软件接管了你的网络大门时，“信任”比什么都重要。我们希望它不仅仅是一个冷冰冰的“启动器”，而是一个能让人会心一笑的伙伴。这意味着你可以随时检查她的胖次，有没有隐藏的后门。如果你愿意，你甚至可以亲手为她缝制新衣，或者教她新技能。</p>
+<p>得益于 Rust 语言的高性能和 Tauri 框架的轻量化，恩兔酱的身材非常苗条。她不会像某些 Electron 应用那样吞噬你的内存，也不会在后台偷偷占用过多的 CPU。大多数时候，她只是安静地待在系统托盘的角落里，默默维持着那条通往你数字世界的秘密通道。</p>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>恩兔酱目前仍处于成长的早期阶段，或许偶尔还会有些笨手笨脚，但她那份想要消除技术隔阂、连接每一个孤独玩家的初心从未改变。如果你厌倦了命令行的冰冷，如果你希望朋友不再被复杂的设置劝退，不妨试着把这位赛博女仆<a target="_blank" rel="noopener" href="https://github.com/framist/n2n-maid/releases">请回家</a>。</p>
+<p><em>「主人，网络通道的打扫工作，随时准备开始」</em></p>
+<hr>
+<p>写作：Framist </p>
+<p>编译：Gemini</p>
+<p><img data-src="https://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2025/12/22/20251222220736.png" alt="题图"></p>
 
     </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      <div style="display: inline-block;">
+        <img src="/images/dogecoin.png" alt="Framist dogecoin">
+        <p>dogecoin</p>
+      </div>
+      <div style="display: inline-block;">
+        <img src="/images/afdian.jpg" alt="Framist afdian">
+        <p>afdian</p>
+      </div>
+
   </div>
-  
-  
-  
+</div>
 
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Framist
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://framist.github.io/post/n2n-maid.html" title="N2N Maid - 一个开源多端的 N2N 虚拟局域网图形界面">https://framist.github.io/post/n2n-maid.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/post/source-code-analysis-for-pytorch-checkpoint.html" rel="prev" title="【PyTorch】梯度检查点 checkpoint 实现源码剖析">
+      <i class="fa fa-chevron-left"></i> 【PyTorch】梯度检查点 checkpoint 实现源码剖析
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
   
 
 
 
           </div>
           
+    <div class="comments" id="gitalk-container"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -323,6 +361,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%8A%E5%A4%8D%E6%9D%82%E7%95%99%E7%BB%99%E5%90%8E%E5%8F%B0%EF%BC%8C%E6%8A%8A%E7%AE%80%E5%8D%95%E8%BF%98%E7%BB%99%E4%B8%BB%E4%BA%BA"><span class="nav-number">1.</span> <span class="nav-text">把复杂留给后台，把简单还给主人</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BD%BB%E7%9B%88%EF%BC%8C%E5%BC%80%E6%BA%90%EF%BC%8C%E5%A4%9A%E7%AB%AF%EF%BC%8C%E5%8F%AF%E9%9D%A0"><span class="nav-number">2.</span> <span class="nav-text">轻盈，开源，多端，可靠</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E5%90%8E"><span class="nav-number">3.</span> <span class="nav-text">最后</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -698,6 +737,25 @@ window.addEventListener('pjax:success', () => {
 
   
 
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '267a9d4a89b9b72b2229',
+      clientSecret: '2dba1f14d21da707ed6c4497fecc05d6178b4fa3',
+      repo        : 'blog-comment',
+      owner       : 'framist',
+      admin       : ['framist'],
+      id          : '583e249ad826e3b2999e85bd773c5182',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
 
     </div>
 </body>
