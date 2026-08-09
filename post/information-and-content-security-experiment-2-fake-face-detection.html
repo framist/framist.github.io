@@ -26,8 +26,8 @@
 
   <meta name="description" content="虚假人脸检测实验摘要：在此次实验中，先尝试了自己手动搭建了一个 CNN 进行虚假人脸的分类实验，但发现有训练速度慢准确率低等缺点。所以尝试使用已有的模型（resnet-18）和预训练的参数进行迁移学习，包括尝试了直接把卷积层借用为固定特征提取器和 Fine-tuning 的方法，大大提高了训练速度与最终结果的准确率。 题目描述给定一个人脸数据集，其中包含 1999 张真实人脸，1999 张虚假人脸">
 <meta property="og:type" content="article">
-<meta property="og:title" content="虚假人脸检测实验：CNN &amp; Transfer Learning">
-<meta property="og:url" content="https://framist.github.io/post/6744.html">
+<meta property="og:title" content="【信息与内容安全】实验二：虚假人脸检测实验：CNN &amp; Transfer Learning">
+<meta property="og:url" content="https://framist.github.io/post/information-and-content-security-experiment-2-fake-face-detection.html">
 <meta property="og:site_name" content="Framist&#39;s Little House">
 <meta property="og:description" content="虚假人脸检测实验摘要：在此次实验中，先尝试了自己手动搭建了一个 CNN 进行虚假人脸的分类实验，但发现有训练速度慢准确率低等缺点。所以尝试使用已有的模型（resnet-18）和预训练的参数进行迁移学习，包括尝试了直接把卷积层借用为固定特征提取器和 Fine-tuning 的方法，大大提高了训练速度与最终结果的准确率。 题目描述给定一个人脸数据集，其中包含 1999 张真实人脸，1999 张虚假人脸">
 <meta property="og:locale" content="zh_CN">
@@ -44,15 +44,15 @@
 <meta property="og:image" content="https://pic4.zhimg.com/80/v2-fbc8084144f0ebb768c138d889ebff12.png">
 <meta property="og:image" content="https://pic4.zhimg.com/80/v2-8574d77b1db308b36e2e4586ddc2f033.png">
 <meta property="article:published_time" content="2022-05-04T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-09-22T07:44:28.705Z">
+<meta property="article:modified_time" content="2026-08-09T05:18:01.613Z">
 <meta property="article:author" content="Framist">
 <meta property="article:tag" content="机器学习">
 <meta property="article:tag" content="python">
-<meta property="article:tag" content="信息安全">
+<meta property="article:tag" content="信息与内容安全">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://framist.github.io/%E3%80%90%E4%BF%A1%E6%81%AF%E4%B8%8E%E5%86%85%E5%AE%B9%E5%AE%89%E5%85%A8%E3%80%91%E5%AE%9E%E9%AA%8C%E4%BA%8C%EF%BC%9A%E8%99%9A%E5%81%87%E4%BA%BA%E8%84%B8%E6%A3%80%E6%B5%8B%E5%AE%9E%E9%AA%8C/fakeFace_classifier_5_0.png">
 
-<link rel="canonical" href="https://framist.github.io/post/6744.html">
+<link rel="canonical" href="https://framist.github.io/post/information-and-content-security-experiment-2-fake-face-detection.html">
 
 
 <script id="page-configurations">
@@ -65,7 +65,7 @@
   };
 </script>
 
-  <title>虚假人脸检测实验：CNN & Transfer Learning | Framist's Little House</title>
+  <title>【信息与内容安全】实验二：虚假人脸检测实验：CNN & Transfer Learning | Framist's Little House</title>
   
 
 
@@ -191,7 +191,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://framist.github.io/post/6744.html">
+    <link itemprop="mainEntityOfPage" href="https://framist.github.io/post/information-and-content-security-experiment-2-fake-face-detection.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -204,7 +204,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          虚假人脸检测实验：CNN & Transfer Learning
+          【信息与内容安全】实验二：虚假人脸检测实验：CNN & Transfer Learning
         </h1>
 
         <div class="post-meta">
@@ -221,7 +221,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-09-22 15:44:28" itemprop="dateModified" datetime="2023-09-22T15:44:28+08:00">2023-09-22</time>
+                <time title="修改时间：2026-08-09 13:18:01" itemprop="dateModified" datetime="2026-08-09T13:18:01+08:00">2026-08-09</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -233,7 +233,7 @@
                 </span>
                   ，
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">网络安全</span></a>
                 </span>
             </span>
 
@@ -461,7 +461,7 @@ Best val Acc: 1.000000
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://framist.github.io/post/6744.html" title="虚假人脸检测实验：CNN &amp; Transfer Learning">https://framist.github.io/post/6744.html</a>
+    <a href="https://framist.github.io/post/information-and-content-security-experiment-2-fake-face-detection.html" title="【信息与内容安全】实验二：虚假人脸检测实验：CNN &amp; Transfer Learning">https://framist.github.io/post/information-and-content-security-experiment-2-fake-face-detection.html</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -474,7 +474,7 @@ Best val Acc: 1.000000
           <div class="post-tags">
               <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
               <a href="/tags/python/" rel="tag"># python</a>
-              <a href="/tags/%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8/" rel="tag"># 信息安全</a>
+              <a href="/tags/%E4%BF%A1%E6%81%AF%E4%B8%8E%E5%86%85%E5%AE%B9%E5%AE%89%E5%85%A8/" rel="tag"># 信息与内容安全</a>
           </div>
 
         
@@ -483,12 +483,12 @@ Best val Acc: 1.000000
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/post/7919.html" rel="prev" title="PyTorch：进化">
-      <i class="fa fa-chevron-left"></i> PyTorch：进化
+    <a href="/post/information-and-content-security-final-review.html" rel="prev" title="【信息与内容安全】课程期末复习笔记">
+      <i class="fa fa-chevron-left"></i> 【信息与内容安全】课程期末复习笔记
     </a></div>
       <div class="post-nav-item">
-    <a href="/post/21951.html" rel="next" title="对抗性样本攻击实验：FGSM">
-      对抗性样本攻击实验：FGSM <i class="fa fa-chevron-right"></i>
+    <a href="/post/information-and-content-security-experiment-1-fgsm.html" rel="next" title="【信息与内容安全】实验一：对抗性样本攻击实验：FGSM">
+      【信息与内容安全】实验一：对抗性样本攻击实验：FGSM <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -563,7 +563,7 @@ Best val Acc: 1.000000
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">87</span>
+          <span class="site-state-item-count">88</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -576,7 +576,7 @@ Best val Acc: 1.000000
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-count">58</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -638,7 +638,7 @@ Best val Acc: 1.000000
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2025</span>
+  <span itemprop="copyrightYear">2026</span>
   <span class="with-love">
     <i class="fa fa-at"></i>
   </span>
@@ -936,7 +936,7 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
       repo        : 'blog-comment',
       owner       : 'framist',
       admin       : ['framist'],
-      id          : 'bb23a039c6663d44259ae9f65d49426a',
+      id          : 'efde3589b1e0b3fc7a08bb7eb0e0bd44',
         language: 'zh-CN',
       distractionFreeMode: true
     });

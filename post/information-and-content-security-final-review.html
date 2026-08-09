@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+<meta name="google-site-verification" content="L6yHwE6A2iaXD8k96v05szGztESL_4f9nVI5lxU25h0" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Noto Serif SC:300,300italic,400,400italic,700,700italic|Source Code Pro:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-big-counter.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"framist.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="来自 2022 年春的古早遗留档案，有人需要这个，我就再发一下吧。     平时成绩：10%。 线上：10% （线上学习内容，共 100 分。） 实验：10% （共 2 次实验，每次实验按 50 分制评分，共 100 分。） 论文：20% （以任何信息与内容安全相关技术撰写一篇学术报告，主题自拟，可适当结合自身研究方向，按所提供 word 模板不少于双栏 4 页。注意，不允许综述型论文） 考试">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【信息与内容安全】课程期末复习笔记">
+<meta property="og:url" content="https://framist.github.io/post/information-and-content-security-final-review.html">
+<meta property="og:site_name" content="Framist&#39;s Little House">
+<meta property="og:description" content="来自 2022 年春的古早遗留档案，有人需要这个，我就再发一下吧。     平时成绩：10%。 线上：10% （线上学习内容，共 100 分。） 实验：10% （共 2 次实验，每次实验按 50 分制评分，共 100 分。） 论文：20% （以任何信息与内容安全相关技术撰写一篇学术报告，主题自拟，可适当结合自身研究方向，按所提供 word 模板不少于双栏 4 页。注意，不允许综述型论文） 考试">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809130954.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131248.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-1.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-2.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-3.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-4.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-5.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-6.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-7.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-8.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-9.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-10.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-11.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-12.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-13.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-14.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-15.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-16.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-17.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-18.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-19.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-20.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-21.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-22.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-23.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-24.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-25.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-26.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-27.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-28.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-29.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-30.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-31.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-32.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-33.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-34.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-35.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-36.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-37.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-38.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-39.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-40.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-41.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-42.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-43.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-44.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-45.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-46.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-47.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-48.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-49.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-50.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-51.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-52.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-53.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-54.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-55.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-56.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-57.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-58.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-59.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-60.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-61.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-62.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-63.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-64.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-65.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-66.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-67.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-68.png">
+<meta property="og:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-69.png">
+<meta property="article:published_time" content="2022-05-04T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-09T05:18:10.493Z">
+<meta property="article:author" content="Framist">
+<meta property="article:tag" content="信息与内容安全">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809130954.png">
+
+<link rel="canonical" href="https://framist.github.io/post/information-and-content-security-final-review.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【信息与内容安全】课程期末复习笔记 | Framist's Little House</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Framist's Little House</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">◇ 自顶而下 - 面向未来 ◇</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-safc">
+
+    <a href="/safc/" rel="section"><i class="fa fa-landmark fa-fw"></i>SAFC</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://framist.github.io/post/information-and-content-security-final-review.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Framist">
+      <meta itemprop="description" content="框架主义者的小窝">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Framist's Little House">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【信息与内容安全】课程期末复习笔记
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-05-05 00:00:00" itemprop="dateCreated datePublished" datetime="2022-05-05T00:00:00+08:00">2022-05-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2026-08-09 13:18:10" itemprop="dateModified" datetime="2026-08-09T13:18:10+08:00">2026-08-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">计算机科学</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">网络安全</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809130954.png" alt="image"></p>
+<blockquote>
+<p>来自 2022 年春的古早遗留档案，有人需要这个，我就再发一下吧。</p>
+</blockquote>
+<!-- ‍more -->
+
+<ul>
+<li>平时成绩：10%。</li>
+<li>线上：10% （线上学习内容，共 100 分。）</li>
+<li>实验：10% （共 2 次实验，每次实验按 50 分制评分，共 100 分。）</li>
+<li>论文：20% （以任何信息与内容安全相关技术撰写一篇学术报告，主题自拟，可适当结合自身研究方向，按所提供 word 模板不少于双栏 4 页。注意，不允许综述型论文）</li>
+<li>考试：50%</li>
+</ul>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258.png" alt="image.png"></p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131248.png" alt="image.png"></p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-1.png" alt="image.png"></p>
+<p>‍</p>
+<p>‍</p>
+<hr>
+<h1 id="重点"><a href="#重点" class="headerlink" title="重点"></a>重点</h1><h2 id="信息与内容安全简介"><a href="#信息与内容安全简介" class="headerlink" title="信息与内容安全简介"></a>信息与内容安全简介</h2><h3 id="信息与内容安全概述"><a href="#信息与内容安全概述" class="headerlink" title="信息与内容安全概述"></a>信息与内容安全概述</h3><p>内容域与网络域</p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-2.png" alt="image.png"></p>
+<p>信息内容安全定义</p>
+<ul>
+<li><p>信息内容安全是<strong>信息安全</strong>在<strong>法律、政治、道德</strong>层次上的要求，是<strong>语义层次的安全</strong>。我们要求信息内容是安全的，就是要求信息内容在政治上是健康的，在法律上是符合国家法律法规的，在道德上是符合中华民族优良的道德规范的。</p>
+</li>
+<li><p>广义的信息内容安全既包括信息内容在政治、法律和道德方面的要求，也包括：</p>
+<ul>
+<li>数据的获取，</li>
+<li>信息内容的分析与识别，</li>
+<li>数字图像视频内容安全，</li>
+<li>多媒体信息隐藏，</li>
+<li>隐私保护</li>
+<li>等诸多方面。</li>
+</ul>
+</li>
+</ul>
+<p>‍</p>
+<p><strong>信息内容安全的研究意义</strong></p>
+<ul>
+<li>随着大数据时代的到来以及科学技术的不断进步，数字资料的获取、存储、传输、编辑、转移和利用更加便利，然而人们也可以对其进行<u>任意修改和伪造</u>。</li>
+<li>对互联网上数字媒体信息的<u>真实性</u>和<u>完整性</u>进行破坏，一方面侵犯个人隐私、版权保护问题，另一方面对社会公共秩序、军事和国家安全等方面均会产生不良影响。</li>
+<li><u>虚假新闻</u>的社会传播的往往产生严重后果， <u>暴力煽动语言</u>的破坏性尤其巨大</li>
+<li>随着密码和图像水印技术的普及，网上利用<u>信息加密</u>与<u>内容隐藏</u>等技术，隐秘传输非法信息的现象日益普遍</li>
+</ul>
+<h3 id="机器学习简介"><a href="#机器学习简介" class="headerlink" title="机器学习简介"></a>机器学习简介</h3><p>了解</p>
+<p>机器学习</p>
+<p>假设用 𝑃 来评估计算机程序在某任务 𝑇 上的性能，若一个程序通过利用经验 𝐸 在 𝑇 中任务上获得了性能改善，则我们就说关于 𝑇 和 𝑃，该程序对 𝐸 进行了学习</p>
+<p>机器学习的三个步骤：</p>
+<ul>
+<li>一组方程</li>
+<li>衡量方程的优劣</li>
+<li>找出最好的方程</li>
+</ul>
+<p>‍</p>
+<p>深度学习</p>
+<p>深度学习的三个步骤：</p>
+<ul>
+<li>神经网络</li>
+<li>衡量方程的优劣</li>
+<li>找出最好的方程</li>
+</ul>
+<p>对抗样本攻击</p>
+<p>机器学习算法以数字向量的形式接受输入。以一种<strong>特定的</strong>方式设计输入，从而从模型中得到一个<strong>错误的</strong>结果，这便被称为对抗性攻击</p>
+<p>‍</p>
+<p>‍</p>
+<p>‍</p>
+<h2 id="信息获取与表示"><a href="#信息获取与表示" class="headerlink" title="信息获取与表示"></a>信息获取与表示</h2><h3 id="信息内容的获取"><a href="#信息内容的获取" class="headerlink" title="信息内容的获取"></a>信息内容的获取</h3><p>获取</p>
+<p>网络信息内容的类型</p>
+<ul>
+<li>网络媒体信息</li>
+<li>网络通讯信息</li>
+</ul>
+<p>网络媒体信息获取方法</p>
+<ul>
+<li>网络媒体信息获取方法</li>
+<li>基于自然人网络浏览行为模拟的信息获取</li>
+</ul>
+<p>‍</p>
+<p>‍</p>
+<h3 id="信息内容的表示"><a href="#信息内容的表示" class="headerlink" title="信息内容的表示"></a>信息内容的表示</h3><h4 id="视觉信息特征"><a href="#视觉信息特征" class="headerlink" title="视觉信息特征"></a>视觉信息特征</h4><p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-3.png" alt="image.png"></p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-4.png" alt="image.png"></p>
+<p>视觉信息的处理过程：</p>
+<p>获取、压缩、传输、重建、处理</p>
+<p>人眼两种细胞的区分</p>
+<ul>
+<li>锥状细胞：高亮度、细节信息、快速变化、数量上</li>
+<li>柱状细胞：低亮度、数量多</li>
+</ul>
+<p>三原色</p>
+<p>像素化</p>
+<p>电脑中表示图像信息</p>
+<p><strong>颜色特征</strong></p>
+<ul>
+<li>直方图</li>
+<li>主色调……</li>
+</ul>
+<p><strong>纹理特征</strong></p>
+<ul>
+<li><p>LBP（考计算）</p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-5.png" alt="image.png"></p>
+</li>
+<li><p>HOG（理解）</p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-6.png" alt="image.png"></p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-7.png" alt="image.png"></p>
+</li>
+<li><p>SIFT（深度学习之前最经典的特征，基本原理，尺度不变）</p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-8.png" alt="image.png"></p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-9.png" alt="image.png"></p>
+</li>
+</ul>
+<h4 id="文本特征"><a href="#文本特征" class="headerlink" title="文本特征"></a>文本特征</h4><p>文本特征表达（one-hot），另外三种方法的基本概念</p>
+<p>1-of-N Encoding ( One-hot Encoding)</p>
+<p>如何将文本表达成向量？</p>
+<ul>
+<li>词频：词频是一个词在文档中出现的次数。通过词频进行特征选择就是将词频小于某一闭值或大于某一值的词删除，从而降低特征空间的维数。</li>
+<li>文档频数：文档频数 (Document Frequency, DF) 是最为简单的一种特征选择算法，它指的是在整个数据集中有多少个文本包含这个单词。</li>
+<li>TF-IDF：词频 (TF)&#x3D;某个词在文章中的出现次数 &#x2F; 文章的总词数逆文档频率 (IDF)&#x3D;log(语料库的文档总数 &#x2F; (包含该词的文档数 +1))TF-IDF &#x3D; TF * IDF</li>
+</ul>
+<p>‍</p>
+<p>‍</p>
+<h4 id="音频特征"><a href="#音频特征" class="headerlink" title="音频特征"></a>音频特征</h4><p>音频特征表达（流程图，变成彩色图案）</p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-10.png" alt="image.png"></p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-11.png" alt="image.png"></p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-12.png" alt="image.png"></p>
+<p>增强、切片、DFT、频谱图、可视化、图像分析方法</p>
+<p>IDFT、MFCC</p>
+<p>‍</p>
+<ul>
+<li><input disabled type="checkbox"> IDFT<br>MFCC</li>
+</ul>
+<p>‍</p>
+<p>‍</p>
+<h2 id="深度学习基础"><a href="#深度学习基础" class="headerlink" title="深度学习基础"></a>深度学习基础</h2><p>选择、填空、计算</p>
+<p>三个步骤</p>
+<ul>
+<li><p>设计神经网络</p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-13.png" alt="image.png"></p>
+</li>
+<li><p>评估网络好坏</p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-14.png" alt="image.png"></p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-15.png" alt="image.png"></p>
+</li>
+<li><p>选择最好的网络</p>
+</li>
+</ul>
+<p>‍</p>
+<h3 id="神经元、神经网络"><a href="#神经元、神经网络" class="headerlink" title="神经元、神经网络"></a>神经元、神经网络</h3><p>神经元的构造，激活函数，不要求计算，但要求掌握输入输出过程公式</p>
+<p>神经网络 - 全连接层</p>
+<p>神经网络基本概念，维度</p>
+<p>全连接神经网络：全部连接</p>
+<p>交叉熵损失的训练方法，梯度下降，反向传播</p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-16.png" alt="image.png"></p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-17.png" alt="image.png"></p>
+<p>‍</p>
+<p>‍</p>
+<p>‍</p>
+<h3 id="卷积神经网络"><a href="#卷积神经网络" class="headerlink" title="卷积神经网络"></a>卷积神经网络</h3><p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-18.png" alt="image.png"></p>
+<ul>
+<li><p>卷积：卷积的基本流程</p>
+<ul>
+<li><p>卷积核</p>
+</li>
+<li><p>要求会计算卷积</p>
+</li>
+<li><p>优点</p>
+<ul>
+<li>缩减参数</li>
+<li>共享参数</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>池化：最大最小池化，输入输出位数</p>
+</li>
+<li><p>展平：</p>
+</li>
+<li><p>全连接：</p>
+</li>
+</ul>
+<p>（卷积、池化多次重复）</p>
+<p>‍</p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-19.png" alt="image.png"></p>
+<h3 id="理解神经网络"><a href="#理解神经网络" class="headerlink" title="理解神经网络"></a>理解神经网络</h3><p>神经网络可视化</p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-20.png" alt="image.png"></p>
+<p>‍</p>
+<h3 id="经典神经网络结构"><a href="#经典神经网络结构" class="headerlink" title="经典神经网络结构"></a>经典神经网络结构</h3><p>（了解）</p>
+<p>LeNet-5</p>
+<p>AlexNet 2012</p>
+<ul>
+<li>ReLU</li>
+<li>标准化</li>
+<li>Dropout</li>
+<li>数据增广</li>
+</ul>
+<p>VGGNet</p>
+<ul>
+<li>3x3 小卷积</li>
+<li>16、19 层</li>
+</ul>
+<p>GoogLeNet</p>
+<ul>
+<li>23 层</li>
+<li>不同尺度特征图串联</li>
+<li>1x1 conv</li>
+</ul>
+<p>ResNet</p>
+<ul>
+<li>152 层</li>
+<li>残差学习：跳层连接，解决梯度消失问题</li>
+</ul>
+<p>‍</p>
+<h2 id="生成对抗网络-GAN"><a href="#生成对抗网络-GAN" class="headerlink" title="生成对抗网络 GAN"></a>生成对抗网络 GAN</h2><p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-21.png" alt="image.png"></p>
+<p>‍</p>
+<p>（偏概念）</p>
+<p>生成器</p>
+<p>判别器</p>
+<h3 id="GAN-步骤与原理"><a href="#GAN-步骤与原理" class="headerlink" title="GAN 步骤与原理"></a>GAN 步骤与原理</h3><p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-22.png" alt="image.png"></p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-23.png" alt="image.png"></p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-24.png" alt="image.png"></p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-25.png" alt="image.png"></p>
+<blockquote>
+<p>argmax&#x2F;argmin的意思是在里面达到最大的时候，min&#x2F;max下面那个变量的值</p>
+<p>V(G,D) 严格定义叫散度，但应该不要求掌握散度是啥，大概理解就是两个图像的差距</p>
+</blockquote>
+<p>‍</p>
+<p>初始化生成器【输入随机向量】、判别器【输入为图像】，固定一个，更新一个【二者博弈得到生<br>成】<br>生成器原理【散度】<br>判别器原理【采样】</p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-26.png" alt="image.png"></p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-27.png" alt="image.png"></p>
+<p>GAN 里的各种公式，最大最小</p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-28.png" alt="image.png"></p>
+<p>PPT 上的特别小的公式了解为主</p>
+<p>‍</p>
+<blockquote>
+<p>参考：<a target="_blank" rel="noopener" href="https://pytorch.org/tutorials/beginner/dcgan_faces_tutorial.html?highlight=dcgan">DCGAN Tutorial — PyTorch Tutorials 1.11.0+cu102 documentation</a></p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-29.png" alt="image.png"></p>
+<p>‍</p>
+</blockquote>
+<h3 id="Conditional-GAN"><a href="#Conditional-GAN" class="headerlink" title="Conditional GAN"></a>Conditional GAN</h3><p>（了解，可用图像风格转换）</p>
+<p>条件的意思：输入不是随机向量，而是一个图像</p>
+<p>‍</p>
+<h3 id="InfoGAN"><a href="#InfoGAN" class="headerlink" title="InfoGAN"></a>InfoGAN</h3><p>主要区别：提供两个输入</p>
+<blockquote>
+<p>普通的 GAN 存在无约束、不可控、噪声信号 z 很难解释等问题，2016 年发表在 NIPS 顶会上的文章 InfoGAN：Interpretable Representation Learning by Information Maximizing Generative Adversarial Nets，提出了 InfoGAN 的生成对抗网络。InfoGAN 主要特点是对 GAN 进行了一些改动，成功地让网络学到了可解释的特征，网络训练完成之后，我们可以通过设定输入生成器的隐含编码来控制生成数据的特征。</p>
+<pre><code>    作者将输入生成器的随机噪声分成了两部分：一部分是随机噪声 Z，另一部分是由若干隐变量拼接而成的 latent code c。其中，c 会有先验的概率分布，可以离散也可以连续，用来代表生成数据的不同特征。例如：对于 MNIST 数据集，c 包含离散部分和连续部分，离散部分取值为 0~9 的离散随机变量（表示数字），连续部分有两个连续型随机变量（分别表示倾斜度和粗细度）。
+</code></pre>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/fa892c81df60">InfoGAN-无监督式 GAN - 简书 (jianshu.com)</a></p>
+</blockquote>
+<p>‍</p>
+<h3 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h3><p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-30.png" alt="image.png"></p>
+<p>了解即可</p>
+<ul>
+<li><p>图像翻译</p>
+<ul>
+<li>Pix2Pix</li>
+<li>CycleGAN</li>
+<li>StarGAN：多合一</li>
+</ul>
+</li>
+<li><p>人脸属性编辑</p>
+</li>
+<li><p>图片质量增强</p>
+</li>
+<li><p>文本合成图像</p>
+<ul>
+<li>Text-conditional GAN</li>
+</ul>
+</li>
+<li><p>图像语义分割</p>
+</li>
+<li><p>人脸去遮挡任务</p>
+</li>
+<li><p>小物体检测</p>
+</li>
+</ul>
+<p>‍</p>
+<p>‍</p>
+<p>Attack ML Models</p>
+<p>‍</p>
+<p>‍</p>
+<h2 id="在线社交网络分析-与-舆情检测"><a href="#在线社交网络分析-与-舆情检测" class="headerlink" title="在线社交网络分析 与 舆情检测"></a>在线社交网络分析 与 舆情检测</h2><h3 id="在线社交网络分析"><a href="#在线社交网络分析" class="headerlink" title="在线社交网络分析"></a>在线社交网络分析</h3><p>了解原理即可</p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-31.png" alt="image.png"></p>
+<p>在线社交网络是一种在信息网络上由社会个体集合及个体之间的连接关系构成的社会性结构，包含<strong>关系结构</strong>、 <strong>网络群体</strong>与<strong>网络信息</strong>三个要素。</p>
+<p><strong>在线社交网络的三个维度</strong></p>
+<ul>
+<li>结构</li>
+<li>群体</li>
+<li>信息</li>
+</ul>
+<p><strong>在线社交网络的地位和作用</strong></p>
+<ul>
+<li>政治</li>
+<li>经济</li>
+<li>文化</li>
+<li>生活</li>
+</ul>
+<p><strong>在线社交网络分析定义</strong></p>
+<p>在线社交网络分析是指从<strong>网络结构</strong>、 <strong>群体互动</strong>、<strong>信息传播</strong>三个维度，基于信息学、数学、社会学、管理学、心理学等多学科的融合理论和方法，为理解人类各种社交关系的形成、行为特点分析以及信息传播的规律提供的一种<strong>可计算</strong>的分析方法。</p>
+<p>‍</p>
+<h4 id="信息传播模型"><a href="#信息传播模型" class="headerlink" title="信息传播模型"></a>信息传播模型</h4><p>（掌握原理）</p>
+<h5 id="影响力模型"><a href="#影响力模型" class="headerlink" title="影响力模型"></a>影响力模型</h5><p>每个节点有两种状态： <u>活跃 (active) 和不活跃 (inactive)</u>，只有活跃状态的节点才具有影响力，能够影响其他节点。</p>
+<p>当一个节点被其他节点影响成功时，则称该节点被激活， <u>不活跃状态的节点不能激活其他节点</u>。</p>
+<p>社会网络的影响力传播表现为节点状态由不活跃变激活为活跃， <u>状态转变是单向的</u>，即网络中不存在由活跃变为不活跃的情况。</p>
+<p>&#x3D;&#x3D;<strong>Independent Cascade (IC) 独立级联模型</strong>&#x3D;&#x3D;</p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-32.png" alt="image.png"></p>
+<p>&#x3D;&#x3D;<strong>Linear Threshold (LT) 线性阈值模型</strong>&#x3D;&#x3D;</p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-33.png" alt="image.png"></p>
+<p>‍</p>
+<p>‍</p>
+<h5 id="传染模型"><a href="#传染模型" class="headerlink" title="传染模型"></a>传染模型</h5><p>传染模型也叫流行病模型，用于描述个人传播传染病的方式</p>
+<p>节点有三种状态  </p>
+<ul>
+<li>S <u>易感人群</u>：易感节点可能会感染疾病</li>
+<li>I <u>感染人群</u>：感染节点有机会去感染易感人群</li>
+<li>R <u>免疫人群</u>：感染节点被治愈后不会再得疾病的人群</li>
+</ul>
+<p>&#x3D;&#x3D;<strong>Susceptible Infected Recovered (SIR)</strong>&#x3D;&#x3D;</p>
+<p>设总人口为 N(t)，则有 N(t)&#x3D;s(t)+i(t)+r(t)。</p>
+<p>三个假设：</p>
+<ul>
+<li>人口始终保持一个常数，即 N(t)≡K。</li>
+<li>假设 t 时刻单位时间内，一个病人能传染的易感者数目与此环境内易感者总数 s(t) 成正比，比例系数为β，从而在 t 时刻单位时间内被所有病人传染的人数为βs(t)i(t)。</li>
+<li>t 时刻，单位时间内从染病者中移出的人数与病人数量成正比，比例系数为γ，单位时间内移出者的数量为γi(t)</li>
+</ul>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-34.png" alt="image.png"></p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-35.png" alt="image.png"></p>
+<p>‍</p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-36.png" alt="image.png"></p>
+<p>β：易感节点被成功感染的概率<br>μ：感染节点被治愈的概率</p>
+<p>‍</p>
+<h4 id="社交网络传播引导"><a href="#社交网络传播引导" class="headerlink" title="社交网络传播引导"></a><strong>社交网络传播引导</strong></h4><p>如何投放信息使其传播影响力最大？</p>
+<h5 id="影响力计算方法"><a href="#影响力计算方法" class="headerlink" title="影响力计算方法"></a>影响力计算方法</h5><p><em>就是总体过程求平均</em></p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-37.png" alt="image.png"></p>
+<p>‍</p>
+<h5 id="影响力最大化贪婪算法"><a href="#影响力最大化贪婪算法" class="headerlink" title="影响力最大化贪婪算法"></a>影响力最大化贪婪算法</h5><p>原理：只保留最大影响力的节点</p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-38.png" alt="image.png"></p>
+<p>‍</p>
+<p>‍</p>
+<h4 id="社交网络话题发现模型"><a href="#社交网络话题发现模型" class="headerlink" title="社交网络话题发现模型"></a>社交网络话题发现模型</h4><p><strong>概率潜在语义分析模型（PLSA）</strong>  （了解为主）</p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-39.png" alt="image.png"></p>
+<p>‍</p>
+<p>‍</p>
+<p>‍</p>
+<h3 id="舆情检测"><a href="#舆情检测" class="headerlink" title="舆情检测"></a>舆情检测</h3><p><em>记忆基本概念，特性，演化流程</em></p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-40.png" alt="image.png"></p>
+<p><strong>网络舆情</strong>：是指以互联网为载体所表达的公众情绪，究其本质是社会情绪在互联网这个可见载体上的公共表达。</p>
+<p><strong>网络舆情特征</strong></p>
+<ul>
+<li>自发性</li>
+<li>指向性</li>
+<li>时效性</li>
+<li>情绪性</li>
+<li>片面性</li>
+</ul>
+<p><strong>网络舆情演化</strong></p>
+<ul>
+<li>形成期</li>
+<li>高涨期</li>
+<li>波动期</li>
+<li>消退期</li>
+</ul>
+<p>‍</p>
+<h4 id="网络舆情监测系统"><a href="#网络舆情监测系统" class="headerlink" title="网络舆情监测系统"></a>网络舆情监测系统</h4><p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-41.png" alt="image.png"></p>
+<p>三个层</p>
+<ul>
+<li><p>数据采集处理层</p>
+<ul>
+<li><p>提供<strong>网络数据采集</strong>和<strong>预处理功能</strong></p>
+<ul>
+<li>网络爬虫（了解）</li>
+<li>PageRank（了解）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>舆情分析处理层</p>
+<ul>
+<li>主要提供<strong>话题检测、话题跟踪、倾向性分析、自动摘要</strong>以及<strong>中文分词</strong>等功能</li>
+<li>主要完成热点<strong>话题的检测、跟踪以及情感倾向性分析</strong>，并且对各类热点话题及倾向性进行<strong>自动摘要</strong>，分析结果存入数据库，以便为用户提供各种舆情分析服务。</li>
+<li>舆情分析引擎的<u>核心技术</u>是<strong>文本聚类、文本分类、情感分析中所采用的模型与算法</strong>，直接关系到系统的性能高低。</li>
+</ul>
+</li>
+<li><p>舆情分析服务层</p>
+<ul>
+<li>主要提供突发事件分析、舆情预警报警、舆情趋势分析、舆情统计报告以及舆情查询检索等各种舆情分析服务</li>
+</ul>
+</li>
+</ul>
+<p>‍</p>
+<p>‍</p>
+<p>‍</p>
+<h2 id="信息过滤"><a href="#信息过滤" class="headerlink" title="信息过滤"></a>信息过滤</h2><p>‍</p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-42.png" alt="image.png"></p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-43.png" alt="image.png"></p>
+<p>信息过滤通常是在输入数据流中移除数据，而不是在输入数据流中找到数据。</p>
+<p>在信息内容安全领域，信息过滤是提供信息的有效流动，消除或者减少信息过量、信息混乱、信息滥用造成的危害。</p>
+<h3 id="信息过滤模型"><a href="#信息过滤模型" class="headerlink" title="信息过滤模型"></a>信息过滤模型</h3><p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-44.png" alt="image.png"></p>
+<p>过滤模型，各部分</p>
+<p>‍</p>
+<p>‍</p>
+<p>例子</p>
+<h3 id="信息过滤与其他信息处理异同"><a href="#信息过滤与其他信息处理异同" class="headerlink" title="信息过滤与其他信息处理异同"></a>信息过滤与其他信息处理异同</h3><table>
+<thead>
+<tr>
+<th><strong>信息处理方法</strong></th>
+<th><strong>信息需要&#x2F;需求</strong></th>
+<th><strong>信息源</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>信息过滤</strong></td>
+<td><strong>稳定的、特定的信息</strong></td>
+<td><strong>动态的、非结构化的</strong></td>
+</tr>
+<tr>
+<td><strong>信息检索</strong></td>
+<td><strong>动态的、特定的信息</strong></td>
+<td><strong>稳定的、非结构化的</strong></td>
+</tr>
+<tr>
+<td><strong>数据访问</strong></td>
+<td><strong>动态的、特定的信息</strong></td>
+<td><strong>稳定的、结构化的</strong></td>
+</tr>
+<tr>
+<td><strong>信息提取</strong></td>
+<td><strong>特定的信息</strong></td>
+<td><strong>非结构化的</strong></td>
+</tr>
+</tbody></table>
+<p>信息检索</p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-45.png" alt="image.png"></p>
+<p>信息分类</p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-46.png" alt="image.png"></p>
+<p>信息抽取（信息提取）</p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-47.png" alt="image.png"></p>
+<p>‍</p>
+<p>‍</p>
+<h3 id="信息过滤应用"><a href="#信息过滤应用" class="headerlink" title="信息过滤应用"></a>信息过滤应用</h3><ul>
+<li>Internet 搜索结果的过滤</li>
+<li>用户电子邮件过滤（垃圾邮件过滤）</li>
+<li>服务器&#x2F;新闻组过滤</li>
+<li>浏览器过滤</li>
+<li>专为孩子的过滤（绿色上网）</li>
+<li>为客户的过滤 - 用户爱好推荐（APP 个性化推荐）</li>
+</ul>
+<p>‍</p>
+<h3 id="信息过滤评价"><a href="#信息过滤评价" class="headerlink" title="信息过滤评价"></a>信息过滤评价</h3><p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-48.png" alt="image.png"></p>
+<p>‍</p>
+<h3 id="分类体系"><a href="#分类体系" class="headerlink" title="分类体系"></a>分类体系</h3><p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-49.png" alt="image.png"></p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-50.png" alt="image.png"></p>
+<p>‍</p>
+<p>‍</p>
+<h3 id="过滤方法"><a href="#过滤方法" class="headerlink" title="过滤方法"></a>过滤方法</h3><p><strong>要会计算</strong></p>
+<ul>
+<li><p>根据操作方法</p>
+<ul>
+<li><p>主动</p>
+<ul>
+<li>主动搜集信息，并将相关信息发送给用户</li>
+</ul>
+</li>
+<li><p>被动</p>
+<ul>
+<li>不负责为用户搜集信息</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>根据操作位置</p>
+<ul>
+<li>在信息<strong>源</strong>端过滤</li>
+<li>在<strong>过滤服务器</strong>端过滤</li>
+<li>在<strong>客户端</strong>过滤</li>
+</ul>
+</li>
+<li><p>过滤方法</p>
+<ul>
+<li><p>基于<strong>认知</strong>的过滤 (Cognitive filtering)</p>
+<ul>
+<li>基于内容或者用户兴趣的过滤</li>
+<li>将文档内容和用户的 Profile 进行相似度计算</li>
+</ul>
+</li>
+<li><p>基于<strong>社会的</strong>过滤 (Sociological filtering)</p>
+<ul>
+<li>也称为协同过滤 (Collaborative filtering)</li>
+<li>对某个用户的 Profile 进行匹配时，通过用户之间的相似度来计算 Profile 和文档的匹配程度</li>
+<li>社会过滤常常使用用户建模 (User modeling) 及用户聚类 (User clustering) 等技术。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>根据获取用户知识分类</p>
+<ul>
+<li>显式</li>
+<li>隐式</li>
+<li>显式和隐式相结合的方法</li>
+</ul>
+</li>
+<li><p>&#x3D;&#x3D;基于匹配的信息过滤：字符串匹配&#x3D;&#x3D;</p>
+<ul>
+<li><p>单模式</p>
+<ul>
+<li><p><strong>BF</strong>（Brute Force，穷举&#x2F;暴力破解法）</p>
+</li>
+<li><p><strong>KMP</strong>（由 D.E.Knuth、J.H.Morris 和 V.R.Pratt 设计）</p>
+<ul>
+<li>next 数组、PMT (Partial Match Table) 部分匹配表</li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/av60334201/?vd_source=21f907021db1a3038678c931d040bc58">七分钟了解什么是 KMP 算法_哔哩哔哩_bilibili</a></li>
+</ul>
+</li>
+<li><p><strong>BM</strong>（由 Bob Boyer 和 J Strother Moore 设计）</p>
+<ul>
+<li>从右向左扫描：从右到左取 p 中字符比较</li>
+<li>坏字符规则</li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1j4411o7X3?vd_source=21f907021db1a3038678c931d040bc58">动画演示什么是 BM 算法_哔哩哔哩_bilibili</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>多模式</p>
+<ul>
+<li><p>多模式匹配： <strong>AC 自动机算法</strong></p>
+<ul>
+<li><p>基本思想：</p>
+<ul>
+<li><p>在预处理阶段，AC 自动机算法建立了三个函数， <strong>转向函数 goto</strong>，<strong>失效函数 failure</strong> 和<strong>输出函数 output</strong>，由此构造了一个树型有限自动机。</p>
+<p>先计算深度为 1 的状态失效函数，再计算深度为 2 的失效函数，依次类推；</p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-51.png" alt="image.png"></p>
+</li>
+<li><p>在搜索查找阶段，则通过这三个函数的交叉使用扫描文本，定位出关键字在文本中的所有出现位置。</p>
+</li>
+</ul>
+</li>
+<li><p>特点：</p>
+<ul>
+<li>扫描文本时完全不需要回溯；</li>
+<li>时间复杂度为 O(n)，与关键字的数目和长度无关。</li>
+</ul>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV14v4y1Z7fu">用最直观的方式理解 AC 自动机_哔哩哔哩_bilibili</a></p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>‍</p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-52.png" alt="image.png"></p>
+<p>‍</p>
+<h2 id="对抗攻击与防御"><a href="#对抗攻击与防御" class="headerlink" title="对抗攻击与防御"></a>对抗攻击与防御</h2><p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-53.png" alt="image.png"></p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-54.png" alt="image.png"></p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-55.png" alt="image.png"></p>
+<p>攻击的损失函数</p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-56.png" alt="image.png"></p>
+<p>约束范式</p>
+<ul>
+<li><p>L2-norm</p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-57.png" alt="image.png"></p>
+</li>
+<li><p>L-infinity</p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-58.png" alt="image.png"></p>
+</li>
+</ul>
+<p>‍</p>
+<p>‍</p>
+<p>‍</p>
+<h3 id="FGSM"><a href="#FGSM" class="headerlink" title="FGSM"></a>FGSM</h3><p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-59.png" alt="image.png"></p>
+<h3 id="白盒攻击-黑盒攻击"><a href="#白盒攻击-黑盒攻击" class="headerlink" title="白盒攻击 黑盒攻击"></a>白盒攻击 黑盒攻击</h3><p>（简答题，怎样是 xx 攻击）</p>
+<p>‍</p>
+<h3 id="攻击方式举例"><a href="#攻击方式举例" class="headerlink" title="攻击方式举例"></a>攻击方式举例</h3><p>单像素攻击</p>
+<p>差分进化</p>
+<p>文本攻击</p>
+<p>语音攻击</p>
+<p>‍</p>
+<h3 id="防御手段"><a href="#防御手段" class="headerlink" title="防御手段"></a>防御手段</h3><p>（简答：思想，实现）</p>
+<ul>
+<li><p>被动</p>
+<ul>
+<li><p>特征挤压 (Feature Squeeze)</p>
+<p>将图像经过原模型、经过 Squeezer 处理后的结果进行比较，如果结果有差异，<br>则输入图像可能是被攻击过了。<br>• 这里的 Squeezer 可以是整体压缩每个像素值、图像局部平滑等操作</p>
+</li>
+</ul>
+</li>
+<li><p>主动</p>
+<ul>
+<li>增加对抗数据</li>
+</ul>
+</li>
+</ul>
+<p>‍</p>
+<h2 id="视觉内容伪造与检测"><a href="#视觉内容伪造与检测" class="headerlink" title="视觉内容伪造与检测"></a>视觉内容伪造与检测</h2><p>‍</p>
+<p>‍</p>
+<p><em>偏概念</em></p>
+<p>‍</p>
+<h3 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h3><p>例子 s，知道有那些方法就行</p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-60.png" alt="image.png"></p>
+<h4 id="人脸替换的基本原理"><a href="#人脸替换的基本原理" class="headerlink" title="人脸替换的基本原理"></a>人脸替换的基本原理</h4><p>‍</p>
+<h3 id="伪造检测方法分类"><a href="#伪造检测方法分类" class="headerlink" title="伪造检测方法分类"></a>伪造检测方法分类</h3><p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-61.png" alt="image.png"></p>
+<ul>
+<li>手动特征</li>
+<li>检测网络</li>
+</ul>
+<p>‍</p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-62.png" alt="image.png"></p>
+<p>‍</p>
+<h2 id="身份认证系统的攻击与防御"><a href="#身份认证系统的攻击与防御" class="headerlink" title="身份认证系统的攻击与防御"></a>身份认证系统的攻击与防御</h2><h3 id="身份认证"><a href="#身份认证" class="headerlink" title="身份认证"></a>身份认证</h3><p><em>身份认证概念、流程</em></p>
+<p>保证操作者的<strong>物理身份</strong>与<strong>数字身份</strong>相对应</p>
+<p>‍</p>
+<p>物理身份与数字身份一致</p>
+<p>基本途径</p>
+<ul>
+<li>基于你所知道的（What you know）</li>
+<li>基于你所拥有的（What you have）– 身份证、信用卡、钥匙、智能卡、令牌、私钥等</li>
+<li>基于你的个人特征（What you are） – 指纹，笔迹，声音，手型，脸型，视网膜，虹膜</li>
+<li>双因素、多因素认证</li>
+</ul>
+<p>‍</p>
+<h3 id="生物特征"><a href="#生物特征" class="headerlink" title="生物特征"></a>生物特征</h3><p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-63.png" alt="image.png"></p>
+<p>生物特征种类比较</p>
+<ul>
+<li>指纹</li>
+<li>手形</li>
+<li>手部血管分布</li>
+<li>人脸</li>
+<li>脸部热量图</li>
+<li>虹膜</li>
+<li>视网膜</li>
+<li>签名</li>
+<li>语音</li>
+</ul>
+<p>生物特征的比较<br>• 指纹：最经典、最成熟的生物认证技术<br>• 人脸：自然，直观，无侵害，易用的生物认证技术<br>• 手掌：易实现，成本低，识别速度快的生物认证技术<br>• 虹膜：高独特，高稳定的生物认证技术<br>• 视网膜：受保护，防欺骗性好；采集困难<br>• 签名：易于接受，常用于信用卡、文件生效等场合<br>• 声音：成本低，代价小，常用作辅助手段</p>
+<p>‍</p>
+<h4 id="生物特征认证流程"><a href="#生物特征认证流程" class="headerlink" title="生物特征认证流程"></a>生物特征认证流程</h4><ol>
+<li><p>注册</p>
+</li>
+<li><p>识别</p>
+</li>
+<li><p>匹配</p>
+<ul>
+<li>验证 1:1 比对</li>
+<li>鉴别 1：n 比对</li>
+</ul>
+</li>
+</ol>
+<p>‍</p>
+<p>‍</p>
+<h3 id="活体检测方法"><a href="#活体检测方法" class="headerlink" title="活体检测方法"></a>活体检测方法</h3><p><em>概念、场景</em></p>
+<p>‍</p>
+<h2 id="异常检测"><a href="#异常检测" class="headerlink" title="异常检测"></a>异常检测</h2><p><em>概念为主</em></p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-64.png" alt="image.png"></p>
+<p>是否是一类数据，检测目标</p>
+<p>应用</p>
+<ul>
+<li>信用卡盗刷</li>
+<li>癌细胞…</li>
+</ul>
+<p>与普通二分类区别</p>
+<p>‍</p>
+<h3 id="有标记方法"><a href="#有标记方法" class="headerlink" title="有标记方法"></a>有标记方法</h3><p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-65.png" alt="image.png"></p>
+<h3 id="无标记方法"><a href="#无标记方法" class="headerlink" title="无标记方法"></a>无标记方法</h3><p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-66.png" alt="image.png"></p>
+<p>‍</p>
+<h3 id="评价方法"><a href="#评价方法" class="headerlink" title="评价方法"></a>评价方法</h3><p>目标不同，严格程度（假阳性..）</p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-67.png" alt="image.png"></p>
+<p>‍</p>
+<h2 id="线上内容"><a href="#线上内容" class="headerlink" title="线上内容"></a>线上内容</h2><p>考</p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-68.png" alt="image.png"></p>
+<p><img data-src="http://framist-bucket-openread.oss-cn-shanghai.aliyuncs.com/img/2026/08/09/20260809131258-69.png" alt="image.png"></p>
+<p>‍</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><strong>非常感谢未知名同学的思维导图，如有侵权或需要署名请联系作者。</strong></p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      <div style="display: inline-block;">
+        <img src="/images/dogecoin.png" alt="Framist dogecoin">
+        <p>dogecoin</p>
+      </div>
+      <div style="display: inline-block;">
+        <img src="/images/afdian.jpg" alt="Framist afdian">
+        <p>afdian</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Framist
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://framist.github.io/post/information-and-content-security-final-review.html" title="【信息与内容安全】课程期末复习笔记">https://framist.github.io/post/information-and-content-security-final-review.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E4%BF%A1%E6%81%AF%E4%B8%8E%E5%86%85%E5%AE%B9%E5%AE%89%E5%85%A8/" rel="tag"># 信息与内容安全</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/post/7919.html" rel="prev" title="PyTorch：进化">
+      <i class="fa fa-chevron-left"></i> PyTorch：进化
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/post/information-and-content-security-experiment-2-fake-face-detection.html" rel="next" title="【信息与内容安全】实验二：虚假人脸检测实验：CNN & Transfer Learning">
+      【信息与内容安全】实验二：虚假人脸检测实验：CNN & Transfer Learning <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%87%8D%E7%82%B9"><span class="nav-number">1.</span> <span class="nav-text">重点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E4%B8%8E%E5%86%85%E5%AE%B9%E5%AE%89%E5%85%A8%E7%AE%80%E4%BB%8B"><span class="nav-number">1.1.</span> <span class="nav-text">信息与内容安全简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E4%B8%8E%E5%86%85%E5%AE%B9%E5%AE%89%E5%85%A8%E6%A6%82%E8%BF%B0"><span class="nav-number">1.1.1.</span> <span class="nav-text">信息与内容安全概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AE%80%E4%BB%8B"><span class="nav-number">1.1.2.</span> <span class="nav-text">机器学习简介</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E8%8E%B7%E5%8F%96%E4%B8%8E%E8%A1%A8%E7%A4%BA"><span class="nav-number">1.2.</span> <span class="nav-text">信息获取与表示</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E5%86%85%E5%AE%B9%E7%9A%84%E8%8E%B7%E5%8F%96"><span class="nav-number">1.2.1.</span> <span class="nav-text">信息内容的获取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E5%86%85%E5%AE%B9%E7%9A%84%E8%A1%A8%E7%A4%BA"><span class="nav-number">1.2.2.</span> <span class="nav-text">信息内容的表示</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%86%E8%A7%89%E4%BF%A1%E6%81%AF%E7%89%B9%E5%BE%81"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">视觉信息特征</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%87%E6%9C%AC%E7%89%B9%E5%BE%81"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">文本特征</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9F%B3%E9%A2%91%E7%89%B9%E5%BE%81"><span class="nav-number">1.2.2.3.</span> <span class="nav-text">音频特征</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80"><span class="nav-number">1.3.</span> <span class="nav-text">深度学习基础</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A5%9E%E7%BB%8F%E5%85%83%E3%80%81%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"><span class="nav-number">1.3.1.</span> <span class="nav-text">神经元、神经网络</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"><span class="nav-number">1.3.2.</span> <span class="nav-text">卷积神经网络</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%90%86%E8%A7%A3%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"><span class="nav-number">1.3.3.</span> <span class="nav-text">理解神经网络</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%8F%E5%85%B8%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%BB%93%E6%9E%84"><span class="nav-number">1.3.4.</span> <span class="nav-text">经典神经网络结构</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%9F%E6%88%90%E5%AF%B9%E6%8A%97%E7%BD%91%E7%BB%9C-GAN"><span class="nav-number">1.4.</span> <span class="nav-text">生成对抗网络 GAN</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#GAN-%E6%AD%A5%E9%AA%A4%E4%B8%8E%E5%8E%9F%E7%90%86"><span class="nav-number">1.4.1.</span> <span class="nav-text">GAN 步骤与原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Conditional-GAN"><span class="nav-number">1.4.2.</span> <span class="nav-text">Conditional GAN</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#InfoGAN"><span class="nav-number">1.4.3.</span> <span class="nav-text">InfoGAN</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8"><span class="nav-number">1.4.4.</span> <span class="nav-text">应用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8%E7%BA%BF%E7%A4%BE%E4%BA%A4%E7%BD%91%E7%BB%9C%E5%88%86%E6%9E%90-%E4%B8%8E-%E8%88%86%E6%83%85%E6%A3%80%E6%B5%8B"><span class="nav-number">1.5.</span> <span class="nav-text">在线社交网络分析 与 舆情检测</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%A8%E7%BA%BF%E7%A4%BE%E4%BA%A4%E7%BD%91%E7%BB%9C%E5%88%86%E6%9E%90"><span class="nav-number">1.5.1.</span> <span class="nav-text">在线社交网络分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E4%BC%A0%E6%92%AD%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.5.1.1.</span> <span class="nav-text">信息传播模型</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BD%B1%E5%93%8D%E5%8A%9B%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.5.1.1.1.</span> <span class="nav-text">影响力模型</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BC%A0%E6%9F%93%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.5.1.1.2.</span> <span class="nav-text">传染模型</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A4%BE%E4%BA%A4%E7%BD%91%E7%BB%9C%E4%BC%A0%E6%92%AD%E5%BC%95%E5%AF%BC"><span class="nav-number">1.5.1.2.</span> <span class="nav-text">社交网络传播引导</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BD%B1%E5%93%8D%E5%8A%9B%E8%AE%A1%E7%AE%97%E6%96%B9%E6%B3%95"><span class="nav-number">1.5.1.2.1.</span> <span class="nav-text">影响力计算方法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BD%B1%E5%93%8D%E5%8A%9B%E6%9C%80%E5%A4%A7%E5%8C%96%E8%B4%AA%E5%A9%AA%E7%AE%97%E6%B3%95"><span class="nav-number">1.5.1.2.2.</span> <span class="nav-text">影响力最大化贪婪算法</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A4%BE%E4%BA%A4%E7%BD%91%E7%BB%9C%E8%AF%9D%E9%A2%98%E5%8F%91%E7%8E%B0%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.5.1.3.</span> <span class="nav-text">社交网络话题发现模型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%88%86%E6%83%85%E6%A3%80%E6%B5%8B"><span class="nav-number">1.5.2.</span> <span class="nav-text">舆情检测</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E8%88%86%E6%83%85%E7%9B%91%E6%B5%8B%E7%B3%BB%E7%BB%9F"><span class="nav-number">1.5.2.1.</span> <span class="nav-text">网络舆情监测系统</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E8%BF%87%E6%BB%A4"><span class="nav-number">1.6.</span> <span class="nav-text">信息过滤</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E8%BF%87%E6%BB%A4%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.6.1.</span> <span class="nav-text">信息过滤模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E8%BF%87%E6%BB%A4%E4%B8%8E%E5%85%B6%E4%BB%96%E4%BF%A1%E6%81%AF%E5%A4%84%E7%90%86%E5%BC%82%E5%90%8C"><span class="nav-number">1.6.2.</span> <span class="nav-text">信息过滤与其他信息处理异同</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E8%BF%87%E6%BB%A4%E5%BA%94%E7%94%A8"><span class="nav-number">1.6.3.</span> <span class="nav-text">信息过滤应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E8%BF%87%E6%BB%A4%E8%AF%84%E4%BB%B7"><span class="nav-number">1.6.4.</span> <span class="nav-text">信息过滤评价</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E7%B1%BB%E4%BD%93%E7%B3%BB"><span class="nav-number">1.6.5.</span> <span class="nav-text">分类体系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%87%E6%BB%A4%E6%96%B9%E6%B3%95"><span class="nav-number">1.6.6.</span> <span class="nav-text">过滤方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E4%B8%8E%E9%98%B2%E5%BE%A1"><span class="nav-number">1.7.</span> <span class="nav-text">对抗攻击与防御</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#FGSM"><span class="nav-number">1.7.1.</span> <span class="nav-text">FGSM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%99%BD%E7%9B%92%E6%94%BB%E5%87%BB-%E9%BB%91%E7%9B%92%E6%94%BB%E5%87%BB"><span class="nav-number">1.7.2.</span> <span class="nav-text">白盒攻击 黑盒攻击</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%94%BB%E5%87%BB%E6%96%B9%E5%BC%8F%E4%B8%BE%E4%BE%8B"><span class="nav-number">1.7.3.</span> <span class="nav-text">攻击方式举例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%98%B2%E5%BE%A1%E6%89%8B%E6%AE%B5"><span class="nav-number">1.7.4.</span> <span class="nav-text">防御手段</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%86%E8%A7%89%E5%86%85%E5%AE%B9%E4%BC%AA%E9%80%A0%E4%B8%8E%E6%A3%80%E6%B5%8B"><span class="nav-number">1.8.</span> <span class="nav-text">视觉内容伪造与检测</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95"><span class="nav-number">1.8.1.</span> <span class="nav-text">方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%BA%E8%84%B8%E6%9B%BF%E6%8D%A2%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86"><span class="nav-number">1.8.1.1.</span> <span class="nav-text">人脸替换的基本原理</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%AA%E9%80%A0%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95%E5%88%86%E7%B1%BB"><span class="nav-number">1.8.2.</span> <span class="nav-text">伪造检测方法分类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%94%BB%E5%87%BB%E4%B8%8E%E9%98%B2%E5%BE%A1"><span class="nav-number">1.9.</span> <span class="nav-text">身份认证系统的攻击与防御</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81"><span class="nav-number">1.9.1.</span> <span class="nav-text">身份认证</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%9F%E7%89%A9%E7%89%B9%E5%BE%81"><span class="nav-number">1.9.2.</span> <span class="nav-text">生物特征</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%9F%E7%89%A9%E7%89%B9%E5%BE%81%E8%AE%A4%E8%AF%81%E6%B5%81%E7%A8%8B"><span class="nav-number">1.9.2.1.</span> <span class="nav-text">生物特征认证流程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B4%BB%E4%BD%93%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95"><span class="nav-number">1.9.3.</span> <span class="nav-text">活体检测方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%82%E5%B8%B8%E6%A3%80%E6%B5%8B"><span class="nav-number">1.10.</span> <span class="nav-text">异常检测</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%89%E6%A0%87%E8%AE%B0%E6%96%B9%E6%B3%95"><span class="nav-number">1.10.1.</span> <span class="nav-text">有标记方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A0%E6%A0%87%E8%AE%B0%E6%96%B9%E6%B3%95"><span class="nav-number">1.10.2.</span> <span class="nav-text">无标记方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%84%E4%BB%B7%E6%96%B9%E6%B3%95"><span class="nav-number">1.10.3.</span> <span class="nav-text">评价方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E4%B8%8A%E5%86%85%E5%AE%B9"><span class="nav-number">1.11.</span> <span class="nav-text">线上内容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">1.12.</span> <span class="nav-text">参考</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Framist</p>
+  <div class="site-description" itemprop="description">框架主义者的小窝</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">88</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">58</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/framist" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;framist" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:framist@163.com" title="E-Mail → mailto:framist@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/weixin_47102975" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_47102975" rel="noopener" target="_blank"><i class="fas fa-angle-right fa-fw"></i>CSDN</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/kuang-jia-zhu-yi-zhe" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;kuang-jia-zhu-yi-zhe" rel="noopener" target="_blank"><i class="fas fa-angle-right fa-fw"></i>知乎</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://framist.top/" title="http:&#x2F;&#x2F;framist.top&#x2F;" rel="noopener" target="_blank">个人主页</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://craft.framist.top/" title="https:&#x2F;&#x2F;craft.framist.top&#x2F;" rel="noopener" target="_blank">框架科工</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://framist.github.io/2020/10/11/%E6%88%91%E8%BA%AB%E8%BE%B9%E7%9A%84CS%E5%A4%A7%E4%BD%AC%E4%BB%AC/" title="https:&#x2F;&#x2F;framist.github.io&#x2F;2020&#x2F;10&#x2F;11&#x2F;%E6%88%91%E8%BA%AB%E8%BE%B9%E7%9A%84CS%E5%A4%A7%E4%BD%AC%E4%BB%AC&#x2F;">我身边的大佬们</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yuexiavqiufeng.github.io/" title="https:&#x2F;&#x2F;yuexiavqiufeng.github.io&#x2F;" rel="noopener" target="_blank">yuexiavqiufeng</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">浙 ICP 备 2022002862 号 -1 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-at"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Framist</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div><script>
+    let body = document.getElementsByTagName('body')[0];
+    body.addEventListener('click', (e) => {
+        let contentArr = ['欧拉~','ˋ( ° ▽、° ) ','RGB!','_(:з」∠)_','哼','?','¿框架?','QAQ',':3','<3','疯掉了',
+                            'whoami',
+                            'whoareU',
+                            'NULL',
+                            'None',
+                            ' ',
+                            '代价是什么呢？',
+                            '...',
+                            'Big Brother is Watching You',
+                            '喵~', '嗷~', '呜~', '哞~', '咩~', '咕~', '嘎~', '嘤~',
+                            '你看到了。',
+                            '¿爱情障眼法?','¿物种认同障碍?',
+                            '微润欧美，小润终南山，中润润与市，大润中南海',
+                            'init param:<br/>1LTKvNaux7CjrNHJ09C0y87Eo7/Rrbu3zfm4tKOsus<br/>7Ksbb41rmjv9a5zqrWucv51rmjrLTLzsTT1rrOtOajvw==',
+                            '这里没有时间的意义',
+                            '嘿嘿嘿，好想被随机异或哦，<br/>嘿嘿嘿，嘿嘿嘿，异或我的异或',
+                            '记忆赋予时间的意义，而不是时间赋予记忆的意义',
+                            '放弃 P ∨ ¬P 吧！',
+                            '抽象是普适性的代价 —— 3b1b',
+                            '得易见平凡，仿照上例显然',
+                            '留作习题答案略，读者自证不难',
+                            '反之亦然同理，推论自然成立',
+                            '略去过程 Q . E . D ，由上可知证毕'];
+        let randomNum = function (n) {
+            return Math.floor(Math.random() * n)
+        }
+        let span = document.createElement('span');
+        span.innerHTML = `${contentArr[randomNum(contentArr.length)]}`;
+        span.style.color = `rgb(${randomNum(256)},${randomNum(256)},${randomNum(256)})`;
+        span.style.position = 'absolute';
+        span.style.top = `${e.pageY - 25 - randomNum(50)}px`;
+        span.style.left = `${e.pageX - randomNum(50)}px`;
+        span.style.transition = 'all 1.5s ease';
+        span.style.zIndex = 20000;
+        span.style.fontSize = `${randomNum(8) + 10}px`;
+        body.appendChild(span)
+        setTimeout(()=>{
+            span.style.top = span.offsetTop - 25 + 'px';
+            span.style.opacity = 0;
+            setTimeout(()=>{span.remove()},1000)
+        },700)
+    })
+</script>
+
+
+<div style="width: 100px; height: 100px; margin: 0 auto;">
+<script type="text/javascript" id="clstr_globe" src="//clustrmaps.com/globe.js?d=gRWtX21uVt_tIdj_T64nMvo4FK1UrTWME23CVLOzNCg"></script>
+</div>
+<!--
+<script type="text/javascript" 
+color="255,255,255" 
+pointColor='64,184,209' 
+opacity='1' 
+zIndex="-1" 
+count="233" 
+src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js">
+</script>
+-->
+
+
+        
+<div class="busuanzi-count">
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/pjax/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '.languages',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[data-pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.dataset.pjax !== undefined) {
+      script.dataset.pjax = '';
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.subMenu)
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+  <script data-pjax>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '267a9d4a89b9b72b2229',
+      clientSecret: '2dba1f14d21da707ed6c4497fecc05d6178b4fa3',
+      repo        : 'blog-comment',
+      owner       : 'framist',
+      admin       : ['framist'],
+      id          : '78a053cd1649d3f87664dae20542ca46',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+    </div>
+</body>
+</html>
